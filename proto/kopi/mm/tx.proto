@@ -1,0 +1,140 @@
+syntax = "proto3";
+package kopi.mm;
+
+import "amino/amino.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "kopi/mm/params.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/mm/types";
+
+// Msg defines the Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  rpc AddDeposit                     (MsgAddDeposit) returns (Void);
+  rpc CreateRedemptionRequest        (MsgCreateRedemptionRequest) returns (Void);
+  rpc CancelRedemptionRequest        (MsgCancelRedemptionRequest) returns (Void);
+  rpc UpdateRedemptionRequest        (MsgUpdateRedemptionRequest) returns (Void);
+
+  rpc AddCollateral                  (MsgAddCollateral) returns (Void);
+  rpc RemoveCollateral               (MsgRemoveCollateral) returns (Void);
+
+  rpc Borrow                         (MsgBorrow) returns (Void);
+  rpc PartiallyRepayLoan             (MsgPartiallyRepayLoan) returns (Void);
+  rpc RepayLoan                      (MsgRepayLoan) returns (Void);
+
+  rpc UpdateCollateralDiscount       (MsgUpdateCollateralDiscount) returns (Void);
+  rpc UpdateInterestRateParameters   (MsgUpdateInterestRateParameters) returns (Void);
+  rpc UpdateRedemptionFee            (MsgUpdateRedemptionFee) returns (Void);
+  rpc UpdateProtocolShare            (MsgUpdateProtocolShare) returns (Void);
+}
+
+message MsgUpdateProtocolShare {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/mm/MsgUpdateProtocolShare";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string protocol_share = 2;
+}
+
+message MsgUpdateRedemptionFee {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/mm/MsgUpdateRedemptionFee";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string min_redemption_fee = 2;
+}
+
+message MsgUpdateInterestRateParameters {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/mm/MsgUpdateInterestRateParameters";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string min_interest_rate = 2;
+  string a = 3;
+  string b = 4;
+}
+
+message MsgUpdateCollateralDiscount {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/mm/MsgUpdateLiquidationTolerance";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string collateral_discount = 2;
+}
+
+message MsgAddDeposit {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string denom = 2;
+  string amount = 3;
+}
+
+message MsgCreateRedemptionRequest {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string denom = 2;
+  string c_asset_amount = 3;
+  string fee = 4;
+}
+
+message MsgCancelRedemptionRequest {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string denom = 2;
+}
+
+message MsgUpdateRedemptionRequest {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string denom = 2;
+  string c_asset_amount = 3;
+  string fee = 4;
+}
+
+message MsgAddCollateral {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string denom = 2;
+  string amount = 3;
+}
+
+message MsgRemoveCollateral {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string denom = 2;
+  string amount = 3;
+}
+
+message MsgBorrow {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string denom = 2;
+  string amount = 3;
+}
+
+message MsgPartiallyRepayLoan {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string denom = 2;
+  string amount = 3;
+}
+
+message MsgRepayLoan {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string denom = 2;
+}
+
+message Void {}

@@ -1,0 +1,76 @@
+syntax = "proto3";
+package kopi.denominations;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/denominations/types";
+
+message DexDenom {
+  string name = 1;
+
+  bytes factor = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = true
+  ];
+
+  bytes min_liquidity = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message KCoin {
+  string denom = 1;
+
+  repeated string references = 2;
+
+  bytes max_supply = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  bytes max_mint_amount = 4 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  bytes max_burn_amount = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message CollateralDenom {
+  string denom = 1;
+
+  bytes ltv = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+
+  bytes max_deposit = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message CAsset {
+  string name = 1;
+  string base_denom = 2;
+
+  bytes dex_fee_share = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// Params defines the parameters for the module.
+message Params {
+  option (gogoproto.goproto_stringer) = false;
+
+  repeated DexDenom dex_denoms = 1;
+  repeated KCoin k_coins = 2;
+  repeated CAsset c_assets = 3;
+  repeated CollateralDenom collateral_denoms = 4;
+}

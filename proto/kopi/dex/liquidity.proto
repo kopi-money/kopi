@@ -1,0 +1,16 @@
+syntax = "proto3";
+package kopi.dex;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/dex/types";
+
+message Liquidity {
+  uint64 index = 1;
+  string denom = 2;
+  string address = 3;
+  bytes amount = 4 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}

@@ -1,0 +1,407 @@
+syntax = "proto3";
+
+package kopi.dex;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "kopi/dex/params.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "kopi/dex/liquidity_pair.proto";
+import "kopi/dex/ratio.proto";
+import "kopi/dex/order.proto";
+
+// this line is used by starport scaffolding # 1
+
+option go_package = "github.com/kopi-money/kopi/x/dex/types";
+
+service Query {
+  rpc ValueKCoins (QueryValueKCoinsRequest) returns (QueryValueKCoinsResponse) {
+    option (google.api.http).get = "/kopi/dex/kcoins/value";
+  }
+  rpc LiquidityAll (QueryGetLiquidityAllRequest) returns (QueryGetLiquidityAllResponse) {
+    option (google.api.http).get = "/kopi/dex/liquidity";
+  }
+  rpc LiquidityForAddress (QueryLiquidityForAddressRequest) returns (QueryLiquidityForAddressResponse) {
+    option (google.api.http).get = "/kopi/dex/liquidity/address/{address}";
+  }
+  rpc Liquidity (QueryGetLiquidityRequest) returns (QueryGetLiquidityResponse) {
+    option (google.api.http).get = "/kopi/dex/liquidity/by_denom";
+  }
+  rpc LiquidityQueue (QueryGetLiquidityQueueRequest) returns (QueryGetLiquidityQueueResponse) {
+    option (google.api.http).get = "/kopi/dex/liquidity/queue/by_denom";
+  }
+  rpc LiquiditySum (QueryGetLiquiditySumRequest) returns (QueryGetLiquiditySumResponse) {
+    option (google.api.http).get = "/kopi/dex/liquidity/sum";
+  }
+  rpc LiquidityPair (QueryGetLiquidityPairRequest) returns (QueryGetLiquidityPairResponse) {
+    option (google.api.http).get = "/kopi/dex/liquidity_pair/by_denom";
+  }
+  rpc Orders (QueryOrdersRequest) returns (QueryOrdersResponse) {
+    option (google.api.http).get = "/kopi/dex/orders";
+  }
+  rpc OrdersAddress (QueryOrdersAddressRequest) returns (QueryOrdersAddressResponse) {
+    option (google.api.http).get = "/kopi/dex/orders/address/{address}";
+  }
+  rpc Order (QueryOrderRequest) returns (QueryOrderResponse) {
+    option (google.api.http).get = "/kopi/dex/orders/by_index/{index}";
+  }
+  rpc OrdersByPair (OrdersByPairRequest) returns (QueryOrdersByPairResponse) {
+    option (google.api.http).get = "/kopi/dex/orders/by_pair";
+  }
+  rpc OrdersNum (QueryOrdersNumRequest) returns (QueryOrdersNumResponse) {
+    option (google.api.http).get = "/kopi/dex/orders/num";
+  }
+  rpc OrdersSum (QueryOrdersSumRequest) returns (QueryOrdersSumResponse) {
+    option (google.api.http).get = "/kopi/dex/orders/sum";
+  }
+  rpc OrdersDenomSum (QueryOrdersDenomSumRequest) returns (QueryOrdersDenomSumResponse) {
+    option (google.api.http).get = "/kopi/dex/orders/sum/by_denom";
+  }
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/kopi/dex/params";
+  }
+  rpc LiquidityPool (QueryLiquidityPoolRequest) returns (QueryLiquidityPoolResponse) {
+    option (google.api.http).get = "/kopi/dex/pools/liquidity";
+  }
+  rpc OrderPool (QueryOrderPoolRequest) returns (QueryOrderPoolResponse) {
+    option (google.api.http).get = "/kopi/dex/pools/orders";
+  }
+  rpc Price    (QueryPriceRequest) returns (QueryPriceResponse) {
+    option (google.api.http).get = "/kopi/dex/price";
+  }
+  rpc PriceUsd (QueryPriceUsdRequest) returns (QueryPriceUsdResponse) {
+    option (google.api.http).get = "/kopi/dex/price_usd/by_denom";
+  }
+  rpc Ratio (QueryGetRatioRequest) returns (QueryGetRatioResponse) {
+    option (google.api.http).get = "/kopi/dex/ratio/by_denom";
+  }
+  rpc Ratios (QueryGetRatiosRequest) returns (QueryGetRatiosResponse) {
+    option (google.api.http).get = "/kopi/dex/ratios";
+  }
+  rpc ReserveFunds (QueryReserveFundsRequest) returns (QueryReserveFundsResponse) {
+    option (google.api.http).get = "/kopi/dex/reserve/funds";
+  }
+  rpc ReserveFundsPerDenom (QueryReserveFundsPerDenomRequest) returns (Denom) {
+    option (google.api.http).get = "/kopi/dex/reserve/funds/by_denom";
+  }
+  rpc SimulateTrade (QuerySimulateTradeRequest) returns (QuerySimulateTradeResponse) {
+    option (google.api.http).get = "/kopi/dex/simulate_trade";
+  }
+
+  // this line is used by starport scaffolding # 2
+}
+
+message QueryLiquidityPoolRequest {
+}
+
+message LiquidityPoolEntry {
+  string denom = 1;
+  string pool_amount = 2;
+  string liquidity_sum = 3;
+  string entries_sum = 4;
+}
+
+message QueryLiquidityPoolResponse {
+  repeated LiquidityPoolEntry entries = 1;
+}
+
+message OrdersByPairRequest {
+  string denom_from = 1;
+  string denom_to = 2;
+}
+
+message QueryOrdersByPairResponse {
+  repeated OrderResponse bids = 1;
+  repeated OrderResponse asks = 2;
+}
+
+message QueryReserveFundsRequest {}
+
+message QueryReserveFundsPerDenomRequest {
+  string denom = 1;
+}
+
+message Denom {
+  string denom = 1;
+  string amount = 2;
+  string amount_usd = 3;
+}
+
+message QueryReserveFundsResponse {
+  repeated Denom funds = 1;
+}
+
+message QueryPriceRequest {
+  string denom_from = 1;
+  string denom_to = 2;
+}
+
+message QueryPriceResponse {
+  string price = 1;
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetLiquiditySumRequest {}
+
+message QueryGetLiquiditySumResponse {
+  string value_usd = 1;
+}
+
+message QueryGetLiquidityAllRequest {}
+
+message QueryGetLiquidityAllResponseEntry {
+  string denom = 1;
+  string amount = 2;
+  string amount_usd = 3;
+}
+
+message QueryGetLiquidityAllResponse {
+  repeated QueryGetLiquidityAllResponseEntry denoms = 1;
+}
+
+message QueryGetLiquidityRequest {
+  string denom = 1;
+}
+
+message QueryGetLiquidityResponse {
+  string amount = 1;
+  string virtual_other = 2;
+  string virtual_base = 3;
+  string sum = 4;
+  string pool = 5;
+}
+
+message LiquidityEntry {
+  string address = 1;
+  string amount = 2;
+}
+
+message QueryGetLiquidityQueueRequest {
+  string denom = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message QueryGetLiquidityQueueResponse {
+  repeated LiquidityEntry entries = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetLiquidityShareRequest {
+  string address = 1;
+}
+
+message QueryGetLiquidityPairRequest {
+  string denom = 1;
+}
+
+message QueryGetLiquidityPairResponse {
+  string denom = 1;
+  string virtual_base = 2;
+  string virtual_other = 3;
+  string full_base = 4;
+  string full_other = 5;
+}
+
+message QueryAllLiquidityPairRequest {}
+
+message QueryAllLiquidityPairResponse {
+  repeated LiquidityPair liquidity_pair = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryTradeRequest {}
+
+message QueryGetRatioRequest {
+  string denom = 1;
+}
+
+message RatioResponse {
+  string denom = 1;
+  string ratio = 2;
+}
+
+message QueryGetRatioResponse {
+  RatioResponse ratio = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetRatiosRequest {
+}
+
+message QueryGetRatiosResponse {
+  repeated RatioResponse ratios = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllRatioRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllRatioResponse {
+  repeated Ratio                                  ratio = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// this line is used by starport scaffolding # 3
+message QueryLiquidityForAddressRequest {
+  string address = 1;
+}
+
+message AddressLiquidity {
+  string denom = 1;
+  string user_amount = 2;
+  string user_amount_usd = 3;
+  string total = 4;
+  string total_usd = 5;
+  string available_balance = 6;
+  string available_balance_usd = 7;
+}
+
+message QueryLiquidityForAddressResponse {
+  repeated AddressLiquidity liquidity = 1;
+}
+
+message QueryPriceUsdRequest {
+  string denom = 1;
+}
+
+message QueryPriceUsdResponse {
+  string price = 1;
+}
+
+message QueryGetOrderRequest {
+  uint64 id = 1;
+}
+
+message QueryGetOrderResponse {
+  Order Order = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryOrdersAddressRequest {
+  string address = 1;
+}
+
+message QueryOrdersAddressResponse {
+  repeated OrderResponse orders = 1;
+}
+
+message QueryOrdersNumRequest {}
+
+message QueryOrdersNumResponse {
+  int64 num = 1;
+}
+
+message QueryOrdersSumRequest {}
+
+message QueryOrdersSumResponse {
+  string sum = 1;
+}
+
+message QueryOrdersDenomSumRequest {
+  string denom_to = 1;
+}
+
+message OrdersSum {
+  string denom_from = 1;
+  string sum = 2;
+}
+
+message QueryOrdersDenomSumResponse {
+  repeated OrdersSum denoms = 1;
+}
+
+message QuerySimulateTradeRequest {
+  string denom_from = 1;
+  string denom_to = 2;
+  string amount = 3;
+}
+
+message QuerySimulateTradeResponse {
+  int64  amount_given_in_usd = 1;
+  int64  amount_received = 2;
+  int64  amount_received_in_usd = 3;
+  int64  fee = 4;
+  string price = 5;
+  string price_from_to_usd = 6;
+  string price_to_to_usd = 7;
+}
+
+message OrderBookSum {
+  string denom = 1;
+  string price = 2;
+  string price_base = 3;
+  string sum = 4;
+}
+
+message QueryDepthToRequest {
+  string denom_to = 1;
+}
+
+message QueryDepthToResponse {
+  repeated OrderBookSum orders = 1;
+}
+
+message QueryDepthFromRequest {
+  string denom_from = 1;
+}
+
+message QueryDepthFromResponse {
+  repeated OrderBookSum orders = 1;
+}
+
+message QueryOrdersRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+}
+
+message OrderResponse {
+  uint64 index = 1;
+  string creator = 2;
+  string denom_from = 3;
+  string denom_to = 4;
+  string amount_left = 5;
+  string amount_left_usd = 6;
+  string amount_received = 7;
+  string amount_received_usd = 8;
+  string trade_amount = 9;
+  string max_price = 10;
+  uint64 num_blocks = 11;
+  uint64 block_end = 12;
+  bool allow_incomplete = 13;
+}
+
+message QueryOrdersResponse {
+  repeated OrderResponse orders = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryOrderRequest {
+  uint64 index = 1;
+}
+
+message QueryOrderResponse {
+  OrderResponse order = 1;
+}
+
+message QueryOrderPoolRequest {}
+
+message OrderBalance {
+  string denom = 1;
+  string sum_order = 2;
+  string pool_amount = 3;
+}
+
+message QueryOrderPoolResponse {
+  repeated OrderBalance balance = 1;
+}
+
+message QueryValueKCoinsRequest {}
+
+message QueryValueKCoinsResponse {
+  string value = 1;
+}
