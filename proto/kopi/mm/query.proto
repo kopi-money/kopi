@@ -298,6 +298,9 @@ message CollateralDenomStats {
   string amount_usd = 3;
   string ltv = 4;
   string price_usd = 5;
+  string deposited = 6;
+  string deposit_cap = 7;
+  string deposit_cap_used = 8;
 }
 
 message GetCollateralStatsResponse {

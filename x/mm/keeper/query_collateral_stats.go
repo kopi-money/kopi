@@ -25,6 +25,16 @@ func (k Keeper) GetCollateralStats(ctx context.Context, req *types.GetCollateral
 			return nil, err
 		}
 
+		depositCap, err := k.DenomKeeper.GetDepositCap(ctx, denom.Denom)
+		if err != nil {
+			return nil, err
+		}
+
+		depositCapUsed := math.LegacyZeroDec()
+		if depositCap.GT(math.ZeroInt()) {
+			depositCapUsed = sum.ToLegacyDec().Quo(depositCap.ToLegacyDec())
+		}
+
 		totalUSD = totalUSD.Add(sumUSD)
 
 		var priceUSD math.LegacyDec
@@ -35,11 +45,14 @@ func (k Keeper) GetCollateralStats(ctx context.Context, req *types.GetCollateral
 		}
 
 		stats = append(stats, &types.CollateralDenomStats{
-			Denom:     denom.Denom,
-			Amount:    sum.String(),
-			AmountUsd: sumUSD.String(),
-			Ltv:       denom.Ltv.String(),
-			PriceUsd:  priceUSD.String(),
+			Denom:          denom.Denom,
+			Amount:         sum.String(),
+			AmountUsd:      sumUSD.String(),
+			Ltv:            denom.Ltv.String(),
+			PriceUsd:       priceUSD.String(),
+			Deposited:      sum.String(),
+			DepositCap:     depositCap.String(),
+			DepositCapUsed: depositCapUsed.String(),
 		})
 	}
 
@@ -93,7 +106,18 @@ func (k Keeper) GetCollateralUserStats(ctx context.Context, req *types.GetCollat
 		sumUSD, err := k.DexKeeper.GetValueInUSD(ctx, denom.Denom, amount)
 		if err != nil {
 			continue
-			//return nil, err
+		}
+
+		depositCap, err := k.DenomKeeper.GetDepositCap(ctx, denom.Denom)
+		if err != nil {
+			return nil, err
+		}
+
+		sum := k.getCollateralSum(ctx, denom.Denom)
+
+		depositCapUsed := math.LegacyZeroDec()
+		if depositCap.GT(math.ZeroInt()) {
+			depositCapUsed = sum.ToLegacyDec().Quo(depositCap.ToLegacyDec())
 		}
 
 		priceUSD, err := k.DexKeeper.GetPriceInUSD(ctx, denom.Denom)
@@ -104,11 +128,14 @@ func (k Keeper) GetCollateralUserStats(ctx context.Context, req *types.GetCollat
 		totalUSD = totalUSD.Add(sumUSD)
 
 		stats = append(stats, &types.CollateralDenomStats{
-			Denom:     denom.Denom,
-			Amount:    amount.String(),
-			AmountUsd: sumUSD.String(),
-			Ltv:       denom.Ltv.String(),
-			PriceUsd:  priceUSD.String(),
+			Denom:          denom.Denom,
+			Amount:         amount.String(),
+			AmountUsd:      sumUSD.String(),
+			Ltv:            denom.Ltv.String(),
+			PriceUsd:       priceUSD.String(),
+			Deposited:      sum.String(),
+			DepositCap:     depositCap.String(),
+			DepositCapUsed: depositCapUsed.String(),
 		})
 	}
 
