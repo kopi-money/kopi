@@ -10,24 +10,33 @@ message Order {
   string creator = 2;
   string denom_from = 3;
   string denom_to = 4;
-  bytes amount_left = 5 [
+
+  bytes amount_given = 5 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  bytes trade_amount = 6 [
+
+  bytes amount_left = 6 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  bytes amount_received = 7 [
+
+  bytes trade_amount = 7 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
-  bytes max_price = 8 [
+
+  bytes amount_received = 8 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  bytes max_price = 9 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];
 
-  uint64 num_blocks = 9;
-  uint64 block_end = 10;
-  bool allow_incomplete = 11;
+  uint64 num_blocks = 10;
+  uint64 block_end = 11;
+  bool allow_incomplete = 12;
 }

@@ -18,7 +18,7 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 		var order types.Order
 		k.cdc.MustUnmarshal(iterator.Value(), &order)
 
-		remove, err := k.executeOrder(ctx, eventManager, order)
+		remove, err := k.executeOrder(ctx, eventManager, &order)
 		if err != nil {
 			return errors.Wrap(err, "error executing order")
 		}
@@ -30,6 +30,13 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 				eventManager.EmitEvent(
 					sdk.NewEvent("order_completed",
 						sdk.Attribute{Key: "index", Value: strconv.Itoa(int(order.Index))},
+						sdk.Attribute{Key: "address", Value: order.Creator},
+						sdk.Attribute{Key: "denom_from", Value: order.DenomFrom},
+						sdk.Attribute{Key: "denom_to", Value: order.DenomTo},
+						sdk.Attribute{Key: "amount_given", Value: order.AmountGiven.String()},
+						sdk.Attribute{Key: "amount_used", Value: order.AmountGiven.Sub(order.AmountLeft).String()},
+						sdk.Attribute{Key: "amount_received", Value: order.AmountReceived.String()},
+						sdk.Attribute{Key: "max_price", Value: order.MaxPrice.String()},
 					),
 				)
 			}
@@ -46,6 +53,13 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 				eventManager.EmitEvent(
 					sdk.NewEvent("order_expired",
 						sdk.Attribute{Key: "index", Value: strconv.Itoa(int(order.Index))},
+						sdk.Attribute{Key: "address", Value: order.Creator},
+						sdk.Attribute{Key: "denom_from", Value: order.DenomFrom},
+						sdk.Attribute{Key: "denom_to", Value: order.DenomTo},
+						sdk.Attribute{Key: "amount_given", Value: order.AmountGiven.String()},
+						sdk.Attribute{Key: "amount_used", Value: order.AmountGiven.Sub(order.AmountLeft).String()},
+						sdk.Attribute{Key: "amount_received", Value: order.AmountReceived.String()},
+						sdk.Attribute{Key: "max_price", Value: order.MaxPrice.String()},
 					),
 				)
 			}
@@ -57,7 +71,7 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 	return nil
 }
 
-func (k Keeper) executeOrder(ctx context.Context, eventManager sdk.EventManagerI, order types.Order) (bool, error) {
+func (k Keeper) executeOrder(ctx context.Context, eventManager sdk.EventManagerI, order *types.Order) (bool, error) {
 	fee := k.GetTradeFee(ctx)
 	priceAmount := k.calculateAmountGivenPrice(ctx, order.DenomFrom, order.DenomTo, order.MaxPrice, fee).TruncateInt()
 	if priceAmount.LTE(math.ZeroInt()) {
@@ -110,7 +124,7 @@ func (k Keeper) executeOrder(ctx context.Context, eventManager sdk.EventManagerI
 		return false, fmt.Errorf("order has negative amount left (%v, %v)", usedAmount.String(), order.AmountLeft.String())
 	}
 
-	k.SetOrder(ctx, order)
+	k.SetOrder(ctx, *order)
 
 	eventManager.EmitEvent(
 		sdk.NewEvent("order_executed",
