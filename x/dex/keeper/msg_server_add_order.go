@@ -59,6 +59,7 @@ func (k msgServer) AddOrder(goCtx context.Context, msg *types.MsgAddOrder) (*typ
 		DenomFrom:       msg.DenomFrom,
 		DenomTo:         msg.DenomTo,
 		AmountLeft:      amount,
+		AmountGiven:     amount,
 		AmountReceived:  math.ZeroInt(),
 		TradeAmount:     tradeAmount,
 		MaxPrice:        *maxPrice,
