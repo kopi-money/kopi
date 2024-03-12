@@ -123,6 +123,7 @@ func (k Keeper) adjustForSupplyCap(ctx context.Context, kCoin string, amountToAd
 
 	maximumAddableAmount := maximumSupply.Sub(supply.Add(amountToAdd))
 	amountToAdd = math.MinInt(maximumAddableAmount, amountToAdd)
+
 	return amountToAdd
 }
 
