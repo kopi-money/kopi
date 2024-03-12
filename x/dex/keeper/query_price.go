@@ -4,6 +4,7 @@ import (
 	"context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
+	"github.com/pkg/errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -27,11 +28,17 @@ func (k Keeper) PriceUsd(goCtx context.Context, req *types.QueryPriceUsdRequest)
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
+	response := types.QueryPriceUsdResponse{}
+
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	price, err := k.GetPriceInUSD(ctx, req.Denom)
 	if err != nil {
-		return nil, err
+		if !errors.Is(err, types.ErrNilRatio) {
+			return nil, err
+		}
+	} else {
+		response.Price = price.String()
 	}
 
-	return &types.QueryPriceUsdResponse{Price: price.String()}, nil
+	return &response, nil
 }

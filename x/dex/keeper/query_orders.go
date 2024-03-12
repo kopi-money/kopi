@@ -79,6 +79,7 @@ func (k Keeper) toOrderResponse(ctx context.Context, order types.Order) (*types.
 		DenomFrom:         order.DenomFrom,
 		DenomTo:           order.DenomTo,
 		TradeAmount:       order.TradeAmount.String(),
+		AmountGiven:       order.AmountGiven.String(),
 		AmountLeft:        order.AmountLeft.String(),
 		AmountLeftUsd:     amountLeftUSD.String(),
 		AmountReceived:    order.AmountReceived.String(),

@@ -20,7 +20,7 @@ func (k Keeper) Ratio(ctx context.Context, req *types.QueryGetRatioRequest) (*ty
 
 	return &types.QueryGetRatioResponse{Ratio: types.RatioResponse{
 		Denom: req.Denom,
-		Ratio: val.String(),
+		Ratio: val.Ratio.String(),
 	}}, nil
 }
 
