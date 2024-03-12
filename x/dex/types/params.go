@@ -22,7 +22,7 @@ var (
 	FeeReimbursement      = math.LegacyNewDecWithPrec(5, 1)      // 0.5
 	TradeFee              = math.LegacyNewDecWithPrec(1, 3)      // 0.001 -> 0.1%
 	ReserveShare          = math.LegacyNewDecWithPrec(5, 1)      // 0.5 -> 50%
-	VirtualLiquidityDecay = math.LegacyNewDecWithPrec(999999, 6) // 0.999999
+	VirtualLiquidityDecay = math.LegacyNewDecWithPrec(999997, 6) // 0.999997
 	MaxOrderLife          = utils.BlocksPerDay * 7
 )
 
