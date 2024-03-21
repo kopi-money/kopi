@@ -97,6 +97,10 @@ service Query {
     option (google.api.http).get = "/kopi/mm/redemptions/address/{address}/by_denom";
   }
 
+  rpc GetRedemptionStatsRequest (GetRedemptionStatsRequestQuery) returns (GetRedemptionStatsRequestResponse) {
+    option (google.api.http).get = "/kopi/mm/redemptions/stats/by_denom";
+  }
+
   rpc GetUserStats (GetUserStatsQuery) returns (GetUserStatsResponse) {
     option (google.api.http).get = "/kopi/mm/stats/{address}";
   }
@@ -108,6 +112,17 @@ service Query {
   rpc GetVaultValues (GetVaultValuesQuery) returns (GetVaultValuesResponse) {
     option (google.api.http).get = "/kopi/mm/vaults";
   }
+}
+
+message GetRedemptionStatsRequestQuery {
+  string denom = 1;
+}
+
+message GetRedemptionStatsRequestResponse {
+  string max_fee = 1;
+  string withdraw_sum = 2;
+  int64  num_requests = 3;
+
 }
 
 message GetRedemptionRequestQuery {

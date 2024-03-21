@@ -26,11 +26,7 @@ func (k Keeper) ExecuteTrade(ctx context.Context, eventManager sdk.EventManagerI
 	if options.MaxPrice != nil {
 		priceAmount := k.calculateAmountGivenPrice(ctx, options.TradeDenomStart, options.TradeDenomEnd, *options.MaxPrice, tradeFee).TruncateInt()
 		if priceAmount.LTE(math.ZeroInt()) {
-			if options.AllowIncomplete {
-				return math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), nil
-			} else {
-				return math.Int{}, math.Int{}, math.Int{}, math.Int{}, types.ErrPriceTooLow
-			}
+			return math.Int{}, math.Int{}, math.Int{}, math.Int{}, types.ErrPriceTooLow
 		}
 
 		if priceAmount.LT(options.GivenAmount) {

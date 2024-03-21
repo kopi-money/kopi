@@ -39,6 +39,19 @@ func (k Keeper) GetAllDenomRedemptions(ctx context.Context) (list []types.DenomR
 	return
 }
 
+func (k Keeper) GetRedemptionsByDenom(ctx context.Context, denom string) ([]*types.Redemption, bool) {
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixRedemptions))
+	b := store.Get(types.KeyDenom(denom))
+	if b == nil {
+		return nil, false
+	}
+
+	var denomRedemptions types.DenomRedemption
+	k.cdc.MustUnmarshal(b, &denomRedemptions)
+	return denomRedemptions.Redemptions, true
+}
+
 // SetRedemption set a specific withdrawals in the store
 func (k Keeper) SetRedemption(ctx context.Context, denom string, withdrawal types.Redemption) {
 	if withdrawal.Amount.LTE(math.ZeroInt()) {

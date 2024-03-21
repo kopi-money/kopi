@@ -40,6 +40,7 @@ const (
 	Query_GetValueLoans_FullMethodName               = "/kopi.mm.Query/GetValueLoans"
 	Query_Params_FullMethodName                      = "/kopi.mm.Query/Params"
 	Query_GetRedemptionRequest_FullMethodName        = "/kopi.mm.Query/GetRedemptionRequest"
+	Query_GetRedemptionStatsRequest_FullMethodName   = "/kopi.mm.Query/GetRedemptionStatsRequest"
 	Query_GetUserStats_FullMethodName                = "/kopi.mm.Query/GetUserStats"
 	Query_GetTotalValueLocked_FullMethodName         = "/kopi.mm.Query/GetTotalValueLocked"
 	Query_GetVaultValues_FullMethodName              = "/kopi.mm.Query/GetVaultValues"
@@ -70,6 +71,7 @@ type QueryClient interface {
 	GetValueLoans(ctx context.Context, in *GetValueLoansQuery, opts ...grpc.CallOption) (*GetValueLoansResponse, error)
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	GetRedemptionRequest(ctx context.Context, in *GetRedemptionRequestQuery, opts ...grpc.CallOption) (*GetRedemptionRequestResponse, error)
+	GetRedemptionStatsRequest(ctx context.Context, in *GetRedemptionStatsRequestQuery, opts ...grpc.CallOption) (*GetRedemptionStatsRequestResponse, error)
 	GetUserStats(ctx context.Context, in *GetUserStatsQuery, opts ...grpc.CallOption) (*GetUserStatsResponse, error)
 	GetTotalValueLocked(ctx context.Context, in *GetTotalValueLockedQuery, opts ...grpc.CallOption) (*GetTotalValueLockedResponse, error)
 	GetVaultValues(ctx context.Context, in *GetVaultValuesQuery, opts ...grpc.CallOption) (*GetVaultValuesResponse, error)
@@ -272,6 +274,15 @@ func (c *queryClient) GetRedemptionRequest(ctx context.Context, in *GetRedemptio
 	return out, nil
 }
 
+func (c *queryClient) GetRedemptionStatsRequest(ctx context.Context, in *GetRedemptionStatsRequestQuery, opts ...grpc.CallOption) (*GetRedemptionStatsRequestResponse, error) {
+	out := new(GetRedemptionStatsRequestResponse)
+	err := c.cc.Invoke(ctx, Query_GetRedemptionStatsRequest_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) GetUserStats(ctx context.Context, in *GetUserStatsQuery, opts ...grpc.CallOption) (*GetUserStatsResponse, error) {
 	out := new(GetUserStatsResponse)
 	err := c.cc.Invoke(ctx, Query_GetUserStats_FullMethodName, in, out, opts...)
@@ -324,6 +335,7 @@ type QueryServer interface {
 	GetValueLoans(context.Context, *GetValueLoansQuery) (*GetValueLoansResponse, error)
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	GetRedemptionRequest(context.Context, *GetRedemptionRequestQuery) (*GetRedemptionRequestResponse, error)
+	GetRedemptionStatsRequest(context.Context, *GetRedemptionStatsRequestQuery) (*GetRedemptionStatsRequestResponse, error)
 	GetUserStats(context.Context, *GetUserStatsQuery) (*GetUserStatsResponse, error)
 	GetTotalValueLocked(context.Context, *GetTotalValueLockedQuery) (*GetTotalValueLockedResponse, error)
 	GetVaultValues(context.Context, *GetVaultValuesQuery) (*GetVaultValuesResponse, error)
@@ -396,6 +408,9 @@ func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*Q
 }
 func (UnimplementedQueryServer) GetRedemptionRequest(context.Context, *GetRedemptionRequestQuery) (*GetRedemptionRequestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRedemptionRequest not implemented")
+}
+func (UnimplementedQueryServer) GetRedemptionStatsRequest(context.Context, *GetRedemptionStatsRequestQuery) (*GetRedemptionStatsRequestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRedemptionStatsRequest not implemented")
 }
 func (UnimplementedQueryServer) GetUserStats(context.Context, *GetUserStatsQuery) (*GetUserStatsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserStats not implemented")
@@ -797,6 +812,24 @@ func _Query_GetRedemptionRequest_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_GetRedemptionStatsRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRedemptionStatsRequestQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GetRedemptionStatsRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_GetRedemptionStatsRequest_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GetRedemptionStatsRequest(ctx, req.(*GetRedemptionStatsRequestQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Query_GetUserStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetUserStatsQuery)
 	if err := dec(in); err != nil {
@@ -941,6 +974,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetRedemptionRequest",
 			Handler:    _Query_GetRedemptionRequest_Handler,
+		},
+		{
+			MethodName: "GetRedemptionStatsRequest",
+			Handler:    _Query_GetRedemptionStatsRequest_Handler,
 		},
 		{
 			MethodName: "GetUserStats",
