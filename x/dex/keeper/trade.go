@@ -235,7 +235,7 @@ func (k Keeper) simulateTradeWithFee(ctx context.Context, denomFrom, denomTo str
 		return math.Int{}, math.LegacyDec{}, math.LegacyDec{}, errors.Wrap(err, "could not calculate single trade #1")
 	}
 
-	price := amountReceived.Quo(amountStart)
+	price := amountStart.Quo(amountReceived)
 	return amountReceived.TruncateInt(), feePaid, price, nil
 }
 
