@@ -31,8 +31,6 @@ func (k Keeper) SimulateTrade(goCtx context.Context, req *types.QuerySimulateTra
 		return nil, err
 	}
 
-	price = math.LegacyOneDec().Quo(price)
-
 	priceFromUSD, err := k.GetPriceInUSD(ctx, req.DenomFrom)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not get price in USD")
