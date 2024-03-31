@@ -20,7 +20,7 @@ func (k Keeper) HandleLiquidations(ctx context.Context, eventManager sdk.EventMa
 	}
 
 	for _, borrower := range k.getBorrowers(ctx) {
-		if err = k.handleLoanLiquidation(ctx, eventManager, collateralDenomValues, borrower); err != nil {
+		if err = k.handleBorrowerLiquidation(ctx, eventManager, collateralDenomValues, borrower); err != nil {
 			return errors.Wrap(err, fmt.Sprintf("could not handle liquidations for %v", borrower))
 		}
 	}
@@ -57,10 +57,10 @@ func (k Keeper) getCollateralDenomsByValue(ctx context.Context) ([]string, error
 	return denoms, nil
 }
 
-// handleLoanLiquidation compares with loan amount with the maximum allowed amount given the deposited collateral. A
+// handleBorrowerLiquidation compares with loan amount with the maximum allowed amount given the deposited collateral. A
 // loan is only liquidated when the excess borrowed amount is bigger than a predetermined amount such as to prevent
 // micro trades.
-func (k Keeper) handleLoanLiquidation(ctx context.Context, eventManager sdk.EventManagerI, collateralDenoms []string, borrower string) error {
+func (k Keeper) handleBorrowerLiquidation(ctx context.Context, eventManager sdk.EventManagerI, collateralDenoms []string, borrower string) error {
 	collateralBaseValue, err := k.calculateCollateralBaseValue(ctx, borrower)
 	if err != nil {
 		return err
@@ -94,9 +94,6 @@ func (k Keeper) handleLoanLiquidation(ctx context.Context, eventManager sdk.Even
 // excess borrow amount. Sold collateral is sent to the vault.
 func (k Keeper) liquidateLoan(ctx context.Context, eventManager sdk.EventManagerI, collateralDenoms []string, cAsset *denomtypes.CAsset, loan types.Loan, excessAmountBase *math.LegacyDec) error {
 	addr, _ := sdk.AccAddressFromBech32(loan.Address)
-	coinSource := k.AccountKeeper.GetModuleAccount(ctx, types.PoolCollateral)
-	vaultAddress := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault)
-
 	repayAmount := math.LegacyZeroDec()
 
 	excessAmount, err := k.DexKeeper.GetValueIn(ctx, utils.BaseCurrency, cAsset.BaseDenom, excessAmountBase.RoundInt())
@@ -106,31 +103,9 @@ func (k Keeper) liquidateLoan(ctx context.Context, eventManager sdk.EventManager
 
 	excessAmount = math.LegacyMinDec(excessAmount, loan.Amount)
 
-	var amountToGive, amountReceived math.Int
+	var amountReceived math.Int
 	for _, collateralDenom := range collateralDenoms {
-		collateral, found := k.GetCollateral(ctx, collateralDenom, loan.Address)
-		if !found {
-			continue
-		}
-
-		amountToGive, _, _, err = k.DexKeeper.TradeSimulation(ctx, cAsset.BaseDenom, collateralDenom, excessAmount.RoundInt())
-		if err != nil {
-			return errors.Wrap(err, "could not simulate trade")
-		}
-
-		tradeAmount := math.MinInt(collateral.Amount, amountToGive)
-
-		options := dextypes.TradeOptions{
-			CoinSource:      coinSource.GetAddress(),
-			CoinTarget:      vaultAddress.GetAddress(),
-			GivenAmount:     tradeAmount,
-			MaxPrice:        nil,
-			TradeDenomStart: collateralDenom,
-			TradeDenomEnd:   cAsset.BaseDenom,
-			AllowIncomplete: true,
-		}
-
-		_, amountReceived, _, _, err = k.DexKeeper.ExecuteTrade(ctx, eventManager, options)
+		amountReceived, err = k.processLiquidation(ctx, eventManager, cAsset, excessAmount, collateralDenom, addr.String())
 		if err != nil {
 			if !errors.IsOf(err, dextypes.ErrTradeAmountTooSmall) {
 				k.logger.Error(errors.Wrap(err, "could not execute trade").Error())
@@ -144,6 +119,14 @@ func (k Keeper) liquidateLoan(ctx context.Context, eventManager sdk.EventManager
 	}
 
 	loan.Amount = loan.Amount.Sub(repayAmount)
+	if loan.Amount.LT(math.LegacyZeroDec()) {
+		amount := loan.Amount.Neg().RoundInt()
+		coins := sdk.NewCoins(sdk.NewCoin(cAsset.BaseDenom, amount))
+		if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolVault, addr, coins); err != nil {
+			return errors.Wrap(err, "could not send excess funds back to user")
+		}
+	}
+
 	k.SetLoan(ctx, cAsset.BaseDenom, loan)
 
 	repayAmountBase, err := k.DexKeeper.GetValueIn(ctx, cAsset.BaseDenom, utils.BaseCurrency, repayAmount.RoundInt())
@@ -152,14 +135,6 @@ func (k Keeper) liquidateLoan(ctx context.Context, eventManager sdk.EventManager
 	}
 
 	*excessAmountBase = (*excessAmountBase).Sub(repayAmountBase)
-
-	if loan.Amount.LT(math.LegacyZeroDec()) {
-		amount := loan.Amount.Neg().RoundInt()
-		coins := sdk.NewCoins(sdk.NewCoin(cAsset.BaseDenom, amount))
-		if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolVault, addr, coins); err != nil {
-			return errors.Wrap(err, "could not send excess funds back to user")
-		}
-	}
 
 	eventManager.EmitEvent(
 		sdk.NewEvent("loan_liquidation",
@@ -170,4 +145,33 @@ func (k Keeper) liquidateLoan(ctx context.Context, eventManager sdk.EventManager
 	)
 
 	return nil
+}
+
+func (k Keeper) processLiquidation(ctx context.Context, eventManager sdk.EventManagerI, cAsset *denomtypes.CAsset, excessAmount math.LegacyDec, collateralDenom, address string) (math.Int, error) {
+	collateral, found := k.GetCollateral(ctx, collateralDenom, address)
+	if !found {
+		return math.ZeroInt(), nil
+	}
+
+	amountToGive, _, _, _ := k.DexKeeper.TradeSimulation(ctx, cAsset.BaseDenom, collateralDenom, excessAmount.RoundInt())
+	tradeAmount := math.MinInt(collateral.Amount, amountToGive)
+
+	coinSource := k.AccountKeeper.GetModuleAccount(ctx, types.PoolCollateral)
+	vaultAddress := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault)
+	options := dextypes.TradeOptions{
+		CoinSource:      coinSource.GetAddress(),
+		CoinTarget:      vaultAddress.GetAddress(),
+		GivenAmount:     tradeAmount,
+		MaxPrice:        nil,
+		TradeDenomStart: collateralDenom,
+		TradeDenomEnd:   cAsset.BaseDenom,
+		AllowIncomplete: true,
+	}
+
+	_, amountReceived, _, _, err := k.DexKeeper.ExecuteTrade(ctx, eventManager, options)
+	if err != nil {
+		return math.Int{}, errors.Wrap(err, "could not execute trade")
+	}
+
+	return amountReceived, nil
 }

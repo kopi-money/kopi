@@ -109,3 +109,41 @@ func TestLiquidate2(t *testing.T) {
 
 	require.True(t, loanSize2.Amount.LT(loanSize1.Amount))
 }
+
+func TestLiquidate3(t *testing.T) {
+	k, _, mmMsg, ctx := keepertest.SetupMMMsgServer(t)
+
+	_, err := mmMsg.AddDeposit(ctx, &types.MsgAddDeposit{
+		Creator: keepertest.Alice,
+		Denom:   "ukusd",
+		Amount:  "100000",
+	})
+	require.NoError(t, err)
+
+	_, err = mmMsg.AddCollateral(ctx, &types.MsgAddCollateral{
+		Creator: keepertest.Bob,
+		Denom:   "ukopi",
+		Amount:  "10000",
+	})
+	require.NoError(t, err)
+
+	availableToBorrow, err := k.CalcAvailableToBorrow(ctx, keepertest.Bob, "ukusd")
+	require.NoError(t, err)
+
+	_, err = mmMsg.Borrow(ctx, &types.MsgBorrow{
+		Creator: keepertest.Bob,
+		Denom:   "ukusd",
+		Amount:  availableToBorrow.String(),
+	})
+	require.NoError(t, err)
+
+	vaultAcc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault)
+	vaultSize1 := k.BankKeeper.SpendableCoins(ctx, vaultAcc.GetAddress()).AmountOf("ukusd")
+
+	k.ApplyInterest(ctx)
+	require.NoError(t, k.HandleLiquidations(ctx, ctx.EventManager()))
+
+	vaultSize2 := k.BankKeeper.SpendableCoins(ctx, vaultAcc.GetAddress()).AmountOf("ukusd")
+
+	require.True(t, vaultSize2.GT(vaultSize1))
+}
