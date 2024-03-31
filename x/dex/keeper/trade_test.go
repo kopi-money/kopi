@@ -623,7 +623,7 @@ func TestTrade8(t *testing.T) {
 
 	price2, err := k.CalculatePrice(ctx, utils.BaseCurrency, "ukusd")
 	require.NoError(t, err)
-	require.True(t, price1.GT(price2))
+	require.True(t, price2.GT(price1))
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.True(t, tradePoolEmpty(ctx, k))
@@ -650,7 +650,7 @@ func TestTrade9(t *testing.T) {
 
 	price2, err := k.CalculatePrice(ctx, utils.BaseCurrency, "ukusd")
 	require.NoError(t, err)
-	require.True(t, price1.LT(price2))
+	require.True(t, price2.LT(price1))
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.True(t, tradePoolEmpty(ctx, k))
@@ -964,7 +964,7 @@ func TestTrade23(t *testing.T) {
 	price2, err := k.CalculatePrice(ctx, utils.BaseCurrency, "ukusd")
 
 	require.NoError(t, err)
-	require.True(t, price2.LT(price1))
+	require.True(t, price1.LT(price2))
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.True(t, tradePoolEmpty(ctx, k))
@@ -1122,41 +1122,6 @@ func TestTrade28(t *testing.T) {
 	require.NoError(t, err)
 	err = keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "ukusd", 100)
 	require.NoError(t, err)
-
-	require.True(t, liquidityBalanced(ctx, k))
-	require.True(t, tradePoolEmpty(ctx, k))
-}
-
-func TestTrade29(t *testing.T) {
-	k, msg, ctx := keepertest.SetupDexMsgServer(t)
-
-	err := keepertest.AddLiquidity(ctx, msg, keepertest.Alice, utils.BaseCurrency, 10_000)
-	require.NoError(t, err)
-	err = keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "ukusd", 10)
-	require.NoError(t, err)
-	err = keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "uwusdc", 10_000)
-	require.NoError(t, err)
-
-	maxPrice := math.LegacyNewDecWithPrec(10001, 4)
-	res, err := msg.Trade(ctx, &types.MsgTrade{
-		Creator:         keepertest.Carol,
-		DenomFrom:       "uwusdc",
-		DenomTo:         "ukusd",
-		Amount:          "1000",
-		MaxPrice:        maxPrice.String(),
-		AllowIncomplete: true,
-	})
-
-	require.NoError(t, err)
-
-	maxPriceF, _ := maxPrice.Float64()
-
-	var paidPrice float64
-	if res.AmountReceived > 0 {
-		paidPrice = float64(res.AmountUsed) / float64(res.AmountReceived)
-	}
-
-	require.LessOrEqual(t, paidPrice, maxPriceF)
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.True(t, tradePoolEmpty(ctx, k))

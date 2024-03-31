@@ -37,7 +37,7 @@ func TestMint1(t *testing.T) {
 
 	price1, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
 	require.NoError(t, err)
-	require.True(t, price1.GT(math.LegacyOneDec()))
+	require.True(t, price1.LT(math.LegacyOneDec()))
 
 	maxMintAmount := k.DenomKeeper.MaxMintAmount(ctx, "ukusd")
 	require.NoError(t, k.CheckMint(ctx, ctx.EventManager(), "ukusd", maxMintAmount))
@@ -45,7 +45,7 @@ func TestMint1(t *testing.T) {
 	price2, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
 
 	require.NoError(t, err)
-	require.True(t, price2.LT(price1))
+	require.True(t, price2.GT(price1))
 
 	require.True(t, liquidityBalanced(ctx, dexK))
 }
@@ -84,7 +84,7 @@ func mintScenario(t *testing.T, buyAmount int64) int64 {
 
 	price1, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
 	require.NoError(t, err)
-	require.True(t, price1.GT(math.LegacyOneDec()))
+	require.True(t, price1.LT(math.LegacyOneDec()))
 
 	maxMintAmount := k.DenomKeeper.MaxMintAmount(ctx, "ukusd")
 	require.NoError(t, k.CheckMint(ctx, ctx.EventManager(), "ukusd", maxMintAmount))
@@ -92,7 +92,7 @@ func mintScenario(t *testing.T, buyAmount int64) int64 {
 	price2, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
 
 	require.NoError(t, err)
-	require.True(t, price2.LT(price1))
+	require.True(t, price2.GT(price1))
 
 	require.True(t, liquidityBalanced(ctx, dexK))
 

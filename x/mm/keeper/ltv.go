@@ -52,7 +52,7 @@ func (k Keeper) calculateCollateralValueForDenom(ctx context.Context, collateral
 		return math.LegacyDec{}, err
 	}
 
-	return collateral.Amount.ToLegacyDec().Mul(price).Mul(collateralDenom.Ltv), nil
+	return collateral.Amount.ToLegacyDec().Quo(price).Mul(collateralDenom.Ltv), nil
 }
 
 func (k Keeper) calculateLoanBaseValue(ctx context.Context, address string) (math.LegacyDec, error) {
@@ -69,7 +69,7 @@ func (k Keeper) calculateLoanBaseValue(ctx context.Context, address string) (mat
 			return math.LegacyDec{}, err
 		}
 
-		loanSum = loanSum.Add(loan.Amount.Mul(price))
+		loanSum = loanSum.Add(loan.Amount.Quo(price))
 	}
 
 	return loanSum, nil

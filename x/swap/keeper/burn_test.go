@@ -43,7 +43,7 @@ func TestBurn1(t *testing.T) {
 
 	price2, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
 	require.NoError(t, err)
-	require.True(t, price2.GT(price1))
+	require.True(t, price2.LT(price1))
 
 	dexKeeper := k.DexKeeper.(dexkeeper.Keeper)
 	require.NoError(t, dexKeeper.BeginBlockCheckReserve(ctx, ctx.EventManager(), ctx.BlockHeight()))
@@ -81,7 +81,7 @@ func TestBurn2(t *testing.T) {
 
 	price2, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
 	require.NoError(t, err)
-	require.True(t, price2.LT(price1))
+	require.True(t, price2.GT(price1))
 
 	priceBase, err := k.DexKeeper.CalculatePrice(ctx, utils.BaseCurrency, "uwusdc")
 	require.NoError(t, err)
@@ -93,7 +93,7 @@ func TestBurn2(t *testing.T) {
 		var price3 math.LegacyDec
 		price3, err = k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
 		require.NoError(t, err)
-		require.True(t, price3.GT(price2))
+		require.True(t, price3.LT(price2))
 	}
 
 	require.True(t, liquidityBalanced(ctx, dexK))
@@ -161,7 +161,7 @@ func burnScenario(t *testing.T, sellAmount int64) int64 {
 
 	price1, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
 	require.NoError(t, err)
-	require.True(t, price1.LT(math.LegacyOneDec()))
+	require.True(t, price1.GT(math.LegacyOneDec()))
 
 	maxBurnAmount := k.DenomKeeper.MaxBurnAmount(ctx, "ukusd")
 	require.NoError(t, k.CheckBurn(ctx, ctx.EventManager(), "ukusd", maxBurnAmount))

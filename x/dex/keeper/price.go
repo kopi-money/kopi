@@ -41,7 +41,7 @@ func (k Keeper) GetPriceInUSD(ctx context.Context, denom string) (math.LegacyDec
 			return price, errors.Wrap(err, "could not calculate price")
 		}
 
-		if price.Equal(math.LegacyZeroDec()) || p.LT(price) {
+		if price.Equal(math.LegacyZeroDec()) || p.GT(price) {
 			price = p
 		}
 	}
@@ -63,7 +63,7 @@ func (k Keeper) GetValueInUSD(ctx context.Context, denom string, amount math.Int
 		return math.LegacyDec{}, err
 	}
 
-	return price.Mul(amount.ToLegacyDec()), nil
+	return amount.ToLegacyDec().Quo(price), nil
 }
 
 func (k Keeper) GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.Int) (math.LegacyDec, error) {
@@ -76,5 +76,5 @@ func (k Keeper) GetValueIn(ctx context.Context, denomFrom, denomTo string, amoun
 		return math.LegacyDec{}, err
 	}
 
-	return price.Mul(amount.ToLegacyDec()), nil
+	return amount.ToLegacyDec().Quo(price), nil
 }

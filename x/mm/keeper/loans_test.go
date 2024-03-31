@@ -269,9 +269,9 @@ func TestLoans9(t *testing.T) {
 
 	require.NoError(t, err)
 
-	withdrawable, err := k.CalcAvailableToBorrow(ctx, keepertest.Alice, "ukusd")
+	borrowable, err := k.CalcAvailableToBorrow(ctx, keepertest.Alice, "ukusd")
 	require.NoError(t, err)
-	require.Equal(t, int64(500), withdrawable.Int64())
+	require.Equal(t, int64(500), borrowable.Int64())
 }
 
 func TestLoans10(t *testing.T) {
