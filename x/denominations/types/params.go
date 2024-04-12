@@ -90,6 +90,11 @@ func createDefaultDexDenoms() []*DexDenom {
 			MinLiquidity: math.NewInt(10_000_000),
 		},
 		{
+			Name:         "uwusdt",
+			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 1)),
+			MinLiquidity: math.NewInt(10_000_000),
+		},
+		{
 			Name:         "ukusd",
 			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 1)),
 			MinLiquidity: math.NewInt(10_000_000),
@@ -126,7 +131,7 @@ func createDefaultKCoins() []*KCoin {
 	return []*KCoin{
 		{
 			Denom:         "ukusd",
-			References:    []string{"uwusdc"},
+			References:    []string{"uwusdc", "uwusdt"},
 			MaxSupply:     math.NewInt(1_000_000_000_000),
 			MaxMintAmount: math.NewInt(1_000_000),
 			MaxBurnAmount: math.NewInt(1_000_000),

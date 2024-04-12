@@ -127,6 +127,9 @@ func TestLiquidate3(t *testing.T) {
 	})
 	require.NoError(t, err)
 
+	collateralUser1, found1 := k.GetCollateral(ctx, "ukopi", keepertest.Bob)
+	require.True(t, found1)
+
 	availableToBorrow, err := k.CalcAvailableToBorrow(ctx, keepertest.Bob, "ukusd")
 	require.NoError(t, err)
 
@@ -146,4 +149,9 @@ func TestLiquidate3(t *testing.T) {
 	vaultSize2 := k.BankKeeper.SpendableCoins(ctx, vaultAcc.GetAddress()).AmountOf("ukusd")
 
 	require.True(t, vaultSize2.GT(vaultSize1))
+
+	collateralUser2, found2 := k.GetCollateral(ctx, "ukopi", keepertest.Bob)
+	require.True(t, found2)
+
+	require.True(t, collateralUser2.Amount.LT(collateralUser1.Amount))
 }

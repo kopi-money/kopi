@@ -158,7 +158,7 @@ func (k Keeper) GetDepositUserStats(goCtx context.Context, req *types.GetDeposit
 		depositStats.BaseDenom = cAsset.BaseDenom
 		depositStats.CAssetSupply = cAssetSupply.String()
 		depositStats.CAssetValue = cAssetValue.String()
-		depositStats.AmountBase = amountBase.String()
+		depositStats.BaseEquivalent = k.CalculateRedemptionAmount(ctx, cAsset, amountCAsset).String()
 		depositStats.AmountCAsset = amountCAsset.String()
 		depositStats.ValueCAssetUsd = cAssetUSD.String()
 		depositStats.PriceBaseUsd = basePrice.String()
@@ -232,7 +232,7 @@ func (k Keeper) GetDepositUserDenomStats(ctx context.Context, req *types.GetDepo
 	depositStats := types.DepositUserStats{}
 	depositStats.CAssetDenom = cAsset.Name
 	depositStats.BaseDenom = cAsset.BaseDenom
-	depositStats.AmountBase = basePrice.Mul(amountCAsset).String()
+	depositStats.BaseEquivalent = k.CalculateRedemptionAmount(ctx, cAsset, amountCAsset).String()
 	depositStats.AmountCAsset = amountCAsset.String()
 	depositStats.ValueCAssetUsd = cAssetUSD.String()
 	depositStats.PriceBaseUsd = basePrice.String()

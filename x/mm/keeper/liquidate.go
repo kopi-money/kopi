@@ -168,10 +168,13 @@ func (k Keeper) processLiquidation(ctx context.Context, eventManager sdk.EventMa
 		AllowIncomplete: true,
 	}
 
-	_, amountReceived, _, _, err := k.DexKeeper.ExecuteTrade(ctx, eventManager, options)
+	usedAmount, amountReceived, _, _, err := k.DexKeeper.ExecuteTrade(ctx, eventManager, options)
 	if err != nil {
 		return math.Int{}, errors.Wrap(err, "could not execute trade")
 	}
+
+	collateral.Amount = collateral.Amount.Sub(usedAmount)
+	k.SetCollateral(ctx, collateralDenom, collateral)
 
 	return amountReceived, nil
 }

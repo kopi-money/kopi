@@ -88,7 +88,7 @@ func (k msgServer) RemoveCollateral(goCtx context.Context, msg *types.MsgRemoveC
 
 	coins := sdk.NewCoins(sdk.NewCoin(msg.Denom, amount))
 	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolCollateral, address, coins); err != nil {
-		return nil, errors.Wrap(err, "could not send coins to module")
+		return nil, errors.Wrap(err, "could not send coins to user wallet")
 	}
 
 	ctx.EventManager().EmitEvent(

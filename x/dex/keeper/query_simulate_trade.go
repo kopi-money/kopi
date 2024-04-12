@@ -28,7 +28,7 @@ func (k Keeper) SimulateTrade(goCtx context.Context, req *types.QuerySimulateTra
 
 	amountReceived, fee, price, err := k.TradeSimulation(ctx, req.DenomFrom, req.DenomTo, amount)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "could not simulate trade")
 	}
 
 	priceFromUSD, err := k.GetPriceInUSD(ctx, req.DenomFrom)

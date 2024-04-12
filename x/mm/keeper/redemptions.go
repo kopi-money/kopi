@@ -22,36 +22,6 @@ func (k Keeper) SetRedemptions(ctx context.Context, redemptions types.DenomRedem
 	store.Set(types.KeyDenom(redemptions.Denom), b)
 }
 
-// GetAllDenomRedemptions returns all deposits
-func (k Keeper) GetAllDenomRedemptions(ctx context.Context) (list []types.DenomRedemption) {
-	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixRedemptions))
-
-	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.DenomRedemption
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
-	}
-
-	return
-}
-
-func (k Keeper) GetRedemptionsByDenom(ctx context.Context, denom string) ([]*types.Redemption, bool) {
-	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixRedemptions))
-	b := store.Get(types.KeyDenom(denom))
-	if b == nil {
-		return nil, false
-	}
-
-	var denomRedemptions types.DenomRedemption
-	k.cdc.MustUnmarshal(b, &denomRedemptions)
-	return denomRedemptions.Redemptions, true
-}
-
 // SetRedemption set a specific withdrawals in the store
 func (k Keeper) SetRedemption(ctx context.Context, denom string, withdrawal types.Redemption) {
 	if withdrawal.Amount.LTE(math.ZeroInt()) {
@@ -169,7 +139,7 @@ func (k Keeper) handleRedemptionsForCAsset(ctx context.Context, eventManager sdk
 }
 
 func (k Keeper) handleSingleRedemption(ctx context.Context, eventManager sdk.EventManagerI, cAsset *denomtypes.CAsset, entry types.Redemption, available math.LegacyDec) (math.LegacyDec, error) {
-	grossRedemptionAmountBase, redemptionAmountCAsset := k.CalculateRedemptionAmount(ctx, cAsset, entry.Amount.ToLegacyDec(), available)
+	grossRedemptionAmountBase, redemptionAmountCAsset := k.CalculateAvailableRedemptionAmount(ctx, cAsset, entry.Amount.ToLegacyDec(), available)
 
 	// Update the entry and process the payout
 	entry.Amount = entry.Amount.Sub(redemptionAmountCAsset.RoundInt())
@@ -211,7 +181,11 @@ func (k Keeper) handleSingleRedemption(ctx context.Context, eventManager sdk.Eve
 	return grossRedemptionAmountBase, nil
 }
 
-func (k Keeper) CalculateRedemptionAmount(ctx context.Context, cAsset *denomtypes.CAsset, requestedCAssetAmount, available math.LegacyDec) (math.LegacyDec, math.LegacyDec) {
+func (k Keeper) CalculateRedemptionAmount(ctx context.Context, cAsset *denomtypes.CAsset, requestedCAssetAmount math.LegacyDec) math.LegacyDec {
+	if requestedCAssetAmount.Equal(math.LegacyZeroDec()) {
+		return math.LegacyZeroDec()
+	}
+
 	// First it is calculated how much of the total share the withdrawal request's given tokens represent.
 	cAssetSupply := math.LegacyNewDecFromInt(k.BankKeeper.GetSupply(ctx, cAsset.Name).Amount)
 	cAssetValue := k.calculateCAssetValue(ctx, cAsset)
@@ -219,6 +193,12 @@ func (k Keeper) CalculateRedemptionAmount(ctx context.Context, cAsset *denomtype
 	// how much value of all cAssetValue does the redemption request represent
 	redemptionShare := requestedCAssetAmount.Quo(cAssetSupply)
 	redemptionValue := cAssetValue.Mul(redemptionShare)
+
+	return redemptionValue
+}
+
+func (k Keeper) CalculateAvailableRedemptionAmount(ctx context.Context, cAsset *denomtypes.CAsset, requestedCAssetAmount, available math.LegacyDec) (math.LegacyDec, math.LegacyDec) {
+	redemptionValue := k.CalculateRedemptionAmount(ctx, cAsset, requestedCAssetAmount)
 
 	// how much of what is requested can be paid out
 	redeemAmount := math.LegacyMinDec(redemptionValue, available)

@@ -32,15 +32,7 @@ func (k Keeper) GetRedemptionStatsRequest(ctx context.Context, req *types.GetRed
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	requests, _ := k.GetRedemptionsByDenom(ctx, req.Denom)
-
-	if len(requests) == 0 {
-		return &types.GetRedemptionStatsRequestResponse{
-			NumRequests: 0,
-			WithdrawSum: "0",
-			MaxFee:      "",
-		}, nil
-	}
+	requests := k.GetRedemptions(ctx, req.Denom)
 
 	requestSum := sdkmath.ZeroInt()
 	requestCount := 0
@@ -52,9 +44,33 @@ func (k Keeper) GetRedemptionStatsRequest(ctx context.Context, req *types.GetRed
 		maxFee = sdkmath.LegacyMaxDec(maxFee, request.Fee)
 	}
 
+	maxFeeStr := ""
+	if maxFee.GT(sdkmath.LegacyZeroDec()) {
+		maxFeeStr = maxFee.String()
+	}
+
 	return &types.GetRedemptionStatsRequestResponse{
 		NumRequests: int64(requestCount),
 		WithdrawSum: requestSum.String(),
-		MaxFee:      maxFee.String(),
+		MaxFee:      maxFeeStr,
 	}, nil
+}
+
+func (k Keeper) GetRedemptionsRequest(ctx context.Context, req *types.GetRedemptionsQuery) (*types.GetRedemptionsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	requests := k.GetRedemptions(ctx, req.Denom)
+
+	response := types.GetRedemptionsResponse{}
+	for _, request := range requests {
+		response.Requests = append(response.Requests, &types.RedemptionRequest{
+			Address: request.Address,
+			Amount:  request.Amount.String(),
+			Fee:     request.Fee.String(),
+		})
+	}
+
+	return &response, nil
 }

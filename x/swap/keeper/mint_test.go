@@ -98,3 +98,35 @@ func mintScenario(t *testing.T, buyAmount int64) int64 {
 
 	return k.BankKeeper.GetSupply(ctx, "ukusd").Amount.Int64()
 }
+
+func TestMint3(t *testing.T) {
+	k, _, _, ctx := keepertest.SetupSwapMsgServer(t)
+
+	addLiquidity(ctx, k, t, utils.BaseCurrency, 100000)
+
+	addr, err := sdk.AccAddressFromBech32(keepertest.Alice)
+	require.NoError(t, err)
+
+	tradeOptions := dextypes.TradeOptions{
+		CoinSource:      addr,
+		CoinTarget:      addr,
+		GivenAmount:     math.NewInt(100_000_000_000),
+		TradeDenomStart: "uwusdc",
+		TradeDenomEnd:   utils.BaseCurrency,
+		AllowIncomplete: true,
+		MaxPrice:        nil,
+	}
+
+	_, _, _, _, err = k.DexKeeper.ExecuteTrade(ctx, ctx.EventManager(), tradeOptions)
+	require.NoError(t, err)
+
+	supply1 := k.BankKeeper.GetSupply(ctx, "ukusd").Amount
+
+	maxMintAmount := k.DenomKeeper.MaxMintAmount(ctx, "ukusd")
+	require.NoError(t, k.CheckMint(ctx, ctx.EventManager(), "ukusd", maxMintAmount))
+
+	supply2 := k.BankKeeper.GetSupply(ctx, "ukusd").Amount
+
+	// supply has to be unchanged because uwusdt is used as reference after uwusdc "crashed"
+	require.True(t, supply1.Equal(supply2))
+}

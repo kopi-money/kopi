@@ -97,6 +97,10 @@ service Query {
     option (google.api.http).get = "/kopi/mm/redemptions/address/{address}/by_denom";
   }
 
+  rpc GetRedemptionsRequest (GetRedemptionsQuery) returns (GetRedemptionsResponse) {
+    option (google.api.http).get = "/kopi/mm/redemptions/by_denom";
+  }
+
   rpc GetRedemptionStatsRequest (GetRedemptionStatsRequestQuery) returns (GetRedemptionStatsRequestResponse) {
     option (google.api.http).get = "/kopi/mm/redemptions/stats/by_denom";
   }
@@ -112,6 +116,20 @@ service Query {
   rpc GetVaultValues (GetVaultValuesQuery) returns (GetVaultValuesResponse) {
     option (google.api.http).get = "/kopi/mm/vaults";
   }
+}
+
+message GetRedemptionsQuery {
+  string denom = 1;
+}
+
+message RedemptionRequest {
+  string address = 1;
+  string amount = 2;
+  string fee = 3;
+}
+
+message GetRedemptionsResponse {
+  repeated RedemptionRequest requests = 1;
 }
 
 message GetRedemptionStatsRequestQuery {
@@ -355,8 +373,8 @@ message DepositUserStats {
   string c_asset_supply = 3;
   string c_asset_value = 4;
 
-  string amount_base = 5;
-  string amount_c_asset = 6;
+  string amount_c_asset = 5;
+  string base_equivalent = 6;
   string value_c_asset_usd = 7;
 
   string price_base_usd = 8;

@@ -285,3 +285,25 @@ func TestRedemptions6(t *testing.T) {
 	diff := balance1.Amount.Sub(balance2.Amount)
 	require.Equal(t, math.NewInt(500), diff)
 }
+
+func TestRedemptions7(t *testing.T) {
+	k, _, msg, ctx := keepertest.SetupMMMsgServer(t)
+
+	_, _ = msg.AddDeposit(ctx, &types.MsgAddDeposit{
+		Creator: keepertest.Alice,
+		Denom:   "ukusd",
+		Amount:  "1000",
+	})
+
+	_, err := msg.CreateRedemptionRequest(ctx, &types.MsgCreateRedemptionRequest{
+		Creator:      keepertest.Alice,
+		Denom:        "uckusd",
+		CAssetAmount: "1000",
+		Fee:          "0.5",
+	})
+
+	require.NoError(t, err)
+
+	redemptions := k.GetRedemptions(ctx, "uckusd")
+	require.Equal(t, 1, len(redemptions))
+}

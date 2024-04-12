@@ -17,6 +17,1468 @@ import (
 )
 
 var (
+	md_GetRedemptionsQuery       protoreflect.MessageDescriptor
+	fd_GetRedemptionsQuery_denom protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_kopi_mm_query_proto_init()
+	md_GetRedemptionsQuery = File_kopi_mm_query_proto.Messages().ByName("GetRedemptionsQuery")
+	fd_GetRedemptionsQuery_denom = md_GetRedemptionsQuery.Fields().ByName("denom")
+}
+
+var _ protoreflect.Message = (*fastReflection_GetRedemptionsQuery)(nil)
+
+type fastReflection_GetRedemptionsQuery GetRedemptionsQuery
+
+func (x *GetRedemptionsQuery) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_GetRedemptionsQuery)(x)
+}
+
+func (x *GetRedemptionsQuery) slowProtoReflect() protoreflect.Message {
+	mi := &file_kopi_mm_query_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_GetRedemptionsQuery_messageType fastReflection_GetRedemptionsQuery_messageType
+var _ protoreflect.MessageType = fastReflection_GetRedemptionsQuery_messageType{}
+
+type fastReflection_GetRedemptionsQuery_messageType struct{}
+
+func (x fastReflection_GetRedemptionsQuery_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_GetRedemptionsQuery)(nil)
+}
+func (x fastReflection_GetRedemptionsQuery_messageType) New() protoreflect.Message {
+	return new(fastReflection_GetRedemptionsQuery)
+}
+func (x fastReflection_GetRedemptionsQuery_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_GetRedemptionsQuery
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_GetRedemptionsQuery) Descriptor() protoreflect.MessageDescriptor {
+	return md_GetRedemptionsQuery
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_GetRedemptionsQuery) Type() protoreflect.MessageType {
+	return _fastReflection_GetRedemptionsQuery_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_GetRedemptionsQuery) New() protoreflect.Message {
+	return new(fastReflection_GetRedemptionsQuery)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_GetRedemptionsQuery) Interface() protoreflect.ProtoMessage {
+	return (*GetRedemptionsQuery)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_GetRedemptionsQuery) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Denom != "" {
+		value := protoreflect.ValueOfString(x.Denom)
+		if !f(fd_GetRedemptionsQuery_denom, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_GetRedemptionsQuery) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "kopi.mm.GetRedemptionsQuery.denom":
+		return x.Denom != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.GetRedemptionsQuery"))
+		}
+		panic(fmt.Errorf("message kopi.mm.GetRedemptionsQuery does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GetRedemptionsQuery) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "kopi.mm.GetRedemptionsQuery.denom":
+		x.Denom = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.GetRedemptionsQuery"))
+		}
+		panic(fmt.Errorf("message kopi.mm.GetRedemptionsQuery does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_GetRedemptionsQuery) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "kopi.mm.GetRedemptionsQuery.denom":
+		value := x.Denom
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.GetRedemptionsQuery"))
+		}
+		panic(fmt.Errorf("message kopi.mm.GetRedemptionsQuery does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GetRedemptionsQuery) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "kopi.mm.GetRedemptionsQuery.denom":
+		x.Denom = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.GetRedemptionsQuery"))
+		}
+		panic(fmt.Errorf("message kopi.mm.GetRedemptionsQuery does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GetRedemptionsQuery) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.mm.GetRedemptionsQuery.denom":
+		panic(fmt.Errorf("field denom of message kopi.mm.GetRedemptionsQuery is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.GetRedemptionsQuery"))
+		}
+		panic(fmt.Errorf("message kopi.mm.GetRedemptionsQuery does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_GetRedemptionsQuery) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.mm.GetRedemptionsQuery.denom":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.GetRedemptionsQuery"))
+		}
+		panic(fmt.Errorf("message kopi.mm.GetRedemptionsQuery does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_GetRedemptionsQuery) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in kopi.mm.GetRedemptionsQuery", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_GetRedemptionsQuery) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GetRedemptionsQuery) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_GetRedemptionsQuery) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_GetRedemptionsQuery) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*GetRedemptionsQuery)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Denom)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*GetRedemptionsQuery)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Denom) > 0 {
+			i -= len(x.Denom)
+			copy(dAtA[i:], x.Denom)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Denom)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*GetRedemptionsQuery)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GetRedemptionsQuery: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GetRedemptionsQuery: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Denom = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_RedemptionRequest         protoreflect.MessageDescriptor
+	fd_RedemptionRequest_address protoreflect.FieldDescriptor
+	fd_RedemptionRequest_amount  protoreflect.FieldDescriptor
+	fd_RedemptionRequest_fee     protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_kopi_mm_query_proto_init()
+	md_RedemptionRequest = File_kopi_mm_query_proto.Messages().ByName("RedemptionRequest")
+	fd_RedemptionRequest_address = md_RedemptionRequest.Fields().ByName("address")
+	fd_RedemptionRequest_amount = md_RedemptionRequest.Fields().ByName("amount")
+	fd_RedemptionRequest_fee = md_RedemptionRequest.Fields().ByName("fee")
+}
+
+var _ protoreflect.Message = (*fastReflection_RedemptionRequest)(nil)
+
+type fastReflection_RedemptionRequest RedemptionRequest
+
+func (x *RedemptionRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_RedemptionRequest)(x)
+}
+
+func (x *RedemptionRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_kopi_mm_query_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_RedemptionRequest_messageType fastReflection_RedemptionRequest_messageType
+var _ protoreflect.MessageType = fastReflection_RedemptionRequest_messageType{}
+
+type fastReflection_RedemptionRequest_messageType struct{}
+
+func (x fastReflection_RedemptionRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_RedemptionRequest)(nil)
+}
+func (x fastReflection_RedemptionRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_RedemptionRequest)
+}
+func (x fastReflection_RedemptionRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_RedemptionRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_RedemptionRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_RedemptionRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_RedemptionRequest) Type() protoreflect.MessageType {
+	return _fastReflection_RedemptionRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_RedemptionRequest) New() protoreflect.Message {
+	return new(fastReflection_RedemptionRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_RedemptionRequest) Interface() protoreflect.ProtoMessage {
+	return (*RedemptionRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_RedemptionRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Address != "" {
+		value := protoreflect.ValueOfString(x.Address)
+		if !f(fd_RedemptionRequest_address, value) {
+			return
+		}
+	}
+	if x.Amount != "" {
+		value := protoreflect.ValueOfString(x.Amount)
+		if !f(fd_RedemptionRequest_amount, value) {
+			return
+		}
+	}
+	if x.Fee != "" {
+		value := protoreflect.ValueOfString(x.Fee)
+		if !f(fd_RedemptionRequest_fee, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_RedemptionRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "kopi.mm.RedemptionRequest.address":
+		return x.Address != ""
+	case "kopi.mm.RedemptionRequest.amount":
+		return x.Amount != ""
+	case "kopi.mm.RedemptionRequest.fee":
+		return x.Fee != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.RedemptionRequest"))
+		}
+		panic(fmt.Errorf("message kopi.mm.RedemptionRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_RedemptionRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "kopi.mm.RedemptionRequest.address":
+		x.Address = ""
+	case "kopi.mm.RedemptionRequest.amount":
+		x.Amount = ""
+	case "kopi.mm.RedemptionRequest.fee":
+		x.Fee = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.RedemptionRequest"))
+		}
+		panic(fmt.Errorf("message kopi.mm.RedemptionRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_RedemptionRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "kopi.mm.RedemptionRequest.address":
+		value := x.Address
+		return protoreflect.ValueOfString(value)
+	case "kopi.mm.RedemptionRequest.amount":
+		value := x.Amount
+		return protoreflect.ValueOfString(value)
+	case "kopi.mm.RedemptionRequest.fee":
+		value := x.Fee
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.RedemptionRequest"))
+		}
+		panic(fmt.Errorf("message kopi.mm.RedemptionRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_RedemptionRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "kopi.mm.RedemptionRequest.address":
+		x.Address = value.Interface().(string)
+	case "kopi.mm.RedemptionRequest.amount":
+		x.Amount = value.Interface().(string)
+	case "kopi.mm.RedemptionRequest.fee":
+		x.Fee = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.RedemptionRequest"))
+		}
+		panic(fmt.Errorf("message kopi.mm.RedemptionRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_RedemptionRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.mm.RedemptionRequest.address":
+		panic(fmt.Errorf("field address of message kopi.mm.RedemptionRequest is not mutable"))
+	case "kopi.mm.RedemptionRequest.amount":
+		panic(fmt.Errorf("field amount of message kopi.mm.RedemptionRequest is not mutable"))
+	case "kopi.mm.RedemptionRequest.fee":
+		panic(fmt.Errorf("field fee of message kopi.mm.RedemptionRequest is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.RedemptionRequest"))
+		}
+		panic(fmt.Errorf("message kopi.mm.RedemptionRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_RedemptionRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.mm.RedemptionRequest.address":
+		return protoreflect.ValueOfString("")
+	case "kopi.mm.RedemptionRequest.amount":
+		return protoreflect.ValueOfString("")
+	case "kopi.mm.RedemptionRequest.fee":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.RedemptionRequest"))
+		}
+		panic(fmt.Errorf("message kopi.mm.RedemptionRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_RedemptionRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in kopi.mm.RedemptionRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_RedemptionRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_RedemptionRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_RedemptionRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_RedemptionRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*RedemptionRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Address)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Amount)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Fee)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*RedemptionRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Fee) > 0 {
+			i -= len(x.Fee)
+			copy(dAtA[i:], x.Fee)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Fee)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.Amount) > 0 {
+			i -= len(x.Amount)
+			copy(dAtA[i:], x.Amount)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Amount)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.Address) > 0 {
+			i -= len(x.Address)
+			copy(dAtA[i:], x.Address)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Address)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*RedemptionRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: RedemptionRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: RedemptionRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Address = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Amount = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Fee", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Fee = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var _ protoreflect.List = (*_GetRedemptionsResponse_1_list)(nil)
+
+type _GetRedemptionsResponse_1_list struct {
+	list *[]*RedemptionRequest
+}
+
+func (x *_GetRedemptionsResponse_1_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GetRedemptionsResponse_1_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GetRedemptionsResponse_1_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*RedemptionRequest)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GetRedemptionsResponse_1_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*RedemptionRequest)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GetRedemptionsResponse_1_list) AppendMutable() protoreflect.Value {
+	v := new(RedemptionRequest)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GetRedemptionsResponse_1_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GetRedemptionsResponse_1_list) NewElement() protoreflect.Value {
+	v := new(RedemptionRequest)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GetRedemptionsResponse_1_list) IsValid() bool {
+	return x.list != nil
+}
+
+var (
+	md_GetRedemptionsResponse          protoreflect.MessageDescriptor
+	fd_GetRedemptionsResponse_requests protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_kopi_mm_query_proto_init()
+	md_GetRedemptionsResponse = File_kopi_mm_query_proto.Messages().ByName("GetRedemptionsResponse")
+	fd_GetRedemptionsResponse_requests = md_GetRedemptionsResponse.Fields().ByName("requests")
+}
+
+var _ protoreflect.Message = (*fastReflection_GetRedemptionsResponse)(nil)
+
+type fastReflection_GetRedemptionsResponse GetRedemptionsResponse
+
+func (x *GetRedemptionsResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_GetRedemptionsResponse)(x)
+}
+
+func (x *GetRedemptionsResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_kopi_mm_query_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_GetRedemptionsResponse_messageType fastReflection_GetRedemptionsResponse_messageType
+var _ protoreflect.MessageType = fastReflection_GetRedemptionsResponse_messageType{}
+
+type fastReflection_GetRedemptionsResponse_messageType struct{}
+
+func (x fastReflection_GetRedemptionsResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_GetRedemptionsResponse)(nil)
+}
+func (x fastReflection_GetRedemptionsResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_GetRedemptionsResponse)
+}
+func (x fastReflection_GetRedemptionsResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_GetRedemptionsResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_GetRedemptionsResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_GetRedemptionsResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_GetRedemptionsResponse) Type() protoreflect.MessageType {
+	return _fastReflection_GetRedemptionsResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_GetRedemptionsResponse) New() protoreflect.Message {
+	return new(fastReflection_GetRedemptionsResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_GetRedemptionsResponse) Interface() protoreflect.ProtoMessage {
+	return (*GetRedemptionsResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_GetRedemptionsResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if len(x.Requests) != 0 {
+		value := protoreflect.ValueOfList(&_GetRedemptionsResponse_1_list{list: &x.Requests})
+		if !f(fd_GetRedemptionsResponse_requests, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_GetRedemptionsResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "kopi.mm.GetRedemptionsResponse.requests":
+		return len(x.Requests) != 0
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.GetRedemptionsResponse"))
+		}
+		panic(fmt.Errorf("message kopi.mm.GetRedemptionsResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GetRedemptionsResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "kopi.mm.GetRedemptionsResponse.requests":
+		x.Requests = nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.GetRedemptionsResponse"))
+		}
+		panic(fmt.Errorf("message kopi.mm.GetRedemptionsResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_GetRedemptionsResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "kopi.mm.GetRedemptionsResponse.requests":
+		if len(x.Requests) == 0 {
+			return protoreflect.ValueOfList(&_GetRedemptionsResponse_1_list{})
+		}
+		listValue := &_GetRedemptionsResponse_1_list{list: &x.Requests}
+		return protoreflect.ValueOfList(listValue)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.GetRedemptionsResponse"))
+		}
+		panic(fmt.Errorf("message kopi.mm.GetRedemptionsResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GetRedemptionsResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "kopi.mm.GetRedemptionsResponse.requests":
+		lv := value.List()
+		clv := lv.(*_GetRedemptionsResponse_1_list)
+		x.Requests = *clv.list
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.GetRedemptionsResponse"))
+		}
+		panic(fmt.Errorf("message kopi.mm.GetRedemptionsResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GetRedemptionsResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.mm.GetRedemptionsResponse.requests":
+		if x.Requests == nil {
+			x.Requests = []*RedemptionRequest{}
+		}
+		value := &_GetRedemptionsResponse_1_list{list: &x.Requests}
+		return protoreflect.ValueOfList(value)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.GetRedemptionsResponse"))
+		}
+		panic(fmt.Errorf("message kopi.mm.GetRedemptionsResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_GetRedemptionsResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.mm.GetRedemptionsResponse.requests":
+		list := []*RedemptionRequest{}
+		return protoreflect.ValueOfList(&_GetRedemptionsResponse_1_list{list: &list})
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.GetRedemptionsResponse"))
+		}
+		panic(fmt.Errorf("message kopi.mm.GetRedemptionsResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_GetRedemptionsResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in kopi.mm.GetRedemptionsResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_GetRedemptionsResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GetRedemptionsResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_GetRedemptionsResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_GetRedemptionsResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*GetRedemptionsResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if len(x.Requests) > 0 {
+			for _, e := range x.Requests {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*GetRedemptionsResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Requests) > 0 {
+			for iNdEx := len(x.Requests) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.Requests[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0xa
+			}
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*GetRedemptionsResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GetRedemptionsResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GetRedemptionsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Requests", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Requests = append(x.Requests, &RedemptionRequest{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Requests[len(x.Requests)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
 	md_GetRedemptionStatsRequestQuery       protoreflect.MessageDescriptor
 	fd_GetRedemptionStatsRequestQuery_denom protoreflect.FieldDescriptor
 )
@@ -36,7 +1498,7 @@ func (x *GetRedemptionStatsRequestQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetRedemptionStatsRequestQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[0]
+	mi := &file_kopi_mm_query_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -460,7 +1922,7 @@ func (x *GetRedemptionStatsRequestResponse) ProtoReflect() protoreflect.Message 
 }
 
 func (x *GetRedemptionStatsRequestResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[1]
+	mi := &file_kopi_mm_query_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -990,7 +2452,7 @@ func (x *GetRedemptionRequestQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetRedemptionRequestQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[2]
+	mi := &file_kopi_mm_query_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1474,7 +2936,7 @@ func (x *GetRedemptionRequestResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetRedemptionRequestResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[3]
+	mi := &file_kopi_mm_query_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1958,7 +3420,7 @@ func (x *GetDepositUserDenomStatsQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetDepositUserDenomStatsQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[4]
+	mi := &file_kopi_mm_query_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2440,7 +3902,7 @@ func (x *GetCollateralDenomStatsQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetCollateralDenomStatsQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[5]
+	mi := &file_kopi_mm_query_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2862,7 +4324,7 @@ func (x *UserCollateral) ProtoReflect() protoreflect.Message {
 }
 
 func (x *UserCollateral) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[6]
+	mi := &file_kopi_mm_query_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3399,7 +4861,7 @@ func (x *GetCollateralDenomStatsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetCollateralDenomStatsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[7]
+	mi := &file_kopi_mm_query_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3964,7 +5426,7 @@ func (x *GetLoansQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetLoansQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[8]
+	mi := &file_kopi_mm_query_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4328,7 +5790,7 @@ func (x *UserLoan) ProtoReflect() protoreflect.Message {
 }
 
 func (x *UserLoan) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[9]
+	mi := &file_kopi_mm_query_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4985,7 +6447,7 @@ func (x *GetLoansResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetLoansResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[10]
+	mi := &file_kopi_mm_query_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5426,7 +6888,7 @@ func (x *GetLoanStatsQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetLoanStatsQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[11]
+	mi := &file_kopi_mm_query_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5796,7 +7258,7 @@ func (x *DenomLoanStat) ProtoReflect() protoreflect.Message {
 }
 
 func (x *DenomLoanStat) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[12]
+	mi := &file_kopi_mm_query_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -6643,7 +8105,7 @@ func (x *GetLoanStatsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetLoanStatsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[13]
+	mi := &file_kopi_mm_query_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7212,7 +8674,7 @@ func (x *GetAvailableToBorrowRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetAvailableToBorrowRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[14]
+	mi := &file_kopi_mm_query_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -7696,7 +9158,7 @@ func (x *GetAvailableToBorrowResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetAvailableToBorrowResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[15]
+	mi := &file_kopi_mm_query_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8180,7 +9642,7 @@ func (x *GetWithdrawableCollateralQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetWithdrawableCollateralQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[16]
+	mi := &file_kopi_mm_query_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -8664,7 +10126,7 @@ func (x *GetWithdrawableCollateralResponse) ProtoReflect() protoreflect.Message 
 }
 
 func (x *GetWithdrawableCollateralResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[17]
+	mi := &file_kopi_mm_query_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9152,7 +10614,7 @@ func (x *Vault) ProtoReflect() protoreflect.Message {
 }
 
 func (x *Vault) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[18]
+	mi := &file_kopi_mm_query_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -9809,7 +11271,7 @@ func (x *GetVaultValuesResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetVaultValuesResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[19]
+	mi := &file_kopi_mm_query_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -10250,7 +11712,7 @@ func (x *GetVaultValuesQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetVaultValuesQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[20]
+	mi := &file_kopi_mm_query_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -10610,7 +12072,7 @@ func (x *GetUserDenomLoanQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetUserDenomLoanQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[21]
+	mi := &file_kopi_mm_query_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -11094,7 +12556,7 @@ func (x *GetUserDenomLoanResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetUserDenomLoanResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[22]
+	mi := &file_kopi_mm_query_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -11576,7 +13038,7 @@ func (x *GetBorrowInterestRateQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetBorrowInterestRateQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[23]
+	mi := &file_kopi_mm_query_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -11996,7 +13458,7 @@ func (x *GetBorrowInterestRateResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetBorrowInterestRateResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[24]
+	mi := &file_kopi_mm_query_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12418,7 +13880,7 @@ func (x *GetCollateralDenomUserStatsQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetCollateralDenomUserStatsQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[25]
+	mi := &file_kopi_mm_query_proto_msgTypes[28]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -12900,7 +14362,7 @@ func (x *GetCollateralDenomUserStatsResponse) ProtoReflect() protoreflect.Messag
 }
 
 func (x *GetCollateralDenomUserStatsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[26]
+	mi := &file_kopi_mm_query_proto_msgTypes[29]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13320,7 +14782,7 @@ func (x *GetCreditLineUsageQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetCreditLineUsageQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[27]
+	mi := &file_kopi_mm_query_proto_msgTypes[30]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -13740,7 +15202,7 @@ func (x *GetCreditLineUsageResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetCreditLineUsageResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[28]
+	mi := &file_kopi_mm_query_proto_msgTypes[31]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -14158,7 +15620,7 @@ func (x *QueryParamsRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryParamsRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[29]
+	mi := &file_kopi_mm_query_proto_msgTypes[32]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -14514,7 +15976,7 @@ func (x *GetTotalValueLockedQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetTotalValueLockedQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[30]
+	mi := &file_kopi_mm_query_proto_msgTypes[33]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -14870,7 +16332,7 @@ func (x *GetNumLoansQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetNumLoansQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[31]
+	mi := &file_kopi_mm_query_proto_msgTypes[34]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -15228,7 +16690,7 @@ func (x *GetNumAddressLoansQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetNumAddressLoansQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[32]
+	mi := &file_kopi_mm_query_proto_msgTypes[35]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -15648,7 +17110,7 @@ func (x *GetNumAddressLoansResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetNumAddressLoansResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[33]
+	mi := &file_kopi_mm_query_proto_msgTypes[36]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -16050,7 +17512,7 @@ func (x *GetValueLoansQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetValueLoansQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[34]
+	mi := &file_kopi_mm_query_proto_msgTypes[37]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -16408,7 +17870,7 @@ func (x *GetValueLoansResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetValueLoansResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[35]
+	mi := &file_kopi_mm_query_proto_msgTypes[38]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -16828,7 +18290,7 @@ func (x *GetUserLoansQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetUserLoansQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[36]
+	mi := &file_kopi_mm_query_proto_msgTypes[39]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -17248,7 +18710,7 @@ func (x *GetDepositUserStatsQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetDepositUserStatsQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[37]
+	mi := &file_kopi_mm_query_proto_msgTypes[40]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -17668,7 +19130,7 @@ func (x *GetCollateralUserStatsQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetCollateralUserStatsQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[38]
+	mi := &file_kopi_mm_query_proto_msgTypes[41]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -18088,7 +19550,7 @@ func (x *GetUserStatsQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetUserStatsQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[39]
+	mi := &file_kopi_mm_query_proto_msgTypes[42]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -18506,7 +19968,7 @@ func (x *GetDepositStatsQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetDepositStatsQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[40]
+	mi := &file_kopi_mm_query_proto_msgTypes[43]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -18862,7 +20324,7 @@ func (x *GetCollateralStatsQuery) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetCollateralStatsQuery) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[41]
+	mi := &file_kopi_mm_query_proto_msgTypes[44]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -19220,7 +20682,7 @@ func (x *QueryParamsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryParamsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[42]
+	mi := &file_kopi_mm_query_proto_msgTypes[45]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -19669,7 +21131,7 @@ func (x *CollateralDenomStats) ProtoReflect() protoreflect.Message {
 }
 
 func (x *CollateralDenomStats) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[43]
+	mi := &file_kopi_mm_query_proto_msgTypes[46]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -20576,7 +22038,7 @@ func (x *GetCollateralStatsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetCollateralStatsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[44]
+	mi := &file_kopi_mm_query_proto_msgTypes[47]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -21107,7 +22569,7 @@ func (x *DepositDenomStats) ProtoReflect() protoreflect.Message {
 }
 
 func (x *DepositDenomStats) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[45]
+	mi := &file_kopi_mm_query_proto_msgTypes[48]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -22392,7 +23854,7 @@ func (x *GetDepositStatsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetDepositStatsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[46]
+	mi := &file_kopi_mm_query_proto_msgTypes[49]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -23069,8 +24531,8 @@ var (
 	fd_DepositUserStats_c_asset_denom     protoreflect.FieldDescriptor
 	fd_DepositUserStats_c_asset_supply    protoreflect.FieldDescriptor
 	fd_DepositUserStats_c_asset_value     protoreflect.FieldDescriptor
-	fd_DepositUserStats_amount_base       protoreflect.FieldDescriptor
 	fd_DepositUserStats_amount_c_asset    protoreflect.FieldDescriptor
+	fd_DepositUserStats_base_equivalent   protoreflect.FieldDescriptor
 	fd_DepositUserStats_value_c_asset_usd protoreflect.FieldDescriptor
 	fd_DepositUserStats_price_base_usd    protoreflect.FieldDescriptor
 	fd_DepositUserStats_price_c_asset_usd protoreflect.FieldDescriptor
@@ -23086,8 +24548,8 @@ func init() {
 	fd_DepositUserStats_c_asset_denom = md_DepositUserStats.Fields().ByName("c_asset_denom")
 	fd_DepositUserStats_c_asset_supply = md_DepositUserStats.Fields().ByName("c_asset_supply")
 	fd_DepositUserStats_c_asset_value = md_DepositUserStats.Fields().ByName("c_asset_value")
-	fd_DepositUserStats_amount_base = md_DepositUserStats.Fields().ByName("amount_base")
 	fd_DepositUserStats_amount_c_asset = md_DepositUserStats.Fields().ByName("amount_c_asset")
+	fd_DepositUserStats_base_equivalent = md_DepositUserStats.Fields().ByName("base_equivalent")
 	fd_DepositUserStats_value_c_asset_usd = md_DepositUserStats.Fields().ByName("value_c_asset_usd")
 	fd_DepositUserStats_price_base_usd = md_DepositUserStats.Fields().ByName("price_base_usd")
 	fd_DepositUserStats_price_c_asset_usd = md_DepositUserStats.Fields().ByName("price_c_asset_usd")
@@ -23105,7 +24567,7 @@ func (x *DepositUserStats) ProtoReflect() protoreflect.Message {
 }
 
 func (x *DepositUserStats) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[47]
+	mi := &file_kopi_mm_query_proto_msgTypes[50]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -23185,15 +24647,15 @@ func (x *fastReflection_DepositUserStats) Range(f func(protoreflect.FieldDescrip
 			return
 		}
 	}
-	if x.AmountBase != "" {
-		value := protoreflect.ValueOfString(x.AmountBase)
-		if !f(fd_DepositUserStats_amount_base, value) {
-			return
-		}
-	}
 	if x.AmountCAsset != "" {
 		value := protoreflect.ValueOfString(x.AmountCAsset)
 		if !f(fd_DepositUserStats_amount_c_asset, value) {
+			return
+		}
+	}
+	if x.BaseEquivalent != "" {
+		value := protoreflect.ValueOfString(x.BaseEquivalent)
+		if !f(fd_DepositUserStats_base_equivalent, value) {
 			return
 		}
 	}
@@ -23256,10 +24718,10 @@ func (x *fastReflection_DepositUserStats) Has(fd protoreflect.FieldDescriptor) b
 		return x.CAssetSupply != ""
 	case "kopi.mm.DepositUserStats.c_asset_value":
 		return x.CAssetValue != ""
-	case "kopi.mm.DepositUserStats.amount_base":
-		return x.AmountBase != ""
 	case "kopi.mm.DepositUserStats.amount_c_asset":
 		return x.AmountCAsset != ""
+	case "kopi.mm.DepositUserStats.base_equivalent":
+		return x.BaseEquivalent != ""
 	case "kopi.mm.DepositUserStats.value_c_asset_usd":
 		return x.ValueCAssetUsd != ""
 	case "kopi.mm.DepositUserStats.price_base_usd":
@@ -23296,10 +24758,10 @@ func (x *fastReflection_DepositUserStats) Clear(fd protoreflect.FieldDescriptor)
 		x.CAssetSupply = ""
 	case "kopi.mm.DepositUserStats.c_asset_value":
 		x.CAssetValue = ""
-	case "kopi.mm.DepositUserStats.amount_base":
-		x.AmountBase = ""
 	case "kopi.mm.DepositUserStats.amount_c_asset":
 		x.AmountCAsset = ""
+	case "kopi.mm.DepositUserStats.base_equivalent":
+		x.BaseEquivalent = ""
 	case "kopi.mm.DepositUserStats.value_c_asset_usd":
 		x.ValueCAssetUsd = ""
 	case "kopi.mm.DepositUserStats.price_base_usd":
@@ -23340,11 +24802,11 @@ func (x *fastReflection_DepositUserStats) Get(descriptor protoreflect.FieldDescr
 	case "kopi.mm.DepositUserStats.c_asset_value":
 		value := x.CAssetValue
 		return protoreflect.ValueOfString(value)
-	case "kopi.mm.DepositUserStats.amount_base":
-		value := x.AmountBase
-		return protoreflect.ValueOfString(value)
 	case "kopi.mm.DepositUserStats.amount_c_asset":
 		value := x.AmountCAsset
+		return protoreflect.ValueOfString(value)
+	case "kopi.mm.DepositUserStats.base_equivalent":
+		value := x.BaseEquivalent
 		return protoreflect.ValueOfString(value)
 	case "kopi.mm.DepositUserStats.value_c_asset_usd":
 		value := x.ValueCAssetUsd
@@ -23392,10 +24854,10 @@ func (x *fastReflection_DepositUserStats) Set(fd protoreflect.FieldDescriptor, v
 		x.CAssetSupply = value.Interface().(string)
 	case "kopi.mm.DepositUserStats.c_asset_value":
 		x.CAssetValue = value.Interface().(string)
-	case "kopi.mm.DepositUserStats.amount_base":
-		x.AmountBase = value.Interface().(string)
 	case "kopi.mm.DepositUserStats.amount_c_asset":
 		x.AmountCAsset = value.Interface().(string)
+	case "kopi.mm.DepositUserStats.base_equivalent":
+		x.BaseEquivalent = value.Interface().(string)
 	case "kopi.mm.DepositUserStats.value_c_asset_usd":
 		x.ValueCAssetUsd = value.Interface().(string)
 	case "kopi.mm.DepositUserStats.price_base_usd":
@@ -23436,10 +24898,10 @@ func (x *fastReflection_DepositUserStats) Mutable(fd protoreflect.FieldDescripto
 		panic(fmt.Errorf("field c_asset_supply of message kopi.mm.DepositUserStats is not mutable"))
 	case "kopi.mm.DepositUserStats.c_asset_value":
 		panic(fmt.Errorf("field c_asset_value of message kopi.mm.DepositUserStats is not mutable"))
-	case "kopi.mm.DepositUserStats.amount_base":
-		panic(fmt.Errorf("field amount_base of message kopi.mm.DepositUserStats is not mutable"))
 	case "kopi.mm.DepositUserStats.amount_c_asset":
 		panic(fmt.Errorf("field amount_c_asset of message kopi.mm.DepositUserStats is not mutable"))
+	case "kopi.mm.DepositUserStats.base_equivalent":
+		panic(fmt.Errorf("field base_equivalent of message kopi.mm.DepositUserStats is not mutable"))
 	case "kopi.mm.DepositUserStats.value_c_asset_usd":
 		panic(fmt.Errorf("field value_c_asset_usd of message kopi.mm.DepositUserStats is not mutable"))
 	case "kopi.mm.DepositUserStats.price_base_usd":
@@ -23473,9 +24935,9 @@ func (x *fastReflection_DepositUserStats) NewField(fd protoreflect.FieldDescript
 		return protoreflect.ValueOfString("")
 	case "kopi.mm.DepositUserStats.c_asset_value":
 		return protoreflect.ValueOfString("")
-	case "kopi.mm.DepositUserStats.amount_base":
-		return protoreflect.ValueOfString("")
 	case "kopi.mm.DepositUserStats.amount_c_asset":
+		return protoreflect.ValueOfString("")
+	case "kopi.mm.DepositUserStats.base_equivalent":
 		return protoreflect.ValueOfString("")
 	case "kopi.mm.DepositUserStats.value_c_asset_usd":
 		return protoreflect.ValueOfString("")
@@ -23574,11 +25036,11 @@ func (x *fastReflection_DepositUserStats) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.AmountBase)
+		l = len(x.AmountCAsset)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.AmountCAsset)
+		l = len(x.BaseEquivalent)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -23677,17 +25139,17 @@ func (x *fastReflection_DepositUserStats) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x3a
 		}
+		if len(x.BaseEquivalent) > 0 {
+			i -= len(x.BaseEquivalent)
+			copy(dAtA[i:], x.BaseEquivalent)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BaseEquivalent)))
+			i--
+			dAtA[i] = 0x32
+		}
 		if len(x.AmountCAsset) > 0 {
 			i -= len(x.AmountCAsset)
 			copy(dAtA[i:], x.AmountCAsset)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountCAsset)))
-			i--
-			dAtA[i] = 0x32
-		}
-		if len(x.AmountBase) > 0 {
-			i -= len(x.AmountBase)
-			copy(dAtA[i:], x.AmountBase)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountBase)))
 			i--
 			dAtA[i] = 0x2a
 		}
@@ -23898,38 +25360,6 @@ func (x *fastReflection_DepositUserStats) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 5:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountBase", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.AmountBase = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 6:
-				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountCAsset", wireType)
 				}
 				var stringLen uint64
@@ -23959,6 +25389,38 @@ func (x *fastReflection_DepositUserStats) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
 				x.AmountCAsset = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BaseEquivalent", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.BaseEquivalent = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 7:
 				if wireType != 2 {
@@ -24262,7 +25724,7 @@ func (x *GetDepositUserStatsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetDepositUserStatsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[48]
+	mi := &file_kopi_mm_query_proto_msgTypes[51]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -24841,7 +26303,7 @@ func (x *GetUserStatsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetUserStatsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[49]
+	mi := &file_kopi_mm_query_proto_msgTypes[52]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -25633,7 +27095,7 @@ func (x *Address) ProtoReflect() protoreflect.Message {
 }
 
 func (x *Address) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[50]
+	mi := &file_kopi_mm_query_proto_msgTypes[53]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -26053,7 +27515,7 @@ func (x *GetTotalDepositsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetTotalDepositsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[51]
+	mi := &file_kopi_mm_query_proto_msgTypes[54]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -26473,7 +27935,7 @@ func (x *GetNumLoansResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetNumLoansResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[52]
+	mi := &file_kopi_mm_query_proto_msgTypes[55]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -26877,7 +28339,7 @@ func (x *GetTotalValueLockedResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetTotalValueLockedResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[53]
+	mi := &file_kopi_mm_query_proto_msgTypes[56]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -27307,7 +28769,7 @@ func (x *UserLoanStat) ProtoReflect() protoreflect.Message {
 }
 
 func (x *UserLoanStat) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[54]
+	mi := &file_kopi_mm_query_proto_msgTypes[57]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -28088,7 +29550,7 @@ func (x *GetUserLoansResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *GetUserLoansResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[55]
+	mi := &file_kopi_mm_query_proto_msgTypes[58]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -28531,7 +29993,7 @@ func (x *QueryFullBalanceRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryFullBalanceRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[56]
+	mi := &file_kopi_mm_query_proto_msgTypes[59]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -28971,7 +30433,7 @@ func (x *FullDenomBalance) ProtoReflect() protoreflect.Message {
 }
 
 func (x *FullDenomBalance) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[57]
+	mi := &file_kopi_mm_query_proto_msgTypes[60]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -30072,7 +31534,7 @@ func (x *QueryFullBalanceResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryFullBalanceResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_mm_query_proto_msgTypes[58]
+	mi := &file_kopi_mm_query_proto_msgTypes[61]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -30818,6 +32280,127 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type GetRedemptionsQuery struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Denom string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+}
+
+func (x *GetRedemptionsQuery) Reset() {
+	*x = GetRedemptionsQuery{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_kopi_mm_query_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetRedemptionsQuery) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRedemptionsQuery) ProtoMessage() {}
+
+// Deprecated: Use GetRedemptionsQuery.ProtoReflect.Descriptor instead.
+func (*GetRedemptionsQuery) Descriptor() ([]byte, []int) {
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *GetRedemptionsQuery) GetDenom() string {
+	if x != nil {
+		return x.Denom
+	}
+	return ""
+}
+
+type RedemptionRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	Amount  string `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	Fee     string `protobuf:"bytes,3,opt,name=fee,proto3" json:"fee,omitempty"`
+}
+
+func (x *RedemptionRequest) Reset() {
+	*x = RedemptionRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_kopi_mm_query_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RedemptionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RedemptionRequest) ProtoMessage() {}
+
+// Deprecated: Use RedemptionRequest.ProtoReflect.Descriptor instead.
+func (*RedemptionRequest) Descriptor() ([]byte, []int) {
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *RedemptionRequest) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
+}
+
+func (x *RedemptionRequest) GetAmount() string {
+	if x != nil {
+		return x.Amount
+	}
+	return ""
+}
+
+func (x *RedemptionRequest) GetFee() string {
+	if x != nil {
+		return x.Fee
+	}
+	return ""
+}
+
+type GetRedemptionsResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Requests []*RedemptionRequest `protobuf:"bytes,1,rep,name=requests,proto3" json:"requests,omitempty"`
+}
+
+func (x *GetRedemptionsResponse) Reset() {
+	*x = GetRedemptionsResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_kopi_mm_query_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetRedemptionsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRedemptionsResponse) ProtoMessage() {}
+
+// Deprecated: Use GetRedemptionsResponse.ProtoReflect.Descriptor instead.
+func (*GetRedemptionsResponse) Descriptor() ([]byte, []int) {
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GetRedemptionsResponse) GetRequests() []*RedemptionRequest {
+	if x != nil {
+		return x.Requests
+	}
+	return nil
+}
+
 type GetRedemptionStatsRequestQuery struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -30829,7 +32412,7 @@ type GetRedemptionStatsRequestQuery struct {
 func (x *GetRedemptionStatsRequestQuery) Reset() {
 	*x = GetRedemptionStatsRequestQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[0]
+		mi := &file_kopi_mm_query_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -30843,7 +32426,7 @@ func (*GetRedemptionStatsRequestQuery) ProtoMessage() {}
 
 // Deprecated: Use GetRedemptionStatsRequestQuery.ProtoReflect.Descriptor instead.
 func (*GetRedemptionStatsRequestQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{0}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GetRedemptionStatsRequestQuery) GetDenom() string {
@@ -30866,7 +32449,7 @@ type GetRedemptionStatsRequestResponse struct {
 func (x *GetRedemptionStatsRequestResponse) Reset() {
 	*x = GetRedemptionStatsRequestResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[1]
+		mi := &file_kopi_mm_query_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -30880,7 +32463,7 @@ func (*GetRedemptionStatsRequestResponse) ProtoMessage() {}
 
 // Deprecated: Use GetRedemptionStatsRequestResponse.ProtoReflect.Descriptor instead.
 func (*GetRedemptionStatsRequestResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{1}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetRedemptionStatsRequestResponse) GetMaxFee() string {
@@ -30916,7 +32499,7 @@ type GetRedemptionRequestQuery struct {
 func (x *GetRedemptionRequestQuery) Reset() {
 	*x = GetRedemptionRequestQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[2]
+		mi := &file_kopi_mm_query_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -30930,7 +32513,7 @@ func (*GetRedemptionRequestQuery) ProtoMessage() {}
 
 // Deprecated: Use GetRedemptionRequestQuery.ProtoReflect.Descriptor instead.
 func (*GetRedemptionRequestQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{2}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GetRedemptionRequestQuery) GetAddress() string {
@@ -30959,7 +32542,7 @@ type GetRedemptionRequestResponse struct {
 func (x *GetRedemptionRequestResponse) Reset() {
 	*x = GetRedemptionRequestResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[3]
+		mi := &file_kopi_mm_query_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -30973,7 +32556,7 @@ func (*GetRedemptionRequestResponse) ProtoMessage() {}
 
 // Deprecated: Use GetRedemptionRequestResponse.ProtoReflect.Descriptor instead.
 func (*GetRedemptionRequestResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{3}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GetRedemptionRequestResponse) GetFee() string {
@@ -31002,7 +32585,7 @@ type GetDepositUserDenomStatsQuery struct {
 func (x *GetDepositUserDenomStatsQuery) Reset() {
 	*x = GetDepositUserDenomStatsQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[4]
+		mi := &file_kopi_mm_query_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31016,7 +32599,7 @@ func (*GetDepositUserDenomStatsQuery) ProtoMessage() {}
 
 // Deprecated: Use GetDepositUserDenomStatsQuery.ProtoReflect.Descriptor instead.
 func (*GetDepositUserDenomStatsQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{4}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetDepositUserDenomStatsQuery) GetDenom() string {
@@ -31044,7 +32627,7 @@ type GetCollateralDenomStatsQuery struct {
 func (x *GetCollateralDenomStatsQuery) Reset() {
 	*x = GetCollateralDenomStatsQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[5]
+		mi := &file_kopi_mm_query_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31058,7 +32641,7 @@ func (*GetCollateralDenomStatsQuery) ProtoMessage() {}
 
 // Deprecated: Use GetCollateralDenomStatsQuery.ProtoReflect.Descriptor instead.
 func (*GetCollateralDenomStatsQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{5}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetCollateralDenomStatsQuery) GetDenom() string {
@@ -31080,7 +32663,7 @@ type UserCollateral struct {
 func (x *UserCollateral) Reset() {
 	*x = UserCollateral{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[6]
+		mi := &file_kopi_mm_query_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31094,7 +32677,7 @@ func (*UserCollateral) ProtoMessage() {}
 
 // Deprecated: Use UserCollateral.ProtoReflect.Descriptor instead.
 func (*UserCollateral) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{6}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *UserCollateral) GetAddress() string {
@@ -31124,7 +32707,7 @@ type GetCollateralDenomStatsResponse struct {
 func (x *GetCollateralDenomStatsResponse) Reset() {
 	*x = GetCollateralDenomStatsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[7]
+		mi := &file_kopi_mm_query_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31138,7 +32721,7 @@ func (*GetCollateralDenomStatsResponse) ProtoMessage() {}
 
 // Deprecated: Use GetCollateralDenomStatsResponse.ProtoReflect.Descriptor instead.
 func (*GetCollateralDenomStatsResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{7}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *GetCollateralDenomStatsResponse) GetUserCollateral() []*UserCollateral {
@@ -31171,7 +32754,7 @@ type GetLoansQuery struct {
 func (x *GetLoansQuery) Reset() {
 	*x = GetLoansQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[8]
+		mi := &file_kopi_mm_query_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31185,7 +32768,7 @@ func (*GetLoansQuery) ProtoMessage() {}
 
 // Deprecated: Use GetLoansQuery.ProtoReflect.Descriptor instead.
 func (*GetLoansQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{8}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{11}
 }
 
 type UserLoan struct {
@@ -31202,7 +32785,7 @@ type UserLoan struct {
 func (x *UserLoan) Reset() {
 	*x = UserLoan{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[9]
+		mi := &file_kopi_mm_query_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31216,7 +32799,7 @@ func (*UserLoan) ProtoMessage() {}
 
 // Deprecated: Use UserLoan.ProtoReflect.Descriptor instead.
 func (*UserLoan) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{9}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *UserLoan) GetDenom() string {
@@ -31258,7 +32841,7 @@ type GetLoansResponse struct {
 func (x *GetLoansResponse) Reset() {
 	*x = GetLoansResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[10]
+		mi := &file_kopi_mm_query_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31272,7 +32855,7 @@ func (*GetLoansResponse) ProtoMessage() {}
 
 // Deprecated: Use GetLoansResponse.ProtoReflect.Descriptor instead.
 func (*GetLoansResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{10}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *GetLoansResponse) GetLoans() []*UserLoan {
@@ -31291,7 +32874,7 @@ type GetLoanStatsQuery struct {
 func (x *GetLoanStatsQuery) Reset() {
 	*x = GetLoanStatsQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[11]
+		mi := &file_kopi_mm_query_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31305,7 +32888,7 @@ func (*GetLoanStatsQuery) ProtoMessage() {}
 
 // Deprecated: Use GetLoanStatsQuery.ProtoReflect.Descriptor instead.
 func (*GetLoanStatsQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{11}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{14}
 }
 
 type DenomLoanStat struct {
@@ -31325,7 +32908,7 @@ type DenomLoanStat struct {
 func (x *DenomLoanStat) Reset() {
 	*x = DenomLoanStat{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[12]
+		mi := &file_kopi_mm_query_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31339,7 +32922,7 @@ func (*DenomLoanStat) ProtoMessage() {}
 
 // Deprecated: Use DenomLoanStat.ProtoReflect.Descriptor instead.
 func (*DenomLoanStat) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{12}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *DenomLoanStat) GetDenom() string {
@@ -31404,7 +32987,7 @@ type GetLoanStatsResponse struct {
 func (x *GetLoanStatsResponse) Reset() {
 	*x = GetLoanStatsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[13]
+		mi := &file_kopi_mm_query_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31418,7 +33001,7 @@ func (*GetLoanStatsResponse) ProtoMessage() {}
 
 // Deprecated: Use GetLoanStatsResponse.ProtoReflect.Descriptor instead.
 func (*GetLoanStatsResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{13}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *GetLoanStatsResponse) GetLoanStats() []*DenomLoanStat {
@@ -31454,7 +33037,7 @@ type GetAvailableToBorrowRequest struct {
 func (x *GetAvailableToBorrowRequest) Reset() {
 	*x = GetAvailableToBorrowRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[14]
+		mi := &file_kopi_mm_query_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31468,7 +33051,7 @@ func (*GetAvailableToBorrowRequest) ProtoMessage() {}
 
 // Deprecated: Use GetAvailableToBorrowRequest.ProtoReflect.Descriptor instead.
 func (*GetAvailableToBorrowRequest) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{14}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *GetAvailableToBorrowRequest) GetAddress() string {
@@ -31497,7 +33080,7 @@ type GetAvailableToBorrowResponse struct {
 func (x *GetAvailableToBorrowResponse) Reset() {
 	*x = GetAvailableToBorrowResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[15]
+		mi := &file_kopi_mm_query_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31511,7 +33094,7 @@ func (*GetAvailableToBorrowResponse) ProtoMessage() {}
 
 // Deprecated: Use GetAvailableToBorrowResponse.ProtoReflect.Descriptor instead.
 func (*GetAvailableToBorrowResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{15}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *GetAvailableToBorrowResponse) GetAmount() string {
@@ -31540,7 +33123,7 @@ type GetWithdrawableCollateralQuery struct {
 func (x *GetWithdrawableCollateralQuery) Reset() {
 	*x = GetWithdrawableCollateralQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[16]
+		mi := &file_kopi_mm_query_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31554,7 +33137,7 @@ func (*GetWithdrawableCollateralQuery) ProtoMessage() {}
 
 // Deprecated: Use GetWithdrawableCollateralQuery.ProtoReflect.Descriptor instead.
 func (*GetWithdrawableCollateralQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{16}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *GetWithdrawableCollateralQuery) GetAddress() string {
@@ -31583,7 +33166,7 @@ type GetWithdrawableCollateralResponse struct {
 func (x *GetWithdrawableCollateralResponse) Reset() {
 	*x = GetWithdrawableCollateralResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[17]
+		mi := &file_kopi_mm_query_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31597,7 +33180,7 @@ func (*GetWithdrawableCollateralResponse) ProtoMessage() {}
 
 // Deprecated: Use GetWithdrawableCollateralResponse.ProtoReflect.Descriptor instead.
 func (*GetWithdrawableCollateralResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{17}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *GetWithdrawableCollateralResponse) GetAmount() string {
@@ -31628,7 +33211,7 @@ type Vault struct {
 func (x *Vault) Reset() {
 	*x = Vault{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[18]
+		mi := &file_kopi_mm_query_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31642,7 +33225,7 @@ func (*Vault) ProtoMessage() {}
 
 // Deprecated: Use Vault.ProtoReflect.Descriptor instead.
 func (*Vault) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{18}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *Vault) GetDenom() string {
@@ -31684,7 +33267,7 @@ type GetVaultValuesResponse struct {
 func (x *GetVaultValuesResponse) Reset() {
 	*x = GetVaultValuesResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[19]
+		mi := &file_kopi_mm_query_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31698,7 +33281,7 @@ func (*GetVaultValuesResponse) ProtoMessage() {}
 
 // Deprecated: Use GetVaultValuesResponse.ProtoReflect.Descriptor instead.
 func (*GetVaultValuesResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{19}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *GetVaultValuesResponse) GetVaults() []*Vault {
@@ -31717,7 +33300,7 @@ type GetVaultValuesQuery struct {
 func (x *GetVaultValuesQuery) Reset() {
 	*x = GetVaultValuesQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[20]
+		mi := &file_kopi_mm_query_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31731,7 +33314,7 @@ func (*GetVaultValuesQuery) ProtoMessage() {}
 
 // Deprecated: Use GetVaultValuesQuery.ProtoReflect.Descriptor instead.
 func (*GetVaultValuesQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{20}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{23}
 }
 
 type GetUserDenomLoanQuery struct {
@@ -31746,7 +33329,7 @@ type GetUserDenomLoanQuery struct {
 func (x *GetUserDenomLoanQuery) Reset() {
 	*x = GetUserDenomLoanQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[21]
+		mi := &file_kopi_mm_query_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31760,7 +33343,7 @@ func (*GetUserDenomLoanQuery) ProtoMessage() {}
 
 // Deprecated: Use GetUserDenomLoanQuery.ProtoReflect.Descriptor instead.
 func (*GetUserDenomLoanQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{21}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *GetUserDenomLoanQuery) GetAddress() string {
@@ -31789,7 +33372,7 @@ type GetUserDenomLoanResponse struct {
 func (x *GetUserDenomLoanResponse) Reset() {
 	*x = GetUserDenomLoanResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[22]
+		mi := &file_kopi_mm_query_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31803,7 +33386,7 @@ func (*GetUserDenomLoanResponse) ProtoMessage() {}
 
 // Deprecated: Use GetUserDenomLoanResponse.ProtoReflect.Descriptor instead.
 func (*GetUserDenomLoanResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{22}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *GetUserDenomLoanResponse) GetAmount() string {
@@ -31831,7 +33414,7 @@ type GetBorrowInterestRateQuery struct {
 func (x *GetBorrowInterestRateQuery) Reset() {
 	*x = GetBorrowInterestRateQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[23]
+		mi := &file_kopi_mm_query_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31845,7 +33428,7 @@ func (*GetBorrowInterestRateQuery) ProtoMessage() {}
 
 // Deprecated: Use GetBorrowInterestRateQuery.ProtoReflect.Descriptor instead.
 func (*GetBorrowInterestRateQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{23}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *GetBorrowInterestRateQuery) GetDenom() string {
@@ -31866,7 +33449,7 @@ type GetBorrowInterestRateResponse struct {
 func (x *GetBorrowInterestRateResponse) Reset() {
 	*x = GetBorrowInterestRateResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[24]
+		mi := &file_kopi_mm_query_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31880,7 +33463,7 @@ func (*GetBorrowInterestRateResponse) ProtoMessage() {}
 
 // Deprecated: Use GetBorrowInterestRateResponse.ProtoReflect.Descriptor instead.
 func (*GetBorrowInterestRateResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{24}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *GetBorrowInterestRateResponse) GetInterestRate() string {
@@ -31902,7 +33485,7 @@ type GetCollateralDenomUserStatsQuery struct {
 func (x *GetCollateralDenomUserStatsQuery) Reset() {
 	*x = GetCollateralDenomUserStatsQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[25]
+		mi := &file_kopi_mm_query_proto_msgTypes[28]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31916,7 +33499,7 @@ func (*GetCollateralDenomUserStatsQuery) ProtoMessage() {}
 
 // Deprecated: Use GetCollateralDenomUserStatsQuery.ProtoReflect.Descriptor instead.
 func (*GetCollateralDenomUserStatsQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{25}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *GetCollateralDenomUserStatsQuery) GetAddress() string {
@@ -31944,7 +33527,7 @@ type GetCollateralDenomUserStatsResponse struct {
 func (x *GetCollateralDenomUserStatsResponse) Reset() {
 	*x = GetCollateralDenomUserStatsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[26]
+		mi := &file_kopi_mm_query_proto_msgTypes[29]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31958,7 +33541,7 @@ func (*GetCollateralDenomUserStatsResponse) ProtoMessage() {}
 
 // Deprecated: Use GetCollateralDenomUserStatsResponse.ProtoReflect.Descriptor instead.
 func (*GetCollateralDenomUserStatsResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{26}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *GetCollateralDenomUserStatsResponse) GetAmount() string {
@@ -31979,7 +33562,7 @@ type GetCreditLineUsageQuery struct {
 func (x *GetCreditLineUsageQuery) Reset() {
 	*x = GetCreditLineUsageQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[27]
+		mi := &file_kopi_mm_query_proto_msgTypes[30]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -31993,7 +33576,7 @@ func (*GetCreditLineUsageQuery) ProtoMessage() {}
 
 // Deprecated: Use GetCreditLineUsageQuery.ProtoReflect.Descriptor instead.
 func (*GetCreditLineUsageQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{27}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *GetCreditLineUsageQuery) GetAddress() string {
@@ -32014,7 +33597,7 @@ type GetCreditLineUsageResponse struct {
 func (x *GetCreditLineUsageResponse) Reset() {
 	*x = GetCreditLineUsageResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[28]
+		mi := &file_kopi_mm_query_proto_msgTypes[31]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32028,7 +33611,7 @@ func (*GetCreditLineUsageResponse) ProtoMessage() {}
 
 // Deprecated: Use GetCreditLineUsageResponse.ProtoReflect.Descriptor instead.
 func (*GetCreditLineUsageResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{28}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *GetCreditLineUsageResponse) GetUsage() string {
@@ -32047,7 +33630,7 @@ type QueryParamsRequest struct {
 func (x *QueryParamsRequest) Reset() {
 	*x = QueryParamsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[29]
+		mi := &file_kopi_mm_query_proto_msgTypes[32]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32061,7 +33644,7 @@ func (*QueryParamsRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryParamsRequest.ProtoReflect.Descriptor instead.
 func (*QueryParamsRequest) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{29}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{32}
 }
 
 type GetTotalValueLockedQuery struct {
@@ -32073,7 +33656,7 @@ type GetTotalValueLockedQuery struct {
 func (x *GetTotalValueLockedQuery) Reset() {
 	*x = GetTotalValueLockedQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[30]
+		mi := &file_kopi_mm_query_proto_msgTypes[33]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32087,7 +33670,7 @@ func (*GetTotalValueLockedQuery) ProtoMessage() {}
 
 // Deprecated: Use GetTotalValueLockedQuery.ProtoReflect.Descriptor instead.
 func (*GetTotalValueLockedQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{30}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{33}
 }
 
 type GetNumLoansQuery struct {
@@ -32099,7 +33682,7 @@ type GetNumLoansQuery struct {
 func (x *GetNumLoansQuery) Reset() {
 	*x = GetNumLoansQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[31]
+		mi := &file_kopi_mm_query_proto_msgTypes[34]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32113,7 +33696,7 @@ func (*GetNumLoansQuery) ProtoMessage() {}
 
 // Deprecated: Use GetNumLoansQuery.ProtoReflect.Descriptor instead.
 func (*GetNumLoansQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{31}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{34}
 }
 
 type GetNumAddressLoansQuery struct {
@@ -32127,7 +33710,7 @@ type GetNumAddressLoansQuery struct {
 func (x *GetNumAddressLoansQuery) Reset() {
 	*x = GetNumAddressLoansQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[32]
+		mi := &file_kopi_mm_query_proto_msgTypes[35]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32141,7 +33724,7 @@ func (*GetNumAddressLoansQuery) ProtoMessage() {}
 
 // Deprecated: Use GetNumAddressLoansQuery.ProtoReflect.Descriptor instead.
 func (*GetNumAddressLoansQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{32}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *GetNumAddressLoansQuery) GetAddress() string {
@@ -32162,7 +33745,7 @@ type GetNumAddressLoansResponse struct {
 func (x *GetNumAddressLoansResponse) Reset() {
 	*x = GetNumAddressLoansResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[33]
+		mi := &file_kopi_mm_query_proto_msgTypes[36]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32176,7 +33759,7 @@ func (*GetNumAddressLoansResponse) ProtoMessage() {}
 
 // Deprecated: Use GetNumAddressLoansResponse.ProtoReflect.Descriptor instead.
 func (*GetNumAddressLoansResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{33}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *GetNumAddressLoansResponse) GetAmount() int64 {
@@ -32195,7 +33778,7 @@ type GetValueLoansQuery struct {
 func (x *GetValueLoansQuery) Reset() {
 	*x = GetValueLoansQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[34]
+		mi := &file_kopi_mm_query_proto_msgTypes[37]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32209,7 +33792,7 @@ func (*GetValueLoansQuery) ProtoMessage() {}
 
 // Deprecated: Use GetValueLoansQuery.ProtoReflect.Descriptor instead.
 func (*GetValueLoansQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{34}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{37}
 }
 
 type GetValueLoansResponse struct {
@@ -32223,7 +33806,7 @@ type GetValueLoansResponse struct {
 func (x *GetValueLoansResponse) Reset() {
 	*x = GetValueLoansResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[35]
+		mi := &file_kopi_mm_query_proto_msgTypes[38]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32237,7 +33820,7 @@ func (*GetValueLoansResponse) ProtoMessage() {}
 
 // Deprecated: Use GetValueLoansResponse.ProtoReflect.Descriptor instead.
 func (*GetValueLoansResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{35}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *GetValueLoansResponse) GetValue() string {
@@ -32258,7 +33841,7 @@ type GetUserLoansQuery struct {
 func (x *GetUserLoansQuery) Reset() {
 	*x = GetUserLoansQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[36]
+		mi := &file_kopi_mm_query_proto_msgTypes[39]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32272,7 +33855,7 @@ func (*GetUserLoansQuery) ProtoMessage() {}
 
 // Deprecated: Use GetUserLoansQuery.ProtoReflect.Descriptor instead.
 func (*GetUserLoansQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{36}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *GetUserLoansQuery) GetAddress() string {
@@ -32293,7 +33876,7 @@ type GetDepositUserStatsQuery struct {
 func (x *GetDepositUserStatsQuery) Reset() {
 	*x = GetDepositUserStatsQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[37]
+		mi := &file_kopi_mm_query_proto_msgTypes[40]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32307,7 +33890,7 @@ func (*GetDepositUserStatsQuery) ProtoMessage() {}
 
 // Deprecated: Use GetDepositUserStatsQuery.ProtoReflect.Descriptor instead.
 func (*GetDepositUserStatsQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{37}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *GetDepositUserStatsQuery) GetAddress() string {
@@ -32328,7 +33911,7 @@ type GetCollateralUserStatsQuery struct {
 func (x *GetCollateralUserStatsQuery) Reset() {
 	*x = GetCollateralUserStatsQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[38]
+		mi := &file_kopi_mm_query_proto_msgTypes[41]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32342,7 +33925,7 @@ func (*GetCollateralUserStatsQuery) ProtoMessage() {}
 
 // Deprecated: Use GetCollateralUserStatsQuery.ProtoReflect.Descriptor instead.
 func (*GetCollateralUserStatsQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{38}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *GetCollateralUserStatsQuery) GetAddress() string {
@@ -32363,7 +33946,7 @@ type GetUserStatsQuery struct {
 func (x *GetUserStatsQuery) Reset() {
 	*x = GetUserStatsQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[39]
+		mi := &file_kopi_mm_query_proto_msgTypes[42]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32377,7 +33960,7 @@ func (*GetUserStatsQuery) ProtoMessage() {}
 
 // Deprecated: Use GetUserStatsQuery.ProtoReflect.Descriptor instead.
 func (*GetUserStatsQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{39}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *GetUserStatsQuery) GetAddress() string {
@@ -32396,7 +33979,7 @@ type GetDepositStatsQuery struct {
 func (x *GetDepositStatsQuery) Reset() {
 	*x = GetDepositStatsQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[40]
+		mi := &file_kopi_mm_query_proto_msgTypes[43]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32410,7 +33993,7 @@ func (*GetDepositStatsQuery) ProtoMessage() {}
 
 // Deprecated: Use GetDepositStatsQuery.ProtoReflect.Descriptor instead.
 func (*GetDepositStatsQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{40}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{43}
 }
 
 type GetCollateralStatsQuery struct {
@@ -32422,7 +34005,7 @@ type GetCollateralStatsQuery struct {
 func (x *GetCollateralStatsQuery) Reset() {
 	*x = GetCollateralStatsQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[41]
+		mi := &file_kopi_mm_query_proto_msgTypes[44]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32436,7 +34019,7 @@ func (*GetCollateralStatsQuery) ProtoMessage() {}
 
 // Deprecated: Use GetCollateralStatsQuery.ProtoReflect.Descriptor instead.
 func (*GetCollateralStatsQuery) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{41}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{44}
 }
 
 type QueryParamsResponse struct {
@@ -32450,7 +34033,7 @@ type QueryParamsResponse struct {
 func (x *QueryParamsResponse) Reset() {
 	*x = QueryParamsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[42]
+		mi := &file_kopi_mm_query_proto_msgTypes[45]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32464,7 +34047,7 @@ func (*QueryParamsResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryParamsResponse.ProtoReflect.Descriptor instead.
 func (*QueryParamsResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{42}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *QueryParamsResponse) GetParams() *Params {
@@ -32492,7 +34075,7 @@ type CollateralDenomStats struct {
 func (x *CollateralDenomStats) Reset() {
 	*x = CollateralDenomStats{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[43]
+		mi := &file_kopi_mm_query_proto_msgTypes[46]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32506,7 +34089,7 @@ func (*CollateralDenomStats) ProtoMessage() {}
 
 // Deprecated: Use CollateralDenomStats.ProtoReflect.Descriptor instead.
 func (*CollateralDenomStats) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{43}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *CollateralDenomStats) GetDenom() string {
@@ -32577,7 +34160,7 @@ type GetCollateralStatsResponse struct {
 func (x *GetCollateralStatsResponse) Reset() {
 	*x = GetCollateralStatsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[44]
+		mi := &file_kopi_mm_query_proto_msgTypes[47]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32591,7 +34174,7 @@ func (*GetCollateralStatsResponse) ProtoMessage() {}
 
 // Deprecated: Use GetCollateralStatsResponse.ProtoReflect.Descriptor instead.
 func (*GetCollateralStatsResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{44}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{47}
 }
 
 func (x *GetCollateralStatsResponse) GetStats() []*CollateralDenomStats {
@@ -32632,7 +34215,7 @@ type DepositDenomStats struct {
 func (x *DepositDenomStats) Reset() {
 	*x = DepositDenomStats{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[45]
+		mi := &file_kopi_mm_query_proto_msgTypes[48]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32646,7 +34229,7 @@ func (*DepositDenomStats) ProtoMessage() {}
 
 // Deprecated: Use DepositDenomStats.ProtoReflect.Descriptor instead.
 func (*DepositDenomStats) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{45}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{48}
 }
 
 func (x *DepositDenomStats) GetBaseDenom() string {
@@ -32762,7 +34345,7 @@ type GetDepositStatsResponse struct {
 func (x *GetDepositStatsResponse) Reset() {
 	*x = GetDepositStatsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[46]
+		mi := &file_kopi_mm_query_proto_msgTypes[49]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32776,7 +34359,7 @@ func (*GetDepositStatsResponse) ProtoMessage() {}
 
 // Deprecated: Use GetDepositStatsResponse.ProtoReflect.Descriptor instead.
 func (*GetDepositStatsResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{46}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{49}
 }
 
 func (x *GetDepositStatsResponse) GetStats() []*DepositDenomStats {
@@ -32823,8 +34406,8 @@ type DepositUserStats struct {
 	CAssetDenom    string `protobuf:"bytes,2,opt,name=c_asset_denom,json=cAssetDenom,proto3" json:"c_asset_denom,omitempty"`
 	CAssetSupply   string `protobuf:"bytes,3,opt,name=c_asset_supply,json=cAssetSupply,proto3" json:"c_asset_supply,omitempty"`
 	CAssetValue    string `protobuf:"bytes,4,opt,name=c_asset_value,json=cAssetValue,proto3" json:"c_asset_value,omitempty"`
-	AmountBase     string `protobuf:"bytes,5,opt,name=amount_base,json=amountBase,proto3" json:"amount_base,omitempty"`
-	AmountCAsset   string `protobuf:"bytes,6,opt,name=amount_c_asset,json=amountCAsset,proto3" json:"amount_c_asset,omitempty"`
+	AmountCAsset   string `protobuf:"bytes,5,opt,name=amount_c_asset,json=amountCAsset,proto3" json:"amount_c_asset,omitempty"`
+	BaseEquivalent string `protobuf:"bytes,6,opt,name=base_equivalent,json=baseEquivalent,proto3" json:"base_equivalent,omitempty"`
 	ValueCAssetUsd string `protobuf:"bytes,7,opt,name=value_c_asset_usd,json=valueCAssetUsd,proto3" json:"value_c_asset_usd,omitempty"`
 	PriceBaseUsd   string `protobuf:"bytes,8,opt,name=price_base_usd,json=priceBaseUsd,proto3" json:"price_base_usd,omitempty"`
 	PriceCAssetUsd string `protobuf:"bytes,9,opt,name=price_c_asset_usd,json=priceCAssetUsd,proto3" json:"price_c_asset_usd,omitempty"`
@@ -32836,7 +34419,7 @@ type DepositUserStats struct {
 func (x *DepositUserStats) Reset() {
 	*x = DepositUserStats{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[47]
+		mi := &file_kopi_mm_query_proto_msgTypes[50]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32850,7 +34433,7 @@ func (*DepositUserStats) ProtoMessage() {}
 
 // Deprecated: Use DepositUserStats.ProtoReflect.Descriptor instead.
 func (*DepositUserStats) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{47}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{50}
 }
 
 func (x *DepositUserStats) GetBaseDenom() string {
@@ -32881,16 +34464,16 @@ func (x *DepositUserStats) GetCAssetValue() string {
 	return ""
 }
 
-func (x *DepositUserStats) GetAmountBase() string {
+func (x *DepositUserStats) GetAmountCAsset() string {
 	if x != nil {
-		return x.AmountBase
+		return x.AmountCAsset
 	}
 	return ""
 }
 
-func (x *DepositUserStats) GetAmountCAsset() string {
+func (x *DepositUserStats) GetBaseEquivalent() string {
 	if x != nil {
-		return x.AmountCAsset
+		return x.BaseEquivalent
 	}
 	return ""
 }
@@ -32950,7 +34533,7 @@ type GetDepositUserStatsResponse struct {
 func (x *GetDepositUserStatsResponse) Reset() {
 	*x = GetDepositUserStatsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[48]
+		mi := &file_kopi_mm_query_proto_msgTypes[51]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -32964,7 +34547,7 @@ func (*GetDepositUserStatsResponse) ProtoMessage() {}
 
 // Deprecated: Use GetDepositUserStatsResponse.ProtoReflect.Descriptor instead.
 func (*GetDepositUserStatsResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{48}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{51}
 }
 
 func (x *GetDepositUserStatsResponse) GetStats() []*DepositUserStats {
@@ -33005,7 +34588,7 @@ type GetUserStatsResponse struct {
 func (x *GetUserStatsResponse) Reset() {
 	*x = GetUserStatsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[49]
+		mi := &file_kopi_mm_query_proto_msgTypes[52]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -33019,7 +34602,7 @@ func (*GetUserStatsResponse) ProtoMessage() {}
 
 // Deprecated: Use GetUserStatsResponse.ProtoReflect.Descriptor instead.
 func (*GetUserStatsResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{49}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{52}
 }
 
 func (x *GetUserStatsResponse) GetTotalDeposited() string {
@@ -33082,7 +34665,7 @@ type Address struct {
 func (x *Address) Reset() {
 	*x = Address{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[50]
+		mi := &file_kopi_mm_query_proto_msgTypes[53]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -33096,7 +34679,7 @@ func (*Address) ProtoMessage() {}
 
 // Deprecated: Use Address.ProtoReflect.Descriptor instead.
 func (*Address) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{50}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{53}
 }
 
 func (x *Address) GetAddress() string {
@@ -33117,7 +34700,7 @@ type GetTotalDepositsResponse struct {
 func (x *GetTotalDepositsResponse) Reset() {
 	*x = GetTotalDepositsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[51]
+		mi := &file_kopi_mm_query_proto_msgTypes[54]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -33131,7 +34714,7 @@ func (*GetTotalDepositsResponse) ProtoMessage() {}
 
 // Deprecated: Use GetTotalDepositsResponse.ProtoReflect.Descriptor instead.
 func (*GetTotalDepositsResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{51}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{54}
 }
 
 func (x *GetTotalDepositsResponse) GetSum() string {
@@ -33152,7 +34735,7 @@ type GetNumLoansResponse struct {
 func (x *GetNumLoansResponse) Reset() {
 	*x = GetNumLoansResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[52]
+		mi := &file_kopi_mm_query_proto_msgTypes[55]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -33166,7 +34749,7 @@ func (*GetNumLoansResponse) ProtoMessage() {}
 
 // Deprecated: Use GetNumLoansResponse.ProtoReflect.Descriptor instead.
 func (*GetNumLoansResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{52}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{55}
 }
 
 func (x *GetNumLoansResponse) GetNum() int64 {
@@ -33187,7 +34770,7 @@ type GetTotalValueLockedResponse struct {
 func (x *GetTotalValueLockedResponse) Reset() {
 	*x = GetTotalValueLockedResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[53]
+		mi := &file_kopi_mm_query_proto_msgTypes[56]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -33201,7 +34784,7 @@ func (*GetTotalValueLockedResponse) ProtoMessage() {}
 
 // Deprecated: Use GetTotalValueLockedResponse.ProtoReflect.Descriptor instead.
 func (*GetTotalValueLockedResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{53}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{56}
 }
 
 func (x *GetTotalValueLockedResponse) GetSum() string {
@@ -33227,7 +34810,7 @@ type UserLoanStat struct {
 func (x *UserLoanStat) Reset() {
 	*x = UserLoanStat{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[54]
+		mi := &file_kopi_mm_query_proto_msgTypes[57]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -33241,7 +34824,7 @@ func (*UserLoanStat) ProtoMessage() {}
 
 // Deprecated: Use UserLoanStat.ProtoReflect.Descriptor instead.
 func (*UserLoanStat) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{54}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{57}
 }
 
 func (x *UserLoanStat) GetDenom() string {
@@ -33297,7 +34880,7 @@ type GetUserLoansResponse struct {
 func (x *GetUserLoansResponse) Reset() {
 	*x = GetUserLoansResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[55]
+		mi := &file_kopi_mm_query_proto_msgTypes[58]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -33311,7 +34894,7 @@ func (*GetUserLoansResponse) ProtoMessage() {}
 
 // Deprecated: Use GetUserLoansResponse.ProtoReflect.Descriptor instead.
 func (*GetUserLoansResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{55}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{58}
 }
 
 func (x *GetUserLoansResponse) GetUserLoans() []*UserLoanStat {
@@ -33332,7 +34915,7 @@ type QueryFullBalanceRequest struct {
 func (x *QueryFullBalanceRequest) Reset() {
 	*x = QueryFullBalanceRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[56]
+		mi := &file_kopi_mm_query_proto_msgTypes[59]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -33346,7 +34929,7 @@ func (*QueryFullBalanceRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryFullBalanceRequest.ProtoReflect.Descriptor instead.
 func (*QueryFullBalanceRequest) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{56}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{59}
 }
 
 func (x *QueryFullBalanceRequest) GetAddress() string {
@@ -33377,7 +34960,7 @@ type FullDenomBalance struct {
 func (x *FullDenomBalance) Reset() {
 	*x = FullDenomBalance{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[57]
+		mi := &file_kopi_mm_query_proto_msgTypes[60]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -33391,7 +34974,7 @@ func (*FullDenomBalance) ProtoMessage() {}
 
 // Deprecated: Use FullDenomBalance.ProtoReflect.Descriptor instead.
 func (*FullDenomBalance) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{57}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{60}
 }
 
 func (x *FullDenomBalance) GetDenom() string {
@@ -33487,7 +35070,7 @@ type QueryFullBalanceResponse struct {
 func (x *QueryFullBalanceResponse) Reset() {
 	*x = QueryFullBalanceResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_mm_query_proto_msgTypes[58]
+		mi := &file_kopi_mm_query_proto_msgTypes[61]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -33501,7 +35084,7 @@ func (*QueryFullBalanceResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryFullBalanceResponse.ProtoReflect.Descriptor instead.
 func (*QueryFullBalanceResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_mm_query_proto_rawDescGZIP(), []int{58}
+	return file_kopi_mm_query_proto_rawDescGZIP(), []int{61}
 }
 
 func (x *QueryFullBalanceResponse) GetSum() string {
@@ -33559,285 +35142,299 @@ var file_kopi_mm_query_proto_rawDesc = []byte{
 	0x73, 0x65, 0x2f, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2f, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31,
 	0x2f, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x1a, 0x14, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x6d, 0x6d, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d,
-	0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x36, 0x0a, 0x1e, 0x47, 0x65, 0x74, 0x52, 0x65,
-	0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e,
-	0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22,
-	0x82, 0x01, 0x0a, 0x21, 0x47, 0x65, 0x74, 0x52, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f,
-	0x6e, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x17, 0x0a, 0x07, 0x6d, 0x61, 0x78, 0x5f, 0x66, 0x65, 0x65,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6d, 0x61, 0x78, 0x46, 0x65, 0x65, 0x12, 0x21,
-	0x0a, 0x0c, 0x77, 0x69, 0x74, 0x68, 0x64, 0x72, 0x61, 0x77, 0x5f, 0x73, 0x75, 0x6d, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x77, 0x69, 0x74, 0x68, 0x64, 0x72, 0x61, 0x77, 0x53, 0x75,
-	0x6d, 0x12, 0x21, 0x0a, 0x0c, 0x6e, 0x75, 0x6d, 0x5f, 0x72, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0b, 0x6e, 0x75, 0x6d, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x73, 0x22, 0x4b, 0x0a, 0x19, 0x47, 0x65, 0x74, 0x52, 0x65, 0x64, 0x65, 0x6d,
-	0x70, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x64,
-	0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f,
-	0x6d, 0x22, 0x56, 0x0a, 0x1c, 0x47, 0x65, 0x74, 0x52, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69,
-	0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x10, 0x0a, 0x03, 0x66, 0x65, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
-	0x66, 0x65, 0x65, 0x12, 0x24, 0x0a, 0x0e, 0x63, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x61,
-	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x63, 0x41, 0x73,
-	0x73, 0x65, 0x74, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x4f, 0x0a, 0x1d, 0x47, 0x65, 0x74,
-	0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x55, 0x73, 0x65, 0x72, 0x44, 0x65, 0x6e, 0x6f, 0x6d,
-	0x53, 0x74, 0x61, 0x74, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65,
-	0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
-	0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x34, 0x0a, 0x1c, 0x47, 0x65,
-	0x74, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x44, 0x65, 0x6e, 0x6f, 0x6d,
-	0x53, 0x74, 0x61, 0x74, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65,
-	0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
-	0x22, 0x42, 0x0a, 0x0e, 0x55, 0x73, 0x65, 0x72, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72,
-	0x61, 0x6c, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x16, 0x0a, 0x06,
-	0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x6d,
-	0x6f, 0x75, 0x6e, 0x74, 0x22, 0x8e, 0x01, 0x0a, 0x1f, 0x47, 0x65, 0x74, 0x43, 0x6f, 0x6c, 0x6c,
-	0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x53, 0x74, 0x61, 0x74, 0x73,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x40, 0x0a, 0x0f, 0x75, 0x73, 0x65, 0x72,
-	0x5f, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x18, 0x01, 0x20, 0x03, 0x28,
-	0x0b, 0x32, 0x17, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x55, 0x73, 0x65, 0x72,
-	0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x52, 0x0e, 0x75, 0x73, 0x65, 0x72,
-	0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x12, 0x10, 0x0a, 0x03, 0x73, 0x75,
-	0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x73, 0x75, 0x6d, 0x12, 0x17, 0x0a, 0x07,
-	0x73, 0x75, 0x6d, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73,
-	0x75, 0x6d, 0x55, 0x73, 0x64, 0x22, 0x0f, 0x0a, 0x0d, 0x47, 0x65, 0x74, 0x4c, 0x6f, 0x61, 0x6e,
-	0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x22, 0x9e, 0x01, 0x0a, 0x08, 0x55, 0x73, 0x65, 0x72, 0x4c,
-	0x6f, 0x61, 0x6e, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x27, 0x0a, 0x0f, 0x61, 0x6d, 0x6f,
-	0x75, 0x6e, 0x74, 0x5f, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x65, 0x64, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0e, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77,
-	0x65, 0x64, 0x12, 0x2e, 0x0a, 0x13, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x62, 0x6f, 0x72,
-	0x72, 0x6f, 0x77, 0x65, 0x64, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x11, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x65, 0x64, 0x55,
-	0x73, 0x64, 0x12, 0x23, 0x0a, 0x0d, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72,
-	0x61, 0x74, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x69, 0x6e, 0x74, 0x65, 0x72,
-	0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x22, 0x3b, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x4c, 0x6f,
-	0x61, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x27, 0x0a, 0x05, 0x6c,
-	0x6f, 0x61, 0x6e, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x6b, 0x6f, 0x70,
-	0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x4c, 0x6f, 0x61, 0x6e, 0x52, 0x05, 0x6c,
-	0x6f, 0x61, 0x6e, 0x73, 0x22, 0x13, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x4c, 0x6f, 0x61, 0x6e, 0x53,
-	0x74, 0x61, 0x74, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x22, 0x91, 0x02, 0x0a, 0x0d, 0x44, 0x65,
-	0x6e, 0x6f, 0x6d, 0x4c, 0x6f, 0x61, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x64,
-	0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f,
-	0x6d, 0x12, 0x21, 0x0a, 0x0c, 0x75, 0x74, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x5f, 0x72, 0x61, 0x74,
-	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x75, 0x74, 0x69, 0x6c, 0x69, 0x74, 0x79,
-	0x52, 0x61, 0x74, 0x65, 0x12, 0x23, 0x0a, 0x0d, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74,
-	0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x69, 0x6e, 0x74,
-	0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x12, 0x2e, 0x0a, 0x13, 0x61, 0x76, 0x61,
-	0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x74, 0x6f, 0x5f, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77,
-	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c,
-	0x65, 0x54, 0x6f, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x12, 0x35, 0x0a, 0x17, 0x61, 0x76, 0x61,
-	0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x74, 0x6f, 0x5f, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77,
-	0x5f, 0x75, 0x73, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x14, 0x61, 0x76, 0x61, 0x69,
-	0x6c, 0x61, 0x62, 0x6c, 0x65, 0x54, 0x6f, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x55, 0x73, 0x64,
-	0x12, 0x19, 0x0a, 0x08, 0x6c, 0x6f, 0x61, 0x6e, 0x5f, 0x73, 0x75, 0x6d, 0x18, 0x06, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x07, 0x6c, 0x6f, 0x61, 0x6e, 0x53, 0x75, 0x6d, 0x12, 0x20, 0x0a, 0x0c, 0x6c,
-	0x6f, 0x61, 0x6e, 0x5f, 0x73, 0x75, 0x6d, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x07, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x0a, 0x6c, 0x6f, 0x61, 0x6e, 0x53, 0x75, 0x6d, 0x55, 0x73, 0x64, 0x22, 0xbc, 0x01,
-	0x0a, 0x14, 0x47, 0x65, 0x74, 0x4c, 0x6f, 0x61, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x35, 0x0a, 0x0a, 0x6c, 0x6f, 0x61, 0x6e, 0x5f, 0x73,
-	0x74, 0x61, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x6b, 0x6f, 0x70,
-	0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x6f, 0x61, 0x6e, 0x53, 0x74,
-	0x61, 0x74, 0x52, 0x09, 0x6c, 0x6f, 0x61, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x73, 0x12, 0x40, 0x0a,
-	0x1d, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65,
-	0x5f, 0x74, 0x6f, 0x5f, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x19, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x41, 0x76, 0x61, 0x69, 0x6c,
-	0x61, 0x62, 0x6c, 0x65, 0x54, 0x6f, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x55, 0x73, 0x64, 0x12,
-	0x2b, 0x0a, 0x12, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x6c, 0x6f, 0x61, 0x6e, 0x5f, 0x73, 0x75,
-	0x6d, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0f, 0x74, 0x6f, 0x74,
-	0x61, 0x6c, 0x4c, 0x6f, 0x61, 0x6e, 0x53, 0x75, 0x6d, 0x55, 0x73, 0x64, 0x22, 0x4d, 0x0a, 0x1b,
-	0x47, 0x65, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x54, 0x6f, 0x42, 0x6f,
-	0x72, 0x72, 0x6f, 0x77, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x61,
-	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64,
-	0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x55, 0x0a, 0x1c, 0x47,
-	0x65, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x54, 0x6f, 0x42, 0x6f, 0x72,
-	0x72, 0x6f, 0x77, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61,
-	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f,
-	0x75, 0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x75, 0x73,
-	0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55,
-	0x73, 0x64, 0x22, 0x50, 0x0a, 0x1e, 0x47, 0x65, 0x74, 0x57, 0x69, 0x74, 0x68, 0x64, 0x72, 0x61,
-	0x77, 0x61, 0x62, 0x6c, 0x65, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x14,
-	0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64,
-	0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x5a, 0x0a, 0x21, 0x47, 0x65, 0x74, 0x57, 0x69, 0x74, 0x68, 0x64,
-	0x72, 0x61, 0x77, 0x61, 0x62, 0x6c, 0x65, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61,
-	0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f,
-	0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e,
-	0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x75, 0x73, 0x64, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73, 0x64,
-	0x22, 0x6a, 0x0a, 0x05, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e,
-	0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12,
-	0x18, 0x0a, 0x07, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x07, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x6c, 0x6f, 0x61,
-	0x6e, 0x5f, 0x73, 0x75, 0x6d, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6c, 0x6f, 0x61,
-	0x6e, 0x53, 0x75, 0x6d, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x18, 0x04,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x22, 0x40, 0x0a, 0x16,
-	0x47, 0x65, 0x74, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x26, 0x0a, 0x06, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73,
-	0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d,
-	0x2e, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x52, 0x06, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x22, 0x15,
-	0x0a, 0x13, 0x47, 0x65, 0x74, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x73,
-	0x51, 0x75, 0x65, 0x72, 0x79, 0x22, 0x47, 0x0a, 0x15, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72,
-	0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x6f, 0x61, 0x6e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x18,
-	0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f,
-	0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x51,
-	0x0a, 0x18, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x6f,
-	0x61, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d,
-	0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75,
-	0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x75, 0x73, 0x64,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73,
-	0x64, 0x22, 0x32, 0x0a, 0x1a, 0x47, 0x65, 0x74, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e,
-	0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12,
-	0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
-	0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x44, 0x0a, 0x1d, 0x47, 0x65, 0x74, 0x42, 0x6f, 0x72, 0x72,
-	0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x23, 0x0a, 0x0d, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65,
-	0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x69,
-	0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x22, 0x52, 0x0a, 0x20, 0x47,
-	0x65, 0x74, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x44, 0x65, 0x6e, 0x6f,
-	0x6d, 0x55, 0x73, 0x65, 0x72, 0x53, 0x74, 0x61, 0x74, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12,
-	0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e,
-	0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22,
-	0x3d, 0x0a, 0x23, 0x47, 0x65, 0x74, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c,
-	0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x55, 0x73, 0x65, 0x72, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x33,
-	0x0a, 0x17, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x69, 0x74, 0x4c, 0x69, 0x6e, 0x65, 0x55,
-	0x73, 0x61, 0x67, 0x65, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64,
+	0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x2b, 0x0a, 0x13, 0x47, 0x65, 0x74, 0x52, 0x65,
+	0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x14,
+	0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64,
+	0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x57, 0x0a, 0x11, 0x52, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69,
+	0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64,
 	0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72,
-	0x65, 0x73, 0x73, 0x22, 0x32, 0x0a, 0x1a, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x69, 0x74,
-	0x4c, 0x69, 0x6e, 0x65, 0x55, 0x73, 0x61, 0x67, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x14, 0x0a, 0x05, 0x75, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x05, 0x75, 0x73, 0x61, 0x67, 0x65, 0x22, 0x14, 0x0a, 0x12, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x1a, 0x0a,
-	0x18, 0x47, 0x65, 0x74, 0x54, 0x6f, 0x74, 0x61, 0x6c, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x4c, 0x6f,
-	0x63, 0x6b, 0x65, 0x64, 0x51, 0x75, 0x65, 0x72, 0x79, 0x22, 0x12, 0x0a, 0x10, 0x47, 0x65, 0x74,
-	0x4e, 0x75, 0x6d, 0x4c, 0x6f, 0x61, 0x6e, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x22, 0x33, 0x0a,
-	0x17, 0x47, 0x65, 0x74, 0x4e, 0x75, 0x6d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x4c, 0x6f,
-	0x61, 0x6e, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72,
-	0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65,
-	0x73, 0x73, 0x22, 0x34, 0x0a, 0x1a, 0x47, 0x65, 0x74, 0x4e, 0x75, 0x6d, 0x41, 0x64, 0x64, 0x72,
-	0x65, 0x73, 0x73, 0x4c, 0x6f, 0x61, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03,
-	0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x14, 0x0a, 0x12, 0x47, 0x65, 0x74, 0x56,
-	0x61, 0x6c, 0x75, 0x65, 0x4c, 0x6f, 0x61, 0x6e, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x22, 0x2d,
-	0x0a, 0x15, 0x47, 0x65, 0x74, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x4c, 0x6f, 0x61, 0x6e, 0x73, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x2d, 0x0a,
-	0x11, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x4c, 0x6f, 0x61, 0x6e, 0x73, 0x51, 0x75, 0x65,
-	0x72, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x34, 0x0a, 0x18,
-	0x47, 0x65, 0x74, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x55, 0x73, 0x65, 0x72, 0x53, 0x74,
+	0x65, 0x73, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x10, 0x0a, 0x03, 0x66,
+	0x65, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x66, 0x65, 0x65, 0x22, 0x50, 0x0a,
+	0x16, 0x47, 0x65, 0x74, 0x52, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x36, 0x0a, 0x08, 0x72, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x6b, 0x6f, 0x70, 0x69,
+	0x2e, 0x6d, 0x6d, 0x2e, 0x52, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x08, 0x72, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x73, 0x22,
+	0x36, 0x0a, 0x1e, 0x47, 0x65, 0x74, 0x52, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e,
+	0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x51, 0x75, 0x65, 0x72,
+	0x79, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x82, 0x01, 0x0a, 0x21, 0x47, 0x65, 0x74, 0x52,
+	0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x17, 0x0a,
+	0x07, 0x6d, 0x61, 0x78, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
+	0x6d, 0x61, 0x78, 0x46, 0x65, 0x65, 0x12, 0x21, 0x0a, 0x0c, 0x77, 0x69, 0x74, 0x68, 0x64, 0x72,
+	0x61, 0x77, 0x5f, 0x73, 0x75, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x77, 0x69,
+	0x74, 0x68, 0x64, 0x72, 0x61, 0x77, 0x53, 0x75, 0x6d, 0x12, 0x21, 0x0a, 0x0c, 0x6e, 0x75, 0x6d,
+	0x5f, 0x72, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x03, 0x52,
+	0x0b, 0x6e, 0x75, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x73, 0x22, 0x4b, 0x0a, 0x19,
+	0x47, 0x65, 0x74, 0x52, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72,
+	0x65, 0x73, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x56, 0x0a, 0x1c, 0x47, 0x65, 0x74,
+	0x52, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x66, 0x65, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x66, 0x65, 0x65, 0x12, 0x24, 0x0a, 0x0e, 0x63,
+	0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0c, 0x63, 0x41, 0x73, 0x73, 0x65, 0x74, 0x41, 0x6d, 0x6f, 0x75, 0x6e,
+	0x74, 0x22, 0x4f, 0x0a, 0x1d, 0x47, 0x65, 0x74, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x55,
+	0x73, 0x65, 0x72, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x53, 0x74, 0x61, 0x74, 0x73, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72,
+	0x65, 0x73, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65,
+	0x73, 0x73, 0x22, 0x34, 0x0a, 0x1c, 0x47, 0x65, 0x74, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65,
+	0x72, 0x61, 0x6c, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x53, 0x74, 0x61, 0x74, 0x73, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x42, 0x0a, 0x0e, 0x55, 0x73, 0x65, 0x72,
+	0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x8e, 0x01, 0x0a,
+	0x1f, 0x47, 0x65, 0x74, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x44, 0x65,
+	0x6e, 0x6f, 0x6d, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x40, 0x0a, 0x0f, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65,
+	0x72, 0x61, 0x6c, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x6b, 0x6f, 0x70, 0x69,
+	0x2e, 0x6d, 0x6d, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72,
+	0x61, 0x6c, 0x52, 0x0e, 0x75, 0x73, 0x65, 0x72, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72,
+	0x61, 0x6c, 0x12, 0x10, 0x0a, 0x03, 0x73, 0x75, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x03, 0x73, 0x75, 0x6d, 0x12, 0x17, 0x0a, 0x07, 0x73, 0x75, 0x6d, 0x5f, 0x75, 0x73, 0x64, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x75, 0x6d, 0x55, 0x73, 0x64, 0x22, 0x0f, 0x0a,
+	0x0d, 0x47, 0x65, 0x74, 0x4c, 0x6f, 0x61, 0x6e, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x22, 0x9e,
+	0x01, 0x0a, 0x08, 0x55, 0x73, 0x65, 0x72, 0x4c, 0x6f, 0x61, 0x6e, 0x12, 0x14, 0x0a, 0x05, 0x64,
+	0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f,
+	0x6d, 0x12, 0x27, 0x0a, 0x0f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x62, 0x6f, 0x72, 0x72,
+	0x6f, 0x77, 0x65, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x61, 0x6d, 0x6f, 0x75,
+	0x6e, 0x74, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x65, 0x64, 0x12, 0x2e, 0x0a, 0x13, 0x61, 0x6d,
+	0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x65, 0x64, 0x5f, 0x75, 0x73,
+	0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x42,
+	0x6f, 0x72, 0x72, 0x6f, 0x77, 0x65, 0x64, 0x55, 0x73, 0x64, 0x12, 0x23, 0x0a, 0x0d, 0x69, 0x6e,
+	0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0c, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x22,
+	0x3b, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x4c, 0x6f, 0x61, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x27, 0x0a, 0x05, 0x6c, 0x6f, 0x61, 0x6e, 0x73, 0x18, 0x01, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x11, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x55, 0x73, 0x65,
+	0x72, 0x4c, 0x6f, 0x61, 0x6e, 0x52, 0x05, 0x6c, 0x6f, 0x61, 0x6e, 0x73, 0x22, 0x13, 0x0a, 0x11,
+	0x47, 0x65, 0x74, 0x4c, 0x6f, 0x61, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x73, 0x51, 0x75, 0x65, 0x72,
+	0x79, 0x22, 0x91, 0x02, 0x0a, 0x0d, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x6f, 0x61, 0x6e, 0x53,
+	0x74, 0x61, 0x74, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x21, 0x0a, 0x0c, 0x75, 0x74, 0x69,
+	0x6c, 0x69, 0x74, 0x79, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0b, 0x75, 0x74, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x52, 0x61, 0x74, 0x65, 0x12, 0x23, 0x0a, 0x0d,
+	0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0c, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74,
+	0x65, 0x12, 0x2e, 0x0a, 0x13, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x74,
+	0x6f, 0x5f, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11,
+	0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x54, 0x6f, 0x42, 0x6f, 0x72, 0x72, 0x6f,
+	0x77, 0x12, 0x35, 0x0a, 0x17, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x74,
+	0x6f, 0x5f, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x05, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x14, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x54, 0x6f, 0x42,
+	0x6f, 0x72, 0x72, 0x6f, 0x77, 0x55, 0x73, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x6c, 0x6f, 0x61, 0x6e,
+	0x5f, 0x73, 0x75, 0x6d, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6c, 0x6f, 0x61, 0x6e,
+	0x53, 0x75, 0x6d, 0x12, 0x20, 0x0a, 0x0c, 0x6c, 0x6f, 0x61, 0x6e, 0x5f, 0x73, 0x75, 0x6d, 0x5f,
+	0x75, 0x73, 0x64, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x6c, 0x6f, 0x61, 0x6e, 0x53,
+	0x75, 0x6d, 0x55, 0x73, 0x64, 0x22, 0xbc, 0x01, 0x0a, 0x14, 0x47, 0x65, 0x74, 0x4c, 0x6f, 0x61,
+	0x6e, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x35,
+	0x0a, 0x0a, 0x6c, 0x6f, 0x61, 0x6e, 0x5f, 0x73, 0x74, 0x61, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x16, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x44, 0x65, 0x6e,
+	0x6f, 0x6d, 0x4c, 0x6f, 0x61, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x52, 0x09, 0x6c, 0x6f, 0x61, 0x6e,
+	0x53, 0x74, 0x61, 0x74, 0x73, 0x12, 0x40, 0x0a, 0x1d, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x61,
+	0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x74, 0x6f, 0x5f, 0x62, 0x6f, 0x72, 0x72,
+	0x6f, 0x77, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x19, 0x74, 0x6f,
+	0x74, 0x61, 0x6c, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x54, 0x6f, 0x42, 0x6f,
+	0x72, 0x72, 0x6f, 0x77, 0x55, 0x73, 0x64, 0x12, 0x2b, 0x0a, 0x12, 0x74, 0x6f, 0x74, 0x61, 0x6c,
+	0x5f, 0x6c, 0x6f, 0x61, 0x6e, 0x5f, 0x73, 0x75, 0x6d, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0f, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x4c, 0x6f, 0x61, 0x6e, 0x53, 0x75,
+	0x6d, 0x55, 0x73, 0x64, 0x22, 0x4d, 0x0a, 0x1b, 0x47, 0x65, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c,
+	0x61, 0x62, 0x6c, 0x65, 0x54, 0x6f, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x14, 0x0a,
+	0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65,
+	0x6e, 0x6f, 0x6d, 0x22, 0x55, 0x0a, 0x1c, 0x47, 0x65, 0x74, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61,
+	0x62, 0x6c, 0x65, 0x54, 0x6f, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x61,
+	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x09, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73, 0x64, 0x22, 0x50, 0x0a, 0x1e, 0x47, 0x65,
+	0x74, 0x57, 0x69, 0x74, 0x68, 0x64, 0x72, 0x61, 0x77, 0x61, 0x62, 0x6c, 0x65, 0x43, 0x6f, 0x6c,
+	0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x18, 0x0a, 0x07,
+	0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61,
+	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x5a, 0x0a, 0x21,
+	0x47, 0x65, 0x74, 0x57, 0x69, 0x74, 0x68, 0x64, 0x72, 0x61, 0x77, 0x61, 0x62, 0x6c, 0x65, 0x43,
+	0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x61, 0x6d, 0x6f,
+	0x75, 0x6e, 0x74, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61,
+	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73, 0x64, 0x22, 0x6a, 0x0a, 0x05, 0x56, 0x61, 0x75, 0x6c,
+	0x74, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x18, 0x0a, 0x07, 0x62, 0x61, 0x6c, 0x61, 0x6e,
+	0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63,
+	0x65, 0x12, 0x19, 0x0a, 0x08, 0x6c, 0x6f, 0x61, 0x6e, 0x5f, 0x73, 0x75, 0x6d, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x07, 0x6c, 0x6f, 0x61, 0x6e, 0x53, 0x75, 0x6d, 0x12, 0x16, 0x0a, 0x06,
+	0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x75,
+	0x70, 0x70, 0x6c, 0x79, 0x22, 0x40, 0x0a, 0x16, 0x47, 0x65, 0x74, 0x56, 0x61, 0x75, 0x6c, 0x74,
+	0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x26,
+	0x0a, 0x06, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0e,
+	0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x52, 0x06,
+	0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x22, 0x15, 0x0a, 0x13, 0x47, 0x65, 0x74, 0x56, 0x61, 0x75,
+	0x6c, 0x74, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x22, 0x47, 0x0a,
+	0x15, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x6f, 0x61,
+	0x6e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73,
+	0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
+	0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x51, 0x0a, 0x18, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65,
+	0x72, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x6f, 0x61, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x61, 0x6d,
+	0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
+	0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73, 0x64, 0x22, 0x32, 0x0a, 0x1a, 0x47, 0x65, 0x74,
+	0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61,
+	0x74, 0x65, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x44, 0x0a,
+	0x1d, 0x47, 0x65, 0x74, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x65,
+	0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x23,
+	0x0a, 0x0d, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52,
+	0x61, 0x74, 0x65, 0x22, 0x52, 0x0a, 0x20, 0x47, 0x65, 0x74, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74,
+	0x65, 0x72, 0x61, 0x6c, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x55, 0x73, 0x65, 0x72, 0x53, 0x74, 0x61,
+	0x74, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65,
+	0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73,
+	0x73, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x22, 0x3d, 0x0a, 0x23, 0x47, 0x65, 0x74, 0x43, 0x6f,
+	0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x55, 0x73, 0x65,
+	0x72, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16,
+	0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
+	0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x33, 0x0a, 0x17, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65,
+	0x64, 0x69, 0x74, 0x4c, 0x69, 0x6e, 0x65, 0x55, 0x73, 0x61, 0x67, 0x65, 0x51, 0x75, 0x65, 0x72,
+	0x79, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x32, 0x0a, 0x1a, 0x47,
+	0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x69, 0x74, 0x4c, 0x69, 0x6e, 0x65, 0x55, 0x73, 0x61, 0x67,
+	0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x75, 0x73, 0x61,
+	0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x75, 0x73, 0x61, 0x67, 0x65, 0x22,
+	0x14, 0x0a, 0x12, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x1a, 0x0a, 0x18, 0x47, 0x65, 0x74, 0x54, 0x6f, 0x74, 0x61,
+	0x6c, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x4c, 0x6f, 0x63, 0x6b, 0x65, 0x64, 0x51, 0x75, 0x65, 0x72,
+	0x79, 0x22, 0x12, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x4e, 0x75, 0x6d, 0x4c, 0x6f, 0x61, 0x6e, 0x73,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x22, 0x33, 0x0a, 0x17, 0x47, 0x65, 0x74, 0x4e, 0x75, 0x6d, 0x41,
+	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x4c, 0x6f, 0x61, 0x6e, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x34, 0x0a, 0x1a, 0x47, 0x65,
+	0x74, 0x4e, 0x75, 0x6d, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x4c, 0x6f, 0x61, 0x6e, 0x73,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75,
+	0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
+	0x22, 0x14, 0x0a, 0x12, 0x47, 0x65, 0x74, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x4c, 0x6f, 0x61, 0x6e,
+	0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x22, 0x2d, 0x0a, 0x15, 0x47, 0x65, 0x74, 0x56, 0x61, 0x6c,
+	0x75, 0x65, 0x4c, 0x6f, 0x61, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
+	0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x2d, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72,
+	0x4c, 0x6f, 0x61, 0x6e, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x22, 0x34, 0x0a, 0x18, 0x47, 0x65, 0x74, 0x44, 0x65, 0x70, 0x6f, 0x73,
+	0x69, 0x74, 0x55, 0x73, 0x65, 0x72, 0x53, 0x74, 0x61, 0x74, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x37, 0x0a, 0x1b, 0x47, 0x65,
+	0x74, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x55, 0x73, 0x65, 0x72, 0x53,
+	0x74, 0x61, 0x74, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72,
+	0x65, 0x73, 0x73, 0x22, 0x2d, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x53, 0x74,
 	0x61, 0x74, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72,
 	0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65,
-	0x73, 0x73, 0x22, 0x37, 0x0a, 0x1b, 0x47, 0x65, 0x74, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65,
-	0x72, 0x61, 0x6c, 0x55, 0x73, 0x65, 0x72, 0x53, 0x74, 0x61, 0x74, 0x73, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x2d, 0x0a, 0x11, 0x47,
-	0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x53, 0x74, 0x61, 0x74, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x16, 0x0a, 0x14, 0x47, 0x65,
-	0x74, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x53, 0x74, 0x61, 0x74, 0x73, 0x51, 0x75, 0x65,
-	0x72, 0x79, 0x22, 0x19, 0x0a, 0x17, 0x47, 0x65, 0x74, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65,
-	0x72, 0x61, 0x6c, 0x53, 0x74, 0x61, 0x74, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x22, 0x44, 0x0a,
-	0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2d, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x50,
-	0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x70, 0x61, 0x72,
-	0x61, 0x6d, 0x73, 0x22, 0xfb, 0x01, 0x0a, 0x14, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72,
-	0x61, 0x6c, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x53, 0x74, 0x61, 0x74, 0x73, 0x12, 0x14, 0x0a, 0x05,
-	0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e,
-	0x6f, 0x6d, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x61, 0x6d,
-	0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
-	0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x6c, 0x74, 0x76,
-	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6c, 0x74, 0x76, 0x12, 0x1b, 0x0a, 0x09, 0x70,
-	0x72, 0x69, 0x63, 0x65, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08,
-	0x70, 0x72, 0x69, 0x63, 0x65, 0x55, 0x73, 0x64, 0x12, 0x1c, 0x0a, 0x09, 0x64, 0x65, 0x70, 0x6f,
-	0x73, 0x69, 0x74, 0x65, 0x64, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x64, 0x65, 0x70,
-	0x6f, 0x73, 0x69, 0x74, 0x65, 0x64, 0x12, 0x1f, 0x0a, 0x0b, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69,
-	0x74, 0x5f, 0x63, 0x61, 0x70, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x64, 0x65, 0x70,
-	0x6f, 0x73, 0x69, 0x74, 0x43, 0x61, 0x70, 0x12, 0x28, 0x0a, 0x10, 0x64, 0x65, 0x70, 0x6f, 0x73,
-	0x69, 0x74, 0x5f, 0x63, 0x61, 0x70, 0x5f, 0x75, 0x73, 0x65, 0x64, 0x18, 0x08, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x0e, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x43, 0x61, 0x70, 0x55, 0x73, 0x65,
-	0x64, 0x22, 0x6e, 0x0a, 0x1a, 0x47, 0x65, 0x74, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72,
-	0x61, 0x6c, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x33, 0x0a, 0x05, 0x73, 0x74, 0x61, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1d,
-	0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65,
-	0x72, 0x61, 0x6c, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x05, 0x73,
-	0x74, 0x61, 0x74, 0x73, 0x12, 0x1b, 0x0a, 0x09, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x75, 0x73,
-	0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x55, 0x73,
-	0x64, 0x22, 0x87, 0x04, 0x0a, 0x11, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x44, 0x65, 0x6e,
-	0x6f, 0x6d, 0x53, 0x74, 0x61, 0x74, 0x73, 0x12, 0x1d, 0x0a, 0x0a, 0x62, 0x61, 0x73, 0x65, 0x5f,
-	0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x62, 0x61, 0x73,
-	0x65, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x22, 0x0a, 0x0d, 0x63, 0x5f, 0x61, 0x73, 0x73, 0x65,
-	0x74, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x63,
-	0x41, 0x73, 0x73, 0x65, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x76,
-	0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61,
-	0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x12, 0x23, 0x0a, 0x0d, 0x61, 0x76, 0x61, 0x69,
-	0x6c, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x0c, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x55, 0x73, 0x64, 0x12, 0x1a, 0x0a,
-	0x08, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x65, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x08, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x65, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x62, 0x6f, 0x72,
-	0x72, 0x6f, 0x77, 0x65, 0x64, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x0b, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x65, 0x64, 0x55, 0x73, 0x64, 0x12, 0x1c, 0x0a, 0x09,
-	0x72, 0x65, 0x64, 0x65, 0x65, 0x6d, 0x69, 0x6e, 0x67, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x09, 0x72, 0x65, 0x64, 0x65, 0x65, 0x6d, 0x69, 0x6e, 0x67, 0x12, 0x23, 0x0a, 0x0d, 0x72, 0x65,
-	0x64, 0x65, 0x65, 0x6d, 0x69, 0x6e, 0x67, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x08, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x0c, 0x72, 0x65, 0x64, 0x65, 0x65, 0x6d, 0x69, 0x6e, 0x67, 0x55, 0x73, 0x64, 0x12,
-	0x24, 0x0a, 0x0e, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x5f, 0x63, 0x5f, 0x61, 0x73, 0x73, 0x65,
-	0x74, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x43,
-	0x41, 0x73, 0x73, 0x65, 0x74, 0x12, 0x2b, 0x0a, 0x12, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x5f,
-	0x63, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x0a, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x0f, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x43, 0x41, 0x73, 0x73, 0x65, 0x74, 0x55,
-	0x73, 0x64, 0x12, 0x23, 0x0a, 0x0d, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72,
-	0x61, 0x74, 0x65, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x69, 0x6e, 0x74, 0x65, 0x72,
-	0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x12, 0x21, 0x0a, 0x0c, 0x75, 0x74, 0x69, 0x6c, 0x69,
-	0x74, 0x79, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x75,
-	0x74, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x52, 0x61, 0x74, 0x65, 0x12, 0x24, 0x0a, 0x0e, 0x70, 0x72,
-	0x69, 0x63, 0x65, 0x5f, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x0d, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0c, 0x70, 0x72, 0x69, 0x63, 0x65, 0x42, 0x61, 0x73, 0x65, 0x55, 0x73, 0x64,
-	0x12, 0x29, 0x0a, 0x11, 0x70, 0x72, 0x69, 0x63, 0x65, 0x5f, 0x63, 0x5f, 0x61, 0x73, 0x73, 0x65,
-	0x74, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x70, 0x72, 0x69,
-	0x63, 0x65, 0x43, 0x41, 0x73, 0x73, 0x65, 0x74, 0x55, 0x73, 0x64, 0x22, 0x89, 0x02, 0x0a, 0x17,
-	0x47, 0x65, 0x74, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x30, 0x0a, 0x05, 0x73, 0x74, 0x61, 0x74, 0x73,
-	0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d,
-	0x2e, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x53, 0x74, 0x61,
-	0x74, 0x73, 0x52, 0x05, 0x73, 0x74, 0x61, 0x74, 0x73, 0x12, 0x2e, 0x0a, 0x13, 0x74, 0x6f, 0x74,
-	0x61, 0x6c, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x65, 0x64, 0x5f, 0x75, 0x73, 0x64,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x44, 0x65, 0x70,
-	0x6f, 0x73, 0x69, 0x74, 0x65, 0x64, 0x55, 0x73, 0x64, 0x12, 0x2e, 0x0a, 0x13, 0x74, 0x6f, 0x74,
-	0x61, 0x6c, 0x5f, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x75, 0x73, 0x64,
-	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x41, 0x76, 0x61,
-	0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x55, 0x73, 0x64, 0x12, 0x2c, 0x0a, 0x12, 0x74, 0x6f, 0x74,
-	0x61, 0x6c, 0x5f, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x65, 0x64, 0x5f, 0x75, 0x73, 0x64, 0x18,
-	0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x10, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x42, 0x6f, 0x72, 0x72,
-	0x6f, 0x77, 0x65, 0x64, 0x55, 0x73, 0x64, 0x12, 0x2e, 0x0a, 0x13, 0x74, 0x6f, 0x74, 0x61, 0x6c,
-	0x5f, 0x72, 0x65, 0x64, 0x65, 0x65, 0x6d, 0x69, 0x6e, 0x67, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x05,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x11, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x52, 0x65, 0x64, 0x65, 0x65,
-	0x6d, 0x69, 0x6e, 0x67, 0x55, 0x73, 0x64, 0x22, 0xca, 0x03, 0x0a, 0x10, 0x44, 0x65, 0x70, 0x6f,
-	0x73, 0x69, 0x74, 0x55, 0x73, 0x65, 0x72, 0x53, 0x74, 0x61, 0x74, 0x73, 0x12, 0x1d, 0x0a, 0x0a,
-	0x62, 0x61, 0x73, 0x65, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x09, 0x62, 0x61, 0x73, 0x65, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x22, 0x0a, 0x0d, 0x63,
-	0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0b, 0x63, 0x41, 0x73, 0x73, 0x65, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12,
-	0x24, 0x0a, 0x0e, 0x63, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x73, 0x75, 0x70, 0x70, 0x6c,
-	0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x63, 0x41, 0x73, 0x73, 0x65, 0x74, 0x53,
-	0x75, 0x70, 0x70, 0x6c, 0x79, 0x12, 0x22, 0x0a, 0x0d, 0x63, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74,
-	0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x63, 0x41,
-	0x73, 0x73, 0x65, 0x74, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x61, 0x6d, 0x6f,
-	0x75, 0x6e, 0x74, 0x5f, 0x62, 0x61, 0x73, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a,
-	0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x42, 0x61, 0x73, 0x65, 0x12, 0x24, 0x0a, 0x0e, 0x61, 0x6d,
-	0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x63, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x18, 0x06, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0c, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x43, 0x41, 0x73, 0x73, 0x65, 0x74,
+	0x73, 0x73, 0x22, 0x16, 0x0a, 0x14, 0x47, 0x65, 0x74, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74,
+	0x53, 0x74, 0x61, 0x74, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x22, 0x19, 0x0a, 0x17, 0x47, 0x65,
+	0x74, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x53, 0x74, 0x61, 0x74, 0x73,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x22, 0x44, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61,
+	0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2d, 0x0a, 0x06,
+	0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x6b,
+	0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x04, 0xc8,
+	0xde, 0x1f, 0x00, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0xfb, 0x01, 0x0a, 0x14,
+	0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x53,
+	0x74, 0x61, 0x74, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d,
+	0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75,
+	0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x75, 0x73, 0x64,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x55, 0x73,
+	0x64, 0x12, 0x10, 0x0a, 0x03, 0x6c, 0x74, 0x76, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
+	0x6c, 0x74, 0x76, 0x12, 0x1b, 0x0a, 0x09, 0x70, 0x72, 0x69, 0x63, 0x65, 0x5f, 0x75, 0x73, 0x64,
+	0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x72, 0x69, 0x63, 0x65, 0x55, 0x73, 0x64,
+	0x12, 0x1c, 0x0a, 0x09, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x65, 0x64, 0x18, 0x06, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x09, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x65, 0x64, 0x12, 0x1f,
+	0x0a, 0x0b, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f, 0x63, 0x61, 0x70, 0x18, 0x07, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0a, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x43, 0x61, 0x70, 0x12,
+	0x28, 0x0a, 0x10, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f, 0x63, 0x61, 0x70, 0x5f, 0x75,
+	0x73, 0x65, 0x64, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x64, 0x65, 0x70, 0x6f, 0x73,
+	0x69, 0x74, 0x43, 0x61, 0x70, 0x55, 0x73, 0x65, 0x64, 0x22, 0x6e, 0x0a, 0x1a, 0x47, 0x65, 0x74,
+	0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x33, 0x0a, 0x05, 0x73, 0x74, 0x61, 0x74, 0x73,
+	0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d,
+	0x2e, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x44, 0x65, 0x6e, 0x6f, 0x6d,
+	0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x05, 0x73, 0x74, 0x61, 0x74, 0x73, 0x12, 0x1b, 0x0a, 0x09,
+	0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x08, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x55, 0x73, 0x64, 0x22, 0x87, 0x04, 0x0a, 0x11, 0x44, 0x65,
+	0x70, 0x6f, 0x73, 0x69, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x53, 0x74, 0x61, 0x74, 0x73, 0x12,
+	0x1d, 0x0a, 0x0a, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x09, 0x62, 0x61, 0x73, 0x65, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x22,
+	0x0a, 0x0d, 0x63, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x63, 0x41, 0x73, 0x73, 0x65, 0x74, 0x44, 0x65, 0x6e,
+	0x6f, 0x6d, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65,
+	0x12, 0x23, 0x0a, 0x0d, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x5f, 0x75, 0x73,
+	0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x61, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62,
+	0x6c, 0x65, 0x55, 0x73, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x65,
+	0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x65,
+	0x64, 0x12, 0x21, 0x0a, 0x0c, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x65, 0x64, 0x5f, 0x75, 0x73,
+	0x64, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x65,
+	0x64, 0x55, 0x73, 0x64, 0x12, 0x1c, 0x0a, 0x09, 0x72, 0x65, 0x64, 0x65, 0x65, 0x6d, 0x69, 0x6e,
+	0x67, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x72, 0x65, 0x64, 0x65, 0x65, 0x6d, 0x69,
+	0x6e, 0x67, 0x12, 0x23, 0x0a, 0x0d, 0x72, 0x65, 0x64, 0x65, 0x65, 0x6d, 0x69, 0x6e, 0x67, 0x5f,
+	0x75, 0x73, 0x64, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x72, 0x65, 0x64, 0x65, 0x65,
+	0x6d, 0x69, 0x6e, 0x67, 0x55, 0x73, 0x64, 0x12, 0x24, 0x0a, 0x0e, 0x73, 0x75, 0x70, 0x70, 0x6c,
+	0x79, 0x5f, 0x63, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0c, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x43, 0x41, 0x73, 0x73, 0x65, 0x74, 0x12, 0x2b, 0x0a,
+	0x12, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x5f, 0x63, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f,
+	0x75, 0x73, 0x64, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0f, 0x73, 0x75, 0x70, 0x70, 0x6c,
+	0x79, 0x43, 0x41, 0x73, 0x73, 0x65, 0x74, 0x55, 0x73, 0x64, 0x12, 0x23, 0x0a, 0x0d, 0x69, 0x6e,
+	0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x0b, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0c, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x65, 0x73, 0x74, 0x52, 0x61, 0x74, 0x65, 0x12,
+	0x21, 0x0a, 0x0c, 0x75, 0x74, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18,
+	0x0c, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x75, 0x74, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x52, 0x61,
+	0x74, 0x65, 0x12, 0x24, 0x0a, 0x0e, 0x70, 0x72, 0x69, 0x63, 0x65, 0x5f, 0x62, 0x61, 0x73, 0x65,
+	0x5f, 0x75, 0x73, 0x64, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x70, 0x72, 0x69, 0x63,
+	0x65, 0x42, 0x61, 0x73, 0x65, 0x55, 0x73, 0x64, 0x12, 0x29, 0x0a, 0x11, 0x70, 0x72, 0x69, 0x63,
+	0x65, 0x5f, 0x63, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x0e, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0e, 0x70, 0x72, 0x69, 0x63, 0x65, 0x43, 0x41, 0x73, 0x73, 0x65, 0x74,
+	0x55, 0x73, 0x64, 0x22, 0x89, 0x02, 0x0a, 0x17, 0x47, 0x65, 0x74, 0x44, 0x65, 0x70, 0x6f, 0x73,
+	0x69, 0x74, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x30, 0x0a, 0x05, 0x73, 0x74, 0x61, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1a,
+	0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74,
+	0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x05, 0x73, 0x74, 0x61, 0x74,
+	0x73, 0x12, 0x2e, 0x0a, 0x13, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73,
+	0x69, 0x74, 0x65, 0x64, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11,
+	0x74, 0x6f, 0x74, 0x61, 0x6c, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x65, 0x64, 0x55, 0x73,
+	0x64, 0x12, 0x2e, 0x0a, 0x13, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x61, 0x76, 0x61, 0x69, 0x6c,
+	0x61, 0x62, 0x6c, 0x65, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11,
+	0x74, 0x6f, 0x74, 0x61, 0x6c, 0x41, 0x76, 0x61, 0x69, 0x6c, 0x61, 0x62, 0x6c, 0x65, 0x55, 0x73,
+	0x64, 0x12, 0x2c, 0x0a, 0x12, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x62, 0x6f, 0x72, 0x72, 0x6f,
+	0x77, 0x65, 0x64, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x10, 0x74,
+	0x6f, 0x74, 0x61, 0x6c, 0x42, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x65, 0x64, 0x55, 0x73, 0x64, 0x12,
+	0x2e, 0x0a, 0x13, 0x74, 0x6f, 0x74, 0x61, 0x6c, 0x5f, 0x72, 0x65, 0x64, 0x65, 0x65, 0x6d, 0x69,
+	0x6e, 0x67, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11, 0x74, 0x6f,
+	0x74, 0x61, 0x6c, 0x52, 0x65, 0x64, 0x65, 0x65, 0x6d, 0x69, 0x6e, 0x67, 0x55, 0x73, 0x64, 0x22,
+	0xd2, 0x03, 0x0a, 0x10, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x55, 0x73, 0x65, 0x72, 0x53,
+	0x74, 0x61, 0x74, 0x73, 0x12, 0x1d, 0x0a, 0x0a, 0x62, 0x61, 0x73, 0x65, 0x5f, 0x64, 0x65, 0x6e,
+	0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x62, 0x61, 0x73, 0x65, 0x44, 0x65,
+	0x6e, 0x6f, 0x6d, 0x12, 0x22, 0x0a, 0x0d, 0x63, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x64,
+	0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x63, 0x41, 0x73, 0x73,
+	0x65, 0x74, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x24, 0x0a, 0x0e, 0x63, 0x5f, 0x61, 0x73, 0x73,
+	0x65, 0x74, 0x5f, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0c, 0x63, 0x41, 0x73, 0x73, 0x65, 0x74, 0x53, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x12, 0x22, 0x0a,
+	0x0d, 0x63, 0x5f, 0x61, 0x73, 0x73, 0x65, 0x74, 0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x04,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x63, 0x41, 0x73, 0x73, 0x65, 0x74, 0x56, 0x61, 0x6c, 0x75,
+	0x65, 0x12, 0x24, 0x0a, 0x0e, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x63, 0x5f, 0x61, 0x73,
+	0x73, 0x65, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x61, 0x6d, 0x6f, 0x75, 0x6e,
+	0x74, 0x43, 0x41, 0x73, 0x73, 0x65, 0x74, 0x12, 0x27, 0x0a, 0x0f, 0x62, 0x61, 0x73, 0x65, 0x5f,
+	0x65, 0x71, 0x75, 0x69, 0x76, 0x61, 0x6c, 0x65, 0x6e, 0x74, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x0e, 0x62, 0x61, 0x73, 0x65, 0x45, 0x71, 0x75, 0x69, 0x76, 0x61, 0x6c, 0x65, 0x6e, 0x74,
 	0x12, 0x29, 0x0a, 0x11, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x5f, 0x63, 0x5f, 0x61, 0x73, 0x73, 0x65,
 	0x74, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x76, 0x61, 0x6c,
 	0x75, 0x65, 0x43, 0x41, 0x73, 0x73, 0x65, 0x74, 0x55, 0x73, 0x64, 0x12, 0x24, 0x0a, 0x0e, 0x70,
@@ -33953,7 +35550,7 @@ var file_kopi_mm_query_proto_rawDesc = []byte{
 	0x61, 0x6c, 0x12, 0x31, 0x0a, 0x06, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x18, 0x06, 0x20, 0x03,
 	0x28, 0x0b, 0x32, 0x19, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x46, 0x75, 0x6c,
 	0x6c, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x06, 0x64,
-	0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x32, 0xce, 0x19, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12,
+	0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x32, 0xcd, 0x1a, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12,
 	0x76, 0x0a, 0x0b, 0x46, 0x75, 0x6c, 0x6c, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x12, 0x20,
 	0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x46, 0x75,
 	0x6c, 0x6c, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
@@ -34127,45 +35724,53 @@ var file_kopi_mm_query_proto_rawDesc = []byte{
 	0x22, 0x37, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x31, 0x12, 0x2f, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f,
 	0x6d, 0x6d, 0x2f, 0x72, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x61,
 	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x2f, 0x7b, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x7d,
-	0x2f, 0x62, 0x79, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x9d, 0x01, 0x0a, 0x19, 0x47, 0x65,
-	0x74, 0x52, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x73,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x27, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d,
-	0x6d, 0x2e, 0x47, 0x65, 0x74, 0x52, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x53,
-	0x74, 0x61, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x1a, 0x2a, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x47, 0x65, 0x74, 0x52, 0x65,
-	0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2b, 0x82, 0xd3,
-	0xe4, 0x93, 0x02, 0x25, 0x12, 0x23, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x6d, 0x6d, 0x2f, 0x72,
-	0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x73, 0x74, 0x61, 0x74, 0x73,
-	0x2f, 0x62, 0x79, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x6b, 0x0a, 0x0c, 0x47, 0x65, 0x74,
-	0x55, 0x73, 0x65, 0x72, 0x53, 0x74, 0x61, 0x74, 0x73, 0x12, 0x1a, 0x2e, 0x6b, 0x6f, 0x70, 0x69,
-	0x2e, 0x6d, 0x6d, 0x2e, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x53, 0x74, 0x61, 0x74, 0x73,
-	0x51, 0x75, 0x65, 0x72, 0x79, 0x1a, 0x1d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e,
-	0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x20, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1a, 0x12, 0x18, 0x2f, 0x6b,
-	0x6f, 0x70, 0x69, 0x2f, 0x6d, 0x6d, 0x2f, 0x73, 0x74, 0x61, 0x74, 0x73, 0x2f, 0x7b, 0x61, 0x64,
-	0x64, 0x72, 0x65, 0x73, 0x73, 0x7d, 0x12, 0x74, 0x0a, 0x13, 0x47, 0x65, 0x74, 0x54, 0x6f, 0x74,
-	0x61, 0x6c, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x4c, 0x6f, 0x63, 0x6b, 0x65, 0x64, 0x12, 0x21, 0x2e,
-	0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x47, 0x65, 0x74, 0x54, 0x6f, 0x74, 0x61, 0x6c,
-	0x56, 0x61, 0x6c, 0x75, 0x65, 0x4c, 0x6f, 0x63, 0x6b, 0x65, 0x64, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x1a, 0x24, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x47, 0x65, 0x74, 0x54, 0x6f,
-	0x74, 0x61, 0x6c, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x4c, 0x6f, 0x63, 0x6b, 0x65, 0x64, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x14, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x0e, 0x12, 0x0c,
-	0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x6d, 0x6d, 0x2f, 0x74, 0x76, 0x6c, 0x12, 0x68, 0x0a, 0x0e,
-	0x47, 0x65, 0x74, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x12, 0x1c,
-	0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x47, 0x65, 0x74, 0x56, 0x61, 0x75, 0x6c,
-	0x74, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x1a, 0x1f, 0x2e, 0x6b,
-	0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x47, 0x65, 0x74, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x56,
-	0x61, 0x6c, 0x75, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x17, 0x82,
-	0xd3, 0xe4, 0x93, 0x02, 0x11, 0x12, 0x0f, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x6d, 0x6d, 0x2f,
-	0x76, 0x61, 0x75, 0x6c, 0x74, 0x73, 0x42, 0x70, 0x0a, 0x0b, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f,
-	0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x42, 0x0a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x74,
-	0x6f, 0x50, 0x01, 0x5a, 0x18, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
-	0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x6d, 0x6d, 0xa2, 0x02, 0x03,
-	0x4b, 0x4d, 0x58, 0xaa, 0x02, 0x07, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x4d, 0x6d, 0xca, 0x02, 0x07,
-	0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x4d, 0x6d, 0xe2, 0x02, 0x13, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x4d,
-	0x6d, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x08,
-	0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x4d, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x2f, 0x62, 0x79, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x7d, 0x0a, 0x15, 0x47, 0x65, 0x74,
+	0x52, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x12, 0x1c, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x47, 0x65, 0x74,
+	0x52, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x1a, 0x1f, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x47, 0x65, 0x74, 0x52, 0x65,
+	0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x25, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1f, 0x12, 0x1d, 0x2f, 0x6b, 0x6f, 0x70, 0x69,
+	0x2f, 0x6d, 0x6d, 0x2f, 0x72, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f,
+	0x62, 0x79, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x9d, 0x01, 0x0a, 0x19, 0x47, 0x65, 0x74,
+	0x52, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x27, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d,
+	0x2e, 0x47, 0x65, 0x74, 0x52, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x74,
+	0x61, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x51, 0x75, 0x65, 0x72, 0x79, 0x1a,
+	0x2a, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x47, 0x65, 0x74, 0x52, 0x65, 0x64,
+	0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2b, 0x82, 0xd3, 0xe4,
+	0x93, 0x02, 0x25, 0x12, 0x23, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x6d, 0x6d, 0x2f, 0x72, 0x65,
+	0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2f, 0x73, 0x74, 0x61, 0x74, 0x73, 0x2f,
+	0x62, 0x79, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x6b, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x55,
+	0x73, 0x65, 0x72, 0x53, 0x74, 0x61, 0x74, 0x73, 0x12, 0x1a, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e,
+	0x6d, 0x6d, 0x2e, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x53, 0x74, 0x61, 0x74, 0x73, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x1a, 0x1d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x47,
+	0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x53, 0x74, 0x61, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x20, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1a, 0x12, 0x18, 0x2f, 0x6b, 0x6f,
+	0x70, 0x69, 0x2f, 0x6d, 0x6d, 0x2f, 0x73, 0x74, 0x61, 0x74, 0x73, 0x2f, 0x7b, 0x61, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x7d, 0x12, 0x74, 0x0a, 0x13, 0x47, 0x65, 0x74, 0x54, 0x6f, 0x74, 0x61,
+	0x6c, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x4c, 0x6f, 0x63, 0x6b, 0x65, 0x64, 0x12, 0x21, 0x2e, 0x6b,
+	0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x47, 0x65, 0x74, 0x54, 0x6f, 0x74, 0x61, 0x6c, 0x56,
+	0x61, 0x6c, 0x75, 0x65, 0x4c, 0x6f, 0x63, 0x6b, 0x65, 0x64, 0x51, 0x75, 0x65, 0x72, 0x79, 0x1a,
+	0x24, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x47, 0x65, 0x74, 0x54, 0x6f, 0x74,
+	0x61, 0x6c, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x4c, 0x6f, 0x63, 0x6b, 0x65, 0x64, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x14, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x0e, 0x12, 0x0c, 0x2f,
+	0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x6d, 0x6d, 0x2f, 0x74, 0x76, 0x6c, 0x12, 0x68, 0x0a, 0x0e, 0x47,
+	0x65, 0x74, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x12, 0x1c, 0x2e,
+	0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x47, 0x65, 0x74, 0x56, 0x61, 0x75, 0x6c, 0x74,
+	0x56, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x1a, 0x1f, 0x2e, 0x6b, 0x6f,
+	0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x47, 0x65, 0x74, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x56, 0x61,
+	0x6c, 0x75, 0x65, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x17, 0x82, 0xd3,
+	0xe4, 0x93, 0x02, 0x11, 0x12, 0x0f, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x6d, 0x6d, 0x2f, 0x76,
+	0x61, 0x75, 0x6c, 0x74, 0x73, 0x42, 0x70, 0x0a, 0x0b, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70,
+	0x69, 0x2e, 0x6d, 0x6d, 0x42, 0x0a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f,
+	0x50, 0x01, 0x5a, 0x18, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x6d, 0x6d, 0xa2, 0x02, 0x03, 0x4b,
+	0x4d, 0x58, 0xaa, 0x02, 0x07, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x4d, 0x6d, 0xca, 0x02, 0x07, 0x4b,
+	0x6f, 0x70, 0x69, 0x5c, 0x4d, 0x6d, 0xe2, 0x02, 0x13, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x4d, 0x6d,
+	0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x08, 0x4b,
+	0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x4d, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -34180,135 +35785,141 @@ func file_kopi_mm_query_proto_rawDescGZIP() []byte {
 	return file_kopi_mm_query_proto_rawDescData
 }
 
-var file_kopi_mm_query_proto_msgTypes = make([]protoimpl.MessageInfo, 59)
+var file_kopi_mm_query_proto_msgTypes = make([]protoimpl.MessageInfo, 62)
 var file_kopi_mm_query_proto_goTypes = []interface{}{
-	(*GetRedemptionStatsRequestQuery)(nil),      // 0: kopi.mm.GetRedemptionStatsRequestQuery
-	(*GetRedemptionStatsRequestResponse)(nil),   // 1: kopi.mm.GetRedemptionStatsRequestResponse
-	(*GetRedemptionRequestQuery)(nil),           // 2: kopi.mm.GetRedemptionRequestQuery
-	(*GetRedemptionRequestResponse)(nil),        // 3: kopi.mm.GetRedemptionRequestResponse
-	(*GetDepositUserDenomStatsQuery)(nil),       // 4: kopi.mm.GetDepositUserDenomStatsQuery
-	(*GetCollateralDenomStatsQuery)(nil),        // 5: kopi.mm.GetCollateralDenomStatsQuery
-	(*UserCollateral)(nil),                      // 6: kopi.mm.UserCollateral
-	(*GetCollateralDenomStatsResponse)(nil),     // 7: kopi.mm.GetCollateralDenomStatsResponse
-	(*GetLoansQuery)(nil),                       // 8: kopi.mm.GetLoansQuery
-	(*UserLoan)(nil),                            // 9: kopi.mm.UserLoan
-	(*GetLoansResponse)(nil),                    // 10: kopi.mm.GetLoansResponse
-	(*GetLoanStatsQuery)(nil),                   // 11: kopi.mm.GetLoanStatsQuery
-	(*DenomLoanStat)(nil),                       // 12: kopi.mm.DenomLoanStat
-	(*GetLoanStatsResponse)(nil),                // 13: kopi.mm.GetLoanStatsResponse
-	(*GetAvailableToBorrowRequest)(nil),         // 14: kopi.mm.GetAvailableToBorrowRequest
-	(*GetAvailableToBorrowResponse)(nil),        // 15: kopi.mm.GetAvailableToBorrowResponse
-	(*GetWithdrawableCollateralQuery)(nil),      // 16: kopi.mm.GetWithdrawableCollateralQuery
-	(*GetWithdrawableCollateralResponse)(nil),   // 17: kopi.mm.GetWithdrawableCollateralResponse
-	(*Vault)(nil),                               // 18: kopi.mm.Vault
-	(*GetVaultValuesResponse)(nil),              // 19: kopi.mm.GetVaultValuesResponse
-	(*GetVaultValuesQuery)(nil),                 // 20: kopi.mm.GetVaultValuesQuery
-	(*GetUserDenomLoanQuery)(nil),               // 21: kopi.mm.GetUserDenomLoanQuery
-	(*GetUserDenomLoanResponse)(nil),            // 22: kopi.mm.GetUserDenomLoanResponse
-	(*GetBorrowInterestRateQuery)(nil),          // 23: kopi.mm.GetBorrowInterestRateQuery
-	(*GetBorrowInterestRateResponse)(nil),       // 24: kopi.mm.GetBorrowInterestRateResponse
-	(*GetCollateralDenomUserStatsQuery)(nil),    // 25: kopi.mm.GetCollateralDenomUserStatsQuery
-	(*GetCollateralDenomUserStatsResponse)(nil), // 26: kopi.mm.GetCollateralDenomUserStatsResponse
-	(*GetCreditLineUsageQuery)(nil),             // 27: kopi.mm.GetCreditLineUsageQuery
-	(*GetCreditLineUsageResponse)(nil),          // 28: kopi.mm.GetCreditLineUsageResponse
-	(*QueryParamsRequest)(nil),                  // 29: kopi.mm.QueryParamsRequest
-	(*GetTotalValueLockedQuery)(nil),            // 30: kopi.mm.GetTotalValueLockedQuery
-	(*GetNumLoansQuery)(nil),                    // 31: kopi.mm.GetNumLoansQuery
-	(*GetNumAddressLoansQuery)(nil),             // 32: kopi.mm.GetNumAddressLoansQuery
-	(*GetNumAddressLoansResponse)(nil),          // 33: kopi.mm.GetNumAddressLoansResponse
-	(*GetValueLoansQuery)(nil),                  // 34: kopi.mm.GetValueLoansQuery
-	(*GetValueLoansResponse)(nil),               // 35: kopi.mm.GetValueLoansResponse
-	(*GetUserLoansQuery)(nil),                   // 36: kopi.mm.GetUserLoansQuery
-	(*GetDepositUserStatsQuery)(nil),            // 37: kopi.mm.GetDepositUserStatsQuery
-	(*GetCollateralUserStatsQuery)(nil),         // 38: kopi.mm.GetCollateralUserStatsQuery
-	(*GetUserStatsQuery)(nil),                   // 39: kopi.mm.GetUserStatsQuery
-	(*GetDepositStatsQuery)(nil),                // 40: kopi.mm.GetDepositStatsQuery
-	(*GetCollateralStatsQuery)(nil),             // 41: kopi.mm.GetCollateralStatsQuery
-	(*QueryParamsResponse)(nil),                 // 42: kopi.mm.QueryParamsResponse
-	(*CollateralDenomStats)(nil),                // 43: kopi.mm.CollateralDenomStats
-	(*GetCollateralStatsResponse)(nil),          // 44: kopi.mm.GetCollateralStatsResponse
-	(*DepositDenomStats)(nil),                   // 45: kopi.mm.DepositDenomStats
-	(*GetDepositStatsResponse)(nil),             // 46: kopi.mm.GetDepositStatsResponse
-	(*DepositUserStats)(nil),                    // 47: kopi.mm.DepositUserStats
-	(*GetDepositUserStatsResponse)(nil),         // 48: kopi.mm.GetDepositUserStatsResponse
-	(*GetUserStatsResponse)(nil),                // 49: kopi.mm.GetUserStatsResponse
-	(*Address)(nil),                             // 50: kopi.mm.Address
-	(*GetTotalDepositsResponse)(nil),            // 51: kopi.mm.GetTotalDepositsResponse
-	(*GetNumLoansResponse)(nil),                 // 52: kopi.mm.GetNumLoansResponse
-	(*GetTotalValueLockedResponse)(nil),         // 53: kopi.mm.GetTotalValueLockedResponse
-	(*UserLoanStat)(nil),                        // 54: kopi.mm.UserLoanStat
-	(*GetUserLoansResponse)(nil),                // 55: kopi.mm.GetUserLoansResponse
-	(*QueryFullBalanceRequest)(nil),             // 56: kopi.mm.QueryFullBalanceRequest
-	(*FullDenomBalance)(nil),                    // 57: kopi.mm.FullDenomBalance
-	(*QueryFullBalanceResponse)(nil),            // 58: kopi.mm.QueryFullBalanceResponse
-	(*Params)(nil),                              // 59: kopi.mm.Params
+	(*GetRedemptionsQuery)(nil),                 // 0: kopi.mm.GetRedemptionsQuery
+	(*RedemptionRequest)(nil),                   // 1: kopi.mm.RedemptionRequest
+	(*GetRedemptionsResponse)(nil),              // 2: kopi.mm.GetRedemptionsResponse
+	(*GetRedemptionStatsRequestQuery)(nil),      // 3: kopi.mm.GetRedemptionStatsRequestQuery
+	(*GetRedemptionStatsRequestResponse)(nil),   // 4: kopi.mm.GetRedemptionStatsRequestResponse
+	(*GetRedemptionRequestQuery)(nil),           // 5: kopi.mm.GetRedemptionRequestQuery
+	(*GetRedemptionRequestResponse)(nil),        // 6: kopi.mm.GetRedemptionRequestResponse
+	(*GetDepositUserDenomStatsQuery)(nil),       // 7: kopi.mm.GetDepositUserDenomStatsQuery
+	(*GetCollateralDenomStatsQuery)(nil),        // 8: kopi.mm.GetCollateralDenomStatsQuery
+	(*UserCollateral)(nil),                      // 9: kopi.mm.UserCollateral
+	(*GetCollateralDenomStatsResponse)(nil),     // 10: kopi.mm.GetCollateralDenomStatsResponse
+	(*GetLoansQuery)(nil),                       // 11: kopi.mm.GetLoansQuery
+	(*UserLoan)(nil),                            // 12: kopi.mm.UserLoan
+	(*GetLoansResponse)(nil),                    // 13: kopi.mm.GetLoansResponse
+	(*GetLoanStatsQuery)(nil),                   // 14: kopi.mm.GetLoanStatsQuery
+	(*DenomLoanStat)(nil),                       // 15: kopi.mm.DenomLoanStat
+	(*GetLoanStatsResponse)(nil),                // 16: kopi.mm.GetLoanStatsResponse
+	(*GetAvailableToBorrowRequest)(nil),         // 17: kopi.mm.GetAvailableToBorrowRequest
+	(*GetAvailableToBorrowResponse)(nil),        // 18: kopi.mm.GetAvailableToBorrowResponse
+	(*GetWithdrawableCollateralQuery)(nil),      // 19: kopi.mm.GetWithdrawableCollateralQuery
+	(*GetWithdrawableCollateralResponse)(nil),   // 20: kopi.mm.GetWithdrawableCollateralResponse
+	(*Vault)(nil),                               // 21: kopi.mm.Vault
+	(*GetVaultValuesResponse)(nil),              // 22: kopi.mm.GetVaultValuesResponse
+	(*GetVaultValuesQuery)(nil),                 // 23: kopi.mm.GetVaultValuesQuery
+	(*GetUserDenomLoanQuery)(nil),               // 24: kopi.mm.GetUserDenomLoanQuery
+	(*GetUserDenomLoanResponse)(nil),            // 25: kopi.mm.GetUserDenomLoanResponse
+	(*GetBorrowInterestRateQuery)(nil),          // 26: kopi.mm.GetBorrowInterestRateQuery
+	(*GetBorrowInterestRateResponse)(nil),       // 27: kopi.mm.GetBorrowInterestRateResponse
+	(*GetCollateralDenomUserStatsQuery)(nil),    // 28: kopi.mm.GetCollateralDenomUserStatsQuery
+	(*GetCollateralDenomUserStatsResponse)(nil), // 29: kopi.mm.GetCollateralDenomUserStatsResponse
+	(*GetCreditLineUsageQuery)(nil),             // 30: kopi.mm.GetCreditLineUsageQuery
+	(*GetCreditLineUsageResponse)(nil),          // 31: kopi.mm.GetCreditLineUsageResponse
+	(*QueryParamsRequest)(nil),                  // 32: kopi.mm.QueryParamsRequest
+	(*GetTotalValueLockedQuery)(nil),            // 33: kopi.mm.GetTotalValueLockedQuery
+	(*GetNumLoansQuery)(nil),                    // 34: kopi.mm.GetNumLoansQuery
+	(*GetNumAddressLoansQuery)(nil),             // 35: kopi.mm.GetNumAddressLoansQuery
+	(*GetNumAddressLoansResponse)(nil),          // 36: kopi.mm.GetNumAddressLoansResponse
+	(*GetValueLoansQuery)(nil),                  // 37: kopi.mm.GetValueLoansQuery
+	(*GetValueLoansResponse)(nil),               // 38: kopi.mm.GetValueLoansResponse
+	(*GetUserLoansQuery)(nil),                   // 39: kopi.mm.GetUserLoansQuery
+	(*GetDepositUserStatsQuery)(nil),            // 40: kopi.mm.GetDepositUserStatsQuery
+	(*GetCollateralUserStatsQuery)(nil),         // 41: kopi.mm.GetCollateralUserStatsQuery
+	(*GetUserStatsQuery)(nil),                   // 42: kopi.mm.GetUserStatsQuery
+	(*GetDepositStatsQuery)(nil),                // 43: kopi.mm.GetDepositStatsQuery
+	(*GetCollateralStatsQuery)(nil),             // 44: kopi.mm.GetCollateralStatsQuery
+	(*QueryParamsResponse)(nil),                 // 45: kopi.mm.QueryParamsResponse
+	(*CollateralDenomStats)(nil),                // 46: kopi.mm.CollateralDenomStats
+	(*GetCollateralStatsResponse)(nil),          // 47: kopi.mm.GetCollateralStatsResponse
+	(*DepositDenomStats)(nil),                   // 48: kopi.mm.DepositDenomStats
+	(*GetDepositStatsResponse)(nil),             // 49: kopi.mm.GetDepositStatsResponse
+	(*DepositUserStats)(nil),                    // 50: kopi.mm.DepositUserStats
+	(*GetDepositUserStatsResponse)(nil),         // 51: kopi.mm.GetDepositUserStatsResponse
+	(*GetUserStatsResponse)(nil),                // 52: kopi.mm.GetUserStatsResponse
+	(*Address)(nil),                             // 53: kopi.mm.Address
+	(*GetTotalDepositsResponse)(nil),            // 54: kopi.mm.GetTotalDepositsResponse
+	(*GetNumLoansResponse)(nil),                 // 55: kopi.mm.GetNumLoansResponse
+	(*GetTotalValueLockedResponse)(nil),         // 56: kopi.mm.GetTotalValueLockedResponse
+	(*UserLoanStat)(nil),                        // 57: kopi.mm.UserLoanStat
+	(*GetUserLoansResponse)(nil),                // 58: kopi.mm.GetUserLoansResponse
+	(*QueryFullBalanceRequest)(nil),             // 59: kopi.mm.QueryFullBalanceRequest
+	(*FullDenomBalance)(nil),                    // 60: kopi.mm.FullDenomBalance
+	(*QueryFullBalanceResponse)(nil),            // 61: kopi.mm.QueryFullBalanceResponse
+	(*Params)(nil),                              // 62: kopi.mm.Params
 }
 var file_kopi_mm_query_proto_depIdxs = []int32{
-	6,  // 0: kopi.mm.GetCollateralDenomStatsResponse.user_collateral:type_name -> kopi.mm.UserCollateral
-	9,  // 1: kopi.mm.GetLoansResponse.loans:type_name -> kopi.mm.UserLoan
-	12, // 2: kopi.mm.GetLoanStatsResponse.loan_stats:type_name -> kopi.mm.DenomLoanStat
-	18, // 3: kopi.mm.GetVaultValuesResponse.vaults:type_name -> kopi.mm.Vault
-	59, // 4: kopi.mm.QueryParamsResponse.params:type_name -> kopi.mm.Params
-	43, // 5: kopi.mm.GetCollateralStatsResponse.stats:type_name -> kopi.mm.CollateralDenomStats
-	45, // 6: kopi.mm.GetDepositStatsResponse.stats:type_name -> kopi.mm.DepositDenomStats
-	47, // 7: kopi.mm.GetDepositUserStatsResponse.stats:type_name -> kopi.mm.DepositUserStats
-	54, // 8: kopi.mm.GetUserLoansResponse.user_loans:type_name -> kopi.mm.UserLoanStat
-	57, // 9: kopi.mm.QueryFullBalanceResponse.denoms:type_name -> kopi.mm.FullDenomBalance
-	56, // 10: kopi.mm.Query.FullBalance:input_type -> kopi.mm.QueryFullBalanceRequest
-	41, // 11: kopi.mm.Query.GetCollateralStats:input_type -> kopi.mm.GetCollateralStatsQuery
-	5,  // 12: kopi.mm.Query.GetCollateralDenomStats:input_type -> kopi.mm.GetCollateralDenomStatsQuery
-	38, // 13: kopi.mm.Query.GetCollateralUserStats:input_type -> kopi.mm.GetCollateralUserStatsQuery
-	25, // 14: kopi.mm.Query.GetCollateralDenomUserStats:input_type -> kopi.mm.GetCollateralDenomUserStatsQuery
-	16, // 15: kopi.mm.Query.GetWithdrawableCollateral:input_type -> kopi.mm.GetWithdrawableCollateralQuery
-	27, // 16: kopi.mm.Query.GetCreditLineUsage:input_type -> kopi.mm.GetCreditLineUsageQuery
-	37, // 17: kopi.mm.Query.GetDepositUserStats:input_type -> kopi.mm.GetDepositUserStatsQuery
-	4,  // 18: kopi.mm.Query.GetDepositUserDenomStats:input_type -> kopi.mm.GetDepositUserDenomStatsQuery
-	40, // 19: kopi.mm.Query.GetDepositStats:input_type -> kopi.mm.GetDepositStatsQuery
-	23, // 20: kopi.mm.Query.GetBorrowInterestRate:input_type -> kopi.mm.GetBorrowInterestRateQuery
-	8,  // 21: kopi.mm.Query.GetLoans:input_type -> kopi.mm.GetLoansQuery
-	36, // 22: kopi.mm.Query.GetUserLoans:input_type -> kopi.mm.GetUserLoansQuery
-	21, // 23: kopi.mm.Query.GetUserDenomLoan:input_type -> kopi.mm.GetUserDenomLoanQuery
-	14, // 24: kopi.mm.Query.GetAvailableToBorrow:input_type -> kopi.mm.GetAvailableToBorrowRequest
-	31, // 25: kopi.mm.Query.GetNumLoans:input_type -> kopi.mm.GetNumLoansQuery
-	32, // 26: kopi.mm.Query.GetNumAddressLoans:input_type -> kopi.mm.GetNumAddressLoansQuery
-	11, // 27: kopi.mm.Query.GetLoansStats:input_type -> kopi.mm.GetLoanStatsQuery
-	34, // 28: kopi.mm.Query.GetValueLoans:input_type -> kopi.mm.GetValueLoansQuery
-	29, // 29: kopi.mm.Query.Params:input_type -> kopi.mm.QueryParamsRequest
-	2,  // 30: kopi.mm.Query.GetRedemptionRequest:input_type -> kopi.mm.GetRedemptionRequestQuery
-	0,  // 31: kopi.mm.Query.GetRedemptionStatsRequest:input_type -> kopi.mm.GetRedemptionStatsRequestQuery
-	39, // 32: kopi.mm.Query.GetUserStats:input_type -> kopi.mm.GetUserStatsQuery
-	30, // 33: kopi.mm.Query.GetTotalValueLocked:input_type -> kopi.mm.GetTotalValueLockedQuery
-	20, // 34: kopi.mm.Query.GetVaultValues:input_type -> kopi.mm.GetVaultValuesQuery
-	58, // 35: kopi.mm.Query.FullBalance:output_type -> kopi.mm.QueryFullBalanceResponse
-	44, // 36: kopi.mm.Query.GetCollateralStats:output_type -> kopi.mm.GetCollateralStatsResponse
-	7,  // 37: kopi.mm.Query.GetCollateralDenomStats:output_type -> kopi.mm.GetCollateralDenomStatsResponse
-	44, // 38: kopi.mm.Query.GetCollateralUserStats:output_type -> kopi.mm.GetCollateralStatsResponse
-	26, // 39: kopi.mm.Query.GetCollateralDenomUserStats:output_type -> kopi.mm.GetCollateralDenomUserStatsResponse
-	17, // 40: kopi.mm.Query.GetWithdrawableCollateral:output_type -> kopi.mm.GetWithdrawableCollateralResponse
-	28, // 41: kopi.mm.Query.GetCreditLineUsage:output_type -> kopi.mm.GetCreditLineUsageResponse
-	48, // 42: kopi.mm.Query.GetDepositUserStats:output_type -> kopi.mm.GetDepositUserStatsResponse
-	47, // 43: kopi.mm.Query.GetDepositUserDenomStats:output_type -> kopi.mm.DepositUserStats
-	46, // 44: kopi.mm.Query.GetDepositStats:output_type -> kopi.mm.GetDepositStatsResponse
-	24, // 45: kopi.mm.Query.GetBorrowInterestRate:output_type -> kopi.mm.GetBorrowInterestRateResponse
-	10, // 46: kopi.mm.Query.GetLoans:output_type -> kopi.mm.GetLoansResponse
-	55, // 47: kopi.mm.Query.GetUserLoans:output_type -> kopi.mm.GetUserLoansResponse
-	22, // 48: kopi.mm.Query.GetUserDenomLoan:output_type -> kopi.mm.GetUserDenomLoanResponse
-	15, // 49: kopi.mm.Query.GetAvailableToBorrow:output_type -> kopi.mm.GetAvailableToBorrowResponse
-	52, // 50: kopi.mm.Query.GetNumLoans:output_type -> kopi.mm.GetNumLoansResponse
-	33, // 51: kopi.mm.Query.GetNumAddressLoans:output_type -> kopi.mm.GetNumAddressLoansResponse
-	13, // 52: kopi.mm.Query.GetLoansStats:output_type -> kopi.mm.GetLoanStatsResponse
-	35, // 53: kopi.mm.Query.GetValueLoans:output_type -> kopi.mm.GetValueLoansResponse
-	42, // 54: kopi.mm.Query.Params:output_type -> kopi.mm.QueryParamsResponse
-	3,  // 55: kopi.mm.Query.GetRedemptionRequest:output_type -> kopi.mm.GetRedemptionRequestResponse
-	1,  // 56: kopi.mm.Query.GetRedemptionStatsRequest:output_type -> kopi.mm.GetRedemptionStatsRequestResponse
-	49, // 57: kopi.mm.Query.GetUserStats:output_type -> kopi.mm.GetUserStatsResponse
-	53, // 58: kopi.mm.Query.GetTotalValueLocked:output_type -> kopi.mm.GetTotalValueLockedResponse
-	19, // 59: kopi.mm.Query.GetVaultValues:output_type -> kopi.mm.GetVaultValuesResponse
-	35, // [35:60] is the sub-list for method output_type
-	10, // [10:35] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	1,  // 0: kopi.mm.GetRedemptionsResponse.requests:type_name -> kopi.mm.RedemptionRequest
+	9,  // 1: kopi.mm.GetCollateralDenomStatsResponse.user_collateral:type_name -> kopi.mm.UserCollateral
+	12, // 2: kopi.mm.GetLoansResponse.loans:type_name -> kopi.mm.UserLoan
+	15, // 3: kopi.mm.GetLoanStatsResponse.loan_stats:type_name -> kopi.mm.DenomLoanStat
+	21, // 4: kopi.mm.GetVaultValuesResponse.vaults:type_name -> kopi.mm.Vault
+	62, // 5: kopi.mm.QueryParamsResponse.params:type_name -> kopi.mm.Params
+	46, // 6: kopi.mm.GetCollateralStatsResponse.stats:type_name -> kopi.mm.CollateralDenomStats
+	48, // 7: kopi.mm.GetDepositStatsResponse.stats:type_name -> kopi.mm.DepositDenomStats
+	50, // 8: kopi.mm.GetDepositUserStatsResponse.stats:type_name -> kopi.mm.DepositUserStats
+	57, // 9: kopi.mm.GetUserLoansResponse.user_loans:type_name -> kopi.mm.UserLoanStat
+	60, // 10: kopi.mm.QueryFullBalanceResponse.denoms:type_name -> kopi.mm.FullDenomBalance
+	59, // 11: kopi.mm.Query.FullBalance:input_type -> kopi.mm.QueryFullBalanceRequest
+	44, // 12: kopi.mm.Query.GetCollateralStats:input_type -> kopi.mm.GetCollateralStatsQuery
+	8,  // 13: kopi.mm.Query.GetCollateralDenomStats:input_type -> kopi.mm.GetCollateralDenomStatsQuery
+	41, // 14: kopi.mm.Query.GetCollateralUserStats:input_type -> kopi.mm.GetCollateralUserStatsQuery
+	28, // 15: kopi.mm.Query.GetCollateralDenomUserStats:input_type -> kopi.mm.GetCollateralDenomUserStatsQuery
+	19, // 16: kopi.mm.Query.GetWithdrawableCollateral:input_type -> kopi.mm.GetWithdrawableCollateralQuery
+	30, // 17: kopi.mm.Query.GetCreditLineUsage:input_type -> kopi.mm.GetCreditLineUsageQuery
+	40, // 18: kopi.mm.Query.GetDepositUserStats:input_type -> kopi.mm.GetDepositUserStatsQuery
+	7,  // 19: kopi.mm.Query.GetDepositUserDenomStats:input_type -> kopi.mm.GetDepositUserDenomStatsQuery
+	43, // 20: kopi.mm.Query.GetDepositStats:input_type -> kopi.mm.GetDepositStatsQuery
+	26, // 21: kopi.mm.Query.GetBorrowInterestRate:input_type -> kopi.mm.GetBorrowInterestRateQuery
+	11, // 22: kopi.mm.Query.GetLoans:input_type -> kopi.mm.GetLoansQuery
+	39, // 23: kopi.mm.Query.GetUserLoans:input_type -> kopi.mm.GetUserLoansQuery
+	24, // 24: kopi.mm.Query.GetUserDenomLoan:input_type -> kopi.mm.GetUserDenomLoanQuery
+	17, // 25: kopi.mm.Query.GetAvailableToBorrow:input_type -> kopi.mm.GetAvailableToBorrowRequest
+	34, // 26: kopi.mm.Query.GetNumLoans:input_type -> kopi.mm.GetNumLoansQuery
+	35, // 27: kopi.mm.Query.GetNumAddressLoans:input_type -> kopi.mm.GetNumAddressLoansQuery
+	14, // 28: kopi.mm.Query.GetLoansStats:input_type -> kopi.mm.GetLoanStatsQuery
+	37, // 29: kopi.mm.Query.GetValueLoans:input_type -> kopi.mm.GetValueLoansQuery
+	32, // 30: kopi.mm.Query.Params:input_type -> kopi.mm.QueryParamsRequest
+	5,  // 31: kopi.mm.Query.GetRedemptionRequest:input_type -> kopi.mm.GetRedemptionRequestQuery
+	0,  // 32: kopi.mm.Query.GetRedemptionsRequest:input_type -> kopi.mm.GetRedemptionsQuery
+	3,  // 33: kopi.mm.Query.GetRedemptionStatsRequest:input_type -> kopi.mm.GetRedemptionStatsRequestQuery
+	42, // 34: kopi.mm.Query.GetUserStats:input_type -> kopi.mm.GetUserStatsQuery
+	33, // 35: kopi.mm.Query.GetTotalValueLocked:input_type -> kopi.mm.GetTotalValueLockedQuery
+	23, // 36: kopi.mm.Query.GetVaultValues:input_type -> kopi.mm.GetVaultValuesQuery
+	61, // 37: kopi.mm.Query.FullBalance:output_type -> kopi.mm.QueryFullBalanceResponse
+	47, // 38: kopi.mm.Query.GetCollateralStats:output_type -> kopi.mm.GetCollateralStatsResponse
+	10, // 39: kopi.mm.Query.GetCollateralDenomStats:output_type -> kopi.mm.GetCollateralDenomStatsResponse
+	47, // 40: kopi.mm.Query.GetCollateralUserStats:output_type -> kopi.mm.GetCollateralStatsResponse
+	29, // 41: kopi.mm.Query.GetCollateralDenomUserStats:output_type -> kopi.mm.GetCollateralDenomUserStatsResponse
+	20, // 42: kopi.mm.Query.GetWithdrawableCollateral:output_type -> kopi.mm.GetWithdrawableCollateralResponse
+	31, // 43: kopi.mm.Query.GetCreditLineUsage:output_type -> kopi.mm.GetCreditLineUsageResponse
+	51, // 44: kopi.mm.Query.GetDepositUserStats:output_type -> kopi.mm.GetDepositUserStatsResponse
+	50, // 45: kopi.mm.Query.GetDepositUserDenomStats:output_type -> kopi.mm.DepositUserStats
+	49, // 46: kopi.mm.Query.GetDepositStats:output_type -> kopi.mm.GetDepositStatsResponse
+	27, // 47: kopi.mm.Query.GetBorrowInterestRate:output_type -> kopi.mm.GetBorrowInterestRateResponse
+	13, // 48: kopi.mm.Query.GetLoans:output_type -> kopi.mm.GetLoansResponse
+	58, // 49: kopi.mm.Query.GetUserLoans:output_type -> kopi.mm.GetUserLoansResponse
+	25, // 50: kopi.mm.Query.GetUserDenomLoan:output_type -> kopi.mm.GetUserDenomLoanResponse
+	18, // 51: kopi.mm.Query.GetAvailableToBorrow:output_type -> kopi.mm.GetAvailableToBorrowResponse
+	55, // 52: kopi.mm.Query.GetNumLoans:output_type -> kopi.mm.GetNumLoansResponse
+	36, // 53: kopi.mm.Query.GetNumAddressLoans:output_type -> kopi.mm.GetNumAddressLoansResponse
+	16, // 54: kopi.mm.Query.GetLoansStats:output_type -> kopi.mm.GetLoanStatsResponse
+	38, // 55: kopi.mm.Query.GetValueLoans:output_type -> kopi.mm.GetValueLoansResponse
+	45, // 56: kopi.mm.Query.Params:output_type -> kopi.mm.QueryParamsResponse
+	6,  // 57: kopi.mm.Query.GetRedemptionRequest:output_type -> kopi.mm.GetRedemptionRequestResponse
+	2,  // 58: kopi.mm.Query.GetRedemptionsRequest:output_type -> kopi.mm.GetRedemptionsResponse
+	4,  // 59: kopi.mm.Query.GetRedemptionStatsRequest:output_type -> kopi.mm.GetRedemptionStatsRequestResponse
+	52, // 60: kopi.mm.Query.GetUserStats:output_type -> kopi.mm.GetUserStatsResponse
+	56, // 61: kopi.mm.Query.GetTotalValueLocked:output_type -> kopi.mm.GetTotalValueLockedResponse
+	22, // 62: kopi.mm.Query.GetVaultValues:output_type -> kopi.mm.GetVaultValuesResponse
+	37, // [37:63] is the sub-list for method output_type
+	11, // [11:37] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_kopi_mm_query_proto_init() }
@@ -34319,7 +35930,7 @@ func file_kopi_mm_query_proto_init() {
 	file_kopi_mm_params_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_kopi_mm_query_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetRedemptionStatsRequestQuery); i {
+			switch v := v.(*GetRedemptionsQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34331,7 +35942,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetRedemptionStatsRequestResponse); i {
+			switch v := v.(*RedemptionRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34343,7 +35954,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetRedemptionRequestQuery); i {
+			switch v := v.(*GetRedemptionsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34355,7 +35966,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetRedemptionRequestResponse); i {
+			switch v := v.(*GetRedemptionStatsRequestQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34367,7 +35978,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetDepositUserDenomStatsQuery); i {
+			switch v := v.(*GetRedemptionStatsRequestResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34379,7 +35990,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetCollateralDenomStatsQuery); i {
+			switch v := v.(*GetRedemptionRequestQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34391,7 +36002,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserCollateral); i {
+			switch v := v.(*GetRedemptionRequestResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34403,7 +36014,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetCollateralDenomStatsResponse); i {
+			switch v := v.(*GetDepositUserDenomStatsQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34415,7 +36026,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetLoansQuery); i {
+			switch v := v.(*GetCollateralDenomStatsQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34427,7 +36038,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserLoan); i {
+			switch v := v.(*UserCollateral); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34439,7 +36050,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetLoansResponse); i {
+			switch v := v.(*GetCollateralDenomStatsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34451,7 +36062,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetLoanStatsQuery); i {
+			switch v := v.(*GetLoansQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34463,7 +36074,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DenomLoanStat); i {
+			switch v := v.(*UserLoan); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34475,7 +36086,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetLoanStatsResponse); i {
+			switch v := v.(*GetLoansResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34487,7 +36098,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetAvailableToBorrowRequest); i {
+			switch v := v.(*GetLoanStatsQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34499,7 +36110,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetAvailableToBorrowResponse); i {
+			switch v := v.(*DenomLoanStat); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34511,7 +36122,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetWithdrawableCollateralQuery); i {
+			switch v := v.(*GetLoanStatsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34523,7 +36134,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetWithdrawableCollateralResponse); i {
+			switch v := v.(*GetAvailableToBorrowRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34535,7 +36146,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Vault); i {
+			switch v := v.(*GetAvailableToBorrowResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34547,7 +36158,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetVaultValuesResponse); i {
+			switch v := v.(*GetWithdrawableCollateralQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34559,7 +36170,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetVaultValuesQuery); i {
+			switch v := v.(*GetWithdrawableCollateralResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34571,7 +36182,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetUserDenomLoanQuery); i {
+			switch v := v.(*Vault); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34583,7 +36194,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetUserDenomLoanResponse); i {
+			switch v := v.(*GetVaultValuesResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34595,7 +36206,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetBorrowInterestRateQuery); i {
+			switch v := v.(*GetVaultValuesQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34607,7 +36218,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetBorrowInterestRateResponse); i {
+			switch v := v.(*GetUserDenomLoanQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34619,7 +36230,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetCollateralDenomUserStatsQuery); i {
+			switch v := v.(*GetUserDenomLoanResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34631,7 +36242,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetCollateralDenomUserStatsResponse); i {
+			switch v := v.(*GetBorrowInterestRateQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34643,7 +36254,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetCreditLineUsageQuery); i {
+			switch v := v.(*GetBorrowInterestRateResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34655,7 +36266,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetCreditLineUsageResponse); i {
+			switch v := v.(*GetCollateralDenomUserStatsQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34667,7 +36278,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryParamsRequest); i {
+			switch v := v.(*GetCollateralDenomUserStatsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34679,7 +36290,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetTotalValueLockedQuery); i {
+			switch v := v.(*GetCreditLineUsageQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34691,7 +36302,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetNumLoansQuery); i {
+			switch v := v.(*GetCreditLineUsageResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34703,7 +36314,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetNumAddressLoansQuery); i {
+			switch v := v.(*QueryParamsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34715,7 +36326,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[33].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetNumAddressLoansResponse); i {
+			switch v := v.(*GetTotalValueLockedQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34727,7 +36338,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[34].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetValueLoansQuery); i {
+			switch v := v.(*GetNumLoansQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34739,7 +36350,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[35].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetValueLoansResponse); i {
+			switch v := v.(*GetNumAddressLoansQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34751,7 +36362,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[36].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetUserLoansQuery); i {
+			switch v := v.(*GetNumAddressLoansResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34763,7 +36374,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[37].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetDepositUserStatsQuery); i {
+			switch v := v.(*GetValueLoansQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34775,7 +36386,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[38].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetCollateralUserStatsQuery); i {
+			switch v := v.(*GetValueLoansResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34787,7 +36398,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[39].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetUserStatsQuery); i {
+			switch v := v.(*GetUserLoansQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34799,7 +36410,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[40].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetDepositStatsQuery); i {
+			switch v := v.(*GetDepositUserStatsQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34811,7 +36422,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[41].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetCollateralStatsQuery); i {
+			switch v := v.(*GetCollateralUserStatsQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34823,7 +36434,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[42].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryParamsResponse); i {
+			switch v := v.(*GetUserStatsQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34835,7 +36446,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[43].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CollateralDenomStats); i {
+			switch v := v.(*GetDepositStatsQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34847,7 +36458,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[44].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetCollateralStatsResponse); i {
+			switch v := v.(*GetCollateralStatsQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34859,7 +36470,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[45].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DepositDenomStats); i {
+			switch v := v.(*QueryParamsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34871,7 +36482,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[46].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetDepositStatsResponse); i {
+			switch v := v.(*CollateralDenomStats); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34883,7 +36494,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[47].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DepositUserStats); i {
+			switch v := v.(*GetCollateralStatsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34895,7 +36506,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[48].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetDepositUserStatsResponse); i {
+			switch v := v.(*DepositDenomStats); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34907,7 +36518,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[49].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetUserStatsResponse); i {
+			switch v := v.(*GetDepositStatsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34919,7 +36530,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[50].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Address); i {
+			switch v := v.(*DepositUserStats); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34931,7 +36542,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[51].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetTotalDepositsResponse); i {
+			switch v := v.(*GetDepositUserStatsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34943,7 +36554,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[52].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetNumLoansResponse); i {
+			switch v := v.(*GetUserStatsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34955,7 +36566,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[53].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetTotalValueLockedResponse); i {
+			switch v := v.(*Address); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34967,7 +36578,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[54].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserLoanStat); i {
+			switch v := v.(*GetTotalDepositsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34979,7 +36590,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[55].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetUserLoansResponse); i {
+			switch v := v.(*GetNumLoansResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -34991,7 +36602,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[56].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryFullBalanceRequest); i {
+			switch v := v.(*GetTotalValueLockedResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -35003,7 +36614,7 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[57].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FullDenomBalance); i {
+			switch v := v.(*UserLoanStat); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -35015,6 +36626,42 @@ func file_kopi_mm_query_proto_init() {
 			}
 		}
 		file_kopi_mm_query_proto_msgTypes[58].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetUserLoansResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_kopi_mm_query_proto_msgTypes[59].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryFullBalanceRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_kopi_mm_query_proto_msgTypes[60].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FullDenomBalance); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_kopi_mm_query_proto_msgTypes[61].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*QueryFullBalanceResponse); i {
 			case 0:
 				return &v.state
@@ -35033,7 +36680,7 @@ func file_kopi_mm_query_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_kopi_mm_query_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   59,
+			NumMessages:   62,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
