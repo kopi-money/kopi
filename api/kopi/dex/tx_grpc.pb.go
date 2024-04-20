@@ -31,6 +31,8 @@ const (
 	Msg_UpdateVirtualLiquidityDecay_FullMethodName = "/kopi.dex.Msg/UpdateVirtualLiquidityDecay"
 	Msg_UpdateFeeReimbursement_FullMethodName      = "/kopi.dex.Msg/UpdateFeeReimbursement"
 	Msg_UpdateMaxOrderLife_FullMethodName          = "/kopi.dex.Msg/UpdateMaxOrderLife"
+	Msg_UpdateTradeAmountDecay_FullMethodName      = "/kopi.dex.Msg/UpdateTradeAmountDecay"
+	Msg_UpdateDiscountLevels_FullMethodName        = "/kopi.dex.Msg/UpdateDiscountLevels"
 )
 
 // MsgClient is the client API for Msg service.
@@ -50,6 +52,8 @@ type MsgClient interface {
 	UpdateVirtualLiquidityDecay(ctx context.Context, in *MsgUpdateVirtualLiquidityDecay, opts ...grpc.CallOption) (*Void, error)
 	UpdateFeeReimbursement(ctx context.Context, in *MsgUpdateFeeReimbursement, opts ...grpc.CallOption) (*Void, error)
 	UpdateMaxOrderLife(ctx context.Context, in *MsgUpdateMaxOrderLife, opts ...grpc.CallOption) (*Void, error)
+	UpdateTradeAmountDecay(ctx context.Context, in *MsgUpdateTradeAmountDecay, opts ...grpc.CallOption) (*Void, error)
+	UpdateDiscountLevels(ctx context.Context, in *MsgUpdateDiscountLevels, opts ...grpc.CallOption) (*Void, error)
 }
 
 type msgClient struct {
@@ -168,6 +172,24 @@ func (c *msgClient) UpdateMaxOrderLife(ctx context.Context, in *MsgUpdateMaxOrde
 	return out, nil
 }
 
+func (c *msgClient) UpdateTradeAmountDecay(ctx context.Context, in *MsgUpdateTradeAmountDecay, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateTradeAmountDecay_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateDiscountLevels(ctx context.Context, in *MsgUpdateDiscountLevels, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateDiscountLevels_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -185,6 +207,8 @@ type MsgServer interface {
 	UpdateVirtualLiquidityDecay(context.Context, *MsgUpdateVirtualLiquidityDecay) (*Void, error)
 	UpdateFeeReimbursement(context.Context, *MsgUpdateFeeReimbursement) (*Void, error)
 	UpdateMaxOrderLife(context.Context, *MsgUpdateMaxOrderLife) (*Void, error)
+	UpdateTradeAmountDecay(context.Context, *MsgUpdateTradeAmountDecay) (*Void, error)
+	UpdateDiscountLevels(context.Context, *MsgUpdateDiscountLevels) (*Void, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -227,6 +251,12 @@ func (UnimplementedMsgServer) UpdateFeeReimbursement(context.Context, *MsgUpdate
 }
 func (UnimplementedMsgServer) UpdateMaxOrderLife(context.Context, *MsgUpdateMaxOrderLife) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateMaxOrderLife not implemented")
+}
+func (UnimplementedMsgServer) UpdateTradeAmountDecay(context.Context, *MsgUpdateTradeAmountDecay) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateTradeAmountDecay not implemented")
+}
+func (UnimplementedMsgServer) UpdateDiscountLevels(context.Context, *MsgUpdateDiscountLevels) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateDiscountLevels not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -457,6 +487,42 @@ func _Msg_UpdateMaxOrderLife_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateTradeAmountDecay_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateTradeAmountDecay)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateTradeAmountDecay(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateTradeAmountDecay_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateTradeAmountDecay(ctx, req.(*MsgUpdateTradeAmountDecay))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateDiscountLevels_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateDiscountLevels)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateDiscountLevels(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateDiscountLevels_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateDiscountLevels(ctx, req.(*MsgUpdateDiscountLevels))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -511,6 +577,14 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateMaxOrderLife",
 			Handler:    _Msg_UpdateMaxOrderLife_Handler,
+		},
+		{
+			MethodName: "UpdateTradeAmountDecay",
+			Handler:    _Msg_UpdateTradeAmountDecay_Handler,
+		},
+		{
+			MethodName: "UpdateDiscountLevels",
+			Handler:    _Msg_UpdateDiscountLevels_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

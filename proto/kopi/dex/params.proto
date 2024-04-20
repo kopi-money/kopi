@@ -3,6 +3,7 @@ package kopi.dex;
 
 import "amino/amino.proto";
 import "gogoproto/gogo.proto";
+import "kopi/dex/discount_level.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/dex/types";
 
@@ -31,5 +32,12 @@ message Params {
     (gogoproto.nullable)   = false
   ];
 
-  uint64 max_order_life = 5;
+  bytes trade_amount_decay = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+
+  repeated DiscountLevel discount_levels = 6;
+
+  uint64 max_order_life = 7;
 }

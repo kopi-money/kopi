@@ -184,6 +184,11 @@ func (am AppModule) EndBlock(goCtx context.Context) error {
 		return errors.Wrap(err, "error executing orders")
 	}
 
+	// Apply the trade amount decay once every day
+	if ctx.BlockHeight()%86400 == 0 {
+		am.keeper.TradeAmountDecay(ctx)
+	}
+
 	return nil
 }
 

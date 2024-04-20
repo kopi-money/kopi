@@ -59,13 +59,25 @@ func (k msgServer) Trade(goCtx context.Context, msg *types.MsgTrade) (*types.Msg
 	return &response, nil
 }
 
-func (k Keeper) getTradeFee(ctx context.Context, denomFrom, denomTo string) math.LegacyDec {
+func (k Keeper) getTradeFee(ctx context.Context, denomFrom, denomTo, address string, excludeFromDiscount bool) math.LegacyDec {
+	if excludeFromDiscount {
+		return math.LegacyZeroDec()
+	}
+
+	if address == "" {
+		return math.LegacyZeroDec()
+	}
+
 	// Users have to pay fee for every step of a trade. However, when the trade consists of two steps, they only have
 	// to pay half fee for each step.
 	fee := k.GetTradeFee(ctx)
 	if denomFrom != utils.BaseCurrency && denomTo != utils.BaseCurrency {
 		fee = fee.Quo(math.LegacyNewDec(2))
 	}
+
+	discount := k.getTradeDiscount(ctx, address)
+	discount = math.LegacyOneDec().Sub(discount)
+	fee = fee.Mul(discount)
 
 	return fee
 }

@@ -91,13 +91,14 @@ func (k Keeper) mintTradeBurn(ctx context.Context, eventManager sdk.EventManager
 	address := k.AccountKeeper.GetModuleAccount(ctx, types.ModuleName).GetAddress()
 
 	options := dextypes.TradeOptions{
-		GivenAmount:     mintAmountBase,
-		CoinSource:      address,
-		CoinTarget:      address,
-		MaxPrice:        nil,
-		TradeDenomStart: utils.BaseCurrency,
-		TradeDenomEnd:   kCoin,
-		AllowIncomplete: true,
+		GivenAmount:         mintAmountBase,
+		CoinSource:          address,
+		CoinTarget:          address,
+		MaxPrice:            nil,
+		TradeDenomStart:     utils.BaseCurrency,
+		TradeDenomEnd:       kCoin,
+		AllowIncomplete:     true,
+		ExcludeFromDiscount: true,
 	}
 
 	amountUsed, amountReceived, _, _, err := k.DexKeeper.ExecuteTrade(ctx, eventManager, options)

@@ -192,7 +192,7 @@ func (k Keeper) LiquidityStore(ctx context.Context) storetypes.KVStore {
 
 func (k Keeper) LiquidityIterator(ctx context.Context, denom string) storetypes.Iterator {
 	store := k.LiquidityStore(ctx)
-	return storetypes.KVStorePrefixIterator(store, types.KeyDenom(denom))
+	return storetypes.KVStorePrefixIterator(store, types.KeyString(denom))
 }
 
 func (k Keeper) LiquidityUnmarshal(raw []byte) types.Liquidity {

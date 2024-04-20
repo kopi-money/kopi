@@ -26,7 +26,7 @@ func (k Keeper) SimulateTrade(goCtx context.Context, req *types.QuerySimulateTra
 		return nil, types.ErrZeroAmount
 	}
 
-	amountReceived, fee, price, err := k.TradeSimulation(ctx, req.DenomFrom, req.DenomTo, amount)
+	amountReceived, fee, price, err := k.TradeSimulation(ctx, req.DenomFrom, req.DenomTo, req.Address, amount, false)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not simulate trade")
 	}

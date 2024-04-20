@@ -13,13 +13,13 @@ func (k Keeper) SetLiquiditySum(ctx context.Context, listexmaple types.Liquidity
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixLiquiditySum))
 	b := k.cdc.MustMarshal(&listexmaple)
-	store.Set(types.KeyDenom(listexmaple.Denom), b)
+	store.Set(types.KeyString(listexmaple.Denom), b)
 }
 
 func (k Keeper) GetLiquiditySum(ctx context.Context, denom string) (math.Int, bool) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixLiquiditySum))
-	b := store.Get(types.KeyDenom(denom))
+	b := store.Get(types.KeyString(denom))
 	if b == nil {
 		return math.ZeroInt(), false
 	}

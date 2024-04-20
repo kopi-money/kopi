@@ -44,7 +44,7 @@ func (k Keeper) LiquiditySum(ctx context.Context, req *types.QueryGetLiquiditySu
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
 		val, _ := k.GetLiquiditySum(ctx, denom)
 		price, _ := k.GetPriceInUSD(ctx, denom)
-		valueUSD = valueUSD.Add(val.ToLegacyDec().Mul(price))
+		valueUSD = valueUSD.Add(val.ToLegacyDec().Quo(price))
 	}
 
 	return &types.QueryGetLiquiditySumResponse{ValueUsd: valueUSD.String()}, nil

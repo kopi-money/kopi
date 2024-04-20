@@ -65,13 +65,14 @@ func (k Keeper) CheckMint(ctx context.Context, eventManager sdk.EventManagerI, k
 	address := k.AccountKeeper.GetModuleAccount(ctx, types.ModuleName).GetAddress()
 
 	options := dextypes.TradeOptions{
-		CoinSource:      address,
-		CoinTarget:      address,
-		GivenAmount:     mintAmount,
-		MaxPrice:        nil,
-		TradeDenomStart: kCoin,
-		TradeDenomEnd:   utils.BaseCurrency,
-		AllowIncomplete: true,
+		CoinSource:          address,
+		CoinTarget:          address,
+		GivenAmount:         mintAmount,
+		MaxPrice:            nil,
+		TradeDenomStart:     kCoin,
+		TradeDenomEnd:       utils.BaseCurrency,
+		AllowIncomplete:     true,
+		ExcludeFromDiscount: true,
 	}
 
 	amountUsed, amountReceived, _, _, err := k.DexKeeper.ExecuteTrade(ctx, eventManager, options)

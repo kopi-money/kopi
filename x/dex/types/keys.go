@@ -24,6 +24,7 @@ const (
 	KeyPrefixLiquiditySum  = "LiquiditySum/value/"
 	KeyPrefixLiquidityPair = "LiquidityPair/value/"
 	KeyPrefixLiquidity     = "Liquidity/value"
+	KeyPrefixTradeAmount   = "TradeAmount/value/"
 
 	MemStoreKey = "mem_dex"
 )
@@ -36,7 +37,7 @@ func Key(p string) []byte {
 	return []byte(p)
 }
 
-func KeyDenom(denom string) (key []byte) {
+func KeyString(denom string) (key []byte) {
 	key = append(key, []byte(denom)...)
 	key = append(key, []byte("/")...)
 

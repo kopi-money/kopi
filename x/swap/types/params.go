@@ -2,9 +2,9 @@ package types
 
 import (
 	"cosmossdk.io/math"
-	"errors"
 	"fmt"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	"github.com/pkg/errors"
 )
 
 var (
@@ -38,6 +38,10 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 
 // Validate validates the set of params
 func (p Params) Validate() error {
+	if err := validateZeroOne(p.StakingShare); err != nil {
+		return errors.Wrap(err, "invalid staking share")
+	}
+
 	return nil
 }
 

@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	KeyAAssets          = []byte("AAssets")
+	KeyCAssets          = []byte("CAssets")
 	KeyDenomCollaterals = []byte("DenomCollaterals")
 	KeyDexDenoms        = []byte("DexDenoms")
 	KeyKCoins           = []byte("KCoins")
@@ -171,7 +171,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyKCoins, &p.KCoins, func(a any) error {
 			return validateKCoins(a, p.DexDenoms)
 		}),
-		paramtypes.NewParamSetPair(KeyAAssets, &p.CAssets, func(a any) error {
+		paramtypes.NewParamSetPair(KeyCAssets, &p.CAssets, func(a any) error {
 			return validateCAssets(a, p.DexDenoms)
 		}),
 		paramtypes.NewParamSetPair(KeyDenomCollaterals, &p.CollateralDenoms, func(a any) error {

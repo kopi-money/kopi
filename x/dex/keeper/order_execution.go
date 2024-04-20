@@ -18,7 +18,11 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 		var order types.Order
 		k.cdc.MustUnmarshal(iterator.Value(), &order)
 
-		remove, err := k.executeOrder(ctx, eventManager, &order)
+		if uint64(blockHeight) < order.NextExecution {
+			continue
+		}
+
+		remove, err := k.executeOrder(ctx, eventManager, &order, blockHeight)
 		if err != nil {
 			return errors.Wrap(err, "error executing order")
 		}
@@ -71,7 +75,7 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 	return nil
 }
 
-func (k Keeper) executeOrder(ctx context.Context, eventManager sdk.EventManagerI, order *types.Order) (bool, error) {
+func (k Keeper) executeOrder(ctx context.Context, eventManager sdk.EventManagerI, order *types.Order, blockHeight int64) (bool, error) {
 	fee := k.GetTradeFee(ctx)
 	priceAmount := k.calculateAmountGivenPrice(ctx, order.DenomFrom, order.DenomTo, order.MaxPrice, fee).TruncateInt()
 	if priceAmount.LTE(math.ZeroInt()) {
@@ -119,6 +123,7 @@ func (k Keeper) executeOrder(ctx context.Context, eventManager sdk.EventManagerI
 
 	order.AmountLeft = order.AmountLeft.Sub(usedAmount)
 	order.AmountReceived = order.AmountReceived.Add(receivedAmount)
+	order.NextExecution = uint64(blockHeight) + order.ExecutionInterval
 
 	if order.AmountLeft.LT(math.ZeroInt()) {
 		return false, fmt.Errorf("order has negative amount left (%v, %v)", usedAmount.String(), order.AmountLeft.String())

@@ -14,19 +14,21 @@ import (
 )
 
 var (
-	md_Order                  protoreflect.MessageDescriptor
-	fd_Order_index            protoreflect.FieldDescriptor
-	fd_Order_creator          protoreflect.FieldDescriptor
-	fd_Order_denom_from       protoreflect.FieldDescriptor
-	fd_Order_denom_to         protoreflect.FieldDescriptor
-	fd_Order_amount_given     protoreflect.FieldDescriptor
-	fd_Order_amount_left      protoreflect.FieldDescriptor
-	fd_Order_trade_amount     protoreflect.FieldDescriptor
-	fd_Order_amount_received  protoreflect.FieldDescriptor
-	fd_Order_max_price        protoreflect.FieldDescriptor
-	fd_Order_num_blocks       protoreflect.FieldDescriptor
-	fd_Order_block_end        protoreflect.FieldDescriptor
-	fd_Order_allow_incomplete protoreflect.FieldDescriptor
+	md_Order                    protoreflect.MessageDescriptor
+	fd_Order_index              protoreflect.FieldDescriptor
+	fd_Order_creator            protoreflect.FieldDescriptor
+	fd_Order_denom_from         protoreflect.FieldDescriptor
+	fd_Order_denom_to           protoreflect.FieldDescriptor
+	fd_Order_amount_given       protoreflect.FieldDescriptor
+	fd_Order_amount_left        protoreflect.FieldDescriptor
+	fd_Order_trade_amount       protoreflect.FieldDescriptor
+	fd_Order_amount_received    protoreflect.FieldDescriptor
+	fd_Order_max_price          protoreflect.FieldDescriptor
+	fd_Order_num_blocks         protoreflect.FieldDescriptor
+	fd_Order_execution_interval protoreflect.FieldDescriptor
+	fd_Order_next_execution     protoreflect.FieldDescriptor
+	fd_Order_block_end          protoreflect.FieldDescriptor
+	fd_Order_allow_incomplete   protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -42,6 +44,8 @@ func init() {
 	fd_Order_amount_received = md_Order.Fields().ByName("amount_received")
 	fd_Order_max_price = md_Order.Fields().ByName("max_price")
 	fd_Order_num_blocks = md_Order.Fields().ByName("num_blocks")
+	fd_Order_execution_interval = md_Order.Fields().ByName("execution_interval")
+	fd_Order_next_execution = md_Order.Fields().ByName("next_execution")
 	fd_Order_block_end = md_Order.Fields().ByName("block_end")
 	fd_Order_allow_incomplete = md_Order.Fields().ByName("allow_incomplete")
 }
@@ -171,6 +175,18 @@ func (x *fastReflection_Order) Range(f func(protoreflect.FieldDescriptor, protor
 			return
 		}
 	}
+	if x.ExecutionInterval != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.ExecutionInterval)
+		if !f(fd_Order_execution_interval, value) {
+			return
+		}
+	}
+	if x.NextExecution != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.NextExecution)
+		if !f(fd_Order_next_execution, value) {
+			return
+		}
+	}
 	if x.BlockEnd != uint64(0) {
 		value := protoreflect.ValueOfUint64(x.BlockEnd)
 		if !f(fd_Order_block_end, value) {
@@ -218,6 +234,10 @@ func (x *fastReflection_Order) Has(fd protoreflect.FieldDescriptor) bool {
 		return len(x.MaxPrice) != 0
 	case "kopi.dex.Order.num_blocks":
 		return x.NumBlocks != uint64(0)
+	case "kopi.dex.Order.execution_interval":
+		return x.ExecutionInterval != uint64(0)
+	case "kopi.dex.Order.next_execution":
+		return x.NextExecution != uint64(0)
 	case "kopi.dex.Order.block_end":
 		return x.BlockEnd != uint64(0)
 	case "kopi.dex.Order.allow_incomplete":
@@ -258,6 +278,10 @@ func (x *fastReflection_Order) Clear(fd protoreflect.FieldDescriptor) {
 		x.MaxPrice = nil
 	case "kopi.dex.Order.num_blocks":
 		x.NumBlocks = uint64(0)
+	case "kopi.dex.Order.execution_interval":
+		x.ExecutionInterval = uint64(0)
+	case "kopi.dex.Order.next_execution":
+		x.NextExecution = uint64(0)
 	case "kopi.dex.Order.block_end":
 		x.BlockEnd = uint64(0)
 	case "kopi.dex.Order.allow_incomplete":
@@ -308,6 +332,12 @@ func (x *fastReflection_Order) Get(descriptor protoreflect.FieldDescriptor) prot
 	case "kopi.dex.Order.num_blocks":
 		value := x.NumBlocks
 		return protoreflect.ValueOfUint64(value)
+	case "kopi.dex.Order.execution_interval":
+		value := x.ExecutionInterval
+		return protoreflect.ValueOfUint64(value)
+	case "kopi.dex.Order.next_execution":
+		value := x.NextExecution
+		return protoreflect.ValueOfUint64(value)
 	case "kopi.dex.Order.block_end":
 		value := x.BlockEnd
 		return protoreflect.ValueOfUint64(value)
@@ -354,6 +384,10 @@ func (x *fastReflection_Order) Set(fd protoreflect.FieldDescriptor, value protor
 		x.MaxPrice = value.Bytes()
 	case "kopi.dex.Order.num_blocks":
 		x.NumBlocks = value.Uint()
+	case "kopi.dex.Order.execution_interval":
+		x.ExecutionInterval = value.Uint()
+	case "kopi.dex.Order.next_execution":
+		x.NextExecution = value.Uint()
 	case "kopi.dex.Order.block_end":
 		x.BlockEnd = value.Uint()
 	case "kopi.dex.Order.allow_incomplete":
@@ -398,6 +432,10 @@ func (x *fastReflection_Order) Mutable(fd protoreflect.FieldDescriptor) protoref
 		panic(fmt.Errorf("field max_price of message kopi.dex.Order is not mutable"))
 	case "kopi.dex.Order.num_blocks":
 		panic(fmt.Errorf("field num_blocks of message kopi.dex.Order is not mutable"))
+	case "kopi.dex.Order.execution_interval":
+		panic(fmt.Errorf("field execution_interval of message kopi.dex.Order is not mutable"))
+	case "kopi.dex.Order.next_execution":
+		panic(fmt.Errorf("field next_execution of message kopi.dex.Order is not mutable"))
 	case "kopi.dex.Order.block_end":
 		panic(fmt.Errorf("field block_end of message kopi.dex.Order is not mutable"))
 	case "kopi.dex.Order.allow_incomplete":
@@ -434,6 +472,10 @@ func (x *fastReflection_Order) NewField(fd protoreflect.FieldDescriptor) protore
 	case "kopi.dex.Order.max_price":
 		return protoreflect.ValueOfBytes(nil)
 	case "kopi.dex.Order.num_blocks":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "kopi.dex.Order.execution_interval":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "kopi.dex.Order.next_execution":
 		return protoreflect.ValueOfUint64(uint64(0))
 	case "kopi.dex.Order.block_end":
 		return protoreflect.ValueOfUint64(uint64(0))
@@ -546,6 +588,12 @@ func (x *fastReflection_Order) ProtoMethods() *protoiface.Methods {
 		if x.NumBlocks != 0 {
 			n += 1 + runtime.Sov(uint64(x.NumBlocks))
 		}
+		if x.ExecutionInterval != 0 {
+			n += 1 + runtime.Sov(uint64(x.ExecutionInterval))
+		}
+		if x.NextExecution != 0 {
+			n += 1 + runtime.Sov(uint64(x.NextExecution))
+		}
 		if x.BlockEnd != 0 {
 			n += 1 + runtime.Sov(uint64(x.BlockEnd))
 		}
@@ -589,10 +637,20 @@ func (x *fastReflection_Order) ProtoMethods() *protoiface.Methods {
 				dAtA[i] = 0
 			}
 			i--
-			dAtA[i] = 0x60
+			dAtA[i] = 0x70
 		}
 		if x.BlockEnd != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.BlockEnd))
+			i--
+			dAtA[i] = 0x68
+		}
+		if x.NextExecution != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.NextExecution))
+			i--
+			dAtA[i] = 0x60
+		}
+		if x.ExecutionInterval != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.ExecutionInterval))
 			i--
 			dAtA[i] = 0x58
 		}
@@ -1017,6 +1075,44 @@ func (x *fastReflection_Order) ProtoMethods() *protoiface.Methods {
 				}
 			case 11:
 				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ExecutionInterval", wireType)
+				}
+				x.ExecutionInterval = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.ExecutionInterval |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 12:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field NextExecution", wireType)
+				}
+				x.NextExecution = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.NextExecution |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 13:
+				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BlockEnd", wireType)
 				}
 				x.BlockEnd = 0
@@ -1034,7 +1130,7 @@ func (x *fastReflection_Order) ProtoMethods() *protoiface.Methods {
 						break
 					}
 				}
-			case 12:
+			case 14:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AllowIncomplete", wireType)
 				}
@@ -1107,18 +1203,20 @@ type Order struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Index           uint64 `protobuf:"varint,1,opt,name=index,proto3" json:"index,omitempty"`
-	Creator         string `protobuf:"bytes,2,opt,name=creator,proto3" json:"creator,omitempty"`
-	DenomFrom       string `protobuf:"bytes,3,opt,name=denom_from,json=denomFrom,proto3" json:"denom_from,omitempty"`
-	DenomTo         string `protobuf:"bytes,4,opt,name=denom_to,json=denomTo,proto3" json:"denom_to,omitempty"`
-	AmountGiven     []byte `protobuf:"bytes,5,opt,name=amount_given,json=amountGiven,proto3" json:"amount_given,omitempty"`
-	AmountLeft      []byte `protobuf:"bytes,6,opt,name=amount_left,json=amountLeft,proto3" json:"amount_left,omitempty"`
-	TradeAmount     []byte `protobuf:"bytes,7,opt,name=trade_amount,json=tradeAmount,proto3" json:"trade_amount,omitempty"`
-	AmountReceived  []byte `protobuf:"bytes,8,opt,name=amount_received,json=amountReceived,proto3" json:"amount_received,omitempty"`
-	MaxPrice        []byte `protobuf:"bytes,9,opt,name=max_price,json=maxPrice,proto3" json:"max_price,omitempty"`
-	NumBlocks       uint64 `protobuf:"varint,10,opt,name=num_blocks,json=numBlocks,proto3" json:"num_blocks,omitempty"`
-	BlockEnd        uint64 `protobuf:"varint,11,opt,name=block_end,json=blockEnd,proto3" json:"block_end,omitempty"`
-	AllowIncomplete bool   `protobuf:"varint,12,opt,name=allow_incomplete,json=allowIncomplete,proto3" json:"allow_incomplete,omitempty"`
+	Index             uint64 `protobuf:"varint,1,opt,name=index,proto3" json:"index,omitempty"`
+	Creator           string `protobuf:"bytes,2,opt,name=creator,proto3" json:"creator,omitempty"`
+	DenomFrom         string `protobuf:"bytes,3,opt,name=denom_from,json=denomFrom,proto3" json:"denom_from,omitempty"`
+	DenomTo           string `protobuf:"bytes,4,opt,name=denom_to,json=denomTo,proto3" json:"denom_to,omitempty"`
+	AmountGiven       []byte `protobuf:"bytes,5,opt,name=amount_given,json=amountGiven,proto3" json:"amount_given,omitempty"`
+	AmountLeft        []byte `protobuf:"bytes,6,opt,name=amount_left,json=amountLeft,proto3" json:"amount_left,omitempty"`
+	TradeAmount       []byte `protobuf:"bytes,7,opt,name=trade_amount,json=tradeAmount,proto3" json:"trade_amount,omitempty"`
+	AmountReceived    []byte `protobuf:"bytes,8,opt,name=amount_received,json=amountReceived,proto3" json:"amount_received,omitempty"`
+	MaxPrice          []byte `protobuf:"bytes,9,opt,name=max_price,json=maxPrice,proto3" json:"max_price,omitempty"`
+	NumBlocks         uint64 `protobuf:"varint,10,opt,name=num_blocks,json=numBlocks,proto3" json:"num_blocks,omitempty"`
+	ExecutionInterval uint64 `protobuf:"varint,11,opt,name=execution_interval,json=executionInterval,proto3" json:"execution_interval,omitempty"`
+	NextExecution     uint64 `protobuf:"varint,12,opt,name=next_execution,json=nextExecution,proto3" json:"next_execution,omitempty"`
+	BlockEnd          uint64 `protobuf:"varint,13,opt,name=block_end,json=blockEnd,proto3" json:"block_end,omitempty"`
+	AllowIncomplete   bool   `protobuf:"varint,14,opt,name=allow_incomplete,json=allowIncomplete,proto3" json:"allow_incomplete,omitempty"`
 }
 
 func (x *Order) Reset() {
@@ -1211,6 +1309,20 @@ func (x *Order) GetNumBlocks() uint64 {
 	return 0
 }
 
+func (x *Order) GetExecutionInterval() uint64 {
+	if x != nil {
+		return x.ExecutionInterval
+	}
+	return 0
+}
+
+func (x *Order) GetNextExecution() uint64 {
+	if x != nil {
+		return x.NextExecution
+	}
+	return 0
+}
+
 func (x *Order) GetBlockEnd() uint64 {
 	if x != nil {
 		return x.BlockEnd
@@ -1231,7 +1343,7 @@ var file_kopi_dex_order_proto_rawDesc = []byte{
 	0x0a, 0x14, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0x2f, 0x6f, 0x72, 0x64, 0x65, 0x72,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x08, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78,
 	0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xa6, 0x04, 0x0a, 0x05, 0x4f, 0x72, 0x64, 0x65, 0x72,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xfc, 0x04, 0x0a, 0x05, 0x4f, 0x72, 0x64, 0x65, 0x72,
 	0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52,
 	0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f,
 	0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72,
@@ -1261,19 +1373,25 @@ var file_kopi_dex_order_proto_rawDesc = []byte{
 	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x08,
 	0x6d, 0x61, 0x78, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x1d, 0x0a, 0x0a, 0x6e, 0x75, 0x6d, 0x5f,
 	0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x73, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x04, 0x52, 0x09, 0x6e, 0x75,
-	0x6d, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x73, 0x12, 0x1b, 0x0a, 0x09, 0x62, 0x6c, 0x6f, 0x63, 0x6b,
-	0x5f, 0x65, 0x6e, 0x64, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x04, 0x52, 0x08, 0x62, 0x6c, 0x6f, 0x63,
-	0x6b, 0x45, 0x6e, 0x64, 0x12, 0x29, 0x0a, 0x10, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x5f, 0x69, 0x6e,
-	0x63, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0f,
-	0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x49, 0x6e, 0x63, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x42,
-	0x76, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x42,
-	0x0a, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x19, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f,
-	0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0xa2, 0x02, 0x03, 0x4b, 0x44, 0x58, 0xaa, 0x02,
-	0x08, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x44, 0x65, 0x78, 0xca, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69,
-	0x5c, 0x44, 0x65, 0x78, 0xe2, 0x02, 0x14, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0x5c,
-	0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x09, 0x4b, 0x6f,
-	0x70, 0x69, 0x3a, 0x3a, 0x44, 0x65, 0x78, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6d, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x73, 0x12, 0x2d, 0x0a, 0x12, 0x65, 0x78, 0x65, 0x63, 0x75,
+	0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x18, 0x0b, 0x20,
+	0x01, 0x28, 0x04, 0x52, 0x11, 0x65, 0x78, 0x65, 0x63, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e,
+	0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x12, 0x25, 0x0a, 0x0e, 0x6e, 0x65, 0x78, 0x74, 0x5f, 0x65,
+	0x78, 0x65, 0x63, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0d,
+	0x6e, 0x65, 0x78, 0x74, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1b, 0x0a,
+	0x09, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x5f, 0x65, 0x6e, 0x64, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x04,
+	0x52, 0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x45, 0x6e, 0x64, 0x12, 0x29, 0x0a, 0x10, 0x61, 0x6c,
+	0x6c, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x63, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x18, 0x0e,
+	0x20, 0x01, 0x28, 0x08, 0x52, 0x0f, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x49, 0x6e, 0x63, 0x6f, 0x6d,
+	0x70, 0x6c, 0x65, 0x74, 0x65, 0x42, 0x76, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70,
+	0x69, 0x2e, 0x64, 0x65, 0x78, 0x42, 0x0a, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x50, 0x72, 0x6f, 0x74,
+	0x6f, 0x50, 0x01, 0x5a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0xa2, 0x02,
+	0x03, 0x4b, 0x44, 0x58, 0xaa, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x44, 0x65, 0x78, 0xca,
+	0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0xe2, 0x02, 0x14, 0x4b, 0x6f, 0x70,
+	0x69, 0x5c, 0x44, 0x65, 0x78, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
+	0x61, 0xea, 0x02, 0x09, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x44, 0x65, 0x78, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

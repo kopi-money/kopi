@@ -52,5 +52,5 @@ type DexKeeper interface {
 	GetValueInUSD(ctx context.Context, denom string, amount math.Int) (math.LegacyDec, error)
 	GetValueInBase(ctx context.Context, denom string, amount math.Int) (math.LegacyDec, error)
 	GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.Int) (math.LegacyDec, error)
-	TradeSimulation(ctx context.Context, denomFrom, denomTo string, amountStart math.Int) (math.Int, math.LegacyDec, math.LegacyDec, error)
+	TradeSimulation(ctx context.Context, denomFrom, denomTo, address string, amountStart math.Int, excludeFromDiscount bool) (math.Int, math.LegacyDec, math.LegacyDec, error)
 }

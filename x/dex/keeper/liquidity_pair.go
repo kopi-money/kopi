@@ -52,13 +52,13 @@ func (k Keeper) SetLiquidityPair(ctx context.Context, liquidityPair types.Liquid
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixLiquidityPair))
 	b := k.cdc.MustMarshal(&liquidityPair)
-	store.Set(types.KeyDenom(liquidityPair.Denom), b)
+	store.Set(types.KeyString(liquidityPair.Denom), b)
 }
 
 func (k Keeper) GetLiquidityPair(ctx context.Context, denom string) (val types.LiquidityPair, found bool) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixLiquidityPair))
-	b := store.Get(types.KeyDenom(denom))
+	b := store.Get(types.KeyString(denom))
 	if b == nil {
 		return val, false
 	}

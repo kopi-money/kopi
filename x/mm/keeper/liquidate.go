@@ -153,7 +153,7 @@ func (k Keeper) processLiquidation(ctx context.Context, eventManager sdk.EventMa
 		return math.ZeroInt(), nil
 	}
 
-	amountToGive, _, _, _ := k.DexKeeper.TradeSimulation(ctx, cAsset.BaseDenom, collateralDenom, excessAmount.RoundInt())
+	amountToGive, _, _, _ := k.DexKeeper.TradeSimulation(ctx, cAsset.BaseDenom, collateralDenom, address, excessAmount.RoundInt(), false)
 	tradeAmount := math.MinInt(collateral.Amount, amountToGive)
 
 	coinSource := k.AccountKeeper.GetModuleAccount(ctx, types.PoolCollateral)
@@ -161,6 +161,7 @@ func (k Keeper) processLiquidation(ctx context.Context, eventManager sdk.EventMa
 	options := dextypes.TradeOptions{
 		CoinSource:      coinSource.GetAddress(),
 		CoinTarget:      vaultAddress.GetAddress(),
+		DiscountAddress: sdk.AccAddress(address),
 		GivenAmount:     tradeAmount,
 		MaxPrice:        nil,
 		TradeDenomStart: collateralDenom,

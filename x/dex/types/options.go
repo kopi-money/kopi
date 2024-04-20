@@ -13,10 +13,12 @@ type TradeOptions struct {
 	TradeDenomStart string
 	TradeDenomEnd   string
 
-	AllowIncomplete bool
+	AllowIncomplete     bool
+	ExcludeFromDiscount bool
 
-	CoinSource sdk.AccAddress
-	CoinTarget sdk.AccAddress
+	CoinSource      sdk.AccAddress
+	CoinTarget      sdk.AccAddress
+	DiscountAddress sdk.AccAddress
 
 	TradeCalculation TradeCalculation
 }

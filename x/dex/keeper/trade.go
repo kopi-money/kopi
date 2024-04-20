@@ -17,7 +17,14 @@ func (k Keeper) ExecuteTrade(ctx context.Context, eventManager sdk.EventManagerI
 		return math.Int{}, math.Int{}, math.Int{}, math.Int{}, errors.Wrap(err, "error in trade options")
 	}
 
-	tradeFee := k.getTradeFee(ctx, options.TradeDenomStart, options.TradeDenomEnd)
+	// The address executing the trade might not be the one eligible for a discount. For example, the protocol might
+	// sell a user's collateral to partially repay a loan. The protocol does not receive discount when trading, but the
+	// user being liquidated does.
+	if options.DiscountAddress == nil {
+		options.DiscountAddress = options.CoinTarget
+	}
+
+	tradeFee := k.getTradeFee(ctx, options.TradeDenomStart, options.TradeDenomEnd, options.DiscountAddress.String(), options.ExcludeFromDiscount)
 
 	// When a maximum price is set, it is checked how much has to be given to achieve the maximum price. If that amount
 	// is lower than what it is intended to be given, it means trading with the intended amount would result in a higher
@@ -98,6 +105,8 @@ func (k Keeper) ExecuteTrade(ctx context.Context, eventManager sdk.EventManagerI
 	} else {
 		usedAmount = usedAmount2
 	}
+
+	k.AddTradeAmount(ctx, options.CoinTarget.String(), amountReceived1)
 
 	if feePaid1.GT(math.ZeroInt()) {
 		eventManager.EmitEvent(
@@ -193,8 +202,8 @@ func (k Keeper) updateRatios(ctx context.Context, denom string) {
 	}
 }
 
-func (k Keeper) TradeSimulation(ctx context.Context, denomFrom, denomTo string, amountStart math.Int) (math.Int, math.LegacyDec, math.LegacyDec, error) {
-	fee := k.getTradeFee(ctx, denomFrom, denomTo)
+func (k Keeper) TradeSimulation(ctx context.Context, denomFrom, denomTo, address string, amountStart math.Int, excludeFromDiscount bool) (math.Int, math.LegacyDec, math.LegacyDec, error) {
+	fee := k.getTradeFee(ctx, denomFrom, denomTo, address, excludeFromDiscount)
 	return k.simulateTradeWithFee(ctx, denomFrom, denomTo, amountStart, fee)
 }
 
@@ -203,7 +212,7 @@ func (k Keeper) TradeSimulation(ctx context.Context, denomFrom, denomTo string, 
 // a trade, that part of the fee is removed.
 func (k Keeper) SimulateTradeForReserve(ctx context.Context, denomFrom, denomTo string, amountStart math.Int) (math.Int, math.LegacyDec, math.LegacyDec, error) {
 	reserveShare := k.GetParams(ctx).ReserveShare
-	fee := k.getTradeFee(ctx, denomFrom, denomTo)
+	fee := k.getTradeFee(ctx, denomFrom, denomTo, "", true)
 	fee = fee.Mul(math.LegacyOneDec().Sub(reserveShare))
 	return k.simulateTradeWithFee(ctx, denomFrom, denomTo, amountStart, fee)
 }

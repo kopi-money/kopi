@@ -2,9 +2,9 @@ package types
 
 import (
 	"cosmossdk.io/math"
-	"errors"
 	"fmt"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	"github.com/pkg/errors"
 )
 
 var (
@@ -56,6 +56,26 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 
 // Validate validates the set of params
 func (p Params) Validate() error {
+	if err := validateZeroOne(p.CollateralDiscount); err != nil {
+		return errors.Wrap(err, "invalid collateral discount")
+	}
+
+	if err := validateZeroOne(p.MinRedemptionFee); err != nil {
+		return errors.Wrap(err, "invalid minimum redemption fee")
+	}
+
+	if err := validateZeroOne(p.MinInterestRate); err != nil {
+		return errors.Wrap(err, "invalid minimum interest rate")
+	}
+
+	if err := validateNumber(p.A); err != nil {
+		return errors.Wrap(err, "invalid A")
+	}
+
+	if err := validateNumber(p.B); err != nil {
+		return errors.Wrap(err, "invalid B")
+	}
+
 	return nil
 }
 

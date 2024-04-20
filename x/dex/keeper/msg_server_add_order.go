@@ -55,17 +55,19 @@ func (k msgServer) AddOrder(goCtx context.Context, msg *types.MsgAddOrder) (*typ
 	}
 
 	order := types.Order{
-		Creator:         msg.Creator,
-		DenomFrom:       msg.DenomFrom,
-		DenomTo:         msg.DenomTo,
-		AmountLeft:      amount,
-		AmountGiven:     amount,
-		AmountReceived:  math.ZeroInt(),
-		TradeAmount:     tradeAmount,
-		MaxPrice:        *maxPrice,
-		NumBlocks:       msg.Blocks,
-		BlockEnd:        k.calculateBlockEnd(ctx, msg.Blocks, uint64(ctx.BlockHeight())),
-		AllowIncomplete: msg.AllowIncomplete,
+		Creator:           msg.Creator,
+		DenomFrom:         msg.DenomFrom,
+		DenomTo:           msg.DenomTo,
+		AmountLeft:        amount,
+		AmountGiven:       amount,
+		AmountReceived:    math.ZeroInt(),
+		TradeAmount:       tradeAmount,
+		MaxPrice:          *maxPrice,
+		NumBlocks:         msg.Blocks,
+		ExecutionInterval: msg.Interval,
+		NextExecution:     uint64(ctx.BlockHeight()),
+		BlockEnd:          k.calculateBlockEnd(ctx, msg.Blocks, uint64(ctx.BlockHeight())),
+		AllowIncomplete:   msg.AllowIncomplete,
 	}
 
 	order.Index = k.SetOrder(ctx, order)
@@ -79,6 +81,7 @@ func (k msgServer) AddOrder(goCtx context.Context, msg *types.MsgAddOrder) (*typ
 			sdk.Attribute{Key: "max_price", Value: maxPrice.String()},
 			sdk.Attribute{Key: "blocks", Value: strconv.Itoa(int(msg.Blocks))},
 			sdk.Attribute{Key: "amount_given", Value: amount.String()},
+			sdk.Attribute{Key: "interval", Value: strconv.Itoa(int(msg.Interval))},
 			sdk.Attribute{Key: "allow_incomplete", Value: strconv.FormatBool(msg.AllowIncomplete)},
 		),
 	)

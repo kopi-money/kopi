@@ -9,6 +9,7 @@ import "kopi/dex/liquidity_pair.proto";
 import "kopi/dex/ratio.proto";
 import "kopi/dex/liquidity_sum.proto";
 import "kopi/dex/order.proto";
+import "kopi/dex/wallet_trade_amount.proto";
 
 // this line is used by starport scaffolding # genesis/proto/import
 
@@ -26,6 +27,7 @@ message GenesisState {
   // this line is used by starport scaffolding # genesis/proto/state
   repeated LiquiditySum liquiditySumList = 8 [(gogoproto.nullable) = false];
   repeated Order        orderList = 9 [(gogoproto.nullable) = false];
-  uint64       order_next_index = 10;
+  repeated WalletTradeAmount walletTradeAmount = 10 [(gogoproto.nullable) = false];
+  uint64       order_next_index = 11;
 }
 

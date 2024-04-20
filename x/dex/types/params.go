@@ -2,10 +2,10 @@ package types
 
 import (
 	"cosmossdk.io/math"
-	"errors"
 	"fmt"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/kopi-money/kopi/utils"
+	"github.com/pkg/errors"
 )
 
 var (
@@ -14,6 +14,7 @@ var (
 	KeyReserveShare          = []byte("ReserveShare")
 	KeyFeeReimbursement      = []byte("FeeReimbursement")
 	KeyMaxOrderLife          = []byte("MaxOrderLife")
+	KeyTradeAmountDecay      = []byte("KeyTradeAmountDecay")
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)
@@ -23,7 +24,18 @@ var (
 	TradeFee              = math.LegacyNewDecWithPrec(1, 3)      // 0.001 -> 0.1%
 	ReserveShare          = math.LegacyNewDecWithPrec(5, 1)      // 0.5 -> 50%
 	VirtualLiquidityDecay = math.LegacyNewDecWithPrec(999997, 6) // 0.999997
+	TradeAmountDecay      = math.LegacyNewDecWithPrec(95, 2)     // 0.95
 	MaxOrderLife          = utils.BlocksPerDay * 7
+	DiscountLevels        = []*DiscountLevel{
+		{
+			TradeAmount: math.LegacyNewDec(1_000_000),
+			Discount:    math.LegacyNewDecWithPrec(1, 2),
+		},
+		{
+			TradeAmount: math.LegacyNewDec(10_000_000),
+			Discount:    math.LegacyNewDecWithPrec(1, 1),
+		},
+	}
 )
 
 // ParamKeyTable the param key table for launch module
@@ -39,6 +51,8 @@ func DefaultParams() Params {
 		ReserveShare:          ReserveShare,
 		FeeReimbursement:      FeeReimbursement,
 		MaxOrderLife:          MaxOrderLife,
+		TradeAmountDecay:      TradeAmountDecay,
+		DiscountLevels:        DiscountLevels,
 	}
 }
 
@@ -50,11 +64,54 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyReserveShare, &p.ReserveShare, validateZeroOne),
 		paramtypes.NewParamSetPair(KeyFeeReimbursement, &p.FeeReimbursement, validateLessThanOne),
 		paramtypes.NewParamSetPair(KeyMaxOrderLife, &p.MaxOrderLife, validateBiggerThanZero),
+		paramtypes.NewParamSetPair(KeyTradeAmountDecay, &p.TradeAmountDecay, validateBetweenZeroAndOne),
 	}
 }
 
 // Validate validates the set of params
 func (p Params) Validate() error {
+	if err := p.validateDiscountLevels(); err != nil {
+		return errors.Wrap(err, "invalid discount level")
+	}
+
+	if err := validateZeroOne(p.TradeFee); err != nil {
+		return errors.Wrap(err, "invalid trade fee")
+	}
+
+	if err := validateZeroOne(p.VirtualLiquidityDecay); err != nil {
+		return errors.Wrap(err, "invalid virtual liquidity decay")
+	}
+
+	if err := validateZeroOne(p.ReserveShare); err != nil {
+		return errors.Wrap(err, "invalid reserve share")
+	}
+
+	if err := validateLessThanOne(p.FeeReimbursement); err != nil {
+		return errors.Wrap(err, "invalid fee reimbursement")
+	}
+
+	if err := validateBiggerThanZero(p.MaxOrderLife); err != nil {
+		return errors.Wrap(err, "invalid fee reimbursement")
+	}
+
+	if err := validateBetweenZeroAndOne(p.TradeAmountDecay); err != nil {
+		return errors.Wrap(err, "invalid trade amount decay")
+	}
+
+	return nil
+}
+
+func (p Params) validateDiscountLevels() error {
+	for index, discountLevel := range p.DiscountLevels {
+		if err := validateBetweenZeroAndOne(discountLevel.Discount); err != nil {
+			return errors.Wrap(err, fmt.Sprintf("invalid discount for entry with index %v", index))
+		}
+
+		if discountLevel.TradeAmount.Equal(math.LegacyZeroDec()) {
+			return fmt.Errorf("trade amount for entry with index %v must not be zero", index)
+		}
+	}
+
 	return nil
 }
 
@@ -108,6 +165,27 @@ func validateBiggerThanZero(d any) error {
 
 	if v < 1 {
 		return errors.New("value is smaller than 1")
+	}
+
+	return nil
+}
+
+func validateBetweenZeroAndOne(d any) error {
+	v, ok := d.(math.LegacyDec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", d)
+	}
+
+	if v.IsNil() {
+		return errors.New("value is nil")
+	}
+
+	if !v.GT(math.LegacyZeroDec()) {
+		return errors.New("value has to be bigger than 0")
+	}
+
+	if !v.LT(math.LegacyOneDec()) {
+		return errors.New("value has to be less than 1")
 	}
 
 	return nil

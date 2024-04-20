@@ -319,7 +319,8 @@ message QueryOrdersDenomSumResponse {
 message QuerySimulateTradeRequest {
   string denom_from = 1;
   string denom_to = 2;
-  string amount = 3;
+  string address = 3;
+  string amount = 4;
 }
 
 message QuerySimulateTradeResponse {

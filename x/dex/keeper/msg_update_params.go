@@ -122,3 +122,46 @@ func (k msgServer) UpdateMaxOrderLife(ctx context.Context, req *types.MsgUpdateM
 
 	return &types.Void{}, nil
 }
+
+func (k msgServer) UpdateTradeAmountDecay(ctx context.Context, req *types.MsgUpdateTradeAmountDecay) (*types.Void, error) {
+	if k.GetAuthority() != req.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	}
+
+	tradeAmountDecay, err := math.LegacyNewDecFromStr(req.TradeAmountDecay)
+	if err != nil {
+		return nil, err
+	}
+
+	params := k.GetParams(ctx)
+	params.TradeAmountDecay = tradeAmountDecay
+
+	if err = params.Validate(); err != nil {
+		return nil, err
+	}
+
+	if err = k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
+
+	return &types.Void{}, nil
+}
+
+func (k msgServer) UpdateDiscountLevels(ctx context.Context, req *types.MsgUpdateDiscountLevels) (*types.Void, error) {
+	if k.GetAuthority() != req.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	}
+
+	params := k.GetParams(ctx)
+	params.DiscountLevels = req.DiscountLevels
+
+	if err := params.Validate(); err != nil {
+		return nil, err
+	}
+
+	if err := k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
+
+	return &types.Void{}, nil
+}

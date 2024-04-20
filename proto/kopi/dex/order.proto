@@ -37,6 +37,8 @@ message Order {
   ];
 
   uint64 num_blocks = 10;
-  uint64 block_end = 11;
-  bool allow_incomplete = 12;
+  uint64 execution_interval = 11;
+  uint64 next_execution = 12;
+  uint64 block_end = 13;
+  bool allow_incomplete = 14;
 }

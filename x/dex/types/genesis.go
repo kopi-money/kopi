@@ -12,8 +12,9 @@ func DefaultGenesis() *GenesisState {
 		RatioList:          []Ratio{},
 		LiquidityNextIndex: 0,
 
-		LiquiditySumList: []LiquiditySum{},
-		OrderList:        []Order{},
+		LiquiditySumList:  []LiquiditySum{},
+		OrderList:         []Order{},
+		WalletTradeAmount: []WalletTradeAmount{},
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
 	}
