@@ -43,8 +43,8 @@ func (k Keeper) SimulateTrade(goCtx context.Context, req *types.QuerySimulateTra
 
 	res := types.QuerySimulateTradeResponse{
 		AmountReceived:      amountReceived.Int64(),
-		AmountReceivedInUsd: amountReceived.ToLegacyDec().Mul(priceToUSD).RoundInt64(),
-		AmountGivenInUsd:    amount.ToLegacyDec().Mul(priceFromUSD).RoundInt64(),
+		AmountReceivedInUsd: amountReceived.ToLegacyDec().Quo(priceToUSD).RoundInt64(),
+		AmountGivenInUsd:    amount.ToLegacyDec().Quo(priceFromUSD).RoundInt64(),
 		Fee:                 fee.RoundInt64(),
 		Price:               price.String(),
 		PriceFromToUsd:      priceFromUSD.String(),
