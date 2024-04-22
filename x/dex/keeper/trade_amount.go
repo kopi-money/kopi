@@ -74,7 +74,15 @@ func (k Keeper) TradeAmountDecay(ctx context.Context) {
 	}
 }
 
-func (k Keeper) getTradeDiscount(ctx context.Context, address string) math.LegacyDec {
+func (k Keeper) getTradeDiscount(ctx context.Context, address string, excludeFromDiscount bool) math.LegacyDec {
+	if excludeFromDiscount {
+		return math.LegacyZeroDec()
+	}
+
+	if address == "" {
+		return math.LegacyZeroDec()
+	}
+
 	tradeAmount := k.GetTradeAmount(ctx, address)
 	if tradeAmount.Amount.Equal(math.LegacyZeroDec()) {
 		return math.LegacyZeroDec()
