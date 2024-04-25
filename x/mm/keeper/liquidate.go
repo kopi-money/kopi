@@ -118,6 +118,10 @@ func (k Keeper) liquidateLoan(ctx context.Context, eventManager sdk.EventManager
 		repayAmount = repayAmount.Add(amountReceived.ToLegacyDec())
 	}
 
+	if repayAmount.Equal(math.LegacyZeroDec()) {
+		return nil
+	}
+
 	loan.Amount = loan.Amount.Sub(repayAmount)
 	if loan.Amount.LT(math.LegacyZeroDec()) {
 		amount := loan.Amount.Neg().RoundInt()
