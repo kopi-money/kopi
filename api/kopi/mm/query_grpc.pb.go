@@ -19,32 +19,33 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_FullBalance_FullMethodName                 = "/kopi.mm.Query/FullBalance"
-	Query_GetCollateralStats_FullMethodName          = "/kopi.mm.Query/GetCollateralStats"
-	Query_GetCollateralDenomStats_FullMethodName     = "/kopi.mm.Query/GetCollateralDenomStats"
-	Query_GetCollateralUserStats_FullMethodName      = "/kopi.mm.Query/GetCollateralUserStats"
-	Query_GetCollateralDenomUserStats_FullMethodName = "/kopi.mm.Query/GetCollateralDenomUserStats"
-	Query_GetWithdrawableCollateral_FullMethodName   = "/kopi.mm.Query/GetWithdrawableCollateral"
-	Query_GetCreditLineUsage_FullMethodName          = "/kopi.mm.Query/GetCreditLineUsage"
-	Query_GetDepositUserStats_FullMethodName         = "/kopi.mm.Query/GetDepositUserStats"
-	Query_GetDepositUserDenomStats_FullMethodName    = "/kopi.mm.Query/GetDepositUserDenomStats"
-	Query_GetDepositStats_FullMethodName             = "/kopi.mm.Query/GetDepositStats"
-	Query_GetBorrowInterestRate_FullMethodName       = "/kopi.mm.Query/GetBorrowInterestRate"
-	Query_GetLoans_FullMethodName                    = "/kopi.mm.Query/GetLoans"
-	Query_GetUserLoans_FullMethodName                = "/kopi.mm.Query/GetUserLoans"
-	Query_GetUserDenomLoan_FullMethodName            = "/kopi.mm.Query/GetUserDenomLoan"
-	Query_GetAvailableToBorrow_FullMethodName        = "/kopi.mm.Query/GetAvailableToBorrow"
-	Query_GetNumLoans_FullMethodName                 = "/kopi.mm.Query/GetNumLoans"
-	Query_GetNumAddressLoans_FullMethodName          = "/kopi.mm.Query/GetNumAddressLoans"
-	Query_GetLoansStats_FullMethodName               = "/kopi.mm.Query/GetLoansStats"
-	Query_GetValueLoans_FullMethodName               = "/kopi.mm.Query/GetValueLoans"
-	Query_Params_FullMethodName                      = "/kopi.mm.Query/Params"
-	Query_GetRedemptionRequest_FullMethodName        = "/kopi.mm.Query/GetRedemptionRequest"
-	Query_GetRedemptionsRequest_FullMethodName       = "/kopi.mm.Query/GetRedemptionsRequest"
-	Query_GetRedemptionStatsRequest_FullMethodName   = "/kopi.mm.Query/GetRedemptionStatsRequest"
-	Query_GetUserStats_FullMethodName                = "/kopi.mm.Query/GetUserStats"
-	Query_GetTotalValueLocked_FullMethodName         = "/kopi.mm.Query/GetTotalValueLocked"
-	Query_GetVaultValues_FullMethodName              = "/kopi.mm.Query/GetVaultValues"
+	Query_FullBalance_FullMethodName                    = "/kopi.mm.Query/FullBalance"
+	Query_GetCollateralStats_FullMethodName             = "/kopi.mm.Query/GetCollateralStats"
+	Query_GetCollateralDenomStats_FullMethodName        = "/kopi.mm.Query/GetCollateralDenomStats"
+	Query_GetCollateralUserStats_FullMethodName         = "/kopi.mm.Query/GetCollateralUserStats"
+	Query_GetCollateralDenomUserStats_FullMethodName    = "/kopi.mm.Query/GetCollateralDenomUserStats"
+	Query_GetWithdrawableCollateral_FullMethodName      = "/kopi.mm.Query/GetWithdrawableCollateral"
+	Query_GetCreditLineUsage_FullMethodName             = "/kopi.mm.Query/GetCreditLineUsage"
+	Query_GetDepositUserStats_FullMethodName            = "/kopi.mm.Query/GetDepositUserStats"
+	Query_GetDepositUserDenomStats_FullMethodName       = "/kopi.mm.Query/GetDepositUserDenomStats"
+	Query_GetDepositStats_FullMethodName                = "/kopi.mm.Query/GetDepositStats"
+	Query_GetBorrowInterestRate_FullMethodName          = "/kopi.mm.Query/GetBorrowInterestRate"
+	Query_GetLoans_FullMethodName                       = "/kopi.mm.Query/GetLoans"
+	Query_GetUserLoans_FullMethodName                   = "/kopi.mm.Query/GetUserLoans"
+	Query_GetUserDenomLoan_FullMethodName               = "/kopi.mm.Query/GetUserDenomLoan"
+	Query_GetAvailableToBorrow_FullMethodName           = "/kopi.mm.Query/GetAvailableToBorrow"
+	Query_GetNumLoans_FullMethodName                    = "/kopi.mm.Query/GetNumLoans"
+	Query_GetNumAddressLoans_FullMethodName             = "/kopi.mm.Query/GetNumAddressLoans"
+	Query_GetLoansStats_FullMethodName                  = "/kopi.mm.Query/GetLoansStats"
+	Query_GetValueLoans_FullMethodName                  = "/kopi.mm.Query/GetValueLoans"
+	Query_Params_FullMethodName                         = "/kopi.mm.Query/Params"
+	Query_GetRedemptionRequest_FullMethodName           = "/kopi.mm.Query/GetRedemptionRequest"
+	Query_GetRedemptionsRequest_FullMethodName          = "/kopi.mm.Query/GetRedemptionsRequest"
+	Query_GetRedemptionStatsRequest_FullMethodName      = "/kopi.mm.Query/GetRedemptionStatsRequest"
+	Query_GetRedemptionDenomStatsRequest_FullMethodName = "/kopi.mm.Query/GetRedemptionDenomStatsRequest"
+	Query_GetUserStats_FullMethodName                   = "/kopi.mm.Query/GetUserStats"
+	Query_GetTotalValueLocked_FullMethodName            = "/kopi.mm.Query/GetTotalValueLocked"
+	Query_GetVaultValues_FullMethodName                 = "/kopi.mm.Query/GetVaultValues"
 )
 
 // QueryClient is the client API for Query service.
@@ -74,6 +75,7 @@ type QueryClient interface {
 	GetRedemptionRequest(ctx context.Context, in *GetRedemptionRequestQuery, opts ...grpc.CallOption) (*GetRedemptionRequestResponse, error)
 	GetRedemptionsRequest(ctx context.Context, in *GetRedemptionsQuery, opts ...grpc.CallOption) (*GetRedemptionsResponse, error)
 	GetRedemptionStatsRequest(ctx context.Context, in *GetRedemptionStatsRequestQuery, opts ...grpc.CallOption) (*GetRedemptionStatsRequestResponse, error)
+	GetRedemptionDenomStatsRequest(ctx context.Context, in *GetRedemptionDenomStatsRequestQuery, opts ...grpc.CallOption) (*GetRedemptionDenomStatsRequestResponse, error)
 	GetUserStats(ctx context.Context, in *GetUserStatsQuery, opts ...grpc.CallOption) (*GetUserStatsResponse, error)
 	GetTotalValueLocked(ctx context.Context, in *GetTotalValueLockedQuery, opts ...grpc.CallOption) (*GetTotalValueLockedResponse, error)
 	GetVaultValues(ctx context.Context, in *GetVaultValuesQuery, opts ...grpc.CallOption) (*GetVaultValuesResponse, error)
@@ -294,6 +296,15 @@ func (c *queryClient) GetRedemptionStatsRequest(ctx context.Context, in *GetRede
 	return out, nil
 }
 
+func (c *queryClient) GetRedemptionDenomStatsRequest(ctx context.Context, in *GetRedemptionDenomStatsRequestQuery, opts ...grpc.CallOption) (*GetRedemptionDenomStatsRequestResponse, error) {
+	out := new(GetRedemptionDenomStatsRequestResponse)
+	err := c.cc.Invoke(ctx, Query_GetRedemptionDenomStatsRequest_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) GetUserStats(ctx context.Context, in *GetUserStatsQuery, opts ...grpc.CallOption) (*GetUserStatsResponse, error) {
 	out := new(GetUserStatsResponse)
 	err := c.cc.Invoke(ctx, Query_GetUserStats_FullMethodName, in, out, opts...)
@@ -348,6 +359,7 @@ type QueryServer interface {
 	GetRedemptionRequest(context.Context, *GetRedemptionRequestQuery) (*GetRedemptionRequestResponse, error)
 	GetRedemptionsRequest(context.Context, *GetRedemptionsQuery) (*GetRedemptionsResponse, error)
 	GetRedemptionStatsRequest(context.Context, *GetRedemptionStatsRequestQuery) (*GetRedemptionStatsRequestResponse, error)
+	GetRedemptionDenomStatsRequest(context.Context, *GetRedemptionDenomStatsRequestQuery) (*GetRedemptionDenomStatsRequestResponse, error)
 	GetUserStats(context.Context, *GetUserStatsQuery) (*GetUserStatsResponse, error)
 	GetTotalValueLocked(context.Context, *GetTotalValueLockedQuery) (*GetTotalValueLockedResponse, error)
 	GetVaultValues(context.Context, *GetVaultValuesQuery) (*GetVaultValuesResponse, error)
@@ -426,6 +438,9 @@ func (UnimplementedQueryServer) GetRedemptionsRequest(context.Context, *GetRedem
 }
 func (UnimplementedQueryServer) GetRedemptionStatsRequest(context.Context, *GetRedemptionStatsRequestQuery) (*GetRedemptionStatsRequestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRedemptionStatsRequest not implemented")
+}
+func (UnimplementedQueryServer) GetRedemptionDenomStatsRequest(context.Context, *GetRedemptionDenomStatsRequestQuery) (*GetRedemptionDenomStatsRequestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRedemptionDenomStatsRequest not implemented")
 }
 func (UnimplementedQueryServer) GetUserStats(context.Context, *GetUserStatsQuery) (*GetUserStatsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserStats not implemented")
@@ -863,6 +878,24 @@ func _Query_GetRedemptionStatsRequest_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_GetRedemptionDenomStatsRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRedemptionDenomStatsRequestQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GetRedemptionDenomStatsRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_GetRedemptionDenomStatsRequest_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GetRedemptionDenomStatsRequest(ctx, req.(*GetRedemptionDenomStatsRequestQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Query_GetUserStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetUserStatsQuery)
 	if err := dec(in); err != nil {
@@ -1015,6 +1048,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetRedemptionStatsRequest",
 			Handler:    _Query_GetRedemptionStatsRequest_Handler,
+		},
+		{
+			MethodName: "GetRedemptionDenomStatsRequest",
+			Handler:    _Query_GetRedemptionDenomStatsRequest_Handler,
 		},
 		{
 			MethodName: "GetUserStats",

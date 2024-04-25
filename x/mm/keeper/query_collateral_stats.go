@@ -4,6 +4,7 @@ import (
 	"context"
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/kopi-money/kopi/x/mm/types"
 	"google.golang.org/grpc/codes"
@@ -147,12 +148,33 @@ func (k Keeper) GetCollateralDenomUserStats(ctx context.Context, req *types.GetC
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	amount, found := k.GetCollateral(ctx, req.Denom, req.Address)
-	if !found {
-		amount.Amount = math.ZeroInt()
+	address, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, types.ErrInvalidAddress
 	}
 
-	return &types.GetCollateralDenomUserStatsResponse{Amount: amount.Amount.String()}, nil
+	available := k.BankKeeper.SpendableCoin(ctx, address, req.Denom)
+	availableUSD, err := k.DexKeeper.GetValueInUSD(ctx, req.Denom, available.Amount)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get available value in used")
+	}
+
+	provided, found := k.GetCollateral(ctx, req.Denom, req.Address)
+	if !found {
+		provided.Amount = math.ZeroInt()
+	}
+
+	providedUSD, err := k.DexKeeper.GetValueInUSD(ctx, req.Denom, provided.Amount)
+	if err != nil {
+		return nil, errors.Wrap(err, "could not get provided value in used")
+	}
+
+	return &types.GetCollateralDenomUserStatsResponse{
+		Available:    available.Amount.String(),
+		AvailableUsd: availableUSD.RoundInt().String(),
+		Provided:     provided.Amount.String(),
+		ProvidedUsd:  providedUSD.RoundInt().String(),
+	}, nil
 }
 
 func (k Keeper) GetWithdrawableCollateral(ctx context.Context, req *types.GetWithdrawableCollateralQuery) (*types.GetWithdrawableCollateralResponse, error) {

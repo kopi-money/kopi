@@ -102,6 +102,10 @@ service Query {
   }
 
   rpc GetRedemptionStatsRequest (GetRedemptionStatsRequestQuery) returns (GetRedemptionStatsRequestResponse) {
+    option (google.api.http).get = "/kopi/mm/redemptions/stats";
+  }
+
+  rpc GetRedemptionDenomStatsRequest (GetRedemptionDenomStatsRequestQuery) returns (GetRedemptionDenomStatsRequestResponse) {
     option (google.api.http).get = "/kopi/mm/redemptions/stats/by_denom";
   }
 
@@ -133,10 +137,19 @@ message GetRedemptionsResponse {
 }
 
 message GetRedemptionStatsRequestQuery {
-  string denom = 1;
 }
 
 message GetRedemptionStatsRequestResponse {
+  int64  num_requests = 1;
+  string withdraw_sum_usd = 2;
+
+}
+
+message GetRedemptionDenomStatsRequestQuery {
+  string denom = 1;
+}
+
+message GetRedemptionDenomStatsRequestResponse {
   string max_fee = 1;
   string withdraw_sum = 2;
   int64  num_requests = 3;
@@ -264,7 +277,10 @@ message GetCollateralDenomUserStatsQuery {
 }
 
 message GetCollateralDenomUserStatsResponse {
-  string amount = 1;
+  string available = 1;
+  string available_usd = 2;
+  string provided = 3;
+  string provided_usd = 4;
 }
 
 message GetCreditLineUsageQuery {

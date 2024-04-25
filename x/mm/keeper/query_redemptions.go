@@ -32,7 +32,47 @@ func (k Keeper) GetRedemptionStatsRequest(ctx context.Context, req *types.GetRed
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	requests := k.GetRedemptions(ctx, req.Denom)
+	requestSum := sdkmath.LegacyZeroDec()
+	numRequests := 0
+
+	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
+		denomRequestSum, _, denomNumRequests := k.getRedemptionDenomStats(ctx, cAsset.Name)
+		requestSumUsd, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, denomRequestSum)
+		if err != nil {
+			return nil, err
+		}
+
+		requestSum = requestSum.Add(requestSumUsd)
+		numRequests += denomNumRequests
+	}
+
+	return &types.GetRedemptionStatsRequestResponse{
+		NumRequests:    int64(numRequests),
+		WithdrawSumUsd: requestSum.String(),
+	}, nil
+}
+
+func (k Keeper) GetRedemptionDenomStatsRequest(ctx context.Context, req *types.GetRedemptionDenomStatsRequestQuery) (*types.GetRedemptionDenomStatsRequestResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	requestSum, maxFee, requestCount := k.getRedemptionDenomStats(ctx, req.Denom)
+
+	maxFeeStr := ""
+	if maxFee.GT(sdkmath.LegacyZeroDec()) {
+		maxFeeStr = maxFee.String()
+	}
+
+	return &types.GetRedemptionDenomStatsRequestResponse{
+		NumRequests: int64(requestCount),
+		WithdrawSum: requestSum.String(),
+		MaxFee:      maxFeeStr,
+	}, nil
+}
+
+func (k Keeper) getRedemptionDenomStats(ctx context.Context, denom string) (sdkmath.Int, sdkmath.LegacyDec, int) {
+	requests := k.GetRedemptions(ctx, denom)
 
 	requestSum := sdkmath.ZeroInt()
 	requestCount := 0
@@ -44,16 +84,7 @@ func (k Keeper) GetRedemptionStatsRequest(ctx context.Context, req *types.GetRed
 		maxFee = sdkmath.LegacyMaxDec(maxFee, request.Fee)
 	}
 
-	maxFeeStr := ""
-	if maxFee.GT(sdkmath.LegacyZeroDec()) {
-		maxFeeStr = maxFee.String()
-	}
-
-	return &types.GetRedemptionStatsRequestResponse{
-		NumRequests: int64(requestCount),
-		WithdrawSum: requestSum.String(),
-		MaxFee:      maxFeeStr,
-	}, nil
+	return requestSum, maxFee, requestCount
 }
 
 func (k Keeper) GetRedemptionsRequest(ctx context.Context, req *types.GetRedemptionsQuery) (*types.GetRedemptionsResponse, error) {
