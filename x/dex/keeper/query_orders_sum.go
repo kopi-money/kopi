@@ -26,7 +26,10 @@ func (k Keeper) OrdersSum(goCtx context.Context, req *types.QueryOrdersSumReques
 		k.cdc.MustUnmarshal(iterator.Value(), &order)
 
 		price, _ := k.GetPriceInUSD(ctx, order.DenomFrom)
-		sum = sum.Add(price.Mul(order.AmountLeft.ToLegacyDec()))
+
+		if order.AmountLeft.GT(math.ZeroInt()) {
+			sum = sum.Add(price.Quo(order.AmountLeft.ToLegacyDec()))
+		}
 	}
 
 	return &types.QueryOrdersSumResponse{Sum: sum.String()}, nil
