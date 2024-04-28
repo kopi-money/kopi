@@ -131,7 +131,7 @@ func (k Keeper) liquidateLoan(ctx context.Context, eventManager sdk.EventManager
 		}
 	}
 
-	k.SetLoan(ctx, cAsset.BaseDenom, loan)
+	k.SetLoan(ctx, cAsset.BaseDenom, loan, repayAmount.Neg())
 
 	repayAmountBase, err := k.DexKeeper.GetValueIn(ctx, cAsset.BaseDenom, utils.BaseCurrency, repayAmount.RoundInt())
 	if err != nil {

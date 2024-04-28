@@ -24,6 +24,11 @@ func (k msgServer) AddCAsset(goCtx context.Context, req *types.MsgAddCAsset) (*t
 		return nil, err
 	}
 
+	borrowLimit, err := math.LegacyNewDecFromStr(req.BorrowLimit)
+	if err != nil {
+		return nil, err
+	}
+
 	factor, err := math.LegacyNewDecFromStr(req.Factor)
 	if err != nil {
 		return nil, err
@@ -38,6 +43,7 @@ func (k msgServer) AddCAsset(goCtx context.Context, req *types.MsgAddCAsset) (*t
 		Name:        req.Name,
 		BaseDenom:   req.BaseDenom,
 		DexFeeShare: dexFeeShare,
+		BorrowLimit: borrowLimit,
 	})
 
 	params.DexDenoms = append(params.DexDenoms, &types.DexDenom{
@@ -76,6 +82,48 @@ func (k msgServer) UpdateCAssetDexFeeShare(goCtx context.Context, req *types.Msg
 	for _, cAsset := range params.CAssets {
 		if cAsset.Name == req.Name {
 			cAsset.DexFeeShare = dexFeeShare
+			found = true
+		}
+
+		cAssets = append(cAssets, cAsset)
+	}
+
+	if !found {
+		return nil, types.ErrInvalidCAsset
+	}
+
+	params.CAssets = cAssets
+
+	if err = params.Validate(); err != nil {
+		return nil, err
+	}
+
+	if err = k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgUpdateParamsResponse{}, nil
+}
+
+func (k msgServer) UpdateCAssetBorrowLimit(goCtx context.Context, req *types.MsgUpdateCAssetBorrowLimit) (*types.MsgUpdateParamsResponse, error) {
+	if k.GetAuthority() != req.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	params := k.GetParams(ctx)
+
+	borrowLimit, err := math.LegacyNewDecFromStr(req.BorrowLimit)
+	if err != nil {
+		return nil, err
+	}
+
+	cAssets := []*types.CAsset{}
+	found := false
+
+	for _, cAsset := range params.CAssets {
+		if cAsset.Name == req.Name {
+			cAsset.BorrowLimit = borrowLimit
 			found = true
 		}
 

@@ -159,7 +159,7 @@ func (k Keeper) GetNumLoans(ctx context.Context, req *types.GetNumLoansQuery) (*
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	iterator := k.LoanIterator(ctx)
+	iterator := k.DenomLoanIterator(ctx)
 	defer iterator.Close()
 
 	var counter int64 = 0
@@ -196,7 +196,7 @@ func (k Keeper) GetNumAddressLoans(ctx context.Context, req *types.GetNumAddress
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	iterator := k.LoanIterator(ctx)
+	iterator := k.DenomLoanIterator(ctx)
 	defer iterator.Close()
 
 	var counter int64 = 0

@@ -13,7 +13,8 @@ import (
 func (k msgServer) Borrow(goCtx context.Context, msg *types.MsgBorrow) (*types.Void, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if _, err := k.DenomKeeper.GetCAssetByBaseName(ctx, msg.Denom); err != nil {
+	cAsset, err := k.DenomKeeper.GetCAssetByBaseName(ctx, msg.Denom)
+	if err != nil {
 		return nil, types.ErrInvalidDepositDenom
 	}
 
@@ -54,13 +55,17 @@ func (k msgServer) Borrow(goCtx context.Context, msg *types.MsgBorrow) (*types.V
 		return nil, errMsg
 	}
 
+	if k.checkBorrowLimitExceeded(ctx, cAsset, amount) {
+		return nil, types.ErrBorrowLimitExceeded
+	}
+
 	loan, found := k.GetLoan(ctx, msg.Denom, msg.Creator)
 	if !found {
 		loan = types.Loan{Address: msg.Creator, Amount: math.LegacyZeroDec()}
 	}
 
 	loan.Amount = loan.Amount.Add(amount)
-	k.SetLoan(ctx, msg.Denom, loan)
+	k.SetLoan(ctx, msg.Denom, loan, amount)
 
 	coins := sdk.NewCoins(sdk.NewCoin(msg.Denom, amount.Ceil().TruncateInt()))
 	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolVault, address, coins); err != nil {
@@ -141,7 +146,7 @@ func (k Keeper) repay(ctx context.Context, eventManager sdk.EventManagerI, denom
 	}
 
 	loan.Amount = loan.Amount.Sub(amountDec)
-	k.SetLoan(ctx, denom, loan)
+	k.SetLoan(ctx, denom, loan, amountDec.Neg())
 
 	coins := sdk.NewCoins(sdk.NewCoin(denom, amountInt))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolVault, coins); err != nil {

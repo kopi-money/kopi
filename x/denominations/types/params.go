@@ -64,16 +64,19 @@ func createDefaultCAssets() []*CAsset {
 			Name:        "uckusd",
 			BaseDenom:   "ukusd",
 			DexFeeShare: math.LegacyNewDecWithPrec(5, 1),
+			BorrowLimit: math.LegacyNewDecWithPrec(75, 2),
 		},
 		{
 			Name:        "ucwusdc",
 			BaseDenom:   "uwusdc",
 			DexFeeShare: math.LegacyNewDecWithPrec(5, 1),
+			BorrowLimit: math.LegacyNewDecWithPrec(75, 2),
 		},
 		{
 			Name:        "sckbtc",
 			BaseDenom:   "skbtc",
 			DexFeeShare: math.LegacyNewDecWithPrec(5, 1),
+			BorrowLimit: math.LegacyNewDecWithPrec(75, 2),
 		},
 	}
 }
@@ -335,6 +338,10 @@ func validateCAsset(dexDenoms []*DexDenom, cAsset *CAsset) error {
 
 	if cAsset.DexFeeShare.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("dex fee share must not be larger than 1")
+	}
+
+	if cAsset.BorrowLimit.GT(math.LegacyZeroDec()) {
+		return fmt.Errorf("borrow limit must not be larger than 1")
 	}
 
 	return nil

@@ -11,13 +11,45 @@ import (
 	"github.com/kopi-money/kopi/x/mm/types"
 )
 
+func (k Keeper) GetDenomLoan(ctx context.Context, denom string) types.DenomLoanData {
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixDenomLoanData))
+
+	b := store.Get(types.KeyDenom(denom))
+	if b == nil {
+		return types.DenomLoanData{
+			Denom:        denom,
+			Loans:        nil,
+			BorrowAmount: math.LegacyZeroDec(),
+		}
+	}
+
+	var loans types.DenomLoanData
+	k.cdc.MustUnmarshal(b, &loans)
+	return loans
+}
+
+func (k Keeper) SetDenomLoan(ctx context.Context, loans types.DenomLoanData) {
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixDenomLoanData))
+
+	b := k.cdc.MustMarshal(&loans)
+	store.Set(types.KeyDenom(loans.Denom), b)
+}
+
+func (k Keeper) updateBorrowAmount(ctx context.Context, denom string, amountChange math.LegacyDec) {
+	loans := k.GetDenomLoan(ctx, denom)
+	loans.BorrowAmount = loans.BorrowAmount.Add(amountChange)
+	k.SetDenomLoan(ctx, loans)
+}
+
 // GetAllDenomLoans returns all loans
-func (k Keeper) GetAllDenomLoans(ctx context.Context) (list []types.Loans) {
-	iterator := k.LoanIterator(ctx)
+func (k Keeper) GetAllDenomLoans(ctx context.Context) (list []types.DenomLoanData) {
+	iterator := k.DenomLoanIterator(ctx)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.Loans
+		var val types.DenomLoanData
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}
@@ -26,9 +58,11 @@ func (k Keeper) GetAllDenomLoans(ctx context.Context) (list []types.Loans) {
 }
 
 // SetLoan set a specific deposits in the store from its index
-func (k Keeper) SetLoan(ctx context.Context, denom string, loan types.Loan) {
+func (k Keeper) SetLoan(ctx context.Context, denom string, loan types.Loan, amountChange math.LegacyDec) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixLoans))
+
+	k.updateBorrowAmount(ctx, denom, amountChange)
 
 	// If loan is empty, delete it
 	if loan.Amount.LTE(math.LegacyZeroDec()) {
@@ -82,7 +116,7 @@ func (k Keeper) GetLoan(ctx context.Context, denom, addess string) (types.Loan, 
 	return deposit, true
 }
 
-func (k Keeper) LoanIterator(ctx context.Context) storetypes.Iterator {
+func (k Keeper) DenomLoanIterator(ctx context.Context) storetypes.Iterator {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixLoans))
 	return storetypes.KVStorePrefixIterator(store, []byte{})
@@ -153,7 +187,7 @@ func (k Keeper) getBorrowers(ctx context.Context) []string {
 	var borrowers []string
 	borrowersMap := make(map[string]struct{})
 
-	iterator := k.LoanIterator(ctx)
+	iterator := k.DenomLoanIterator(ctx)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -180,4 +214,16 @@ func (k Keeper) CalcAvailableToBorrow(ctx context.Context, address, denom string
 	available := vault.AmountOf(denom)
 
 	return math.MinInt(available, borrowable.TruncateInt()), nil
+}
+
+func (k Keeper) checkBorrowLimitExceeded(ctx context.Context, cAsset *denomtypes.CAsset, amount math.LegacyDec) bool {
+	if cAsset.BorrowLimit.Equal(math.LegacyZeroDec()) {
+		return false
+	}
+
+	borrowed := k.GetDenomLoan(ctx, cAsset.Name).BorrowAmount
+	deposited := k.calculateCAssetValue(ctx, cAsset)
+
+	borrowLimit := deposited.Mul(cAsset.BorrowLimit)
+	return borrowLimit.LT(borrowed.Add(amount))
 }

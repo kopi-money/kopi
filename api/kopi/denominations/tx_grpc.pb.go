@@ -32,6 +32,7 @@ const (
 	Msg_UpdateCollateralDenomMaxDeposit_FullMethodName = "/kopi.denominations.Msg/UpdateCollateralDenomMaxDeposit"
 	Msg_AddCAsset_FullMethodName                       = "/kopi.denominations.Msg/AddCAsset"
 	Msg_UpdateCAssetDexFeeShare_FullMethodName         = "/kopi.denominations.Msg/UpdateCAssetDexFeeShare"
+	Msg_UpdateCAssetBorrowLimit_FullMethodName         = "/kopi.denominations.Msg/UpdateCAssetBorrowLimit"
 )
 
 // MsgClient is the client API for Msg service.
@@ -51,6 +52,7 @@ type MsgClient interface {
 	UpdateCollateralDenomMaxDeposit(ctx context.Context, in *MsgUpdateCollateralDenomMaxDeposit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	AddCAsset(ctx context.Context, in *MsgAddCAsset, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	UpdateCAssetDexFeeShare(ctx context.Context, in *MsgUpdateCAssetDexFeeShare, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	UpdateCAssetBorrowLimit(ctx context.Context, in *MsgUpdateCAssetBorrowLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 }
 
 type msgClient struct {
@@ -178,6 +180,15 @@ func (c *msgClient) UpdateCAssetDexFeeShare(ctx context.Context, in *MsgUpdateCA
 	return out, nil
 }
 
+func (c *msgClient) UpdateCAssetBorrowLimit(ctx context.Context, in *MsgUpdateCAssetBorrowLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, Msg_UpdateCAssetBorrowLimit_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -195,6 +206,7 @@ type MsgServer interface {
 	UpdateCollateralDenomMaxDeposit(context.Context, *MsgUpdateCollateralDenomMaxDeposit) (*MsgUpdateParamsResponse, error)
 	AddCAsset(context.Context, *MsgAddCAsset) (*MsgUpdateParamsResponse, error)
 	UpdateCAssetDexFeeShare(context.Context, *MsgUpdateCAssetDexFeeShare) (*MsgUpdateParamsResponse, error)
+	UpdateCAssetBorrowLimit(context.Context, *MsgUpdateCAssetBorrowLimit) (*MsgUpdateParamsResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -240,6 +252,9 @@ func (UnimplementedMsgServer) AddCAsset(context.Context, *MsgAddCAsset) (*MsgUpd
 }
 func (UnimplementedMsgServer) UpdateCAssetDexFeeShare(context.Context, *MsgUpdateCAssetDexFeeShare) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateCAssetDexFeeShare not implemented")
+}
+func (UnimplementedMsgServer) UpdateCAssetBorrowLimit(context.Context, *MsgUpdateCAssetBorrowLimit) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateCAssetBorrowLimit not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -488,6 +503,24 @@ func _Msg_UpdateCAssetDexFeeShare_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateCAssetBorrowLimit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateCAssetBorrowLimit)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateCAssetBorrowLimit(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateCAssetBorrowLimit_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateCAssetBorrowLimit(ctx, req.(*MsgUpdateCAssetBorrowLimit))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -546,6 +579,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateCAssetDexFeeShare",
 			Handler:    _Msg_UpdateCAssetDexFeeShare_Handler,
+		},
+		{
+			MethodName: "UpdateCAssetBorrowLimit",
+			Handler:    _Msg_UpdateCAssetBorrowLimit_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
