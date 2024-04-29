@@ -146,3 +146,45 @@ func (k msgServer) UpdateCAssetBorrowLimit(goCtx context.Context, req *types.Msg
 
 	return &types.MsgUpdateParamsResponse{}, nil
 }
+
+func (k msgServer) UpdateCAssetMinimumLoanSize(goCtx context.Context, req *types.MsgUpdateCAssetMinimumLoanSize) (*types.MsgUpdateParamsResponse, error) {
+	if k.GetAuthority() != req.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	params := k.GetParams(ctx)
+
+	minimumLoanSize, ok := math.NewIntFromString(req.MinimumLoanSize)
+	if !ok {
+		return nil, types.ErrInvalidAmount
+	}
+
+	cAssets := []*types.CAsset{}
+	found := false
+
+	for _, cAsset := range params.CAssets {
+		if cAsset.Name == req.Name {
+			cAsset.MinimumLoanSize = minimumLoanSize
+			found = true
+		}
+
+		cAssets = append(cAssets, cAsset)
+	}
+
+	if !found {
+		return nil, types.ErrInvalidCAsset
+	}
+
+	params.CAssets = cAssets
+
+	if err := params.Validate(); err != nil {
+		return nil, err
+	}
+
+	if err := k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgUpdateParamsResponse{}, nil
+}

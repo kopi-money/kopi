@@ -99,6 +99,7 @@ func (k Keeper) mintTradeBurn(ctx context.Context, eventManager sdk.EventManager
 		TradeDenomEnd:       kCoin,
 		AllowIncomplete:     true,
 		ExcludeFromDiscount: true,
+		ProtocolTrade:       true,
 	}
 
 	amountUsed, amountReceived, _, _, err := k.DexKeeper.ExecuteTrade(ctx, eventManager, options)

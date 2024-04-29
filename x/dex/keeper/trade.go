@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/utils"
 	"github.com/kopi-money/kopi/x/dex/types"
+	"strconv"
 )
 
 // ExecuteTrade is called when a user sends a tx to execute and sets incomplete=true. First, a trade to the base
@@ -142,6 +143,7 @@ func (k Keeper) ExecuteTrade(ctx context.Context, eventManager sdk.EventManagerI
 			sdk.Attribute{Key: "amount_intermediate_base_currency", Value: amountReceived1.String()},
 			sdk.Attribute{Key: "amount_used", Value: usedAmount.String()},
 			sdk.Attribute{Key: "amount_received", Value: amountReceived2.String()},
+			sdk.Attribute{Key: "protocol_trade", Value: strconv.FormatBool(options.ProtocolTrade)},
 		),
 	)
 

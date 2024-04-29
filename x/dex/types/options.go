@@ -15,6 +15,7 @@ type TradeOptions struct {
 
 	AllowIncomplete     bool
 	ExcludeFromDiscount bool
+	ProtocolTrade       bool
 
 	CoinSource      sdk.AccAddress
 	CoinTarget      sdk.AccAddress

@@ -55,6 +55,10 @@ func (k msgServer) Borrow(goCtx context.Context, msg *types.MsgBorrow) (*types.V
 		return nil, errMsg
 	}
 
+	if cAsset.MinimumLoanSize.GT(math.ZeroInt()) && amount.LT(cAsset.MinimumLoanSize.ToLegacyDec()) {
+		return nil, types.ErrLoanSizeTooSmall
+	}
+
 	if k.checkBorrowLimitExceeded(ctx, cAsset, amount) {
 		return nil, types.ErrBorrowLimitExceeded
 	}

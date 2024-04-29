@@ -61,22 +61,25 @@ func createDefaultCollateralDenoms() []*CollateralDenom {
 func createDefaultCAssets() []*CAsset {
 	return []*CAsset{
 		{
-			Name:        "uckusd",
-			BaseDenom:   "ukusd",
-			DexFeeShare: math.LegacyNewDecWithPrec(5, 1),
-			BorrowLimit: math.LegacyNewDecWithPrec(75, 2),
+			Name:            "uckusd",
+			BaseDenom:       "ukusd",
+			DexFeeShare:     math.LegacyNewDecWithPrec(5, 1),
+			BorrowLimit:     math.LegacyNewDecWithPrec(99, 2),
+			MinimumLoanSize: math.NewInt(1000),
 		},
 		{
-			Name:        "ucwusdc",
-			BaseDenom:   "uwusdc",
-			DexFeeShare: math.LegacyNewDecWithPrec(5, 1),
-			BorrowLimit: math.LegacyNewDecWithPrec(75, 2),
+			Name:            "ucwusdc",
+			BaseDenom:       "uwusdc",
+			DexFeeShare:     math.LegacyNewDecWithPrec(5, 1),
+			BorrowLimit:     math.LegacyNewDecWithPrec(99, 2),
+			MinimumLoanSize: math.NewInt(1000),
 		},
 		{
-			Name:        "sckbtc",
-			BaseDenom:   "skbtc",
-			DexFeeShare: math.LegacyNewDecWithPrec(5, 1),
-			BorrowLimit: math.LegacyNewDecWithPrec(75, 2),
+			Name:            "sckbtc",
+			BaseDenom:       "skbtc",
+			DexFeeShare:     math.LegacyNewDecWithPrec(5, 1),
+			BorrowLimit:     math.LegacyNewDecWithPrec(99, 2),
+			MinimumLoanSize: math.NewInt(1000),
 		},
 	}
 }
@@ -340,8 +343,12 @@ func validateCAsset(dexDenoms []*DexDenom, cAsset *CAsset) error {
 		return fmt.Errorf("dex fee share must not be larger than 1")
 	}
 
-	if cAsset.BorrowLimit.GT(math.LegacyZeroDec()) {
+	if cAsset.BorrowLimit.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("borrow limit must not be larger than 1")
+	}
+
+	if cAsset.MinimumLoanSize.LT(math.ZeroInt()) {
+		return fmt.Errorf("minimum loan size must not be smaller than zero")
 	}
 
 	return nil

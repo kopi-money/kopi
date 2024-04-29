@@ -73,6 +73,7 @@ func (k Keeper) CheckMint(ctx context.Context, eventManager sdk.EventManagerI, k
 		TradeDenomEnd:       utils.BaseCurrency,
 		AllowIncomplete:     true,
 		ExcludeFromDiscount: true,
+		ProtocolTrade:       true,
 	}
 
 	amountUsed, amountReceived, _, _, err := k.DexKeeper.ExecuteTrade(ctx, eventManager, options)

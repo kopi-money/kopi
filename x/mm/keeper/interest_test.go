@@ -14,7 +14,7 @@ func TestInterest1(t *testing.T) {
 	_, err := msg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
-		Amount:  "10",
+		Amount:  "100000",
 	})
 
 	require.NoError(t, err)
@@ -30,7 +30,7 @@ func TestInterest1(t *testing.T) {
 	_, err = msg.Borrow(ctx, &types.MsgBorrow{
 		Creator: keepertest.Bob,
 		Denom:   "ukusd",
-		Amount:  "10",
+		Amount:  "1000",
 	})
 
 	require.NoError(t, err)
@@ -39,5 +39,5 @@ func TestInterest1(t *testing.T) {
 
 	loans := k.GetAllLoansByDenom(ctx, "ukusd")
 	require.Equal(t, 1, len(loans))
-	require.True(t, loans[0].Amount.GT(math.LegacyNewDec(10)))
+	require.True(t, loans[0].Amount.GT(math.LegacyNewDec(1000)))
 }

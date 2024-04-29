@@ -27,4 +27,5 @@ var (
 	ErrNegativeCollateral             = sdkerrors.Register(ModuleName, 1116, "collateral amount is negative")
 	ErrNotEnoughFundsInVault          = sdkerrors.Register(ModuleName, 1117, "not enough funds in vault")
 	ErrBorrowLimitExceeded            = sdkerrors.Register(ModuleName, 1118, "denom borrow limit exceeded")
+	ErrLoanSizeTooSmall               = sdkerrors.Register(ModuleName, 1119, "loan size too small")
 )

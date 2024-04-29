@@ -55,8 +55,13 @@ func (k Keeper) applyInterestForCAssetLoans(ctx context.Context, cAsset *denomty
 	interestRate = interestRate.Quo(math.LegacyNewDecFromInt(math.NewInt(int64(utils.BlocksPerYear))))
 
 	for _, loan := range loans {
-		interest := loan.Amount.Mul(interestRate)
-		loan.Amount = loan.Amount.Add(interest)
-		k.SetLoan(ctx, cAsset.BaseDenom, loan, interest)
+		if !cAsset.MinimumLoanSize.IsNil() && cAsset.MinimumLoanSize.GT(math.ZeroInt()) && loan.Amount.LT(cAsset.MinimumLoanSize.ToLegacyDec()) {
+			loan.Amount = math.LegacyZeroDec()
+			k.SetLoan(ctx, cAsset.BaseDenom, loan, loan.Amount.Neg())
+		} else {
+			interest := loan.Amount.Mul(interestRate)
+			loan.Amount = loan.Amount.Add(interest)
+			k.SetLoan(ctx, cAsset.BaseDenom, loan, interest)
+		}
 	}
 }

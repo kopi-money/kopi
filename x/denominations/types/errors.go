@@ -13,4 +13,5 @@ var (
 	ErrInvalidCAsset          = sdkerrors.Register(ModuleName, 1102, "given denom is no c asset")
 	ErrInvalidKCoin           = sdkerrors.Register(ModuleName, 1103, "given denom is no kcoin")
 	ErrInvalidCollateralDenom = sdkerrors.Register(ModuleName, 1104, "given collateral denom is no collateral denom")
+	ErrInvalidAmount          = sdkerrors.Register(ModuleName, 1105, "invalid amount")
 )

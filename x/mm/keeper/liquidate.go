@@ -171,6 +171,7 @@ func (k Keeper) processLiquidation(ctx context.Context, eventManager sdk.EventMa
 		TradeDenomStart: collateralDenom,
 		TradeDenomEnd:   cAsset.BaseDenom,
 		AllowIncomplete: true,
+		ProtocolTrade:   true,
 	}
 
 	usedAmount, amountReceived, _, _, err := k.DexKeeper.ExecuteTrade(ctx, eventManager, options)

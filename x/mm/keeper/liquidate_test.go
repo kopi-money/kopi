@@ -77,14 +77,14 @@ func TestLiquidate2(t *testing.T) {
 	_, err := mmMsg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
-		Amount:  "100000",
+		Amount:  "10000000",
 	})
 	require.NoError(t, err)
 
 	_, err = mmMsg.AddCollateral(ctx, &types.MsgAddCollateral{
 		Creator: keepertest.Bob,
 		Denom:   "ukopi",
-		Amount:  "10000",
+		Amount:  "1000000",
 	})
 	require.NoError(t, err)
 
@@ -116,14 +116,14 @@ func TestLiquidate3(t *testing.T) {
 	_, err := mmMsg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
-		Amount:  "100000",
+		Amount:  "10000000",
 	})
 	require.NoError(t, err)
 
 	_, err = mmMsg.AddCollateral(ctx, &types.MsgAddCollateral{
 		Creator: keepertest.Bob,
 		Denom:   "ukopi",
-		Amount:  "10000",
+		Amount:  "1000000",
 	})
 	require.NoError(t, err)
 

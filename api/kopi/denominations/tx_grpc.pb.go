@@ -33,6 +33,7 @@ const (
 	Msg_AddCAsset_FullMethodName                       = "/kopi.denominations.Msg/AddCAsset"
 	Msg_UpdateCAssetDexFeeShare_FullMethodName         = "/kopi.denominations.Msg/UpdateCAssetDexFeeShare"
 	Msg_UpdateCAssetBorrowLimit_FullMethodName         = "/kopi.denominations.Msg/UpdateCAssetBorrowLimit"
+	Msg_UpdateCAssetMinimumLoanSize_FullMethodName     = "/kopi.denominations.Msg/UpdateCAssetMinimumLoanSize"
 )
 
 // MsgClient is the client API for Msg service.
@@ -53,6 +54,7 @@ type MsgClient interface {
 	AddCAsset(ctx context.Context, in *MsgAddCAsset, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	UpdateCAssetDexFeeShare(ctx context.Context, in *MsgUpdateCAssetDexFeeShare, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	UpdateCAssetBorrowLimit(ctx context.Context, in *MsgUpdateCAssetBorrowLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	UpdateCAssetMinimumLoanSize(ctx context.Context, in *MsgUpdateCAssetMinimumLoanSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 }
 
 type msgClient struct {
@@ -189,6 +191,15 @@ func (c *msgClient) UpdateCAssetBorrowLimit(ctx context.Context, in *MsgUpdateCA
 	return out, nil
 }
 
+func (c *msgClient) UpdateCAssetMinimumLoanSize(ctx context.Context, in *MsgUpdateCAssetMinimumLoanSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, Msg_UpdateCAssetMinimumLoanSize_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -207,6 +218,7 @@ type MsgServer interface {
 	AddCAsset(context.Context, *MsgAddCAsset) (*MsgUpdateParamsResponse, error)
 	UpdateCAssetDexFeeShare(context.Context, *MsgUpdateCAssetDexFeeShare) (*MsgUpdateParamsResponse, error)
 	UpdateCAssetBorrowLimit(context.Context, *MsgUpdateCAssetBorrowLimit) (*MsgUpdateParamsResponse, error)
+	UpdateCAssetMinimumLoanSize(context.Context, *MsgUpdateCAssetMinimumLoanSize) (*MsgUpdateParamsResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -255,6 +267,9 @@ func (UnimplementedMsgServer) UpdateCAssetDexFeeShare(context.Context, *MsgUpdat
 }
 func (UnimplementedMsgServer) UpdateCAssetBorrowLimit(context.Context, *MsgUpdateCAssetBorrowLimit) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateCAssetBorrowLimit not implemented")
+}
+func (UnimplementedMsgServer) UpdateCAssetMinimumLoanSize(context.Context, *MsgUpdateCAssetMinimumLoanSize) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateCAssetMinimumLoanSize not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -521,6 +536,24 @@ func _Msg_UpdateCAssetBorrowLimit_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateCAssetMinimumLoanSize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateCAssetMinimumLoanSize)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateCAssetMinimumLoanSize(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateCAssetMinimumLoanSize_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateCAssetMinimumLoanSize(ctx, req.(*MsgUpdateCAssetMinimumLoanSize))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -583,6 +616,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateCAssetBorrowLimit",
 			Handler:    _Msg_UpdateCAssetBorrowLimit_Handler,
+		},
+		{
+			MethodName: "UpdateCAssetMinimumLoanSize",
+			Handler:    _Msg_UpdateCAssetMinimumLoanSize_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

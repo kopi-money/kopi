@@ -250,7 +250,7 @@ func TestDeposit11(t *testing.T) {
 	k, _, msg, ctx := keepertest.SetupMMMsgServer(t)
 	addr, _ := sdk.AccAddressFromBech32(keepertest.Alice)
 
-	depositAmount := 1_000
+	depositAmount := 100_000
 
 	for range 10 {
 		_, err := msg.AddDeposit(ctx, &types.MsgAddDeposit{

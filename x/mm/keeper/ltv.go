@@ -27,7 +27,7 @@ func (k Keeper) calculateBorrowableAmount(ctx context.Context, address, borrowDe
 	if borrowableValue.LT(math.LegacyZeroDec()) {
 		borrowableValue = math.LegacyZeroDec()
 	}
-	
+
 	return borrowableValue, nil
 }
 

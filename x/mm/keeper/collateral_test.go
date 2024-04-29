@@ -95,26 +95,26 @@ func TestCollateral6(t *testing.T) {
 	_, err := msg.AddCollateral(ctx, &types.MsgAddCollateral{
 		Creator: keepertest.Alice,
 		Denom:   "ukopi",
-		Amount:  "10000",
+		Amount:  "100000",
 	})
 
 	_, err = msg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
-		Amount:  "10000",
+		Amount:  "100000",
 	})
 
 	_, err = msg.Borrow(ctx, &types.MsgBorrow{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
-		Amount:  "100",
+		Amount:  "1000",
 	})
 
 	require.NoError(t, err)
 
 	withdrawable, err := k.CalcWithdrawableCollateralAmount(ctx, keepertest.Alice, "ukopi")
 	require.NoError(t, err)
-	require.Equal(t, math.NewInt(8000), withdrawable)
+	require.Equal(t, math.NewInt(80000), withdrawable)
 }
 
 func TestCollateral7(t *testing.T) {
@@ -123,34 +123,34 @@ func TestCollateral7(t *testing.T) {
 	_, err := msg.AddCollateral(ctx, &types.MsgAddCollateral{
 		Creator: keepertest.Alice,
 		Denom:   "ukopi",
-		Amount:  "10000",
+		Amount:  "100000",
 	})
 
 	_, err = msg.AddCollateral(ctx, &types.MsgAddCollateral{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
-		Amount:  "10000",
+		Amount:  "100000",
 	})
 
 	_, err = msg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
-		Amount:  "10000",
+		Amount:  "100000",
 	})
 
 	_, err = msg.Borrow(ctx, &types.MsgBorrow{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
-		Amount:  "100",
+		Amount:  "1000",
 	})
 
 	require.NoError(t, err)
 
 	withdrawable, err := k.CalcWithdrawableCollateralAmount(ctx, keepertest.Alice, "ukopi")
 	require.NoError(t, err)
-	require.Equal(t, math.NewInt(10000), withdrawable)
+	require.Equal(t, math.NewInt(100000), withdrawable)
 
 	withdrawable, err = k.CalcWithdrawableCollateralAmount(ctx, keepertest.Alice, "ukusd")
 	require.NoError(t, err)
-	require.Equal(t, math.NewInt(10000), withdrawable)
+	require.Equal(t, math.NewInt(100000), withdrawable)
 }
