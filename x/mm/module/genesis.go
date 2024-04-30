@@ -12,7 +12,12 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
 
-	k.SetNextLoanIndex(ctx, genState.NextLoanIndex.Index)
+	if genState.NextLoanIndex == nil {
+		k.SetNextLoanIndex(ctx, 0)
+	} else {
+		k.SetNextLoanIndex(ctx, genState.NextLoanIndex.Index)
+	}
+
 	for _, loans := range genState.Loans {
 		for _, loan := range loans.Loans {
 			k.SetLoan(ctx, loans.Denom, *loan)
