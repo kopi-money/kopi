@@ -13,9 +13,9 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	k.SetParams(ctx, genState.Params)
 
 	if genState.NextLoanIndex == nil {
-		k.SetNextLoanIndex(ctx, 0)
+		k.SetNextLoanIndex(ctx, types.NextLoanIndex{Index: 0})
 	} else {
-		k.SetNextLoanIndex(ctx, genState.NextLoanIndex.Index)
+		k.SetNextLoanIndex(ctx, *genState.NextLoanIndex)
 	}
 
 	for _, loans := range genState.Loans {
@@ -42,7 +42,9 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis := types.DefaultGenesis()
 	genesis.Params = k.GetParams(ctx)
 
-	genesis.NextLoanIndex = &types.NextLoanIndex{Index: k.GetNextLoanIndex(ctx)}
+	nli := k.GetNextLoanIndex(ctx)
+
+	genesis.NextLoanIndex = &nli
 	genesis.Loans = k.GetDenomLoans(ctx)
 	genesis.Collaterals = k.GetAllDenomCollaterals(ctx)
 	genesis.DenomRedemptions = k.GetDenomRedemptions(ctx)
