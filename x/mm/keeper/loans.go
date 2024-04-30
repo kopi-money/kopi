@@ -53,33 +53,33 @@ func (k Keeper) SetLoan(ctx context.Context, denom string, loan types.Loan) {
 	}
 
 	if loan.Index == 0 {
-		loan.Index = k.GetNextLoanIndex(ctx)
-		k.SetNextLoanIndex(ctx, loan.Index+1)
+		loan.Index = k.GetNextLoanIndex(ctx).Index
+		k.SetNextLoanIndex(ctx, types.NextLoanIndex{Index: loan.Index + 1})
 	}
 
 	b := k.cdc.MustMarshal(&loan)
 	store.Set(types.KeyDenomAddress(denom, loan.Address), b)
 }
 
-func (k Keeper) GetNextLoanIndex(ctx context.Context) int64 {
+func (k Keeper) GetNextLoanIndex(ctx context.Context) types.NextLoanIndex {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixLoansIndex))
 
 	b := store.Get([]byte{0})
 	if b == nil {
-		return 0
+		return types.NextLoanIndex{Index: 1}
 	}
 
 	var nextIndex types.NextLoanIndex
 	k.cdc.MustUnmarshal(b, &nextIndex)
-	return nextIndex.Index
+	return nextIndex
 }
 
-func (k Keeper) SetNextLoanIndex(ctx context.Context, index int64) {
+func (k Keeper) SetNextLoanIndex(ctx context.Context, index types.NextLoanIndex) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixLoansIndex))
 
-	b := k.cdc.MustMarshal(&types.NextLoanIndex{Index: index})
+	b := k.cdc.MustMarshal(&index)
 	store.Set([]byte{0}, b)
 }
 
