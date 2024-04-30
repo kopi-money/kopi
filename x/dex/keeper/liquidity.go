@@ -19,11 +19,8 @@ import (
 // the NextIndex is increased and updated as well.
 func (k Keeper) SetLiquidity(ctx context.Context, liquidity types.Liquidity, change math.Int) {
 	if liquidity.Index == 0 {
-		nextIndex, _ := k.GetLiquidityNextIndex(ctx)
-		nextIndex.Next += 1
-		k.SetLiquidityNextIndex(ctx, nextIndex)
-
-		liquidity.Index = nextIndex.Next
+		liquidity.Index = k.GetLiquidityNextIndex(ctx)
+		k.SetLiquidityNextIndex(ctx, liquidity.Index+1)
 	}
 
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))

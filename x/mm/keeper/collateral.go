@@ -12,16 +12,16 @@ import (
 )
 
 func (k Keeper) GetAllDenomCollaterals(ctx context.Context) (list []types.Collaterals) {
-	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixCollaterals))
+	for _, denom := range k.DenomKeeper.GetCollateralDenoms(ctx) {
+		var collaterals []*types.Collateral
+		for _, collateral := range k.getCollateralByDenom(ctx, denom.Denom) {
+			collaterals = append(collaterals, &collateral)
+		}
 
-	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.Collaterals
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
+		list = append(list, types.Collaterals{
+			Denom:       denom.Denom,
+			Collaterals: collaterals,
+		})
 	}
 
 	return
@@ -84,6 +84,22 @@ func (k Keeper) getCollateralDenomForAddress(ctx context.Context, denom, address
 	}
 
 	return amount.Amount
+}
+
+func (k Keeper) getCollateralByDenom(ctx context.Context, denom string) (list []types.Collateral) {
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixCollaterals))
+
+	iterator := storetypes.KVStorePrefixIterator(store, types.KeyDenom(denom))
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.Collateral
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return list
 }
 
 func (k Keeper) getCollateralSum(ctx context.Context, denom string) math.Int {

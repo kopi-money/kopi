@@ -11,6 +11,22 @@ import (
 	"github.com/kopi-money/kopi/x/mm/types"
 )
 
+func (k Keeper) GetDenomLoans(ctx context.Context) (denomLoans []types.Loans) {
+	for _, denom := range k.DenomKeeper.GetCAssets(ctx) {
+		var loans []*types.Loan
+		for _, loan := range k.GetAllLoansByDenom(ctx, denom.BaseDenom) {
+			loans = append(loans, &loan)
+		}
+
+		denomLoans = append(denomLoans, types.Loans{
+			Denom: denom.BaseDenom,
+			Loans: loans,
+		})
+	}
+
+	return
+}
+
 // GetAllDenomLoans returns all loans
 func (k Keeper) GetAllDenomLoans(ctx context.Context) (list []types.Loans) {
 	iterator := k.LoanIterator(ctx)
@@ -37,33 +53,33 @@ func (k Keeper) SetLoan(ctx context.Context, denom string, loan types.Loan) {
 	}
 
 	if loan.Index == 0 {
-		loan.Index = k.GetNextLoanIndex(ctx).Index
-		k.SetNextLoanIndex(ctx, types.NextLoanIndex{Index: loan.Index + 1})
+		loan.Index = k.GetNextLoanIndex(ctx)
+		k.SetNextLoanIndex(ctx, loan.Index+1)
 	}
 
 	b := k.cdc.MustMarshal(&loan)
 	store.Set(types.KeyDenomAddress(denom, loan.Address), b)
 }
 
-func (k Keeper) GetNextLoanIndex(ctx context.Context) types.NextLoanIndex {
+func (k Keeper) GetNextLoanIndex(ctx context.Context) int64 {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixLoansIndex))
 
 	b := store.Get([]byte{0})
 	if b == nil {
-		return types.NextLoanIndex{Index: 1}
+		return 0
 	}
 
 	var nextIndex types.NextLoanIndex
 	k.cdc.MustUnmarshal(b, &nextIndex)
-	return nextIndex
+	return nextIndex.Index
 }
 
-func (k Keeper) SetNextLoanIndex(ctx context.Context, index types.NextLoanIndex) {
+func (k Keeper) SetNextLoanIndex(ctx context.Context, index int64) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixLoansIndex))
 
-	b := k.cdc.MustMarshal(&index)
+	b := k.cdc.MustMarshal(&types.NextLoanIndex{Index: index})
 	store.Set([]byte{0}, b)
 }
 

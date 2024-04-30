@@ -12,11 +12,8 @@ import (
 // the NextIndex is increased and updated as well.
 func (k Keeper) SetOrder(ctx context.Context, order types.Order) uint64 {
 	if order.Index == 0 {
-		nextIndex, _ := k.GetOrderNextIndex(ctx)
-		nextIndex.Next += 1
-		k.SetOrderNextIndex(ctx, nextIndex)
-
-		order.Index = nextIndex.Next
+		order.Index = k.GetOrderNextIndex(ctx)
+		k.SetOrderNextIndex(ctx, order.Index+1)
 	}
 
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
