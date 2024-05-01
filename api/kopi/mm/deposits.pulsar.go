@@ -951,81 +951,79 @@ func (x *fastReflection_Loan) ProtoMethods() *protoiface.Methods {
 	}
 }
 
-var _ protoreflect.List = (*_DenomLoanData_2_list)(nil)
+var _ protoreflect.List = (*_Loans_2_list)(nil)
 
-type _DenomLoanData_2_list struct {
+type _Loans_2_list struct {
 	list *[]*Loan
 }
 
-func (x *_DenomLoanData_2_list) Len() int {
+func (x *_Loans_2_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_DenomLoanData_2_list) Get(i int) protoreflect.Value {
+func (x *_Loans_2_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
 }
 
-func (x *_DenomLoanData_2_list) Set(i int, value protoreflect.Value) {
+func (x *_Loans_2_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*Loan)
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_DenomLoanData_2_list) Append(value protoreflect.Value) {
+func (x *_Loans_2_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*Loan)
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_DenomLoanData_2_list) AppendMutable() protoreflect.Value {
+func (x *_Loans_2_list) AppendMutable() protoreflect.Value {
 	v := new(Loan)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_DenomLoanData_2_list) Truncate(n int) {
+func (x *_Loans_2_list) Truncate(n int) {
 	for i := n; i < len(*x.list); i++ {
 		(*x.list)[i] = nil
 	}
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_DenomLoanData_2_list) NewElement() protoreflect.Value {
+func (x *_Loans_2_list) NewElement() protoreflect.Value {
 	v := new(Loan)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_DenomLoanData_2_list) IsValid() bool {
+func (x *_Loans_2_list) IsValid() bool {
 	return x.list != nil
 }
 
 var (
-	md_DenomLoanData               protoreflect.MessageDescriptor
-	fd_DenomLoanData_denom         protoreflect.FieldDescriptor
-	fd_DenomLoanData_loans         protoreflect.FieldDescriptor
-	fd_DenomLoanData_borrow_amount protoreflect.FieldDescriptor
+	md_Loans       protoreflect.MessageDescriptor
+	fd_Loans_denom protoreflect.FieldDescriptor
+	fd_Loans_loans protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_kopi_mm_deposits_proto_init()
-	md_DenomLoanData = File_kopi_mm_deposits_proto.Messages().ByName("DenomLoanData")
-	fd_DenomLoanData_denom = md_DenomLoanData.Fields().ByName("denom")
-	fd_DenomLoanData_loans = md_DenomLoanData.Fields().ByName("loans")
-	fd_DenomLoanData_borrow_amount = md_DenomLoanData.Fields().ByName("borrow_amount")
+	md_Loans = File_kopi_mm_deposits_proto.Messages().ByName("Loans")
+	fd_Loans_denom = md_Loans.Fields().ByName("denom")
+	fd_Loans_loans = md_Loans.Fields().ByName("loans")
 }
 
-var _ protoreflect.Message = (*fastReflection_DenomLoanData)(nil)
+var _ protoreflect.Message = (*fastReflection_Loans)(nil)
 
-type fastReflection_DenomLoanData DenomLoanData
+type fastReflection_Loans Loans
 
-func (x *DenomLoanData) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_DenomLoanData)(x)
+func (x *Loans) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_Loans)(x)
 }
 
-func (x *DenomLoanData) slowProtoReflect() protoreflect.Message {
+func (x *Loans) slowProtoReflect() protoreflect.Message {
 	mi := &file_kopi_mm_deposits_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1037,43 +1035,43 @@ func (x *DenomLoanData) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_DenomLoanData_messageType fastReflection_DenomLoanData_messageType
-var _ protoreflect.MessageType = fastReflection_DenomLoanData_messageType{}
+var _fastReflection_Loans_messageType fastReflection_Loans_messageType
+var _ protoreflect.MessageType = fastReflection_Loans_messageType{}
 
-type fastReflection_DenomLoanData_messageType struct{}
+type fastReflection_Loans_messageType struct{}
 
-func (x fastReflection_DenomLoanData_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_DenomLoanData)(nil)
+func (x fastReflection_Loans_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_Loans)(nil)
 }
-func (x fastReflection_DenomLoanData_messageType) New() protoreflect.Message {
-	return new(fastReflection_DenomLoanData)
+func (x fastReflection_Loans_messageType) New() protoreflect.Message {
+	return new(fastReflection_Loans)
 }
-func (x fastReflection_DenomLoanData_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_DenomLoanData
+func (x fastReflection_Loans_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_Loans
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_DenomLoanData) Descriptor() protoreflect.MessageDescriptor {
-	return md_DenomLoanData
+func (x *fastReflection_Loans) Descriptor() protoreflect.MessageDescriptor {
+	return md_Loans
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_DenomLoanData) Type() protoreflect.MessageType {
-	return _fastReflection_DenomLoanData_messageType
+func (x *fastReflection_Loans) Type() protoreflect.MessageType {
+	return _fastReflection_Loans_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_DenomLoanData) New() protoreflect.Message {
-	return new(fastReflection_DenomLoanData)
+func (x *fastReflection_Loans) New() protoreflect.Message {
+	return new(fastReflection_Loans)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_DenomLoanData) Interface() protoreflect.ProtoMessage {
-	return (*DenomLoanData)(x)
+func (x *fastReflection_Loans) Interface() protoreflect.ProtoMessage {
+	return (*Loans)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -1081,22 +1079,16 @@ func (x *fastReflection_DenomLoanData) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_DenomLoanData) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_Loans) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Denom != "" {
 		value := protoreflect.ValueOfString(x.Denom)
-		if !f(fd_DenomLoanData_denom, value) {
+		if !f(fd_Loans_denom, value) {
 			return
 		}
 	}
 	if len(x.Loans) != 0 {
-		value := protoreflect.ValueOfList(&_DenomLoanData_2_list{list: &x.Loans})
-		if !f(fd_DenomLoanData_loans, value) {
-			return
-		}
-	}
-	if len(x.BorrowAmount) != 0 {
-		value := protoreflect.ValueOfBytes(x.BorrowAmount)
-		if !f(fd_DenomLoanData_borrow_amount, value) {
+		value := protoreflect.ValueOfList(&_Loans_2_list{list: &x.Loans})
+		if !f(fd_Loans_loans, value) {
 			return
 		}
 	}
@@ -1113,19 +1105,17 @@ func (x *fastReflection_DenomLoanData) Range(f func(protoreflect.FieldDescriptor
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_DenomLoanData) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_Loans) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "kopi.mm.DenomLoanData.denom":
+	case "kopi.mm.Loans.denom":
 		return x.Denom != ""
-	case "kopi.mm.DenomLoanData.loans":
+	case "kopi.mm.Loans.loans":
 		return len(x.Loans) != 0
-	case "kopi.mm.DenomLoanData.borrow_amount":
-		return len(x.BorrowAmount) != 0
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.DenomLoanData"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.Loans"))
 		}
-		panic(fmt.Errorf("message kopi.mm.DenomLoanData does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message kopi.mm.Loans does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1135,19 +1125,17 @@ func (x *fastReflection_DenomLoanData) Has(fd protoreflect.FieldDescriptor) bool
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_DenomLoanData) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_Loans) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "kopi.mm.DenomLoanData.denom":
+	case "kopi.mm.Loans.denom":
 		x.Denom = ""
-	case "kopi.mm.DenomLoanData.loans":
+	case "kopi.mm.Loans.loans":
 		x.Loans = nil
-	case "kopi.mm.DenomLoanData.borrow_amount":
-		x.BorrowAmount = nil
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.DenomLoanData"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.Loans"))
 		}
-		panic(fmt.Errorf("message kopi.mm.DenomLoanData does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message kopi.mm.Loans does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1157,25 +1145,22 @@ func (x *fastReflection_DenomLoanData) Clear(fd protoreflect.FieldDescriptor) {
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_DenomLoanData) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Loans) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "kopi.mm.DenomLoanData.denom":
+	case "kopi.mm.Loans.denom":
 		value := x.Denom
 		return protoreflect.ValueOfString(value)
-	case "kopi.mm.DenomLoanData.loans":
+	case "kopi.mm.Loans.loans":
 		if len(x.Loans) == 0 {
-			return protoreflect.ValueOfList(&_DenomLoanData_2_list{})
+			return protoreflect.ValueOfList(&_Loans_2_list{})
 		}
-		listValue := &_DenomLoanData_2_list{list: &x.Loans}
+		listValue := &_Loans_2_list{list: &x.Loans}
 		return protoreflect.ValueOfList(listValue)
-	case "kopi.mm.DenomLoanData.borrow_amount":
-		value := x.BorrowAmount
-		return protoreflect.ValueOfBytes(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.DenomLoanData"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.Loans"))
 		}
-		panic(fmt.Errorf("message kopi.mm.DenomLoanData does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message kopi.mm.Loans does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -1189,21 +1174,19 @@ func (x *fastReflection_DenomLoanData) Get(descriptor protoreflect.FieldDescript
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_DenomLoanData) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_Loans) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "kopi.mm.DenomLoanData.denom":
+	case "kopi.mm.Loans.denom":
 		x.Denom = value.Interface().(string)
-	case "kopi.mm.DenomLoanData.loans":
+	case "kopi.mm.Loans.loans":
 		lv := value.List()
-		clv := lv.(*_DenomLoanData_2_list)
+		clv := lv.(*_Loans_2_list)
 		x.Loans = *clv.list
-	case "kopi.mm.DenomLoanData.borrow_amount":
-		x.BorrowAmount = value.Bytes()
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.DenomLoanData"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.Loans"))
 		}
-		panic(fmt.Errorf("message kopi.mm.DenomLoanData does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message kopi.mm.Loans does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1217,53 +1200,49 @@ func (x *fastReflection_DenomLoanData) Set(fd protoreflect.FieldDescriptor, valu
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_DenomLoanData) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Loans) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "kopi.mm.DenomLoanData.loans":
+	case "kopi.mm.Loans.loans":
 		if x.Loans == nil {
 			x.Loans = []*Loan{}
 		}
-		value := &_DenomLoanData_2_list{list: &x.Loans}
+		value := &_Loans_2_list{list: &x.Loans}
 		return protoreflect.ValueOfList(value)
-	case "kopi.mm.DenomLoanData.denom":
-		panic(fmt.Errorf("field denom of message kopi.mm.DenomLoanData is not mutable"))
-	case "kopi.mm.DenomLoanData.borrow_amount":
-		panic(fmt.Errorf("field borrow_amount of message kopi.mm.DenomLoanData is not mutable"))
+	case "kopi.mm.Loans.denom":
+		panic(fmt.Errorf("field denom of message kopi.mm.Loans is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.DenomLoanData"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.Loans"))
 		}
-		panic(fmt.Errorf("message kopi.mm.DenomLoanData does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message kopi.mm.Loans does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_DenomLoanData) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Loans) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "kopi.mm.DenomLoanData.denom":
+	case "kopi.mm.Loans.denom":
 		return protoreflect.ValueOfString("")
-	case "kopi.mm.DenomLoanData.loans":
+	case "kopi.mm.Loans.loans":
 		list := []*Loan{}
-		return protoreflect.ValueOfList(&_DenomLoanData_2_list{list: &list})
-	case "kopi.mm.DenomLoanData.borrow_amount":
-		return protoreflect.ValueOfBytes(nil)
+		return protoreflect.ValueOfList(&_Loans_2_list{list: &list})
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.DenomLoanData"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.Loans"))
 		}
-		panic(fmt.Errorf("message kopi.mm.DenomLoanData does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message kopi.mm.Loans does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_DenomLoanData) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_Loans) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in kopi.mm.DenomLoanData", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in kopi.mm.Loans", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -1271,7 +1250,7 @@ func (x *fastReflection_DenomLoanData) WhichOneof(d protoreflect.OneofDescriptor
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_DenomLoanData) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_Loans) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -1282,7 +1261,7 @@ func (x *fastReflection_DenomLoanData) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_DenomLoanData) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_Loans) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -1294,7 +1273,7 @@ func (x *fastReflection_DenomLoanData) SetUnknown(fields protoreflect.RawFields)
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_DenomLoanData) IsValid() bool {
+func (x *fastReflection_Loans) IsValid() bool {
 	return x != nil
 }
 
@@ -1304,9 +1283,9 @@ func (x *fastReflection_DenomLoanData) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_DenomLoanData) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_Loans) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*DenomLoanData)
+		x := input.Message.Interface().(*Loans)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1328,10 +1307,6 @@ func (x *fastReflection_DenomLoanData) ProtoMethods() *protoiface.Methods {
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
-		l = len(x.BorrowAmount)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -1342,7 +1317,7 @@ func (x *fastReflection_DenomLoanData) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*DenomLoanData)
+		x := input.Message.Interface().(*Loans)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1360,13 +1335,6 @@ func (x *fastReflection_DenomLoanData) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
-		}
-		if len(x.BorrowAmount) > 0 {
-			i -= len(x.BorrowAmount)
-			copy(dAtA[i:], x.BorrowAmount)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BorrowAmount)))
-			i--
-			dAtA[i] = 0x1a
 		}
 		if len(x.Loans) > 0 {
 			for iNdEx := len(x.Loans) - 1; iNdEx >= 0; iNdEx-- {
@@ -1402,7 +1370,7 @@ func (x *fastReflection_DenomLoanData) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*DenomLoanData)
+		x := input.Message.Interface().(*Loans)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1434,10 +1402,10 @@ func (x *fastReflection_DenomLoanData) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: DenomLoanData: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Loans: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: DenomLoanData: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Loans: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -1504,40 +1472,6 @@ func (x *fastReflection_DenomLoanData) ProtoMethods() *protoiface.Methods {
 				x.Loans = append(x.Loans, &Loan{})
 				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Loans[len(x.Loans)-1]); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				iNdEx = postIndex
-			case 3:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BorrowAmount", wireType)
-				}
-				var byteLen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					byteLen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if byteLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + byteLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.BorrowAmount = append(x.BorrowAmount[:0], dAtA[iNdEx:postIndex]...)
-				if x.BorrowAmount == nil {
-					x.BorrowAmount = []byte{}
 				}
 				iNdEx = postIndex
 			default:
@@ -1674,18 +1608,17 @@ func (x *Loan) GetAmount() []byte {
 	return nil
 }
 
-type DenomLoanData struct {
+type Loans struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Denom        string  `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
-	Loans        []*Loan `protobuf:"bytes,2,rep,name=loans,proto3" json:"loans,omitempty"`
-	BorrowAmount []byte  `protobuf:"bytes,3,opt,name=borrow_amount,json=borrowAmount,proto3" json:"borrow_amount,omitempty"`
+	Denom string  `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Loans []*Loan `protobuf:"bytes,2,rep,name=loans,proto3" json:"loans,omitempty"`
 }
 
-func (x *DenomLoanData) Reset() {
-	*x = DenomLoanData{}
+func (x *Loans) Reset() {
+	*x = Loans{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_kopi_mm_deposits_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1693,34 +1626,27 @@ func (x *DenomLoanData) Reset() {
 	}
 }
 
-func (x *DenomLoanData) String() string {
+func (x *Loans) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DenomLoanData) ProtoMessage() {}
+func (*Loans) ProtoMessage() {}
 
-// Deprecated: Use DenomLoanData.ProtoReflect.Descriptor instead.
-func (*DenomLoanData) Descriptor() ([]byte, []int) {
+// Deprecated: Use Loans.ProtoReflect.Descriptor instead.
+func (*Loans) Descriptor() ([]byte, []int) {
 	return file_kopi_mm_deposits_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *DenomLoanData) GetDenom() string {
+func (x *Loans) GetDenom() string {
 	if x != nil {
 		return x.Denom
 	}
 	return ""
 }
 
-func (x *DenomLoanData) GetLoans() []*Loan {
+func (x *Loans) GetLoans() []*Loan {
 	if x != nil {
 		return x.Loans
-	}
-	return nil
-}
-
-func (x *DenomLoanData) GetBorrowAmount() []byte {
-	if x != nil {
-		return x.BorrowAmount
 	}
 	return nil
 }
@@ -1741,24 +1667,19 @@ var file_kopi_mm_deposits_proto_rawDesc = []byte{
 	0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
 	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
 	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x06, 0x61, 0x6d, 0x6f,
-	0x75, 0x6e, 0x74, 0x22, 0x94, 0x01, 0x0a, 0x0d, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x4c, 0x6f, 0x61,
-	0x6e, 0x44, 0x61, 0x74, 0x61, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x23, 0x0a, 0x05, 0x6c,
-	0x6f, 0x61, 0x6e, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x6b, 0x6f, 0x70,
-	0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x4c, 0x6f, 0x61, 0x6e, 0x52, 0x05, 0x6c, 0x6f, 0x61, 0x6e, 0x73,
-	0x12, 0x48, 0x0a, 0x0d, 0x62, 0x6f, 0x72, 0x72, 0x6f, 0x77, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e,
-	0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
-	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
-	0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x62, 0x6f,
-	0x72, 0x72, 0x6f, 0x77, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x42, 0x73, 0x0a, 0x0b, 0x63, 0x6f,
-	0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x42, 0x0d, 0x44, 0x65, 0x70, 0x6f, 0x73,
-	0x69, 0x74, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x18, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70,
-	0x69, 0x2f, 0x6d, 0x6d, 0xa2, 0x02, 0x03, 0x4b, 0x4d, 0x58, 0xaa, 0x02, 0x07, 0x4b, 0x6f, 0x70,
-	0x69, 0x2e, 0x4d, 0x6d, 0xca, 0x02, 0x07, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x4d, 0x6d, 0xe2, 0x02,
-	0x13, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x4d, 0x6d, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61,
-	0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x4d, 0x6d, 0x62,
-	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x75, 0x6e, 0x74, 0x22, 0x42, 0x0a, 0x05, 0x4c, 0x6f, 0x61, 0x6e, 0x73, 0x12, 0x14, 0x0a, 0x05,
+	0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e,
+	0x6f, 0x6d, 0x12, 0x23, 0x0a, 0x05, 0x6c, 0x6f, 0x61, 0x6e, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28,
+	0x0b, 0x32, 0x0d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x4c, 0x6f, 0x61, 0x6e,
+	0x52, 0x05, 0x6c, 0x6f, 0x61, 0x6e, 0x73, 0x42, 0x73, 0x0a, 0x0b, 0x63, 0x6f, 0x6d, 0x2e, 0x6b,
+	0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x42, 0x0d, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x73,
+	0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x18, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
+	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x6d,
+	0x6d, 0xa2, 0x02, 0x03, 0x4b, 0x4d, 0x58, 0xaa, 0x02, 0x07, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x4d,
+	0x6d, 0xca, 0x02, 0x07, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x4d, 0x6d, 0xe2, 0x02, 0x13, 0x4b, 0x6f,
+	0x70, 0x69, 0x5c, 0x4d, 0x6d, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
+	0x61, 0xea, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x4d, 0x6d, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1777,10 +1698,10 @@ var file_kopi_mm_deposits_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_kopi_mm_deposits_proto_goTypes = []interface{}{
 	(*NextLoanIndex)(nil), // 0: kopi.mm.NextLoanIndex
 	(*Loan)(nil),          // 1: kopi.mm.Loan
-	(*DenomLoanData)(nil), // 2: kopi.mm.DenomLoanData
+	(*Loans)(nil),         // 2: kopi.mm.Loans
 }
 var file_kopi_mm_deposits_proto_depIdxs = []int32{
-	1, // 0: kopi.mm.DenomLoanData.loans:type_name -> kopi.mm.Loan
+	1, // 0: kopi.mm.Loans.loans:type_name -> kopi.mm.Loan
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
@@ -1819,7 +1740,7 @@ func file_kopi_mm_deposits_proto_init() {
 			}
 		}
 		file_kopi_mm_deposits_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DenomLoanData); i {
+			switch v := v.(*Loans); i {
 			case 0:
 				return &v.state
 			case 1:

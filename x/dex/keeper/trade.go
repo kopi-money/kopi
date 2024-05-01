@@ -2,9 +2,10 @@ package keeper
 
 import (
 	"context"
+	"fmt"
+
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/utils"
 	"github.com/kopi-money/kopi/x/dex/types"

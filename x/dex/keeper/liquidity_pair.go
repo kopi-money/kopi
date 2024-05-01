@@ -2,9 +2,10 @@ package keeper
 
 import (
 	"context"
+	"encoding/binary"
+
 	"cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
-	"encoding/binary"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	"github.com/kopi-money/kopi/utils"
 

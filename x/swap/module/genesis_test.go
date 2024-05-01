@@ -5,7 +5,7 @@ import (
 
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	"github.com/kopi-money/kopi/testutil/nullify"
-	"github.com/kopi-money/kopi/x/swap/module"
+	swap "github.com/kopi-money/kopi/x/swap/module"
 	"github.com/kopi-money/kopi/x/swap/types"
 	"github.com/stretchr/testify/require"
 )

@@ -2,21 +2,22 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/errors"
-	"cosmossdk.io/math"
 	"fmt"
+	"github.com/pkg/errors"
+	"sort"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/utils"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	"github.com/kopi-money/kopi/x/mm/types"
-	"sort"
 )
 
 func (k Keeper) HandleLiquidations(ctx context.Context, eventManager sdk.EventManagerI) error {
 	collateralDenomValues, err := k.getCollateralDenomsByValue(ctx)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "could not get collateral denoms by value")
 	}
 
 	for _, borrower := range k.getBorrowers(ctx) {
@@ -39,7 +40,7 @@ func (k Keeper) getCollateralDenomsByValue(ctx context.Context) ([]string, error
 	for _, collateralDenom := range k.DenomKeeper.GetCollateralDenoms(ctx) {
 		value, err := k.DexKeeper.GetDenomValue(ctx, collateralDenom.Denom)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, fmt.Sprintf("could not get denom value for %v", collateralDenom.Denom))
 		}
 
 		denomValues = append(denomValues, DenomValue{collateralDenom.Denom, value})
@@ -63,12 +64,12 @@ func (k Keeper) getCollateralDenomsByValue(ctx context.Context) ([]string, error
 func (k Keeper) handleBorrowerLiquidation(ctx context.Context, eventManager sdk.EventManagerI, collateralDenoms []string, borrower string) error {
 	collateralBaseValue, err := k.calculateCollateralBaseValue(ctx, borrower)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "could not calculate collateral base value")
 	}
 
 	loanBaseValue, err := k.calculateLoanBaseValue(ctx, borrower)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "could not calculate loan base value")
 	}
 
 	if loanBaseValue.GT(collateralBaseValue) {
@@ -107,7 +108,7 @@ func (k Keeper) liquidateLoan(ctx context.Context, eventManager sdk.EventManager
 	for _, collateralDenom := range collateralDenoms {
 		amountReceived, err = k.processLiquidation(ctx, eventManager, cAsset, excessAmount, collateralDenom, addr.String())
 		if err != nil {
-			if !errors.IsOf(err, dextypes.ErrTradeAmountTooSmall) {
+			if errors.Is(err, dextypes.ErrTradeAmountTooSmall) || errors.Is(err, dextypes.ErrZeroPrice) {
 				k.logger.Error(errors.Wrap(err, "could not execute trade").Error())
 			}
 
@@ -131,7 +132,7 @@ func (k Keeper) liquidateLoan(ctx context.Context, eventManager sdk.EventManager
 		}
 	}
 
-	k.SetLoan(ctx, cAsset.BaseDenom, loan, repayAmount.Neg())
+	k.SetLoan(ctx, cAsset.BaseDenom, loan)
 
 	repayAmountBase, err := k.DexKeeper.GetValueIn(ctx, cAsset.BaseDenom, utils.BaseCurrency, repayAmount.RoundInt())
 	if err != nil {
@@ -157,30 +158,37 @@ func (k Keeper) processLiquidation(ctx context.Context, eventManager sdk.EventMa
 		return math.ZeroInt(), nil
 	}
 
-	amountToGive, _, _, _ := k.DexKeeper.TradeSimulation(ctx, cAsset.BaseDenom, collateralDenom, address, excessAmount.RoundInt(), false)
-	tradeAmount := math.MinInt(collateral.Amount, amountToGive)
+	var amountRepaid, usedAmount math.Int
+	if collateralDenom == cAsset.BaseDenom {
+		amountRepaid = math.MinInt(collateral.Amount, excessAmount.TruncateInt())
+		usedAmount = amountRepaid
+	} else {
+		amountToGive, _, _, _ := k.DexKeeper.TradeSimulation(ctx, cAsset.BaseDenom, collateralDenom, address, excessAmount.RoundInt(), false)
+		tradeAmount := math.MinInt(collateral.Amount, amountToGive)
 
-	coinSource := k.AccountKeeper.GetModuleAccount(ctx, types.PoolCollateral)
-	vaultAddress := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault)
-	options := dextypes.TradeOptions{
-		CoinSource:      coinSource.GetAddress(),
-		CoinTarget:      vaultAddress.GetAddress(),
-		DiscountAddress: sdk.AccAddress(address),
-		GivenAmount:     tradeAmount,
-		MaxPrice:        nil,
-		TradeDenomStart: collateralDenom,
-		TradeDenomEnd:   cAsset.BaseDenom,
-		AllowIncomplete: true,
-		ProtocolTrade:   true,
-	}
+		coinSource := k.AccountKeeper.GetModuleAccount(ctx, types.PoolCollateral)
+		vaultAddress := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault)
+		options := dextypes.TradeOptions{
+			CoinSource:      coinSource.GetAddress(),
+			CoinTarget:      vaultAddress.GetAddress(),
+			DiscountAddress: sdk.AccAddress(address),
+			GivenAmount:     tradeAmount,
+			MaxPrice:        nil,
+			TradeDenomStart: collateralDenom,
+			TradeDenomEnd:   cAsset.BaseDenom,
+			AllowIncomplete: true,
+			ProtocolTrade:   true,
+		}
 
-	usedAmount, amountReceived, _, _, err := k.DexKeeper.ExecuteTrade(ctx, eventManager, options)
-	if err != nil {
-		return math.Int{}, errors.Wrap(err, "could not execute trade")
+		var err error
+		usedAmount, amountRepaid, _, _, err = k.DexKeeper.ExecuteTrade(ctx, eventManager, options)
+		if err != nil {
+			return math.Int{}, err
+		}
 	}
 
 	collateral.Amount = collateral.Amount.Sub(usedAmount)
 	k.SetCollateral(ctx, collateralDenom, collateral)
 
-	return amountReceived, nil
+	return amountRepaid, nil
 }

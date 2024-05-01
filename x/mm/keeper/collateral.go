@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
@@ -12,16 +13,16 @@ import (
 )
 
 func (k Keeper) GetAllDenomCollaterals(ctx context.Context) (list []types.Collaterals) {
-	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixCollaterals))
+	for _, collateralDemom := range k.DenomKeeper.GetCollateralDenoms(ctx) {
+		var collaterals []*types.Collateral
+		for _, collateral := range k.GetAllCollaterals(ctx, collateralDemom.Denom) {
+			collaterals = append(collaterals, &collateral)
+		}
 
-	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.Collaterals
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
+		list = append(list, types.Collaterals{
+			Denom:       collateralDemom.Denom,
+			Collaterals: collaterals,
+		})
 	}
 
 	return

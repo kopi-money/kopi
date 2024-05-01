@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/utils"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
@@ -57,11 +58,11 @@ func (k Keeper) applyInterestForCAssetLoans(ctx context.Context, cAsset *denomty
 	for _, loan := range loans {
 		if !cAsset.MinimumLoanSize.IsNil() && cAsset.MinimumLoanSize.GT(math.ZeroInt()) && loan.Amount.LT(cAsset.MinimumLoanSize.ToLegacyDec()) {
 			loan.Amount = math.LegacyZeroDec()
-			k.SetLoan(ctx, cAsset.BaseDenom, loan, loan.Amount.Neg())
+			k.SetLoan(ctx, cAsset.BaseDenom, loan)
 		} else {
 			interest := loan.Amount.Mul(interestRate)
 			loan.Amount = loan.Amount.Add(interest)
-			k.SetLoan(ctx, cAsset.BaseDenom, loan, interest)
+			k.SetLoan(ctx, cAsset.BaseDenom, loan)
 		}
 	}
 }

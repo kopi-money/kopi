@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/utils"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
@@ -19,13 +20,11 @@ func (k Keeper) calculateBorrowableAmount(ctx context.Context, address, borrowDe
 	}
 
 	borrowableBaseValue := collateralBaseValue.Sub(loanBaseValue)
+	borrowableBaseValue = math.LegacyMaxDec(math.LegacyZeroDec(), borrowableBaseValue)
+
 	borrowableValue, err := k.DexKeeper.GetValueIn(ctx, utils.BaseCurrency, borrowDenom, borrowableBaseValue.TruncateInt())
 	if err != nil {
 		return math.LegacyDec{}, err
-	}
-
-	if borrowableValue.LT(math.LegacyZeroDec()) {
-		borrowableValue = math.LegacyZeroDec()
 	}
 
 	return borrowableValue, nil

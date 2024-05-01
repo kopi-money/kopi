@@ -1,12 +1,13 @@
 package keeper_test
 
 import (
+	"testing"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	"github.com/kopi-money/kopi/x/mm/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestLoans1(t *testing.T) {
@@ -91,9 +92,6 @@ func TestLoans4(t *testing.T) {
 
 	require.NoError(t, err)
 
-	loanSum := k.GetDenomLoan(ctx, "ukusd")
-	require.Equal(t, math.LegacyNewDec(1000), loanSum.BorrowAmount)
-
 	coins = k.BankKeeper.SpendableCoins(ctx, acc)
 	_, balance2 := coins.Find("ukusd")
 	diff := balance2.Amount.Sub(balance1.Amount)
@@ -134,9 +132,6 @@ func TestLoans5(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	loanSum := k.GetDenomLoan(ctx, "ukusd")
-	require.Equal(t, math.LegacyNewDec(1000), loanSum.BorrowAmount)
-
 	_, err = msg.PartiallyRepayLoan(ctx, &types.MsgPartiallyRepayLoan{
 		Creator: keepertest.Bob,
 		Denom:   "ukusd",
@@ -144,9 +139,6 @@ func TestLoans5(t *testing.T) {
 	})
 
 	require.NoError(t, err)
-
-	loanSum = k.GetDenomLoan(ctx, "ukusd")
-	require.Equal(t, math.LegacyNewDec(999), loanSum.BorrowAmount)
 
 	coins = k.BankKeeper.SpendableCoins(ctx, acc)
 	_, balance2 := coins.Find("ukusd")
@@ -190,9 +182,6 @@ func TestLoans6(t *testing.T) {
 		Amount:  "1000",
 	})
 
-	loanSum := k.GetDenomLoan(ctx, "ukusd")
-	require.Equal(t, math.LegacyNewDec(1000), loanSum.BorrowAmount)
-
 	_, err := msg.PartiallyRepayLoan(ctx, &types.MsgPartiallyRepayLoan{
 		Creator: keepertest.Bob,
 		Denom:   "ukusd",
@@ -200,9 +189,6 @@ func TestLoans6(t *testing.T) {
 	})
 
 	require.NoError(t, err)
-
-	loanSum = k.GetDenomLoan(ctx, "ukusd")
-	require.Equal(t, math.LegacyNewDec(0), loanSum.BorrowAmount)
 
 	coins = k.BankKeeper.SpendableCoins(ctx, acc)
 	_, balance2 := coins.Find("ukusd")
@@ -244,18 +230,12 @@ func TestLoans7(t *testing.T) {
 
 	require.NoError(t, err)
 
-	loanSum := k.GetDenomLoan(ctx, "ukusd")
-	require.Equal(t, math.LegacyNewDec(1000), loanSum.BorrowAmount)
-
 	_, err = msg.RepayLoan(ctx, &types.MsgRepayLoan{
 		Creator: keepertest.Bob,
 		Denom:   "ukusd",
 	})
 
 	require.NoError(t, err)
-
-	loanSum = k.GetDenomLoan(ctx, "ukusd")
-	require.Equal(t, math.LegacyNewDec(0), loanSum.BorrowAmount)
 
 	coins = k.BankKeeper.SpendableCoins(ctx, acc)
 	_, balance2 := coins.Find("ukusd")
@@ -376,9 +356,6 @@ func TestLoans12(t *testing.T) {
 		Amount:  borrowable.String(),
 	})
 	require.NoError(t, err)
-
-	loanSum := k.GetDenomLoan(ctx, "ukusd")
-	require.Equal(t, borrowable.ToLegacyDec(), loanSum.BorrowAmount)
 }
 
 func TestLoans13(t *testing.T) {
@@ -414,9 +391,6 @@ func TestLoans13(t *testing.T) {
 		Amount:  "1000",
 	})
 	require.NoError(t, err)
-
-	loanSum := k.GetDenomLoan(ctx, "ukusd")
-	require.Equal(t, math.LegacyNewDec(1000), loanSum.BorrowAmount)
 
 	borrowable2, err := k.CalcAvailableToBorrow(ctx, keepertest.Alice, "ukusd")
 	require.NoError(t, err)

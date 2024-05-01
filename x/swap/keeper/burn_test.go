@@ -2,8 +2,10 @@ package keeper_test
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
+	"testing"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/utils"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
@@ -11,7 +13,6 @@ import (
 	"github.com/kopi-money/kopi/x/swap/keeper"
 	swaptypes "github.com/kopi-money/kopi/x/swap/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 )

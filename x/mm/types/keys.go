@@ -8,11 +8,10 @@ const (
 	PoolVault      = "pool_vault"
 	PoolRedemption = "pool_redemption"
 
-	KeyPrefixLoansIndex    = "Loans/index/"
-	KeyPrefixDenomLoanData = "DenomLoanData/value/"
-	KeyPrefixLoans         = "Loans/value/"
-	KeyPrefixCollaterals   = "Collaterals/value/"
-	KeyPrefixRedemptions   = "Redemptions/value/"
+	KeyPrefixLoansIndex  = "Loans/index/"
+	KeyPrefixLoans       = "Loans/value/"
+	KeyPrefixCollaterals = "Collaterals/value/"
+	KeyPrefixRedemptions = "Redemptions/value/"
 )
 
 var (

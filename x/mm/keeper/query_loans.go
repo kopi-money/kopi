@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
 
@@ -159,7 +160,7 @@ func (k Keeper) GetNumLoans(ctx context.Context, req *types.GetNumLoansQuery) (*
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	iterator := k.DenomLoanIterator(ctx)
+	iterator := k.LoanIterator(ctx)
 	defer iterator.Close()
 
 	var counter int64 = 0
@@ -196,7 +197,7 @@ func (k Keeper) GetNumAddressLoans(ctx context.Context, req *types.GetNumAddress
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	iterator := k.DenomLoanIterator(ctx)
+	iterator := k.LoanIterator(ctx)
 	defer iterator.Close()
 
 	var counter int64 = 0

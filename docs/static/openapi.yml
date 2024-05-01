@@ -14999,104 +14999,6 @@ paths:
               parameters.
       tags:
         - Msg
-  /kopi/denominations/params:
-    get:
-      summary: Parameters queries the parameters of the module.
-      operationId: KopiDenominationsQuery_Params
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              params:
-                description: params holds all the parameters of this module.
-                type: object
-                properties:
-                  dex_denoms:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                        factor:
-                          type: string
-                          format: byte
-                        min_liquidity:
-                          type: string
-                          format: byte
-                  k_coins:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        references:
-                          type: array
-                          items:
-                            type: string
-                        max_supply:
-                          type: string
-                          format: byte
-                        max_mint_amount:
-                          type: string
-                          format: byte
-                        max_burn_amount:
-                          type: string
-                          format: byte
-                  c_assets:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                        base_denom:
-                          type: string
-                        dex_fee_share:
-                          type: string
-                          format: byte
-                        borrow_limit:
-                          type: string
-                          format: byte
-                  collateral_denoms:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        denom:
-                          type: string
-                        ltv:
-                          type: string
-                          format: byte
-                        max_deposit:
-                          type: string
-                          format: byte
-            description: >-
-              QueryParamsResponse is response type for the Query/Params RPC
-              method.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
   /kopi.denominations.Msg/AddCAsset:
     post:
       operationId: KopiDenominationsMsg_AddCAsset
@@ -15141,6 +15043,8 @@ paths:
               factor:
                 type: string
               min_liquidity:
+                type: string
+              borrow_limit:
                 type: string
       tags:
         - Msg
@@ -15369,6 +15273,47 @@ paths:
                   type: string
       tags:
         - Msg
+  /kopi.denominations.Msg/UpdateCAssetBorrowLimit:
+    post:
+      operationId: KopiDenominationsMsg_UpdateCAssetBorrowLimit
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              authority:
+                type: string
+              name:
+                type: string
+              borrow_limit:
+                type: string
+      tags:
+        - Msg
   /kopi.denominations.Msg/UpdateCAssetDexFeeShare:
     post:
       operationId: KopiDenominationsMsg_UpdateCAssetDexFeeShare
@@ -15407,6 +15352,47 @@ paths:
               name:
                 type: string
               dex_fee_share:
+                type: string
+      tags:
+        - Msg
+  /kopi.denominations.Msg/UpdateCAssetMinimumLoanSize:
+    post:
+      operationId: KopiDenominationsMsg_UpdateCAssetMinimumLoanSize
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              authority:
+                type: string
+              name:
+                type: string
+              minimum_loan_size:
                 type: string
       tags:
         - Msg
@@ -15653,6 +15639,2144 @@ paths:
               denom:
                 type: string
               max_supply:
+                type: string
+      tags:
+        - Msg
+  /kopi/denominations/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: KopiDenominationsQuery_Params
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+                properties:
+                  dex_denoms:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        factor:
+                          type: string
+                          format: byte
+                        min_liquidity:
+                          type: string
+                          format: byte
+                  k_coins:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        references:
+                          type: array
+                          items:
+                            type: string
+                        max_supply:
+                          type: string
+                          format: byte
+                        max_mint_amount:
+                          type: string
+                          format: byte
+                        max_burn_amount:
+                          type: string
+                          format: byte
+                  c_assets:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        base_denom:
+                          type: string
+                        dex_fee_share:
+                          type: string
+                          format: byte
+                        borrow_limit:
+                          type: string
+                          format: byte
+                        minimum_loan_size:
+                          type: string
+                          format: byte
+                  collateral_denoms:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        denom:
+                          type: string
+                        ltv:
+                          type: string
+                          format: byte
+                        max_deposit:
+                          type: string
+                          format: byte
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /kopi/dex/kcoins/value:
+    get:
+      operationId: KopiDexQuery_ValueKCoins
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              value:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /kopi/dex/liquidity:
+    get:
+      operationId: KopiDexQuery_LiquidityAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              denoms:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                    amount_usd:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /kopi/dex/liquidity/address/{address}:
+    get:
+      operationId: KopiDexQuery_LiquidityForAddress
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              liquidity:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    user_amount:
+                      type: string
+                    user_amount_usd:
+                      type: string
+                    total:
+                      type: string
+                    total_usd:
+                      type: string
+                    available_balance:
+                      type: string
+                    available_balance_usd:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /kopi/dex/liquidity/by_denom:
+    get:
+      operationId: KopiDexQuery_Liquidity
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              amount:
+                type: string
+              virtual_other:
+                type: string
+              virtual_base:
+                type: string
+              sum:
+                type: string
+              pool:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /kopi/dex/liquidity/queue/by_denom:
+    get:
+      operationId: KopiDexQuery_LiquidityQueue
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              entries:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    address:
+                      type: string
+                    amount:
+                      type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom
+          in: query
+          required: false
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /kopi/dex/liquidity/sum:
+    get:
+      operationId: KopiDexQuery_LiquiditySum
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              value_usd:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /kopi/dex/liquidity_pair/by_denom:
+    get:
+      operationId: KopiDexQuery_LiquidityPair
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              denom:
+                type: string
+              virtual_base:
+                type: string
+              virtual_other:
+                type: string
+              full_base:
+                type: string
+              full_other:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /kopi/dex/orders:
+    get:
+      operationId: KopiDexQuery_Orders
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              orders:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    index:
+                      type: string
+                      format: uint64
+                    creator:
+                      type: string
+                    denom_from:
+                      type: string
+                    denom_to:
+                      type: string
+                    amount_given:
+                      type: string
+                    amount_left:
+                      type: string
+                    amount_left_usd:
+                      type: string
+                    amount_received:
+                      type: string
+                    amount_received_usd:
+                      type: string
+                    trade_amount:
+                      type: string
+                    max_price:
+                      type: string
+                    num_blocks:
+                      type: string
+                      format: uint64
+                    block_end:
+                      type: string
+                      format: uint64
+                    allow_incomplete:
+                      type: boolean
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    description: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently. It will be empty if
+                      there are no more results.
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /kopi/dex/orders/address/{address}:
+    get:
+      operationId: KopiDexQuery_OrdersAddress
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              orders:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    index:
+                      type: string
+                      format: uint64
+                    creator:
+                      type: string
+                    denom_from:
+                      type: string
+                    denom_to:
+                      type: string
+                    amount_given:
+                      type: string
+                    amount_left:
+                      type: string
+                    amount_left_usd:
+                      type: string
+                    amount_received:
+                      type: string
+                    amount_received_usd:
+                      type: string
+                    trade_amount:
+                      type: string
+                    max_price:
+                      type: string
+                    num_blocks:
+                      type: string
+                      format: uint64
+                    block_end:
+                      type: string
+                      format: uint64
+                    allow_incomplete:
+                      type: boolean
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /kopi/dex/orders/by_index/{index}:
+    get:
+      operationId: KopiDexQuery_Order
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              order:
+                type: object
+                properties:
+                  index:
+                    type: string
+                    format: uint64
+                  creator:
+                    type: string
+                  denom_from:
+                    type: string
+                  denom_to:
+                    type: string
+                  amount_given:
+                    type: string
+                  amount_left:
+                    type: string
+                  amount_left_usd:
+                    type: string
+                  amount_received:
+                    type: string
+                  amount_received_usd:
+                    type: string
+                  trade_amount:
+                    type: string
+                  max_price:
+                    type: string
+                  num_blocks:
+                    type: string
+                    format: uint64
+                  block_end:
+                    type: string
+                    format: uint64
+                  allow_incomplete:
+                    type: boolean
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: index
+          in: path
+          required: true
+          type: string
+          format: uint64
+      tags:
+        - Query
+  /kopi/dex/orders/by_pair:
+    get:
+      operationId: KopiDexQuery_OrdersByPair
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              bids:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    index:
+                      type: string
+                      format: uint64
+                    creator:
+                      type: string
+                    denom_from:
+                      type: string
+                    denom_to:
+                      type: string
+                    amount_given:
+                      type: string
+                    amount_left:
+                      type: string
+                    amount_left_usd:
+                      type: string
+                    amount_received:
+                      type: string
+                    amount_received_usd:
+                      type: string
+                    trade_amount:
+                      type: string
+                    max_price:
+                      type: string
+                    num_blocks:
+                      type: string
+                      format: uint64
+                    block_end:
+                      type: string
+                      format: uint64
+                    allow_incomplete:
+                      type: boolean
+              asks:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    index:
+                      type: string
+                      format: uint64
+                    creator:
+                      type: string
+                    denom_from:
+                      type: string
+                    denom_to:
+                      type: string
+                    amount_given:
+                      type: string
+                    amount_left:
+                      type: string
+                    amount_left_usd:
+                      type: string
+                    amount_received:
+                      type: string
+                    amount_received_usd:
+                      type: string
+                    trade_amount:
+                      type: string
+                    max_price:
+                      type: string
+                    num_blocks:
+                      type: string
+                      format: uint64
+                    block_end:
+                      type: string
+                      format: uint64
+                    allow_incomplete:
+                      type: boolean
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom_from
+          in: query
+          required: false
+          type: string
+        - name: denom_to
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /kopi/dex/orders/num:
+    get:
+      operationId: KopiDexQuery_OrdersNum
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              num:
+                type: string
+                format: int64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /kopi/dex/orders/sum:
+    get:
+      operationId: KopiDexQuery_OrdersSum
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              sum:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /kopi/dex/orders/sum/by_denom:
+    get:
+      operationId: KopiDexQuery_OrdersDenomSum
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              denoms:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom_from:
+                      type: string
+                    sum:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom_to
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /kopi/dex/params:
+    get:
+      operationId: KopiDexQuery_Params
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+                properties:
+                  trade_fee:
+                    type: string
+                    format: byte
+                  reserve_share:
+                    type: string
+                    format: byte
+                  virtual_liquidity_decay:
+                    type: string
+                    format: byte
+                  fee_reimbursement:
+                    type: string
+                    format: byte
+                  trade_amount_decay:
+                    type: string
+                    format: byte
+                  discount_levels:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        trade_amount:
+                          type: string
+                          format: byte
+                        discount:
+                          type: string
+                          format: byte
+                  max_order_life:
+                    type: string
+                    format: uint64
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /kopi/dex/pools/liquidity:
+    get:
+      operationId: KopiDexQuery_LiquidityPool
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              entries:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    pool_amount:
+                      type: string
+                    liquidity_sum:
+                      type: string
+                    entries_sum:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /kopi/dex/pools/orders:
+    get:
+      operationId: KopiDexQuery_OrderPool
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              balance:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    sum_order:
+                      type: string
+                    pool_amount:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /kopi/dex/price:
+    get:
+      operationId: KopiDexQuery_Price
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              price:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom_from
+          in: query
+          required: false
+          type: string
+        - name: denom_to
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /kopi/dex/price_usd/by_denom:
+    get:
+      operationId: KopiDexQuery_PriceUsd
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              price:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /kopi/dex/ratio/by_denom:
+    get:
+      operationId: KopiDexQuery_Ratio
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              ratio:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                  ratio:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /kopi/dex/ratios:
+    get:
+      operationId: KopiDexQuery_Ratios
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              ratios:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    ratio:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /kopi/dex/reserve/funds:
+    get:
+      operationId: KopiDexQuery_ReserveFunds
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              funds:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    denom:
+                      type: string
+                    amount:
+                      type: string
+                    amount_usd:
+                      type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /kopi/dex/reserve/funds/by_denom:
+    get:
+      operationId: KopiDexQuery_ReserveFundsPerDenom
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              denom:
+                type: string
+              amount:
+                type: string
+              amount_usd:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /kopi/dex/simulate_trade:
+    get:
+      operationId: KopiDexQuery_SimulateTrade
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              amount_given_in_usd:
+                type: string
+                format: int64
+              amount_received:
+                type: string
+                format: int64
+              amount_received_in_usd:
+                type: string
+                format: int64
+              fee:
+                type: string
+                format: int64
+              price:
+                type: string
+              price_from_to_usd:
+                type: string
+              price_to_to_usd:
+                type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: denom_from
+          in: query
+          required: false
+          type: string
+        - name: denom_to
+          in: query
+          required: false
+          type: string
+        - name: address
+          in: query
+          required: false
+          type: string
+        - name: amount
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /kopi.dex.Msg/AddLiquidity:
+    post:
+      operationId: KopiDexMsg_AddLiquidity
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              creator:
+                type: string
+              denom:
+                type: string
+              amount:
+                type: string
+      tags:
+        - Msg
+  /kopi.dex.Msg/AddOrder:
+    post:
+      operationId: KopiDexMsg_AddOrder
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              index:
+                type: string
+                format: uint64
+              creator:
+                type: string
+              denom_from:
+                type: string
+              denom_to:
+                type: string
+              amount_given:
+                type: string
+                format: byte
+              amount_left:
+                type: string
+                format: byte
+              trade_amount:
+                type: string
+                format: byte
+              amount_received:
+                type: string
+                format: byte
+              max_price:
+                type: string
+                format: byte
+              num_blocks:
+                type: string
+                format: uint64
+              execution_interval:
+                type: string
+                format: uint64
+              next_execution:
+                type: string
+                format: uint64
+              block_end:
+                type: string
+                format: uint64
+              allow_incomplete:
+                type: boolean
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              creator:
+                type: string
+              denom_from:
+                type: string
+              denom_to:
+                type: string
+              amount:
+                type: string
+              trade_amount:
+                type: string
+              max_price:
+                type: string
+              blocks:
+                type: string
+                format: uint64
+              interval:
+                type: string
+                format: uint64
+              allow_incomplete:
+                type: boolean
+      tags:
+        - Msg
+  /kopi.dex.Msg/RemoveAllLiquidityForDenom:
+    post:
+      summary: 'this line is used by starport scaffolding # proto/tx/rpc'
+      operationId: KopiDexMsg_RemoveAllLiquidityForDenom
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              creator:
+                type: string
+              denom:
+                type: string
+            title: 'this line is used by starport scaffolding # proto/tx/message'
+      tags:
+        - Msg
+  /kopi.dex.Msg/RemoveLiquidity:
+    post:
+      operationId: KopiDexMsg_RemoveLiquidity
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              creator:
+                type: string
+              denom:
+                type: string
+              amount:
+                type: string
+      tags:
+        - Msg
+  /kopi.dex.Msg/RemoveOrder:
+    post:
+      operationId: KopiDexMsg_RemoveOrder
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              creator:
+                type: string
+              index:
+                type: string
+                format: uint64
+      tags:
+        - Msg
+  /kopi.dex.Msg/RemoveOrders:
+    post:
+      operationId: KopiDexMsg_RemoveOrders
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              creator:
+                type: string
+      tags:
+        - Msg
+  /kopi.dex.Msg/Trade:
+    post:
+      operationId: KopiDexMsg_Trade
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              amount_used:
+                type: string
+                format: int64
+              amount_received:
+                type: string
+                format: int64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              creator:
+                type: string
+              denom_from:
+                type: string
+              denom_to:
+                type: string
+              amount:
+                type: string
+              max_price:
+                type: string
+              allow_incomplete:
+                type: boolean
+      tags:
+        - Msg
+  /kopi.dex.Msg/UpdateDiscountLevels:
+    post:
+      operationId: KopiDexMsg_UpdateDiscountLevels
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              authority:
+                type: string
+              discount_levels:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    trade_amount:
+                      type: string
+                      format: byte
+                    discount:
+                      type: string
+                      format: byte
+      tags:
+        - Msg
+  /kopi.dex.Msg/UpdateFeeReimbursement:
+    post:
+      operationId: KopiDexMsg_UpdateFeeReimbursement
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              authority:
+                type: string
+              fee_reimbursement:
+                type: string
+      tags:
+        - Msg
+  /kopi.dex.Msg/UpdateMaxOrderLife:
+    post:
+      operationId: KopiDexMsg_UpdateMaxOrderLife
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              authority:
+                type: string
+              max_order_life:
+                type: string
+                format: uint64
+      tags:
+        - Msg
+  /kopi.dex.Msg/UpdateOrder:
+    post:
+      operationId: KopiDexMsg_UpdateOrder
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              index:
+                type: string
+                format: uint64
+              creator:
+                type: string
+              denom_from:
+                type: string
+              denom_to:
+                type: string
+              amount_given:
+                type: string
+                format: byte
+              amount_left:
+                type: string
+                format: byte
+              trade_amount:
+                type: string
+                format: byte
+              amount_received:
+                type: string
+                format: byte
+              max_price:
+                type: string
+                format: byte
+              num_blocks:
+                type: string
+                format: uint64
+              execution_interval:
+                type: string
+                format: uint64
+              next_execution:
+                type: string
+                format: uint64
+              block_end:
+                type: string
+                format: uint64
+              allow_incomplete:
+                type: boolean
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              creator:
+                type: string
+              index:
+                type: string
+                format: uint64
+              amount:
+                type: string
+              trade_amount:
+                type: string
+              max_price:
+                type: string
+      tags:
+        - Msg
+  /kopi.dex.Msg/UpdateReserveShare:
+    post:
+      operationId: KopiDexMsg_UpdateReserveShare
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              authority:
+                type: string
+              reserve_share:
+                type: string
+      tags:
+        - Msg
+  /kopi.dex.Msg/UpdateTradeAmountDecay:
+    post:
+      operationId: KopiDexMsg_UpdateTradeAmountDecay
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              authority:
+                type: string
+              trade_amount_decay:
+                type: string
+      tags:
+        - Msg
+  /kopi.dex.Msg/UpdateTradeFee:
+    post:
+      operationId: KopiDexMsg_UpdateTradeFee
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              authority:
+                type: string
+              trade_fee:
+                type: string
+      tags:
+        - Msg
+  /kopi.dex.Msg/UpdateVirtualLiquidityDecay:
+    post:
+      operationId: KopiDexMsg_UpdateVirtualLiquidityDecay
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              authority:
+                type: string
+              virtual_liquidity_decay:
                 type: string
       tags:
         - Msg
@@ -17475,6 +19599,304 @@ paths:
             description: MsgUpdateParams is the Msg/UpdateParams request type.
       tags:
         - Msg
+  /kopi.tokenfactory.Msg/BurnDenom:
+    post:
+      operationId: KopiTokenfactoryMsg_BurnDenom
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              creator:
+                type: string
+              denom:
+                type: string
+              amount:
+                type: string
+              target_address:
+                type: string
+      tags:
+        - Msg
+  /kopi.tokenfactory.Msg/ChangeAdmin:
+    post:
+      operationId: KopiTokenfactoryMsg_ChangeAdmin
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              creator:
+                type: string
+              denom:
+                type: string
+              new_admin:
+                type: string
+      tags:
+        - Msg
+  /kopi.tokenfactory.Msg/CreateDenom:
+    post:
+      operationId: KopiTokenfactoryMsg_CreateDenom
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              creator:
+                type: string
+              denom:
+                type: string
+      tags:
+        - Msg
+  /kopi.tokenfactory.Msg/ForceTransfer:
+    post:
+      operationId: KopiTokenfactoryMsg_ForceTransfer
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              creator:
+                type: string
+              denom:
+                type: string
+              amount:
+                type: string
+              from_address:
+                type: string
+              target_address:
+                type: string
+      tags:
+        - Msg
+  /kopi.tokenfactory.Msg/MintDenom:
+    post:
+      operationId: KopiTokenfactoryMsg_MintDenom
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              creator:
+                type: string
+              denom:
+                type: string
+              amount:
+                type: string
+              target_address:
+                type: string
+      tags:
+        - Msg
+  /kopi.tokenfactory.Msg/UpdateParams:
+    post:
+      summary: |-
+        UpdateParams defines a (governance) operation for updating the module
+        parameters. The authority defaults to the x/gov module account.
+      operationId: KopiTokenfactoryMsg_UpdateParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              authority:
+                type: string
+              params:
+                type: object
+                properties:
+                  creation_fee:
+                    type: string
+                    format: byte
+                description: Params defines the parameters for the module.
+      tags:
+        - Msg
+  /kopi-money/kopi/tokenfactory/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: KopiTokenfactoryQuery_Params
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+                properties:
+                  creation_fee:
+                    type: string
+                    format: byte
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
 definitions:
   cosmos.auth.v1beta1.MsgUpdateParams:
     type: object
@@ -23867,6 +26289,171 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
+  kopi.denominations.MsgAddCAsset:
+    type: object
+    properties:
+      authority:
+        type: string
+      name:
+        type: string
+      base_denom:
+        type: string
+      dex_fee_share:
+        type: string
+      factor:
+        type: string
+      min_liquidity:
+        type: string
+      borrow_limit:
+        type: string
+  kopi.denominations.MsgAddCollateralDenom:
+    type: object
+    properties:
+      authority:
+        type: string
+      denom:
+        type: string
+      ltv:
+        type: string
+      max_deposit:
+        type: string
+  kopi.denominations.MsgAddDEXDenom:
+    type: object
+    properties:
+      authority:
+        type: string
+      name:
+        type: string
+      factor:
+        type: string
+      min_liquidity:
+        type: string
+  kopi.denominations.MsgAddKCoin:
+    type: object
+    properties:
+      authority:
+        type: string
+      denom:
+        type: string
+      references:
+        type: array
+        items:
+          type: string
+      max_supply:
+        type: string
+      max_mint_amount:
+        type: string
+      max_burn_amount:
+        type: string
+      factor:
+        type: string
+      min_liquidity:
+        type: string
+  kopi.denominations.MsgAddKCoinReferences:
+    type: object
+    properties:
+      authority:
+        type: string
+      denom:
+        type: string
+      references:
+        type: array
+        items:
+          type: string
+  kopi.denominations.MsgRemoveKCoinReferences:
+    type: object
+    properties:
+      authority:
+        type: string
+      denom:
+        type: string
+      references:
+        type: array
+        items:
+          type: string
+  kopi.denominations.MsgUpdateCAssetBorrowLimit:
+    type: object
+    properties:
+      authority:
+        type: string
+      name:
+        type: string
+      borrow_limit:
+        type: string
+  kopi.denominations.MsgUpdateCAssetDexFeeShare:
+    type: object
+    properties:
+      authority:
+        type: string
+      name:
+        type: string
+      dex_fee_share:
+        type: string
+  kopi.denominations.MsgUpdateCAssetMinimumLoanSize:
+    type: object
+    properties:
+      authority:
+        type: string
+      name:
+        type: string
+      minimum_loan_size:
+        type: string
+  kopi.denominations.MsgUpdateCollateralDenomLTV:
+    type: object
+    properties:
+      authority:
+        type: string
+      denom:
+        type: string
+      ltv:
+        type: string
+  kopi.denominations.MsgUpdateCollateralDenomMaxDeposit:
+    type: object
+    properties:
+      authority:
+        type: string
+      denom:
+        type: string
+      max_deposit:
+        type: string
+  kopi.denominations.MsgUpdateDEXDenom:
+    type: object
+    properties:
+      authority:
+        type: string
+      name:
+        type: string
+      min_liquidity:
+        type: string
+  kopi.denominations.MsgUpdateKCoinBurnAmount:
+    type: object
+    properties:
+      authority:
+        type: string
+      denom:
+        type: string
+      max_burn_amount:
+        type: string
+  kopi.denominations.MsgUpdateKCoinMintAmount:
+    type: object
+    properties:
+      authority:
+        type: string
+      denom:
+        type: string
+      max_mint_amount:
+        type: string
+  kopi.denominations.MsgUpdateKCoinSupply:
+    type: object
+    properties:
+      authority:
+        type: string
+      denom:
+        type: string
+      max_supply:
+        type: string
+  kopi.denominations.MsgUpdateParamsResponse:
+    type: object
   kopi.denominations.CAsset:
     type: object
     properties:
@@ -23878,6 +26465,9 @@ definitions:
         type: string
         format: byte
       borrow_limit:
+        type: string
+        format: byte
+      minimum_loan_size:
         type: string
         format: byte
   kopi.denominations.CollateralDenom:
@@ -23971,6 +26561,9 @@ definitions:
             borrow_limit:
               type: string
               format: byte
+            minimum_loan_size:
+              type: string
+              format: byte
       collateral_denoms:
         type: array
         items:
@@ -24040,6 +26633,9 @@ definitions:
                 borrow_limit:
                   type: string
                   format: byte
+                minimum_loan_size:
+                  type: string
+                  format: byte
           collateral_denoms:
             type: array
             items:
@@ -24054,150 +26650,923 @@ definitions:
                   type: string
                   format: byte
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  kopi.denominations.MsgAddCAsset:
+  cosmos.base.query.v1beta1.PageRequest:
     type: object
     properties:
-      authority:
+      key:
         type: string
-      name:
+        format: byte
+        description: |-
+          key is a value returned in PageResponse.next_key to begin
+          querying the next page most efficiently. Only one of offset or key
+          should be set.
+      offset:
         type: string
-      base_denom:
+        format: uint64
+        description: |-
+          offset is a numeric offset that can be used when key is unavailable.
+          It is less efficient than using key. Only one of offset or key should
+          be set.
+      limit:
         type: string
-      dex_fee_share:
-        type: string
-      factor:
-        type: string
-      min_liquidity:
-        type: string
-  kopi.denominations.MsgAddCollateralDenom:
+        format: uint64
+        description: >-
+          limit is the total number of results to be returned in the result
+          page.
+
+          If left empty it will default to a value to be set by each app.
+      count_total:
+        type: boolean
+        description: >-
+          count_total is set to true  to indicate that the result set should
+          include
+
+          a count of the total number of items available for pagination in UIs.
+
+          count_total is only respected when offset is used. It is ignored when
+          key
+
+          is set.
+      reverse:
+        type: boolean
+        description: >-
+          reverse is set to true if results are to be returned in the descending
+          order.
+
+
+          Since: cosmos-sdk 0.43
+    description: |-
+      message SomeRequest {
+               Foo some_parameter = 1;
+               PageRequest pagination = 2;
+       }
+    title: |-
+      PageRequest is to be embedded in gRPC request messages for efficient
+      pagination. Ex:
+  cosmos.base.query.v1beta1.PageResponse:
     type: object
     properties:
-      authority:
+      next_key:
         type: string
+        format: byte
+        description: |-
+          next_key is the key to be passed to PageRequest.key to
+          query the next page most efficiently. It will be empty if
+          there are no more results.
+      total:
+        type: string
+        format: uint64
+        title: |-
+          total is total number of results available if PageRequest.count_total
+          was set, its value is undefined otherwise
+    description: |-
+      PageResponse is to be embedded in gRPC response messages where the
+      corresponding request message has used PageRequest.
+
+       message SomeResponse {
+               repeated Bar results = 1;
+               PageResponse page = 2;
+       }
+  kopi.dex.AddressLiquidity:
+    type: object
+    properties:
       denom:
         type: string
-      ltv:
+      user_amount:
         type: string
-      max_deposit:
+      user_amount_usd:
         type: string
-  kopi.denominations.MsgAddDEXDenom:
+      total:
+        type: string
+      total_usd:
+        type: string
+      available_balance:
+        type: string
+      available_balance_usd:
+        type: string
+  kopi.dex.Denom:
     type: object
     properties:
-      authority:
-        type: string
-      name:
-        type: string
-      factor:
-        type: string
-      min_liquidity:
-        type: string
-  kopi.denominations.MsgAddKCoin:
-    type: object
-    properties:
-      authority:
-        type: string
       denom:
         type: string
-      references:
+      amount:
+        type: string
+      amount_usd:
+        type: string
+  kopi.dex.DiscountLevel:
+    type: object
+    properties:
+      trade_amount:
+        type: string
+        format: byte
+      discount:
+        type: string
+        format: byte
+  kopi.dex.LiquidityEntry:
+    type: object
+    properties:
+      address:
+        type: string
+      amount:
+        type: string
+  kopi.dex.LiquidityPoolEntry:
+    type: object
+    properties:
+      denom:
+        type: string
+      pool_amount:
+        type: string
+      liquidity_sum:
+        type: string
+      entries_sum:
+        type: string
+  kopi.dex.OrderBalance:
+    type: object
+    properties:
+      denom:
+        type: string
+      sum_order:
+        type: string
+      pool_amount:
+        type: string
+  kopi.dex.OrderResponse:
+    type: object
+    properties:
+      index:
+        type: string
+        format: uint64
+      creator:
+        type: string
+      denom_from:
+        type: string
+      denom_to:
+        type: string
+      amount_given:
+        type: string
+      amount_left:
+        type: string
+      amount_left_usd:
+        type: string
+      amount_received:
+        type: string
+      amount_received_usd:
+        type: string
+      trade_amount:
+        type: string
+      max_price:
+        type: string
+      num_blocks:
+        type: string
+        format: uint64
+      block_end:
+        type: string
+        format: uint64
+      allow_incomplete:
+        type: boolean
+  kopi.dex.OrdersSum:
+    type: object
+    properties:
+      denom_from:
+        type: string
+      sum:
+        type: string
+  kopi.dex.Params:
+    type: object
+    properties:
+      trade_fee:
+        type: string
+        format: byte
+      reserve_share:
+        type: string
+        format: byte
+      virtual_liquidity_decay:
+        type: string
+        format: byte
+      fee_reimbursement:
+        type: string
+        format: byte
+      trade_amount_decay:
+        type: string
+        format: byte
+      discount_levels:
         type: array
         items:
-          type: string
-      max_supply:
+          type: object
+          properties:
+            trade_amount:
+              type: string
+              format: byte
+            discount:
+              type: string
+              format: byte
+      max_order_life:
         type: string
-      max_mint_amount:
-        type: string
-      max_burn_amount:
-        type: string
-      factor:
-        type: string
-      min_liquidity:
-        type: string
-  kopi.denominations.MsgAddKCoinReferences:
+        format: uint64
+    description: Params defines the parameters for the module.
+  kopi.dex.QueryGetLiquidityAllResponse:
     type: object
     properties:
-      authority:
-        type: string
-      denom:
-        type: string
-      references:
+      denoms:
         type: array
         items:
-          type: string
-  kopi.denominations.MsgRemoveKCoinReferences:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+            amount_usd:
+              type: string
+  kopi.dex.QueryGetLiquidityAllResponseEntry:
     type: object
     properties:
-      authority:
-        type: string
       denom:
         type: string
-      references:
+      amount:
+        type: string
+      amount_usd:
+        type: string
+  kopi.dex.QueryGetLiquidityPairResponse:
+    type: object
+    properties:
+      denom:
+        type: string
+      virtual_base:
+        type: string
+      virtual_other:
+        type: string
+      full_base:
+        type: string
+      full_other:
+        type: string
+  kopi.dex.QueryGetLiquidityQueueResponse:
+    type: object
+    properties:
+      entries:
         type: array
         items:
-          type: string
-  kopi.denominations.MsgUpdateCAssetDexFeeShare:
+          type: object
+          properties:
+            address:
+              type: string
+            amount:
+              type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  kopi.dex.QueryGetLiquidityResponse:
     type: object
     properties:
-      authority:
+      amount:
         type: string
-      name:
+      virtual_other:
         type: string
-      dex_fee_share:
+      virtual_base:
         type: string
-  kopi.denominations.MsgUpdateCollateralDenomLTV:
+      sum:
+        type: string
+      pool:
+        type: string
+  kopi.dex.QueryGetLiquiditySumResponse:
     type: object
     properties:
-      authority:
+      value_usd:
+        type: string
+  kopi.dex.QueryGetRatioResponse:
+    type: object
+    properties:
+      ratio:
+        type: object
+        properties:
+          denom:
+            type: string
+          ratio:
+            type: string
+  kopi.dex.QueryGetRatiosResponse:
+    type: object
+    properties:
+      ratios:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            ratio:
+              type: string
+  kopi.dex.QueryLiquidityForAddressResponse:
+    type: object
+    properties:
+      liquidity:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            user_amount:
+              type: string
+            user_amount_usd:
+              type: string
+            total:
+              type: string
+            total_usd:
+              type: string
+            available_balance:
+              type: string
+            available_balance_usd:
+              type: string
+  kopi.dex.QueryLiquidityPoolResponse:
+    type: object
+    properties:
+      entries:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            pool_amount:
+              type: string
+            liquidity_sum:
+              type: string
+            entries_sum:
+              type: string
+  kopi.dex.QueryOrderPoolResponse:
+    type: object
+    properties:
+      balance:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            sum_order:
+              type: string
+            pool_amount:
+              type: string
+  kopi.dex.QueryOrderResponse:
+    type: object
+    properties:
+      order:
+        type: object
+        properties:
+          index:
+            type: string
+            format: uint64
+          creator:
+            type: string
+          denom_from:
+            type: string
+          denom_to:
+            type: string
+          amount_given:
+            type: string
+          amount_left:
+            type: string
+          amount_left_usd:
+            type: string
+          amount_received:
+            type: string
+          amount_received_usd:
+            type: string
+          trade_amount:
+            type: string
+          max_price:
+            type: string
+          num_blocks:
+            type: string
+            format: uint64
+          block_end:
+            type: string
+            format: uint64
+          allow_incomplete:
+            type: boolean
+  kopi.dex.QueryOrdersAddressResponse:
+    type: object
+    properties:
+      orders:
+        type: array
+        items:
+          type: object
+          properties:
+            index:
+              type: string
+              format: uint64
+            creator:
+              type: string
+            denom_from:
+              type: string
+            denom_to:
+              type: string
+            amount_given:
+              type: string
+            amount_left:
+              type: string
+            amount_left_usd:
+              type: string
+            amount_received:
+              type: string
+            amount_received_usd:
+              type: string
+            trade_amount:
+              type: string
+            max_price:
+              type: string
+            num_blocks:
+              type: string
+              format: uint64
+            block_end:
+              type: string
+              format: uint64
+            allow_incomplete:
+              type: boolean
+  kopi.dex.QueryOrdersByPairResponse:
+    type: object
+    properties:
+      bids:
+        type: array
+        items:
+          type: object
+          properties:
+            index:
+              type: string
+              format: uint64
+            creator:
+              type: string
+            denom_from:
+              type: string
+            denom_to:
+              type: string
+            amount_given:
+              type: string
+            amount_left:
+              type: string
+            amount_left_usd:
+              type: string
+            amount_received:
+              type: string
+            amount_received_usd:
+              type: string
+            trade_amount:
+              type: string
+            max_price:
+              type: string
+            num_blocks:
+              type: string
+              format: uint64
+            block_end:
+              type: string
+              format: uint64
+            allow_incomplete:
+              type: boolean
+      asks:
+        type: array
+        items:
+          type: object
+          properties:
+            index:
+              type: string
+              format: uint64
+            creator:
+              type: string
+            denom_from:
+              type: string
+            denom_to:
+              type: string
+            amount_given:
+              type: string
+            amount_left:
+              type: string
+            amount_left_usd:
+              type: string
+            amount_received:
+              type: string
+            amount_received_usd:
+              type: string
+            trade_amount:
+              type: string
+            max_price:
+              type: string
+            num_blocks:
+              type: string
+              format: uint64
+            block_end:
+              type: string
+              format: uint64
+            allow_incomplete:
+              type: boolean
+  kopi.dex.QueryOrdersDenomSumResponse:
+    type: object
+    properties:
+      denoms:
+        type: array
+        items:
+          type: object
+          properties:
+            denom_from:
+              type: string
+            sum:
+              type: string
+  kopi.dex.QueryOrdersNumResponse:
+    type: object
+    properties:
+      num:
+        type: string
+        format: int64
+  kopi.dex.QueryOrdersResponse:
+    type: object
+    properties:
+      orders:
+        type: array
+        items:
+          type: object
+          properties:
+            index:
+              type: string
+              format: uint64
+            creator:
+              type: string
+            denom_from:
+              type: string
+            denom_to:
+              type: string
+            amount_given:
+              type: string
+            amount_left:
+              type: string
+            amount_left_usd:
+              type: string
+            amount_received:
+              type: string
+            amount_received_usd:
+              type: string
+            trade_amount:
+              type: string
+            max_price:
+              type: string
+            num_blocks:
+              type: string
+              format: uint64
+            block_end:
+              type: string
+              format: uint64
+            allow_incomplete:
+              type: boolean
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            description: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently. It will be empty if
+              there are no more results.
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  kopi.dex.QueryOrdersSumResponse:
+    type: object
+    properties:
+      sum:
+        type: string
+  kopi.dex.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+        properties:
+          trade_fee:
+            type: string
+            format: byte
+          reserve_share:
+            type: string
+            format: byte
+          virtual_liquidity_decay:
+            type: string
+            format: byte
+          fee_reimbursement:
+            type: string
+            format: byte
+          trade_amount_decay:
+            type: string
+            format: byte
+          discount_levels:
+            type: array
+            items:
+              type: object
+              properties:
+                trade_amount:
+                  type: string
+                  format: byte
+                discount:
+                  type: string
+                  format: byte
+          max_order_life:
+            type: string
+            format: uint64
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  kopi.dex.QueryPriceResponse:
+    type: object
+    properties:
+      price:
+        type: string
+  kopi.dex.QueryPriceUsdResponse:
+    type: object
+    properties:
+      price:
+        type: string
+  kopi.dex.QueryReserveFundsResponse:
+    type: object
+    properties:
+      funds:
+        type: array
+        items:
+          type: object
+          properties:
+            denom:
+              type: string
+            amount:
+              type: string
+            amount_usd:
+              type: string
+  kopi.dex.QuerySimulateTradeResponse:
+    type: object
+    properties:
+      amount_given_in_usd:
+        type: string
+        format: int64
+      amount_received:
+        type: string
+        format: int64
+      amount_received_in_usd:
+        type: string
+        format: int64
+      fee:
+        type: string
+        format: int64
+      price:
+        type: string
+      price_from_to_usd:
+        type: string
+      price_to_to_usd:
+        type: string
+  kopi.dex.QueryValueKCoinsResponse:
+    type: object
+    properties:
+      value:
+        type: string
+  kopi.dex.RatioResponse:
+    type: object
+    properties:
+      denom:
+        type: string
+      ratio:
+        type: string
+  kopi.dex.MsgAddLiquidity:
+    type: object
+    properties:
+      creator:
         type: string
       denom:
         type: string
-      ltv:
+      amount:
         type: string
-  kopi.denominations.MsgUpdateCollateralDenomMaxDeposit:
+  kopi.dex.MsgAddLiquidityResponse:
+    type: object
+  kopi.dex.MsgAddOrder:
     type: object
     properties:
-      authority:
+      creator:
+        type: string
+      denom_from:
+        type: string
+      denom_to:
+        type: string
+      amount:
+        type: string
+      trade_amount:
+        type: string
+      max_price:
+        type: string
+      blocks:
+        type: string
+        format: uint64
+      interval:
+        type: string
+        format: uint64
+      allow_incomplete:
+        type: boolean
+  kopi.dex.MsgRemoveAllLiquidityForDenom:
+    type: object
+    properties:
+      creator:
         type: string
       denom:
         type: string
-      max_deposit:
-        type: string
-  kopi.denominations.MsgUpdateDEXDenom:
+    title: 'this line is used by starport scaffolding # proto/tx/message'
+  kopi.dex.MsgRemoveLiquidity:
     type: object
     properties:
-      authority:
-        type: string
-      name:
-        type: string
-      min_liquidity:
-        type: string
-  kopi.denominations.MsgUpdateKCoinBurnAmount:
-    type: object
-    properties:
-      authority:
+      creator:
         type: string
       denom:
         type: string
-      max_burn_amount:
+      amount:
         type: string
-  kopi.denominations.MsgUpdateKCoinMintAmount:
+  kopi.dex.MsgRemoveLiquidityResponse:
+    type: object
+  kopi.dex.MsgRemoveOrder:
+    type: object
+    properties:
+      creator:
+        type: string
+      index:
+        type: string
+        format: uint64
+  kopi.dex.MsgRemoveOrders:
+    type: object
+    properties:
+      creator:
+        type: string
+  kopi.dex.MsgTrade:
+    type: object
+    properties:
+      creator:
+        type: string
+      denom_from:
+        type: string
+      denom_to:
+        type: string
+      amount:
+        type: string
+      max_price:
+        type: string
+      allow_incomplete:
+        type: boolean
+  kopi.dex.MsgTradeResponse:
+    type: object
+    properties:
+      amount_used:
+        type: string
+        format: int64
+      amount_received:
+        type: string
+        format: int64
+  kopi.dex.MsgUpdateDiscountLevels:
     type: object
     properties:
       authority:
         type: string
-      denom:
-        type: string
-      max_mint_amount:
-        type: string
-  kopi.denominations.MsgUpdateKCoinSupply:
+      discount_levels:
+        type: array
+        items:
+          type: object
+          properties:
+            trade_amount:
+              type: string
+              format: byte
+            discount:
+              type: string
+              format: byte
+  kopi.dex.MsgUpdateFeeReimbursement:
     type: object
     properties:
       authority:
         type: string
-      denom:
+      fee_reimbursement:
         type: string
-      max_supply:
+  kopi.dex.MsgUpdateMaxOrderLife:
+    type: object
+    properties:
+      authority:
         type: string
-  kopi.denominations.MsgUpdateParamsResponse:
+      max_order_life:
+        type: string
+        format: uint64
+  kopi.dex.MsgUpdateOrder:
+    type: object
+    properties:
+      creator:
+        type: string
+      index:
+        type: string
+        format: uint64
+      amount:
+        type: string
+      trade_amount:
+        type: string
+      max_price:
+        type: string
+  kopi.dex.MsgUpdateReserveShare:
+    type: object
+    properties:
+      authority:
+        type: string
+      reserve_share:
+        type: string
+  kopi.dex.MsgUpdateTradeAmountDecay:
+    type: object
+    properties:
+      authority:
+        type: string
+      trade_amount_decay:
+        type: string
+  kopi.dex.MsgUpdateTradeFee:
+    type: object
+    properties:
+      authority:
+        type: string
+      trade_fee:
+        type: string
+  kopi.dex.MsgUpdateVirtualLiquidityDecay:
+    type: object
+    properties:
+      authority:
+        type: string
+      virtual_liquidity_decay:
+        type: string
+  kopi.dex.Order:
+    type: object
+    properties:
+      index:
+        type: string
+        format: uint64
+      creator:
+        type: string
+      denom_from:
+        type: string
+      denom_to:
+        type: string
+      amount_given:
+        type: string
+        format: byte
+      amount_left:
+        type: string
+        format: byte
+      trade_amount:
+        type: string
+        format: byte
+      amount_received:
+        type: string
+        format: byte
+      max_price:
+        type: string
+        format: byte
+      num_blocks:
+        type: string
+        format: uint64
+      execution_interval:
+        type: string
+        format: uint64
+      next_execution:
+        type: string
+        format: uint64
+      block_end:
+        type: string
+        format: uint64
+      allow_incomplete:
+        type: boolean
+  kopi.dex.Void:
     type: object
   kopi.mm.CollateralDenomStats:
     type: object
@@ -24903,3 +28272,86 @@ definitions:
     description: MsgUpdateParams is the Msg/UpdateParams request type.
   kopi.swap.Void:
     type: object
+  kopi.tokenfactory.MsgBurnDenom:
+    type: object
+    properties:
+      creator:
+        type: string
+      denom:
+        type: string
+      amount:
+        type: string
+      target_address:
+        type: string
+  kopi.tokenfactory.MsgChangeAdmin:
+    type: object
+    properties:
+      creator:
+        type: string
+      denom:
+        type: string
+      new_admin:
+        type: string
+  kopi.tokenfactory.MsgCreateDenom:
+    type: object
+    properties:
+      creator:
+        type: string
+      denom:
+        type: string
+  kopi.tokenfactory.MsgForceTransfer:
+    type: object
+    properties:
+      creator:
+        type: string
+      denom:
+        type: string
+      amount:
+        type: string
+      from_address:
+        type: string
+      target_address:
+        type: string
+  kopi.tokenfactory.MsgMintDenom:
+    type: object
+    properties:
+      creator:
+        type: string
+      denom:
+        type: string
+      amount:
+        type: string
+      target_address:
+        type: string
+  kopi.tokenfactory.MsgUpdateParams:
+    type: object
+    properties:
+      authority:
+        type: string
+      params:
+        type: object
+        properties:
+          creation_fee:
+            type: string
+            format: byte
+        description: Params defines the parameters for the module.
+  kopi.tokenfactory.Params:
+    type: object
+    properties:
+      creation_fee:
+        type: string
+        format: byte
+    description: Params defines the parameters for the module.
+  kopi.tokenfactory.Void:
+    type: object
+  kopi.tokenfactory.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+        properties:
+          creation_fee:
+            type: string
+            format: byte
+    description: QueryParamsResponse is response type for the Query/Params RPC method.

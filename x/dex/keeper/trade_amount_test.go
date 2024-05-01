@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"testing"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
@@ -8,7 +10,6 @@ import (
 	"github.com/kopi-money/kopi/x/dex/keeper"
 	"github.com/kopi-money/kopi/x/dex/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestTradeAmount1(t *testing.T) {

@@ -25,6 +25,7 @@ const (
 	Msg_RemoveAllLiquidityForDenom_FullMethodName  = "/kopi.dex.Msg/RemoveAllLiquidityForDenom"
 	Msg_AddOrder_FullMethodName                    = "/kopi.dex.Msg/AddOrder"
 	Msg_RemoveOrder_FullMethodName                 = "/kopi.dex.Msg/RemoveOrder"
+	Msg_RemoveOrders_FullMethodName                = "/kopi.dex.Msg/RemoveOrders"
 	Msg_UpdateOrder_FullMethodName                 = "/kopi.dex.Msg/UpdateOrder"
 	Msg_UpdateTradeFee_FullMethodName              = "/kopi.dex.Msg/UpdateTradeFee"
 	Msg_UpdateReserveShare_FullMethodName          = "/kopi.dex.Msg/UpdateReserveShare"
@@ -46,6 +47,7 @@ type MsgClient interface {
 	RemoveAllLiquidityForDenom(ctx context.Context, in *MsgRemoveAllLiquidityForDenom, opts ...grpc.CallOption) (*Void, error)
 	AddOrder(ctx context.Context, in *MsgAddOrder, opts ...grpc.CallOption) (*Order, error)
 	RemoveOrder(ctx context.Context, in *MsgRemoveOrder, opts ...grpc.CallOption) (*Void, error)
+	RemoveOrders(ctx context.Context, in *MsgRemoveOrders, opts ...grpc.CallOption) (*Void, error)
 	UpdateOrder(ctx context.Context, in *MsgUpdateOrder, opts ...grpc.CallOption) (*Order, error)
 	UpdateTradeFee(ctx context.Context, in *MsgUpdateTradeFee, opts ...grpc.CallOption) (*Void, error)
 	UpdateReserveShare(ctx context.Context, in *MsgUpdateReserveShare, opts ...grpc.CallOption) (*Void, error)
@@ -112,6 +114,15 @@ func (c *msgClient) AddOrder(ctx context.Context, in *MsgAddOrder, opts ...grpc.
 func (c *msgClient) RemoveOrder(ctx context.Context, in *MsgRemoveOrder, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
 	err := c.cc.Invoke(ctx, Msg_RemoveOrder_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) RemoveOrders(ctx context.Context, in *MsgRemoveOrders, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_RemoveOrders_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -201,6 +212,7 @@ type MsgServer interface {
 	RemoveAllLiquidityForDenom(context.Context, *MsgRemoveAllLiquidityForDenom) (*Void, error)
 	AddOrder(context.Context, *MsgAddOrder) (*Order, error)
 	RemoveOrder(context.Context, *MsgRemoveOrder) (*Void, error)
+	RemoveOrders(context.Context, *MsgRemoveOrders) (*Void, error)
 	UpdateOrder(context.Context, *MsgUpdateOrder) (*Order, error)
 	UpdateTradeFee(context.Context, *MsgUpdateTradeFee) (*Void, error)
 	UpdateReserveShare(context.Context, *MsgUpdateReserveShare) (*Void, error)
@@ -233,6 +245,9 @@ func (UnimplementedMsgServer) AddOrder(context.Context, *MsgAddOrder) (*Order, e
 }
 func (UnimplementedMsgServer) RemoveOrder(context.Context, *MsgRemoveOrder) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveOrder not implemented")
+}
+func (UnimplementedMsgServer) RemoveOrders(context.Context, *MsgRemoveOrders) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveOrders not implemented")
 }
 func (UnimplementedMsgServer) UpdateOrder(context.Context, *MsgUpdateOrder) (*Order, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrder not implemented")
@@ -375,6 +390,24 @@ func _Msg_RemoveOrder_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).RemoveOrder(ctx, req.(*MsgRemoveOrder))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_RemoveOrders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRemoveOrders)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RemoveOrders(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_RemoveOrders_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RemoveOrders(ctx, req.(*MsgRemoveOrders))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -553,6 +586,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemoveOrder",
 			Handler:    _Msg_RemoveOrder_Handler,
+		},
+		{
+			MethodName: "RemoveOrders",
+			Handler:    _Msg_RemoveOrders_Handler,
 		},
 		{
 			MethodName: "UpdateOrder",

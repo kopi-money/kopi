@@ -5,7 +5,7 @@ import (
 
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	"github.com/kopi-money/kopi/testutil/nullify"
-	"github.com/kopi-money/kopi/x/denominations/module"
+	denominations "github.com/kopi-money/kopi/x/denominations/module"
 	"github.com/kopi-money/kopi/x/denominations/types"
 	"github.com/stretchr/testify/require"
 )

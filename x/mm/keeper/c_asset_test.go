@@ -1,13 +1,14 @@
 package keeper_test
 
 import (
+	"strconv"
+	"testing"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	"github.com/kopi-money/kopi/x/mm/types"
 	"github.com/stretchr/testify/require"
-	"strconv"
-	"testing"
 )
 
 func TestDeposit1(t *testing.T) {

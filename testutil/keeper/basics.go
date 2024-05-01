@@ -2,16 +2,17 @@ package keeper
 
 import (
 	"context"
+	"math"
+	"strconv"
+	"sync"
+	"testing"
+
 	sdkmath "cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	"github.com/kopi-money/kopi/utils"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	"github.com/stretchr/testify/require"
-	"math"
-	"strconv"
-	"sync"
-	"testing"
 )
 
 const (

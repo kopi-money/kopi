@@ -1,8 +1,9 @@
 package utils
 
 import (
-	sdkmath "cosmossdk.io/math"
 	"math"
+
+	sdkmath "cosmossdk.io/math"
 )
 
 func MovingAverage(amountOld, amountNew sdkmath.LegacyDec) sdkmath.LegacyDec {

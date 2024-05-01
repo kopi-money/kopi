@@ -2,11 +2,12 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
+	"strings"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
-	"strings"
 )
 
 func (k Keeper) validateMsg(ctx context.Context, creator, denom string, amount math.Int) (sdk.AccAddress, error) {

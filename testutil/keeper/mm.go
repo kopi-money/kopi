@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"testing"
+
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/runtime"
@@ -11,7 +13,6 @@ import (
 	"github.com/kopi-money/kopi/utils"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
-	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	mmkeeper "github.com/kopi-money/kopi/x/mm/keeper"

@@ -2,9 +2,10 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
 	"strings"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/mm/types"
@@ -69,7 +70,7 @@ func (k msgServer) Borrow(goCtx context.Context, msg *types.MsgBorrow) (*types.V
 	}
 
 	loan.Amount = loan.Amount.Add(amount)
-	k.SetLoan(ctx, msg.Denom, loan, amount)
+	k.SetLoan(ctx, msg.Denom, loan)
 
 	coins := sdk.NewCoins(sdk.NewCoin(msg.Denom, amount.Ceil().TruncateInt()))
 	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolVault, address, coins); err != nil {
@@ -150,7 +151,7 @@ func (k Keeper) repay(ctx context.Context, eventManager sdk.EventManagerI, denom
 	}
 
 	loan.Amount = loan.Amount.Sub(amountDec)
-	k.SetLoan(ctx, denom, loan, amountDec.Neg())
+	k.SetLoan(ctx, denom, loan)
 
 	coins := sdk.NewCoins(sdk.NewCoin(denom, amountInt))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolVault, coins); err != nil {

@@ -1,12 +1,13 @@
 package keeper_test
 
 import (
+	"testing"
+
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	"github.com/kopi-money/kopi/utils"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	"github.com/kopi-money/kopi/x/mm/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestLiquidate1(t *testing.T) {
@@ -153,5 +154,43 @@ func TestLiquidate3(t *testing.T) {
 	collateralUser2, found2 := k.GetCollateral(ctx, "ukopi", keepertest.Bob)
 	require.True(t, found2)
 
+	require.True(t, collateralUser2.Amount.LT(collateralUser1.Amount))
+}
+
+func TestLiquidate4(t *testing.T) {
+	k, _, mmMsg, ctx := keepertest.SetupMMMsgServer(t)
+
+	_, err := mmMsg.AddDeposit(ctx, &types.MsgAddDeposit{
+		Creator: keepertest.Alice,
+		Denom:   "ukusd",
+		Amount:  "10000000",
+	})
+	require.NoError(t, err)
+
+	_, err = mmMsg.AddCollateral(ctx, &types.MsgAddCollateral{
+		Creator: keepertest.Bob,
+		Denom:   "ukusd",
+		Amount:  "10000",
+	})
+	require.NoError(t, err)
+
+	collateralUser1, found1 := k.GetCollateral(ctx, "ukusd", keepertest.Bob)
+	require.True(t, found1)
+
+	availableToBorrow, err := k.CalcAvailableToBorrow(ctx, keepertest.Bob, "ukusd")
+	require.NoError(t, err)
+
+	_, err = mmMsg.Borrow(ctx, &types.MsgBorrow{
+		Creator: keepertest.Bob,
+		Denom:   "ukusd",
+		Amount:  availableToBorrow.String(),
+	})
+	require.NoError(t, err)
+
+	k.ApplyInterest(ctx)
+	require.NoError(t, k.HandleLiquidations(ctx, ctx.EventManager()))
+
+	collateralUser2, found2 := k.GetCollateral(ctx, "ukusd", keepertest.Bob)
+	require.True(t, found2)
 	require.True(t, collateralUser2.Amount.LT(collateralUser1.Amount))
 }

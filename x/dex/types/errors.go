@@ -29,4 +29,5 @@ var (
 	ErrNoCoinTargetGiven   = sdkerrors.Register(ModuleName, 1119, "no coin target given")
 	ErrTradeAmountTooSmall = sdkerrors.Register(ModuleName, 1120, "trade amount too small")
 	ErrNilRatio            = sdkerrors.Register(ModuleName, 1121, "ratio is nil")
+	ErrZeroPrice           = sdkerrors.Register(ModuleName, 1122, "zero price")
 )

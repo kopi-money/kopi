@@ -57,6 +57,8 @@ import (
 	dexmodulekeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	mmmodulekeeper "github.com/kopi-money/kopi/x/mm/keeper"
 	swapmodulekeeper "github.com/kopi-money/kopi/x/swap/keeper"
+	tokenfactorymodulekeeper "github.com/kopi-money/kopi/x/tokenfactory/keeper"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/kopi-money/kopi/docs"
@@ -123,6 +125,7 @@ type App struct {
 	DexKeeper           dexmodulekeeper.Keeper
 	SwapKeeper          swapmodulekeeper.Keeper
 	MMKeeper            mmmodulekeeper.Keeper
+	TokenfactoryKeeper  tokenfactorymodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// simulation manager
@@ -264,6 +267,7 @@ func New(
 		&app.DexKeeper,
 		&app.SwapKeeper,
 		&app.MMKeeper,
+		&app.TokenfactoryKeeper,
 		// this line is used by starport scaffolding # stargate/app/keeperDefinition
 	); err != nil {
 		panic(err)

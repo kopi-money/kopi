@@ -1,11 +1,12 @@
 package keeper_test
 
 import (
+	"testing"
+
 	"cosmossdk.io/math"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	"github.com/kopi-money/kopi/utils"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestLiquidityPairs1(t *testing.T) {

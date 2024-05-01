@@ -2,9 +2,10 @@ package keeper
 
 import (
 	"context"
+	"strings"
+
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/mm/types"

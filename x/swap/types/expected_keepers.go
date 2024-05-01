@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+
 	"cosmossdk.io/math"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 

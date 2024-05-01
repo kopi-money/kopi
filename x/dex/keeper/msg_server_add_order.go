@@ -2,9 +2,10 @@ package keeper
 
 import (
 	"context"
+	"strconv"
+
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
-	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"

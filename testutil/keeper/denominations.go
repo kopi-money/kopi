@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"testing"
+
 	"cosmossdk.io/log"
 	"cosmossdk.io/store"
 	"cosmossdk.io/store/metrics"
@@ -20,7 +22,6 @@ import (
 	mmtypes "github.com/kopi-money/kopi/x/mm/types"
 	swaptypes "github.com/kopi-money/kopi/x/swap/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 type Keys struct {

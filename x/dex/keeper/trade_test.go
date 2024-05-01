@@ -2,8 +2,10 @@ package keeper_test
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
+	"testing"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
@@ -11,7 +13,6 @@ import (
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	"github.com/kopi-money/kopi/x/dex/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestCalculateSingleMaximumTradableAmount1(t *testing.T) {

@@ -75,6 +75,7 @@ import (
 	dexmodulev1 "github.com/kopi-money/kopi/api/kopi/dex/module"
 	mmmodulev1 "github.com/kopi-money/kopi/api/kopi/mm/module"
 	swapmodulev1 "github.com/kopi-money/kopi/api/kopi/swap/module"
+	tokenfactorymodulev1 "github.com/kopi-money/kopi/api/kopi/tokenfactory/module"
 	_ "github.com/kopi-money/kopi/x/denominations/module" // import for side-effects
 	denominationsmoduletypes "github.com/kopi-money/kopi/x/denominations/types"
 	_ "github.com/kopi-money/kopi/x/dex/module" // import for side-effects
@@ -83,6 +84,8 @@ import (
 	mmmoduletypes "github.com/kopi-money/kopi/x/mm/types"
 	_ "github.com/kopi-money/kopi/x/swap/module" // import for side-effects
 	swapmoduletypes "github.com/kopi-money/kopi/x/swap/types"
+	_ "github.com/kopi-money/kopi/x/tokenfactory/module" // import for side-effects
+	tokenfactorytypes "github.com/kopi-money/kopi/x/tokenfactory/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -124,6 +127,7 @@ var (
 		dexmoduletypes.ModuleName,
 		swapmoduletypes.ModuleName,
 		mmmoduletypes.ModuleName,
+		tokenfactorytypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 
@@ -152,6 +156,7 @@ var (
 		dexmoduletypes.ModuleName,
 		swapmoduletypes.ModuleName,
 		mmmoduletypes.ModuleName,
+		tokenfactorytypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
 
@@ -174,6 +179,7 @@ var (
 		dexmoduletypes.ModuleName,
 		swapmoduletypes.ModuleName,
 		mmmoduletypes.ModuleName,
+		tokenfactorytypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
 
@@ -209,6 +215,9 @@ var (
 		{Account: mmmoduletypes.PoolVault},
 		{Account: mmmoduletypes.PoolCollateral},
 		{Account: mmmoduletypes.PoolRedemption},
+
+		// Tokenfactory
+		{Account: tokenfactorytypes.ModuleName, Permissions: []string{authtypes.Burner, authtypes.Minter}},
 
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
@@ -355,6 +364,10 @@ var (
 			{
 				Name:   mmmoduletypes.ModuleName,
 				Config: appconfig.WrapAny(&mmmodulev1.Module{}),
+			},
+			{
+				Name:   tokenfactorytypes.ModuleName,
+				Config: appconfig.WrapAny(&tokenfactorymodulev1.Module{}),
 			},
 			// this line is used by starport scaffolding # stargate/app/moduleConfig
 		},

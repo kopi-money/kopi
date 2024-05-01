@@ -18,7 +18,7 @@ message GenesisState {
     (amino.dont_omitempty) = true
   ];
 
-  repeated DenomLoanData loans = 2 [(gogoproto.nullable) = false];
+  repeated Loans loans = 2 [(gogoproto.nullable) = false];
   repeated Collaterals collaterals = 3 [(gogoproto.nullable) = false];
   repeated DenomRedemption denom_redemptions = 4 [(gogoproto.nullable) = false];
   NextLoanIndex next_loan_index = 5;

@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/pkg/errors"
+
 	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 
@@ -168,11 +170,11 @@ func (am AppModule) EndBlock(goCtx context.Context) error {
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	if err := am.keeper.HandleLiquidations(goCtx, ctx.EventManager()); err != nil {
-		am.keeper.Logger().Error("HandleLiquidations", err.Error())
+		am.keeper.Logger().Error(errors.Wrap(err, "HandleLiquidations").Error())
 	}
 
 	if err := am.keeper.HandleRedemptions(goCtx, ctx.EventManager()); err != nil {
-		am.keeper.Logger().Error("HandleRedemptions", err.Error())
+		am.keeper.Logger().Error(errors.Wrap(err, "HandleRedemptions").Error())
 	}
 
 	return nil

@@ -2,6 +2,9 @@ package keeper
 
 import (
 	"context"
+	"strconv"
+	"testing"
+
 	"cosmossdk.io/log"
 	addresscodec "github.com/cosmos/cosmos-sdk/codec/address"
 	"github.com/cosmos/cosmos-sdk/runtime"
@@ -21,8 +24,6 @@ import (
 	mmtypes "github.com/kopi-money/kopi/x/mm/types"
 	swaptypes "github.com/kopi-money/kopi/x/swap/types"
 	"github.com/stretchr/testify/require"
-	"strconv"
-	"testing"
 )
 
 func DexKeeper(t *testing.T) (dexkeeper.Keeper, sdk.Context, *Keys) {

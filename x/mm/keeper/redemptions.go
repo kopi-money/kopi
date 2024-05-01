@@ -2,18 +2,35 @@ package keeper
 
 import (
 	"context"
+	"fmt"
+	"sort"
+
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	"github.com/kopi-money/kopi/x/mm/types"
-	"sort"
 )
+
+func (k Keeper) GetDenomRedemptions(ctx context.Context) (list []types.DenomRedemption) {
+	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
+		var redemptions []*types.Redemption
+		for _, redemption := range k.GetRedemptions(ctx, cAsset.BaseDenom) {
+			redemptions = append(redemptions, &redemption)
+		}
+
+		list = append(list, types.DenomRedemption{
+			Denom:       cAsset.BaseDenom,
+			Redemptions: redemptions,
+		})
+	}
+
+	return
+}
 
 func (k Keeper) SetRedemptions(ctx context.Context, redemptions types.DenomRedemption) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
@@ -23,17 +40,17 @@ func (k Keeper) SetRedemptions(ctx context.Context, redemptions types.DenomRedem
 }
 
 // SetRedemption set a specific withdrawals in the store
-func (k Keeper) SetRedemption(ctx context.Context, denom string, withdrawal types.Redemption) {
-	if withdrawal.Amount.LTE(math.ZeroInt()) {
-		k.RemoveRedemption(ctx, denom, withdrawal.Address)
+func (k Keeper) SetRedemption(ctx context.Context, denom string, redemption types.Redemption) {
+	if redemption.Amount.LTE(math.ZeroInt()) {
+		k.RemoveRedemption(ctx, denom, redemption.Address)
 		return
 	}
 
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixRedemptions))
 
-	b := k.cdc.MustMarshal(&withdrawal)
-	store.Set(types.KeyDenomAddress(denom, withdrawal.Address), b)
+	b := k.cdc.MustMarshal(&redemption)
+	store.Set(types.KeyDenomAddress(denom, redemption.Address), b)
 }
 
 // GetRedemption returns a withdrawals from its id

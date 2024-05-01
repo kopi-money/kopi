@@ -1,10 +1,11 @@
 package keeper_test
 
 import (
+	"testing"
+
 	"cosmossdk.io/math"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestConstantProduct1(t *testing.T) {

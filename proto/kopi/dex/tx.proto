@@ -26,6 +26,7 @@ service Msg {
   rpc RemoveAllLiquidityForDenom (MsgRemoveAllLiquidityForDenom) returns (Void);
   rpc AddOrder                   (MsgAddOrder) returns (Order);
   rpc RemoveOrder                (MsgRemoveOrder) returns (Void);
+  rpc RemoveOrders               (MsgRemoveOrders) returns (Void);
   rpc UpdateOrder                (MsgUpdateOrder) returns (Order);
 
   rpc UpdateTradeFee              (MsgUpdateTradeFee) returns (Void);
@@ -160,6 +161,12 @@ message MsgRemoveOrder {
 
   string creator = 1;
   uint64 index = 2;
+}
+
+message MsgRemoveOrders {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
 }
 
 message MsgUpdateOrder {

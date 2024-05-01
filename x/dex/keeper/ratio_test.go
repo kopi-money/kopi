@@ -1,9 +1,10 @@
 package keeper_test
 
 import (
-	"github.com/kopi-money/kopi/x/dex/keeper"
 	"strconv"
 	"testing"
+
+	"github.com/kopi-money/kopi/x/dex/keeper"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"

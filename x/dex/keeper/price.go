@@ -29,6 +29,10 @@ func (k Keeper) CalculatePrice(ctx context.Context, denomFrom, denomTo string) (
 		price = price.Mul(*ratio.Ratio)
 	}
 
+	if price.Equal(math.LegacyZeroDec()) {
+		return math.LegacyDec{}, types.ErrZeroPrice
+	}
+
 	price = math.LegacyOneDec().Quo(price)
 	return price, nil
 }

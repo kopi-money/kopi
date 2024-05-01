@@ -2,6 +2,8 @@ package keeper
 
 import (
 	"context"
+
+	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/mm/types"
@@ -99,17 +101,17 @@ func (k msgServer) UpdateRedemptionRequest(goCtx context.Context, msg *types.Msg
 
 	fee, err := k.checkFee(ctx, msg.Fee)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "invalid fee")
 	}
 
 	cAsset, err := k.DenomKeeper.GetCAssetByName(ctx, msg.Denom)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "invalid cAsset denom")
 	}
 
 	cAssetAmount, err := parseAmount(msg.CAssetAmount, false)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "invalid cAsset amount")
 	}
 
 	redemption, has := k.GetRedemption(ctx, msg.Denom, msg.Creator)
@@ -120,7 +122,7 @@ func (k msgServer) UpdateRedemptionRequest(goCtx context.Context, msg *types.Msg
 	address, _ := sdk.AccAddressFromBech32(msg.Creator)
 	coins := sdk.NewCoins(sdk.NewCoin(cAsset.Name, redemption.Amount))
 	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolRedemption, address, coins); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "could not send coins from redemption pool to user")
 	}
 
 	if err = k.checkSpendableCoins(ctx, address, cAsset.Name, cAssetAmount); err != nil {
@@ -129,7 +131,7 @@ func (k msgServer) UpdateRedemptionRequest(goCtx context.Context, msg *types.Msg
 
 	coins = sdk.NewCoins(sdk.NewCoin(cAsset.Name, cAssetAmount))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, address, types.PoolRedemption, coins); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "could not send coins from user to redemption pool")
 	}
 
 	redemption.Fee = fee

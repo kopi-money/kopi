@@ -2,9 +2,10 @@ package dex
 
 import (
 	"context"
-	"cosmossdk.io/errors"
 	"encoding/json"
 	"fmt"
+
+	"cosmossdk.io/errors"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"

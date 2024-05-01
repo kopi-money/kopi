@@ -2,17 +2,18 @@ package keeper_test
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
+	"math/rand"
+	"strconv"
+	"testing"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	"github.com/kopi-money/kopi/utils"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	"github.com/kopi-money/kopi/x/dex/types"
 	"github.com/stretchr/testify/require"
-	"math/rand"
-	"strconv"
-	"testing"
 )
 
 func TestOrders1(t *testing.T) {
