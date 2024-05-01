@@ -19,12 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_UpdateParams_FullMethodName  = "/kopi.tokenfactory.Msg/UpdateParams"
-	Msg_CreateDenom_FullMethodName   = "/kopi.tokenfactory.Msg/CreateDenom"
-	Msg_MintDenom_FullMethodName     = "/kopi.tokenfactory.Msg/MintDenom"
-	Msg_BurnDenom_FullMethodName     = "/kopi.tokenfactory.Msg/BurnDenom"
-	Msg_ChangeAdmin_FullMethodName   = "/kopi.tokenfactory.Msg/ChangeAdmin"
-	Msg_ForceTransfer_FullMethodName = "/kopi.tokenfactory.Msg/ForceTransfer"
+	Msg_UpdateFeeAmount_FullMethodName = "/kopi.tokenfactory.Msg/UpdateFeeAmount"
+	Msg_CreateDenom_FullMethodName     = "/kopi.tokenfactory.Msg/CreateDenom"
+	Msg_MintDenom_FullMethodName       = "/kopi.tokenfactory.Msg/MintDenom"
+	Msg_BurnDenom_FullMethodName       = "/kopi.tokenfactory.Msg/BurnDenom"
+	Msg_ChangeAdmin_FullMethodName     = "/kopi.tokenfactory.Msg/ChangeAdmin"
+	Msg_ForceTransfer_FullMethodName   = "/kopi.tokenfactory.Msg/ForceTransfer"
 )
 
 // MsgClient is the client API for Msg service.
@@ -33,7 +33,7 @@ const (
 type MsgClient interface {
 	// UpdateParams defines a (governance) operation for updating the module
 	// parameters. The authority defaults to the x/gov module account.
-	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*Void, error)
+	UpdateFeeAmount(ctx context.Context, in *MsgUpdateFeeAmount, opts ...grpc.CallOption) (*Void, error)
 	CreateDenom(ctx context.Context, in *MsgCreateDenom, opts ...grpc.CallOption) (*Void, error)
 	MintDenom(ctx context.Context, in *MsgMintDenom, opts ...grpc.CallOption) (*Void, error)
 	BurnDenom(ctx context.Context, in *MsgBurnDenom, opts ...grpc.CallOption) (*Void, error)
@@ -49,9 +49,9 @@ func NewMsgClient(cc grpc.ClientConnInterface) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*Void, error) {
+func (c *msgClient) UpdateFeeAmount(ctx context.Context, in *MsgUpdateFeeAmount, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
-	err := c.cc.Invoke(ctx, Msg_UpdateParams_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_UpdateFeeAmount_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +109,7 @@ func (c *msgClient) ForceTransfer(ctx context.Context, in *MsgForceTransfer, opt
 type MsgServer interface {
 	// UpdateParams defines a (governance) operation for updating the module
 	// parameters. The authority defaults to the x/gov module account.
-	UpdateParams(context.Context, *MsgUpdateParams) (*Void, error)
+	UpdateFeeAmount(context.Context, *MsgUpdateFeeAmount) (*Void, error)
 	CreateDenom(context.Context, *MsgCreateDenom) (*Void, error)
 	MintDenom(context.Context, *MsgMintDenom) (*Void, error)
 	BurnDenom(context.Context, *MsgBurnDenom) (*Void, error)
@@ -122,8 +122,8 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
-func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*Void, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
+func (UnimplementedMsgServer) UpdateFeeAmount(context.Context, *MsgUpdateFeeAmount) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateFeeAmount not implemented")
 }
 func (UnimplementedMsgServer) CreateDenom(context.Context, *MsgCreateDenom) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateDenom not implemented")
@@ -153,20 +153,20 @@ func RegisterMsgServer(s grpc.ServiceRegistrar, srv MsgServer) {
 	s.RegisterService(&Msg_ServiceDesc, srv)
 }
 
-func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateParams)
+func _Msg_UpdateFeeAmount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateFeeAmount)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateParams(ctx, in)
+		return srv.(MsgServer).UpdateFeeAmount(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_UpdateParams_FullMethodName,
+		FullMethod: Msg_UpdateFeeAmount_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateParams(ctx, req.(*MsgUpdateParams))
+		return srv.(MsgServer).UpdateFeeAmount(ctx, req.(*MsgUpdateFeeAmount))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -269,8 +269,8 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "UpdateParams",
-			Handler:    _Msg_UpdateParams_Handler,
+			MethodName: "UpdateFeeAmount",
+			Handler:    _Msg_UpdateFeeAmount_Handler,
 		},
 		{
 			MethodName: "CreateDenom",

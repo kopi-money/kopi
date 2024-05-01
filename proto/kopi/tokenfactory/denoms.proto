@@ -1,0 +1,13 @@
+syntax = "proto3";
+package kopi.tokenfactory;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
+
+message FactoryDenom {
+  option (gogoproto.equal) = true;
+
+  string denom = 1 [(gogoproto.moretags) = "yaml:\"denom\""];
+  string admin = 2 [(gogoproto.moretags) = "yaml:\"admin\""];
+}

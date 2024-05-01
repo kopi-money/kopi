@@ -16,9 +16,6 @@ func (k Keeper) Order(goCtx context.Context, req *types.QueryOrderRequest) (*typ
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	iterator := k.OrdersIterator(ctx)
-	defer iterator.Close()
-
 	order, ok := k.GetOrder(ctx, req.Index)
 	if !ok {
 		return nil, types.ErrOrderNotFound

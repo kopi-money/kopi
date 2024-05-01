@@ -36,7 +36,7 @@ func (k Keeper) SetDenom(ctx context.Context, denom types.FactoryDenom) {
 	store.Set(types.KeyDenom(denom.Denom), b)
 }
 
-// GetLoan returns a deposits from its index
+// GetDenom returns a deposits from its index
 func (k Keeper) GetDenom(ctx context.Context, denom string) (types.FactoryDenom, bool) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixFactoryDenoms))
@@ -51,10 +51,13 @@ func (k Keeper) GetDenom(ctx context.Context, denom string) (types.FactoryDenom,
 	return deposit, true
 }
 
-func (k Keeper) DenomIterator(ctx context.Context) storetypes.Iterator {
+func (k Keeper) DenomStore(ctx context.Context) storetypes.KVStore {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
-	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixFactoryDenoms))
-	return storetypes.KVStorePrefixIterator(store, []byte{})
+	return prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixFactoryDenoms))
+}
+
+func (k Keeper) DenomIterator(ctx context.Context) storetypes.Iterator {
+	return storetypes.KVStorePrefixIterator(k.DenomStore(ctx), []byte{})
 }
 
 func (k Keeper) CreateDenom(ctx context.Context, denom, address string) error {
@@ -82,6 +85,10 @@ func (k Keeper) processCreationFee(ctx context.Context, address string) error {
 	}
 
 	feeAmount := k.GetParams(ctx).CreationFee
+	if feeAmount.IsNil() {
+		return fmt.Errorf("feeAmount is nil")
+	}
+
 	if feeAmount.Equal(math.ZeroInt()) {
 		return nil
 	}

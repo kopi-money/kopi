@@ -2,24 +2,31 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/math"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 
-func (k msgServer) UpdateParams(goCtx context.Context, req *types.MsgUpdateParams) (*types.Void, error) {
+func (k msgServer) UpdateFeeAmount(ctx context.Context, req *types.MsgUpdateFeeAmount) (*types.Void, error) {
 	if k.GetAuthority() != req.Authority {
 		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 	}
 
-	if err := req.Params.Validate(); err != nil {
+	feeAmount, ok := math.NewIntFromString(req.FeeAmount)
+	if !ok {
+		return nil, fmt.Errorf("invalid amount")
+	}
+
+	params := k.GetParams(ctx)
+	params.CreationFee = feeAmount
+
+	if err := params.Validate(); err != nil {
 		return nil, err
 	}
 
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	if err := k.SetParams(ctx, req.Params); err != nil {
+	if err := k.SetParams(ctx, params); err != nil {
 		return nil, err
 	}
 

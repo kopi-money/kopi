@@ -6,6 +6,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "kopi/tokenfactory/params.proto";
+import "kopi/tokenfactory/denoms.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
 
@@ -13,16 +14,26 @@ option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/kopi-money/kopi/tokenfactory/params";
+    option (google.api.http).get = "/kopi/tokenfactory/params";
+  }
+
+  rpc Denoms (QueryDenomsRequest) returns (QueryDenomsResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/denoms";
   }
 }
 
-// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryDenomsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryDenomsResponse {
+  repeated FactoryDenom denoms = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
 message QueryParamsRequest {}
 
-// QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  // params holds all the parameters of this module.
   Params params = 1 [
     (gogoproto.nullable) = false,
     (amino.dont_omitempty) = true
