@@ -19,6 +19,31 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 		var order types.Order
 		k.cdc.MustUnmarshal(iterator.Value(), &order)
 
+		if blockHeight > int64(order.BlockEnd) {
+			if !order.AmountLeft.IsNil() && order.AmountLeft.GT(math.ZeroInt()) {
+				coins := sdk.NewCoins(sdk.NewCoin(order.DenomFrom, order.AmountLeft))
+				address, _ := sdk.AccAddressFromBech32(order.Creator)
+				if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolOrders, address, coins); err != nil {
+					return errors.Wrap(err, "could not send left over coins from module to user")
+				}
+			}
+
+			eventManager.EmitEvent(
+				sdk.NewEvent("order_expired",
+					sdk.Attribute{Key: "index", Value: strconv.Itoa(int(order.Index))},
+					sdk.Attribute{Key: "address", Value: order.Creator},
+					sdk.Attribute{Key: "denom_from", Value: order.DenomFrom},
+					sdk.Attribute{Key: "denom_to", Value: order.DenomTo},
+					sdk.Attribute{Key: "amount_given", Value: order.AmountGiven.String()},
+					sdk.Attribute{Key: "amount_used", Value: order.AmountGiven.Sub(order.AmountLeft).String()},
+					sdk.Attribute{Key: "amount_received", Value: order.AmountReceived.String()},
+					sdk.Attribute{Key: "max_price", Value: order.MaxPrice.String()},
+				),
+			)
+
+			k.RemoveOrder(ctx, order)
+		}
+
 		if uint64(blockHeight) < order.NextExecution {
 			continue
 		}
@@ -28,46 +53,19 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 			return errors.Wrap(err, "error executing order")
 		}
 
-		tooOld := blockHeight >= int64(order.BlockEnd)
-
-		if remove || tooOld {
-			if remove {
-				eventManager.EmitEvent(
-					sdk.NewEvent("order_completed",
-						sdk.Attribute{Key: "index", Value: strconv.Itoa(int(order.Index))},
-						sdk.Attribute{Key: "address", Value: order.Creator},
-						sdk.Attribute{Key: "denom_from", Value: order.DenomFrom},
-						sdk.Attribute{Key: "denom_to", Value: order.DenomTo},
-						sdk.Attribute{Key: "amount_given", Value: order.AmountGiven.String()},
-						sdk.Attribute{Key: "amount_used", Value: order.AmountGiven.Sub(order.AmountLeft).String()},
-						sdk.Attribute{Key: "amount_received", Value: order.AmountReceived.String()},
-						sdk.Attribute{Key: "max_price", Value: order.MaxPrice.String()},
-					),
-				)
-			}
-
-			if tooOld {
-				if !order.AmountLeft.IsNil() && order.AmountLeft.GT(math.ZeroInt()) {
-					coins := sdk.NewCoins(sdk.NewCoin(order.DenomFrom, order.AmountLeft))
-					address, _ := sdk.AccAddressFromBech32(order.Creator)
-					if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolOrders, address, coins); err != nil {
-						return errors.Wrap(err, "could not send left over coins from module to user")
-					}
-				}
-
-				eventManager.EmitEvent(
-					sdk.NewEvent("order_expired",
-						sdk.Attribute{Key: "index", Value: strconv.Itoa(int(order.Index))},
-						sdk.Attribute{Key: "address", Value: order.Creator},
-						sdk.Attribute{Key: "denom_from", Value: order.DenomFrom},
-						sdk.Attribute{Key: "denom_to", Value: order.DenomTo},
-						sdk.Attribute{Key: "amount_given", Value: order.AmountGiven.String()},
-						sdk.Attribute{Key: "amount_used", Value: order.AmountGiven.Sub(order.AmountLeft).String()},
-						sdk.Attribute{Key: "amount_received", Value: order.AmountReceived.String()},
-						sdk.Attribute{Key: "max_price", Value: order.MaxPrice.String()},
-					),
-				)
-			}
+		if remove {
+			eventManager.EmitEvent(
+				sdk.NewEvent("order_completed",
+					sdk.Attribute{Key: "index", Value: strconv.Itoa(int(order.Index))},
+					sdk.Attribute{Key: "address", Value: order.Creator},
+					sdk.Attribute{Key: "denom_from", Value: order.DenomFrom},
+					sdk.Attribute{Key: "denom_to", Value: order.DenomTo},
+					sdk.Attribute{Key: "amount_given", Value: order.AmountGiven.String()},
+					sdk.Attribute{Key: "amount_used", Value: order.AmountGiven.Sub(order.AmountLeft).String()},
+					sdk.Attribute{Key: "amount_received", Value: order.AmountReceived.String()},
+					sdk.Attribute{Key: "max_price", Value: order.MaxPrice.String()},
+				),
+			)
 
 			k.RemoveOrder(ctx, order)
 		}
