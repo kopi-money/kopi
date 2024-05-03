@@ -12,13 +12,7 @@ import (
 )
 
 func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManagerI, blockHeight int64) error {
-	iterator := k.OrdersIterator(ctx)
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var order types.Order
-		k.cdc.MustUnmarshal(iterator.Value(), &order)
-
+	for _, order := range k.GetAllOrders(ctx) {
 		if blockHeight > int64(order.BlockEnd) {
 			if !order.AmountLeft.IsNil() && order.AmountLeft.GT(math.ZeroInt()) {
 				coins := sdk.NewCoins(sdk.NewCoin(order.DenomFrom, order.AmountLeft))

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"sort"
 
 	"cosmossdk.io/store/prefix"
 	storetypes "cosmossdk.io/store/types"
@@ -51,14 +52,11 @@ func (k Keeper) OrdersStore(ctx context.Context) storetypes.KVStore {
 	return prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixOrder))
 }
 
-func (k Keeper) OrdersIterator(ctx context.Context) storetypes.Iterator {
+func (k Keeper) GetAllOrders(ctx context.Context) (list []types.Order) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixOrder))
-	return storetypes.KVStorePrefixIterator(store, []byte{})
-}
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
 
-func (k Keeper) GetAllOrders(ctx context.Context) (list []types.Order) {
-	iterator := k.OrdersIterator(ctx)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -67,11 +65,18 @@ func (k Keeper) GetAllOrders(ctx context.Context) (list []types.Order) {
 		list = append(list, val)
 	}
 
+	sort.SliceStable(list, func(i, j int) bool {
+		return list[i].Index < list[j].Index
+	})
+
 	return
 }
 
 func (k Keeper) GetAllOrdersByAddress(ctx context.Context, address string) (list []types.Order) {
-	iterator := k.OrdersIterator(ctx)
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixOrder))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
+
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -82,6 +87,10 @@ func (k Keeper) GetAllOrdersByAddress(ctx context.Context, address string) (list
 			list = append(list, val)
 		}
 	}
+
+	sort.SliceStable(list, func(i, j int) bool {
+		return list[i].Index < list[j].Index
+	})
 
 	return
 }

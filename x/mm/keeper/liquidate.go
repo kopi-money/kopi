@@ -46,7 +46,7 @@ func (k Keeper) getCollateralDenomsByValue(ctx context.Context) ([]string, error
 		denomValues = append(denomValues, DenomValue{collateralDenom.Denom, value})
 	}
 
-	sort.Slice(denomValues, func(i, j int) bool {
+	sort.SliceStable(denomValues, func(i, j int) bool {
 		return denomValues[i].value.GT(denomValues[j].value)
 	})
 
@@ -77,7 +77,7 @@ func (k Keeper) handleBorrowerLiquidation(ctx context.Context, eventManager sdk.
 		excessAmountBase := loanBaseValue.Sub(discountedCollateralValue)
 		loans := k.getUserLoans(ctx, borrower)
 
-		sort.Slice(loans, func(i, j int) bool {
+		sort.SliceStable(loans, func(i, j int) bool {
 			return loans[i].Index < loans[j].Index
 		})
 

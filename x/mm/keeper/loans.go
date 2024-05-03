@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
 	"cosmossdk.io/store/prefix"
@@ -10,6 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/runtime"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"github.com/kopi-money/kopi/x/mm/types"
+	"sort"
 )
 
 func (k Keeper) GetDenomLoans(ctx context.Context) (denomLoans []types.Loans) {
@@ -23,20 +23,6 @@ func (k Keeper) GetDenomLoans(ctx context.Context) (denomLoans []types.Loans) {
 			Denom: denom.BaseDenom,
 			Loans: loans,
 		})
-	}
-
-	return
-}
-
-// GetAllDenomLoans returns all loans
-func (k Keeper) GetAllDenomLoans(ctx context.Context) (list []types.Loans) {
-	iterator := k.LoanIterator(ctx)
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.Loans
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
 	}
 
 	return
@@ -99,10 +85,24 @@ func (k Keeper) GetLoan(ctx context.Context, denom, addess string) (types.Loan, 
 	return deposit, true
 }
 
-func (k Keeper) LoanIterator(ctx context.Context) storetypes.Iterator {
+func (k Keeper) GetAllLoans(ctx context.Context) (list []types.Loan) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixLoans))
-	return storetypes.KVStorePrefixIterator(store, []byte{})
+
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.Loan
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	sort.SliceStable(list, func(i, j int) bool {
+		return list[i].Index < list[j].Index
+	})
+
+	return
 }
 
 func (k Keeper) GetAllLoansByDenom(ctx context.Context, denom string) (list []types.Loan) {
@@ -117,6 +117,10 @@ func (k Keeper) GetAllLoansByDenom(ctx context.Context, denom string) (list []ty
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}
+
+	sort.SliceStable(list, func(i, j int) bool {
+		return list[i].Index < list[j].Index
+	})
 
 	return
 }
@@ -170,13 +174,7 @@ func (k Keeper) getBorrowers(ctx context.Context) []string {
 	var borrowers []string
 	borrowersMap := make(map[string]struct{})
 
-	iterator := k.LoanIterator(ctx)
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var loan types.Loan
-		k.cdc.MustUnmarshal(iterator.Value(), &loan)
-
+	for _, loan := range k.GetAllLoans(ctx) {
 		if _, seen := borrowersMap[loan.Address]; !seen {
 			borrowersMap[loan.Address] = struct{}{}
 			borrowers = append(borrowers, loan.Address)

@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"sort"
 	"strconv"
 
 	"cosmossdk.io/math"
@@ -89,13 +90,8 @@ func (k Keeper) AddLiquidity(ctx context.Context, eventManager sdk.EventManagerI
 }
 
 func (k Keeper) addLiquidity(ctx context.Context, denom, address string, amount math.Int) types.Liquidity {
-	iterator := k.LiquidityIterator(ctx, denom)
-
 	seen := false
-	for ; iterator.Valid(); iterator.Next() {
-		var liq types.Liquidity
-		k.cdc.MustUnmarshal(iterator.Value(), &liq)
-
+	for _, liq := range k.GetAllLiquidityForDenom(ctx, denom) {
 		if liq.Address == address {
 			// if liquidity would be added to the first found occurrence, liquidity added by whales would be used more
 			// often compared to smaller liquidity entries. To make this more fair, liquidity is added to the second
@@ -116,17 +112,19 @@ func (k Keeper) addLiquidity(ctx context.Context, denom, address string, amount 
 	return liq
 }
 
-func (k Keeper) GetLiquidityEntries(ctx context.Context, denom string) []types.Liquidity {
-	var entries []types.Liquidity
-
+func (k Keeper) GetAllLiquidityForDenom(ctx context.Context, denom string) (list []types.Liquidity) {
 	iterator := k.LiquidityIterator(ctx, denom)
 	for ; iterator.Valid(); iterator.Next() {
 		var liq types.Liquidity
 		k.cdc.MustUnmarshal(iterator.Value(), &liq)
-		entries = append(entries, liq)
+		list = append(list, liq)
 	}
 
-	return entries
+	sort.SliceStable(list, func(i, j int) bool {
+		return list[i].Index < list[j].Index
+	})
+
+	return
 }
 
 func (k Keeper) GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int {
@@ -170,6 +168,10 @@ func (k Keeper) GetAllLiquidity(ctx context.Context) (list []types.Liquidity) {
 		liq := k.LiquidityUnmarshal(iterator.Value())
 		list = append(list, liq)
 	}
+
+	sort.SliceStable(list, func(i, j int) bool {
+		return list[i].Index < list[j].Index
+	})
 
 	return
 }
