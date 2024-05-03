@@ -143,6 +143,42 @@ func (k Keeper) GetLoansSum(ctx context.Context, denom string) math.LegacyDec {
 	return sum
 }
 
+func (k Keeper) GetLoansNum(ctx context.Context) (num int) {
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixLoans))
+
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.Loan
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+
+		num++
+	}
+
+	return
+}
+
+func (k Keeper) GetLoansNumForAddress(ctx context.Context, address string) (num int) {
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixLoans))
+
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.Loan
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+
+		if val.Address == address {
+			num++
+		}
+	}
+
+	return
+}
+
 type CAssetLoan struct {
 	types.Loan
 	cAsset *denomtypes.CAsset

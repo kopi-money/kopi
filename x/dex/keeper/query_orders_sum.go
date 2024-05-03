@@ -18,14 +18,8 @@ func (k Keeper) OrdersSum(goCtx context.Context, req *types.QueryOrdersSumReques
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	iterator := k.OrdersIterator(ctx)
-	defer iterator.Close()
-
 	sum := math.LegacyZeroDec()
-	for ; iterator.Valid(); iterator.Next() {
-		var order types.Order
-		k.cdc.MustUnmarshal(iterator.Value(), &order)
-
+	for _, order := range k.GetAllOrders(ctx) {
 		price, _ := k.GetPriceInUSD(ctx, order.DenomFrom)
 
 		if order.AmountLeft.GT(math.ZeroInt()) {
@@ -44,13 +38,7 @@ func (k Keeper) OrdersDenomSum(goCtx context.Context, req *types.QueryOrdersDeno
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	ordersMap := make(map[string]math.Int)
 
-	iterator := k.OrdersIterator(ctx)
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var order types.Order
-		k.cdc.MustUnmarshal(iterator.Value(), &order)
-
+	for _, order := range k.GetAllOrders(ctx) {
 		ordersMap[order.DenomFrom] = ordersMap[order.DenomFrom].Add(order.AmountLeft)
 	}
 

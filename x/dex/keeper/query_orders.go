@@ -45,22 +45,12 @@ func (k Keeper) Orders(goCtx context.Context, req *types.QueryOrdersRequest) (*t
 	return &types.QueryOrdersResponse{Orders: orders, Pagination: pageRes}, nil
 }
 
-func (k Keeper) OrdersNum(goCtx context.Context, req *types.QueryOrdersNumRequest) (*types.QueryOrdersNumResponse, error) {
+func (k Keeper) OrdersNum(ctx context.Context, req *types.QueryOrdersNumRequest) (*types.QueryOrdersNumResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	iterator := k.OrdersIterator(ctx)
-	defer iterator.Close()
-
-	var counter int64 = 0
-	for ; iterator.Valid(); iterator.Next() {
-		counter++
-	}
-
-	return &types.QueryOrdersNumResponse{Num: counter}, nil
+	return &types.QueryOrdersNumResponse{Num: int64(k.GetAllOrdersNum(ctx))}, nil
 }
 
 func (k Keeper) toOrderResponse(ctx context.Context, order types.Order) (*types.OrderResponse, error) {
@@ -99,15 +89,9 @@ func (k Keeper) OrdersByPair(goCtx context.Context, req *types.OrdersByPairReque
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	iterator := k.OrdersIterator(ctx)
-	defer iterator.Close()
-
 	var asks, bids []*types.OrderResponse
 
-	for ; iterator.Valid(); iterator.Next() {
-		var order types.Order
-		k.cdc.MustUnmarshal(iterator.Value(), &order)
-
+	for _, order := range k.GetAllOrders(ctx) {
 		if order.DenomFrom == req.DenomFrom && order.DenomTo == req.DenomTo {
 			orderResponse, err := k.toOrderResponse(ctx, order)
 			if err != nil {

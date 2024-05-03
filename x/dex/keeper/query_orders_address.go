@@ -16,14 +16,8 @@ func (k Keeper) OrdersAddress(goCtx context.Context, req *types.QueryOrdersAddre
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	iterator := k.OrdersIterator(ctx)
-	defer iterator.Close()
-
 	orders := []*types.OrderResponse{}
-	for ; iterator.Valid(); iterator.Next() {
-		var order types.Order
-		k.cdc.MustUnmarshal(iterator.Value(), &order)
-
+	for _, order := range k.GetAllOrdersByAddress(ctx, req.Address) {
 		if order.Creator == req.Address {
 			orderResponse, err := k.toOrderResponse(ctx, order)
 			if err != nil {

@@ -44,15 +44,9 @@ func (k Keeper) OrderPool(ctx context.Context, req *types.QueryOrderPoolRequest)
 }
 
 func (k Keeper) OrderSum(ctx context.Context) map[string]math.Int {
-	iterator := k.OrdersIterator(ctx)
-	defer iterator.Close()
-
 	coins := make(map[string]math.Int)
 
-	for ; iterator.Valid(); iterator.Next() {
-		var order types.Order
-		k.cdc.MustUnmarshal(iterator.Value(), &order)
-
+	for _, order := range k.GetAllOrders(ctx) {
 		if _, exists := coins[order.DenomFrom]; !exists {
 			coins[order.DenomFrom] = math.ZeroInt()
 		}

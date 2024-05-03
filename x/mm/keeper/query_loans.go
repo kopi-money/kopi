@@ -160,15 +160,7 @@ func (k Keeper) GetNumLoans(ctx context.Context, req *types.GetNumLoansQuery) (*
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	iterator := k.LoanIterator(ctx)
-	defer iterator.Close()
-
-	var counter int64 = 0
-	for ; iterator.Valid(); iterator.Next() {
-		counter++
-	}
-
-	return &types.GetNumLoansResponse{Num: counter}, nil
+	return &types.GetNumLoansResponse{Num: int64(k.GetLoansNum(ctx))}, nil
 }
 
 func (k Keeper) GetValueLoans(ctx context.Context, req *types.GetValueLoansQuery) (*types.GetValueLoansResponse, error) {
@@ -197,20 +189,7 @@ func (k Keeper) GetNumAddressLoans(ctx context.Context, req *types.GetNumAddress
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	iterator := k.LoanIterator(ctx)
-	defer iterator.Close()
-
-	var counter int64 = 0
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.Loan
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-
-		if val.Address == req.Address {
-			counter++
-		}
-	}
-
-	return &types.GetNumAddressLoansResponse{Amount: counter}, nil
+	return &types.GetNumAddressLoansResponse{Amount: int64(k.GetLoansNumForAddress(ctx, req.Address))}, nil
 }
 
 func (k Keeper) GetAvailableToBorrow(ctx context.Context, req *types.GetAvailableToBorrowRequest) (*types.GetAvailableToBorrowResponse, error) {

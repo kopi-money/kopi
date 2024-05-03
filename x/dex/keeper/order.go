@@ -72,6 +72,23 @@ func (k Keeper) GetAllOrders(ctx context.Context) (list []types.Order) {
 	return
 }
 
+func (k Keeper) GetAllOrdersNum(ctx context.Context) (num int) {
+	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
+	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixOrder))
+	iterator := storetypes.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.Order
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+
+		num++
+	}
+
+	return
+}
+
 func (k Keeper) GetAllOrdersByAddress(ctx context.Context, address string) (list []types.Order) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixOrder))
