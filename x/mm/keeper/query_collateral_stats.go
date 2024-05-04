@@ -127,6 +127,12 @@ func (k Keeper) GetCollateralUserStats(ctx context.Context, req *types.GetCollat
 			return nil, err
 		}
 
+		if sum.GT(math.ZeroInt()) {
+			priceUSD = sumUSD.Quo(sum.ToLegacyDec())
+		} else {
+			priceUSD, _ = k.DexKeeper.GetPriceInUSD(ctx, denom.Denom)
+		}
+
 		totalUSD = totalUSD.Add(sumUSD)
 
 		stats = append(stats, &types.CollateralDenomStats{
