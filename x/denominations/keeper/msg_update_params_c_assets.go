@@ -47,11 +47,13 @@ func (k msgServer) AddCAsset(goCtx context.Context, req *types.MsgAddCAsset) (*t
 		BorrowLimit: borrowLimit,
 	})
 
-	params.DexDenoms = append(params.DexDenoms, &types.DexDenom{
-		Name:         req.Name,
-		Factor:       &factor,
-		MinLiquidity: minLiquidity,
-	})
+	if !k.IsValidDenom(ctx, req.Name) {
+		params.DexDenoms = append(params.DexDenoms, &types.DexDenom{
+			Name:         req.Name,
+			Factor:       &factor,
+			MinLiquidity: minLiquidity,
+		})
+	}
 
 	if err = params.Validate(); err != nil {
 		return nil, err
