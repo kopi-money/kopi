@@ -24,12 +24,12 @@ func (k Keeper) GetCollateralStats(ctx context.Context, req *types.GetCollateral
 		sum := k.getCollateralSum(ctx, denom.Denom)
 		sumUSD, err := k.DexKeeper.GetValueInUSD(ctx, denom.Denom, sum)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "could not get collateral sum in usd")
 		}
 
 		depositCap, err := k.DenomKeeper.GetDepositCap(ctx, denom.Denom)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "could not get deposit cap")
 		}
 
 		depositCapUsed := math.LegacyZeroDec()
@@ -38,12 +38,9 @@ func (k Keeper) GetCollateralStats(ctx context.Context, req *types.GetCollateral
 		}
 
 		totalUSD = totalUSD.Add(sumUSD)
-
-		var priceUSD math.LegacyDec
-		if sum.GT(math.ZeroInt()) {
-			priceUSD = sumUSD.Quo(sum.ToLegacyDec())
-		} else {
-			priceUSD, _ = k.DexKeeper.GetPriceInUSD(ctx, denom.Denom)
+		priceUSD, err := k.DexKeeper.GetPriceInUSD(ctx, denom.Denom)
+		if err != nil {
+			return nil, errors.Wrap(err, "could not get price in usd")
 		}
 
 		stats = append(stats, &types.CollateralDenomStats{
@@ -112,7 +109,7 @@ func (k Keeper) GetCollateralUserStats(ctx context.Context, req *types.GetCollat
 
 		depositCap, err := k.DenomKeeper.GetDepositCap(ctx, denom.Denom)
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "could not get deposit cap")
 		}
 
 		sum := k.getCollateralSum(ctx, denom.Denom)
@@ -124,13 +121,7 @@ func (k Keeper) GetCollateralUserStats(ctx context.Context, req *types.GetCollat
 
 		priceUSD, err := k.DexKeeper.GetPriceInUSD(ctx, denom.Denom)
 		if err != nil {
-			return nil, err
-		}
-
-		if sum.GT(math.ZeroInt()) {
-			priceUSD = sumUSD.Quo(sum.ToLegacyDec())
-		} else {
-			priceUSD, _ = k.DexKeeper.GetPriceInUSD(ctx, denom.Denom)
+			return nil, errors.Wrap(err, "could not get price in usd")
 		}
 
 		totalUSD = totalUSD.Add(sumUSD)
