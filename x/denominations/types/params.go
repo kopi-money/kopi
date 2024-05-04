@@ -333,7 +333,7 @@ func validateCAsset(dexDenoms []*DexDenom, cAsset *CAsset) error {
 	}
 
 	if cAsset.DexFeeShare.IsNil() {
-		return fmt.Errorf("dex_fee_share is nil")
+		cAsset.DexFeeShare = math.LegacyZeroDec()
 	}
 
 	if cAsset.DexFeeShare.LT(math.LegacyZeroDec()) {
@@ -344,8 +344,16 @@ func validateCAsset(dexDenoms []*DexDenom, cAsset *CAsset) error {
 		return fmt.Errorf("dex fee share must not be larger than 1")
 	}
 
+	if cAsset.BorrowLimit.IsNil() {
+		cAsset.BorrowLimit = math.LegacyZeroDec()
+	}
+
 	if cAsset.BorrowLimit.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("borrow limit must not be larger than 1")
+	}
+
+	if cAsset.MinimumLoanSize.IsNil() {
+		cAsset.MinimumLoanSize = math.ZeroInt()
 	}
 
 	if cAsset.MinimumLoanSize.LT(math.ZeroInt()) {
