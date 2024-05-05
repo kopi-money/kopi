@@ -80,24 +80,20 @@ func (k Keeper) getDepositUserStats(ctx context.Context, address string) (math.L
 
 	var cAssetUSD, withdrawalUSD math.LegacyDec
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
-		found, coin := coins.Find(cAsset.Name)
-		if !found {
-			coin = sdk.NewCoin(cAsset.Name, math.ZeroInt())
-		}
+		amountCAsset := coins.AmountOf(cAsset.Name)
 
 		redeeming, found := k.GetRedemption(ctx, cAsset.BaseDenom, address)
 		if !found {
 			redeeming.Amount = math.ZeroInt()
 		}
 
-		amountBase := k.ConvertToBaseAmount(ctx, cAsset, coin.Amount)
-		cAssetUSD, err = k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, amountBase.RoundInt())
+		amountBase := k.ConvertToBaseAmount(ctx, cAsset, amountCAsset)
+		cAssetUSD, err = k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, amountBase.RoundInt())
 		if err != nil {
 			return totalDeposited, totalWithdrawing, err
 		}
 
-		amountBase = k.ConvertToBaseAmount(ctx, cAsset, redeeming.Amount)
-		withdrawalUSD, err = k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, amountBase.RoundInt())
+		withdrawalUSD, err = k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, redeeming.Amount)
 		if err != nil {
 			return totalDeposited, totalWithdrawing, err
 		}

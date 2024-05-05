@@ -131,7 +131,7 @@ func (k Keeper) GetDepositUserStats(goCtx context.Context, req *types.GetDeposit
 
 		amountCAsset := math.LegacyNewDecFromInt(coin.Amount)
 		amountBase := convertToBaseAmount(cAssetSupply.ToLegacyDec(), cAssetValue, amountCAsset)
-		cAssetUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, amountBase.RoundInt())
+		cAssetUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, amountBase.RoundInt())
 		if err != nil {
 			return nil, err
 		}
@@ -199,18 +199,14 @@ func (k Keeper) GetDepositUserDenomStats(ctx context.Context, req *types.GetDepo
 	utilityRate := k.getUtilityRate(ctx, cAsset)
 	interestRate := k.calculateInterestRate(ctx, utilityRate)
 
-	found, coin := coins.Find(cAsset.Name)
-	if !found {
-		coin = sdk.NewCoin(cAsset.Name, math.ZeroInt())
-	}
-
 	redeeming, found := k.GetRedemption(ctx, cAsset.BaseDenom, req.Address)
 	if !found {
 		redeeming.Amount = math.ZeroInt()
 	}
 
-	amountCAsset := math.LegacyNewDecFromInt(coin.Amount)
-	cAssetUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, coin.Amount)
+	amountCAsset := coins.AmountOf(cAsset.Name)
+	amountBase := k.ConvertToBaseAmount(ctx, cAsset, amountCAsset)
+	cAssetUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, amountBase.RoundInt())
 	if err != nil {
 		return nil, err
 	}
@@ -233,7 +229,7 @@ func (k Keeper) GetDepositUserDenomStats(ctx context.Context, req *types.GetDepo
 	depositStats := types.DepositUserStats{}
 	depositStats.CAssetDenom = cAsset.Name
 	depositStats.BaseDenom = cAsset.BaseDenom
-	depositStats.BaseEquivalent = k.CalculateRedemptionAmount(ctx, cAsset, amountCAsset).String()
+	depositStats.BaseEquivalent = k.CalculateRedemptionAmount(ctx, cAsset, amountCAsset.ToLegacyDec()).String()
 	depositStats.AmountCAsset = amountCAsset.String()
 	depositStats.ValueCAssetUsd = cAssetUSD.String()
 	depositStats.PriceBaseUsd = basePrice.String()
