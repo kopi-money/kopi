@@ -35,10 +35,10 @@ func (k Keeper) ReserveFunds(goCtx context.Context, req *types.QueryReserveFunds
 		funds = append(funds, &types.Denom{
 			Denom:     denom,
 			Amount:    amount.String(),
-			AmountUsd: amount.ToLegacyDec().Mul(priceUSD).String(),
+			AmountUsd: amount.ToLegacyDec().Quo(priceUSD).String(),
 		})
 
-		total = total.Add(amount.ToLegacyDec().Mul(priceUSD))
+		total = total.Add(amount.ToLegacyDec().Quo(priceUSD))
 	}
 
 	funds = append(funds, &types.Denom{
