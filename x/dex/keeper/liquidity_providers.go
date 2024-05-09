@@ -74,7 +74,7 @@ func (k Keeper) determineLiquidityProviders(ctx context.Context, eventManager sd
 		if liq.Amount.Equal(math.ZeroInt()) {
 			k.RemoveLiquidity(ctx, denomTo, liq.Index, liquidityUsed)
 		} else {
-			k.SetLiquidity(ctx, liq, liquidityUsed.Neg())
+			k.SetLiquidity(ctx, &liq, liquidityUsed.Neg())
 		}
 
 		sumUsed = sumUsed.Add(liquidityUsed)
@@ -99,6 +99,7 @@ func (k Keeper) determineLiquidityProviders(ctx context.Context, eventManager sd
 
 func (k Keeper) distributeFeeForLiquidityProviders(ctx context.Context, liquidityProviders *LiquidityProviders, feeForLiquidityProvidersLeft math.Int, denom string) error {
 	providerFee := k.getProviderFee(ctx)
+	var liquidityEntries []*types.Liquidity
 
 	liquidityProviderIndex := 0
 	for feeForLiquidityProvidersLeft.GT(math.ZeroInt()) {
@@ -108,7 +109,7 @@ func (k Keeper) distributeFeeForLiquidityProviders(ctx context.Context, liquidit
 		amount := math.MinInt(feeForLiquidityProvidersLeft, liquidityProvider.amountProvided.RoundInt())
 		feeForLiquidityProvidersLeft = feeForLiquidityProvidersLeft.Sub(amount)
 		liquidityProvider.amountProvided = liquidityProvider.amountProvided.Mul(providerFee)
-		k.addLiquidity(ctx, denom, liquidityProvider.address, amount)
+		liquidityEntries, _ = k.addLiquidity(ctx, denom, liquidityProvider.address, amount, liquidityEntries)
 
 		coins := sdk.NewCoins(sdk.NewCoin(denom, amount))
 		if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolTrade, types.PoolLiquidity, coins); err != nil {
@@ -120,9 +121,10 @@ func (k Keeper) distributeFeeForLiquidityProviders(ctx context.Context, liquidit
 }
 
 func (k Keeper) distributeGivenFunds(ctx context.Context, liquidityProviders *LiquidityProviders, fundsToDistribute math.Int, denom string) error {
+	var liquidityEntries []*types.Liquidity
 	for _, liquidityProvider := range *liquidityProviders.provided() {
 		eligable := liquidityProvider.shareProvided.Mul(fundsToDistribute.ToLegacyDec()).RoundInt()
-		k.addLiquidity(ctx, denom, liquidityProvider.address, eligable)
+		liquidityEntries, _ = k.addLiquidity(ctx, denom, liquidityProvider.address, eligable, liquidityEntries)
 	}
 
 	coins := sdk.NewCoins(sdk.NewCoin(denom, fundsToDistribute))

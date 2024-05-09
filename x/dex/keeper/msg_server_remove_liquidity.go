@@ -85,7 +85,7 @@ func (k Keeper) removeLiquidityForAddress(ctx context.Context, eventManager sdk.
 				amountRemoved = amount
 				removed = removed.Add(amount)
 				liq.Amount = liq.Amount.Sub(amount)
-				k.SetLiquidity(ctx, liq, amount.Neg())
+				k.SetLiquidity(ctx, &liq, amount.Neg())
 				amount = math.ZeroInt()
 			} else {
 				amountRemoved = liq.Amount

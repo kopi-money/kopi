@@ -11,7 +11,7 @@ import (
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
 	// Set all the liquidity
 	for _, elem := range genState.LiquidityList {
-		k.SetLiquidity(ctx, elem, elem.Amount)
+		k.SetLiquidity(ctx, &elem, elem.Amount)
 	}
 	// Set all the liquidityPair
 	for _, elem := range genState.LiquidityPairList {

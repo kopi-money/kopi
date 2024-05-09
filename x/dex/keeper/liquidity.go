@@ -19,7 +19,7 @@ import (
 
 // SetLiquidity sets a specific liquidity in the store from its index. When the index is zero, i.e. it's a new entry,
 // the NextIndex is increased and updated as well.
-func (k Keeper) SetLiquidity(ctx context.Context, liquidity types.Liquidity, change math.Int) {
+func (k Keeper) SetLiquidity(ctx context.Context, liquidity *types.Liquidity, change math.Int) *types.Liquidity {
 	if liquidity.Index == 0 {
 		nextIndex, _ := k.GetLiquidityNextIndex(ctx)
 		nextIndex.Next += 1
@@ -30,10 +30,11 @@ func (k Keeper) SetLiquidity(ctx context.Context, liquidity types.Liquidity, cha
 
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixLiquidity))
-	b := k.cdc.MustMarshal(&liquidity)
+	b := k.cdc.MustMarshal(liquidity)
 	store.Set(types.KeyDenomIndex(liquidity.Denom, liquidity.Index), b)
 
 	k.updateLiquiditySum(ctx, liquidity.Denom, change)
+	return liquidity
 }
 
 func (k Keeper) updateLiquiditySum(ctx context.Context, denom string, change math.Int) {
@@ -67,7 +68,7 @@ func (k Keeper) AddLiquidity(ctx context.Context, eventManager sdk.EventManagerI
 		return types.ErrBaseLiqEmpty
 	}
 
-	liq := k.addLiquidity(ctx, denom, address.String(), amount)
+	_, liq := k.addLiquidity(ctx, denom, address.String(), amount, nil)
 
 	// When changing actual liquidity, the virtual liquidity has to be adjusted to keep the ratio.
 	if denom != utils.BaseCurrency {
@@ -89,9 +90,13 @@ func (k Keeper) AddLiquidity(ctx context.Context, eventManager sdk.EventManagerI
 	return nil
 }
 
-func (k Keeper) addLiquidity(ctx context.Context, denom, address string, amount math.Int) types.Liquidity {
+func (k Keeper) addLiquidity(ctx context.Context, denom, address string, amount math.Int, liquidityEntries []*types.Liquidity) ([]*types.Liquidity, *types.Liquidity) {
+	if liquidityEntries == nil {
+		liquidityEntries = k.GetAllLiquidityForDenom(ctx, denom)
+	}
+
 	seen := false
-	for _, liq := range k.GetAllLiquidityForDenom(ctx, denom) {
+	for _, liq := range liquidityEntries {
 		if liq.Address == address {
 			// if liquidity would be added to the first found occurrence, liquidity added by whales would be used more
 			// often compared to smaller liquidity entries. To make this more fair, liquidity is added to the second
@@ -103,21 +108,24 @@ func (k Keeper) addLiquidity(ctx context.Context, denom, address string, amount 
 
 			liq.Amount = liq.Amount.Add(amount)
 			k.SetLiquidity(ctx, liq, amount)
-			return liq
+			return liquidityEntries, liq
 		}
 	}
 
-	liq := types.Liquidity{Denom: denom, Address: address, Amount: amount}
+	liq := &types.Liquidity{Denom: denom, Address: address, Amount: amount}
 	k.SetLiquidity(ctx, liq, amount)
-	return liq
+	liquidityEntries = append(liquidityEntries, liq)
+	sort.SliceStable(liquidityEntries, func(i, j int) bool { return liquidityEntries[i].Index < liquidityEntries[j].Index })
+
+	return liquidityEntries, liq
 }
 
-func (k Keeper) GetAllLiquidityForDenom(ctx context.Context, denom string) (list []types.Liquidity) {
+func (k Keeper) GetAllLiquidityForDenom(ctx context.Context, denom string) (list []*types.Liquidity) {
 	iterator := k.LiquidityIterator(ctx, denom)
 	for ; iterator.Valid(); iterator.Next() {
 		var liq types.Liquidity
 		k.cdc.MustUnmarshal(iterator.Value(), &liq)
-		list = append(list, liq)
+		list = append(list, &liq)
 	}
 
 	sort.SliceStable(list, func(i, j int) bool {
