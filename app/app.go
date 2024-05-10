@@ -59,6 +59,8 @@ import (
 	swapmodulekeeper "github.com/kopi-money/kopi/x/swap/keeper"
 	tokenfactorymodulekeeper "github.com/kopi-money/kopi/x/tokenfactory/keeper"
 
+	v0_3_3 "github.com/kopi-money/kopi/app/upgrades/v0_3_3"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/kopi-money/kopi/docs"
@@ -349,6 +351,11 @@ func New(
 	if err := app.Load(loadLatest); err != nil {
 		return nil, err
 	}
+
+	app.UpgradeKeeper.SetUpgradeHandler(
+		v0_3_3.UpgradeName,
+		v0_3_3.CreateUpgradeHandler(app.ModuleManager, app.Configurator()),
+	)
 
 	return app, nil
 }
