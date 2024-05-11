@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/kopi-money/kopi/app/upgrades"
 	"io"
 	"os"
 	"path/filepath"
@@ -58,8 +59,6 @@ import (
 	mmmodulekeeper "github.com/kopi-money/kopi/x/mm/keeper"
 	swapmodulekeeper "github.com/kopi-money/kopi/x/swap/keeper"
 	tokenfactorymodulekeeper "github.com/kopi-money/kopi/x/tokenfactory/keeper"
-
-	v0_3_3 "github.com/kopi-money/kopi/app/upgrades/v0_3_3"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
@@ -352,10 +351,12 @@ func New(
 		return nil, err
 	}
 
-	app.UpgradeKeeper.SetUpgradeHandler(
-		v0_3_3.UpgradeName,
-		v0_3_3.CreateUpgradeHandler(app.ModuleManager, app.Configurator()),
-	)
+	for _, upgrade := range upgrades.UpgradeHandlers() {
+		app.UpgradeKeeper.SetUpgradeHandler(
+			upgrade.UpgradeName,
+			upgrade.CreateUpgradeHandler(app.ModuleManager, app.Configurator()),
+		)
+	}
 
 	return app, nil
 }

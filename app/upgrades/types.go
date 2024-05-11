@@ -30,6 +30,8 @@ type Upgrade struct {
 	StoreUpgrades storetypes.StoreUpgrades
 }
 
+type Upgrades []Upgrade
+
 // Fork defines a struct containing the requisite fields for a non-software upgrade proposal
 // Hard Fork at a given height to implement.
 // There is one time code that can be added for the start of the Fork, in `BeginForkLogic`.
