@@ -11,7 +11,7 @@ import (
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 
-func setupMsgServer(t testing.TB) (keeper.Keeper, types.MsgServer, context.Context) {
+func setupMsgServer(t *testing.T) (keeper.Keeper, types.MsgServer, context.Context) {
 	k, ctx := keepertest.TokenfactoryKeeper(t)
 	return k, keeper.NewMsgServerImpl(k), ctx
 }
