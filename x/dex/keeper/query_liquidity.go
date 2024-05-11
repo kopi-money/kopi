@@ -117,8 +117,6 @@ func (k Keeper) LiquidityQueue(c context.Context, req *types.QueryGetLiquidityQu
 		entries = append(entries, &types.LiquidityEntry{
 			Address: liq.Address,
 			Amount:  liq.Amount.String(),
-			Denom:   liq.Denom,
-			Index:   liq.Index,
 		})
 
 		return nil

@@ -1862,7 +1862,7 @@ var (
 
 	pattern_Query_Liquidity_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"kopi", "dex", "liquidity", "by_denom"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_LiquidityQueue_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"kopi", "dex", "liquidity", "queue"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_LiquidityQueue_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"kopi", "dex", "liquidity", "queue", "by_denom"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Query_LiquiditySum_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"kopi", "dex", "liquidity", "sum"}, "", runtime.AssumeColonVerbOpt(false)))
 

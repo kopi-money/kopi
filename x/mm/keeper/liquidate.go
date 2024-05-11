@@ -20,8 +20,9 @@ func (k Keeper) HandleLiquidations(ctx context.Context, eventManager sdk.EventMa
 		return errors.Wrap(err, "could not get collateral denoms by value")
 	}
 
+	liquidityMap := make(dextypes.LiquidityMap)
 	for _, borrower := range k.getBorrowers(ctx) {
-		if err = k.handleBorrowerLiquidation(ctx, eventManager, collateralDenomValues, borrower); err != nil {
+		if err = k.handleBorrowerLiquidation(ctx, eventManager, liquidityMap, collateralDenomValues, borrower); err != nil {
 			return errors.Wrap(err, fmt.Sprintf("could not handle liquidations for %v", borrower))
 		}
 	}
@@ -61,7 +62,7 @@ func (k Keeper) getCollateralDenomsByValue(ctx context.Context) ([]string, error
 // handleBorrowerLiquidation compares with loan amount with the maximum allowed amount given the deposited collateral. A
 // loan is only liquidated when the excess borrowed amount is bigger than a predetermined amount such as to prevent
 // micro trades.
-func (k Keeper) handleBorrowerLiquidation(ctx context.Context, eventManager sdk.EventManagerI, collateralDenoms []string, borrower string) error {
+func (k Keeper) handleBorrowerLiquidation(ctx context.Context, eventManager sdk.EventManagerI, liquidityMap dextypes.LiquidityMap, collateralDenoms []string, borrower string) error {
 	collateralBaseValue, err := k.calculateCollateralBaseValue(ctx, borrower)
 	if err != nil {
 		return errors.Wrap(err, "could not calculate collateral base value")
@@ -82,7 +83,7 @@ func (k Keeper) handleBorrowerLiquidation(ctx context.Context, eventManager sdk.
 		})
 
 		for _, loan := range loans {
-			if err = k.liquidateLoan(ctx, eventManager, collateralDenoms, loan.cAsset, loan.Loan, &excessAmountBase); err != nil {
+			if err = k.liquidateLoan(ctx, eventManager, liquidityMap, collateralDenoms, loan.cAsset, loan.Loan, &excessAmountBase); err != nil {
 				return errors.Wrap(err, "could not liquidate loan")
 			}
 		}
@@ -93,7 +94,7 @@ func (k Keeper) handleBorrowerLiquidation(ctx context.Context, eventManager sdk.
 
 // liquidateLoan calculates for each collateral denom how much collateral to sell such as to repay the loan and lower
 // excess borrow amount. Sold collateral is sent to the vault.
-func (k Keeper) liquidateLoan(ctx context.Context, eventManager sdk.EventManagerI, collateralDenoms []string, cAsset *denomtypes.CAsset, loan types.Loan, excessAmountBase *math.LegacyDec) error {
+func (k Keeper) liquidateLoan(ctx context.Context, eventManager sdk.EventManagerI, liquidityMap dextypes.LiquidityMap, collateralDenoms []string, cAsset *denomtypes.CAsset, loan types.Loan, excessAmountBase *math.LegacyDec) error {
 	addr, _ := sdk.AccAddressFromBech32(loan.Address)
 	repayAmount := math.LegacyZeroDec()
 
@@ -106,7 +107,7 @@ func (k Keeper) liquidateLoan(ctx context.Context, eventManager sdk.EventManager
 
 	var amountReceived math.Int
 	for _, collateralDenom := range collateralDenoms {
-		amountReceived, err = k.processLiquidation(ctx, eventManager, cAsset, excessAmount, collateralDenom, addr.String())
+		amountReceived, err = k.processLiquidation(ctx, eventManager, liquidityMap, cAsset, excessAmount, collateralDenom, addr.String())
 		if err != nil {
 			if errors.Is(err, dextypes.ErrTradeAmountTooSmall) || errors.Is(err, dextypes.ErrZeroPrice) {
 				k.logger.Error(errors.Wrap(err, "could not execute trade").Error())
@@ -152,7 +153,7 @@ func (k Keeper) liquidateLoan(ctx context.Context, eventManager sdk.EventManager
 	return nil
 }
 
-func (k Keeper) processLiquidation(ctx context.Context, eventManager sdk.EventManagerI, cAsset *denomtypes.CAsset, excessAmount math.LegacyDec, collateralDenom, address string) (math.Int, error) {
+func (k Keeper) processLiquidation(ctx context.Context, eventManager sdk.EventManagerI, liquidityMap dextypes.LiquidityMap, cAsset *denomtypes.CAsset, excessAmount math.LegacyDec, collateralDenom, address string) (math.Int, error) {
 	collateral, found := k.GetCollateral(ctx, collateralDenom, address)
 	if !found {
 		return math.ZeroInt(), nil
@@ -178,6 +179,7 @@ func (k Keeper) processLiquidation(ctx context.Context, eventManager sdk.EventMa
 			TradeDenomEnd:   cAsset.BaseDenom,
 			AllowIncomplete: true,
 			ProtocolTrade:   true,
+			LiquidityMap:    liquidityMap,
 		}
 
 		var err error

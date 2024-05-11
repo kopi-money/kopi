@@ -2,10 +2,9 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/utils"
 	"github.com/kopi-money/kopi/x/dex/types"
@@ -391,7 +390,7 @@ func (k Keeper) ExecuteTradeStep(ctx context.Context, eventManager sdk.EventMana
 		return math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), nil
 	}
 
-	liquidityProviders, amountToReceiveLeft, err := k.determineLiquidityProviders(ctx, eventManager, amountToReceive, options.StepDenomFrom, options.StepDenomTo)
+	liquidityProviders, amountToReceiveLeft, err := k.determineLiquidityProviders(ctx, eventManager, options.LiquidityMap, amountToReceive, options.StepDenomFrom, options.StepDenomTo)
 	if err != nil {
 		return math.Int{}, math.Int{}, math.Int{}, errors.Wrap(err, "could not send from source to dex (2)")
 	}
@@ -408,11 +407,11 @@ func (k Keeper) ExecuteTradeStep(ctx context.Context, eventManager sdk.EventMana
 	}
 
 	feePaid, feeForReserve, feeForLiquidityProviders := k.manageFee(ctx, amountReceivedGross, options.TradeFee)
-	if err = k.distributeFeeForLiquidityProviders(ctx, liquidityProviders, feeForLiquidityProviders, options.StepDenomTo); err != nil {
+	if err = k.distributeFeeForLiquidityProviders(ctx, options.LiquidityMap, liquidityProviders, feeForLiquidityProviders, options.StepDenomTo); err != nil {
 		return math.Int{}, math.Int{}, math.Int{}, errors.Wrap(err, "could not distribute TO funds to liquidity providers")
 	}
 
-	if err = k.distributeGivenFunds(ctx, liquidityProviders, amountUsed, options.StepDenomFrom); err != nil {
+	if err = k.distributeGivenFunds(ctx, options.LiquidityMap, liquidityProviders, amountUsed, options.StepDenomFrom); err != nil {
 		return math.Int{}, math.Int{}, math.Int{}, errors.Wrap(err, "could not distribute FROM funds to liquidity providers")
 	}
 

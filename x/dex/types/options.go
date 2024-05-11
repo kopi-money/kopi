@@ -6,6 +6,8 @@ import (
 	"github.com/kopi-money/kopi/utils"
 )
 
+type LiquidityMap map[string][]*Liquidity
+
 type TradeOptions struct {
 	GivenAmount math.Int
 	MaxPrice    *math.LegacyDec
@@ -22,6 +24,7 @@ type TradeOptions struct {
 	DiscountAddress sdk.AccAddress
 
 	TradeCalculation TradeCalculation
+	LiquidityMap     LiquidityMap
 }
 
 type TradeStepOptions struct {

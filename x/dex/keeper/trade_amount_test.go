@@ -29,6 +29,7 @@ func TestTradeAmount1(t *testing.T) {
 		TradeDenomEnd:    utils.BaseCurrency,
 		TradeCalculation: keeper.FlatPrice{},
 		AllowIncomplete:  false,
+		LiquidityMap:     make(types.LiquidityMap),
 	}
 
 	_, amountReceived, _, _, err := k.ExecuteTrade(ctx, ctx.EventManager(), options)
@@ -43,4 +44,5 @@ func TestTradeAmount1(t *testing.T) {
 	tradeAmount2 := k.GetTradeAmount(ctx, acc.String())
 	require.True(t, tradeAmount2.Amount.LT(tradeAmount1.Amount))
 
+	require.True(t, liquidityMapCorrect(ctx, k, options.LiquidityMap))
 }

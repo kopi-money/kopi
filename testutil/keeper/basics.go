@@ -68,14 +68,22 @@ func addFunds(ctx context.Context, k bankkeeper.BaseKeeper, t *testing.T) {
 
 	for _, address := range addresses {
 		for _, denom := range denoms {
-			amount := 100_000_000_000
-			coin := sdk.NewCoin(denom, sdkmath.LegacyNewDec(int64(amount)).RoundInt())
-			coins := sdk.NewCoins(coin)
-			err := k.MintCoins(ctx, dextypes.PoolReserve, coins)
-			require.NoError(t, err)
-			addr, err := sdk.AccAddressFromBech32(address)
-			require.NoError(t, err)
-			require.NoError(t, k.SendCoinsFromModuleToAccount(ctx, dextypes.PoolReserve, addr, coins))
+			AddFunds(t, ctx, k, denom, address, int64(100_000_000_000))
 		}
 	}
+}
+
+type TestBankKeeper interface {
+	MintCoins(context.Context, string, sdk.Coins) error
+	SendCoinsFromModuleToAccount(context.Context, string, sdk.AccAddress, sdk.Coins) error
+}
+
+func AddFunds(t *testing.T, ctx context.Context, k TestBankKeeper, denom, address string, amount int64) {
+	coin := sdk.NewCoin(denom, sdkmath.LegacyNewDec(amount).RoundInt())
+	coins := sdk.NewCoins(coin)
+	err := k.MintCoins(ctx, dextypes.PoolReserve, coins)
+	require.NoError(t, err)
+	addr, err := sdk.AccAddressFromBech32(address)
+	require.NoError(t, err)
+	require.NoError(t, k.SendCoinsFromModuleToAccount(ctx, dextypes.PoolReserve, addr, coins))
 }

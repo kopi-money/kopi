@@ -45,6 +45,7 @@ func (k msgServer) Trade(goCtx context.Context, msg *types.MsgTrade) (*types.Msg
 		TradeDenomStart: msg.DenomFrom,
 		TradeDenomEnd:   msg.DenomTo,
 		AllowIncomplete: msg.AllowIncomplete,
+		LiquidityMap:    make(types.LiquidityMap),
 	}
 
 	amountUsed, amountReceived, _, _, err := k.ExecuteTrade(ctx, ctx.EventManager(), options)

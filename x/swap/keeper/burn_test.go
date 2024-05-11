@@ -154,6 +154,7 @@ func burnScenario(t *testing.T, sellAmount int64) int64 {
 		TradeDenomEnd:   "uwusdc",
 		AllowIncomplete: true,
 		MaxPrice:        nil,
+		LiquidityMap:    make(dextypes.LiquidityMap),
 	}
 
 	amountUsed, _, _, _, err := k.DexKeeper.ExecuteTrade(ctx, ctx.EventManager(), tradeOptions)

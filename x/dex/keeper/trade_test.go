@@ -76,6 +76,7 @@ func TestSingleTrade1(t *testing.T) {
 		TradeDenomEnd:    utils.BaseCurrency,
 		CoinSource:       addr,
 		TradeCalculation: dexkeeper.FlatPrice{},
+		LiquidityMap:     make(types.LiquidityMap),
 	}
 
 	_, amount, _, err := k.ExecuteTradeStep(ctx, ctx.EventManager(), options.TradeToBase(fee))
@@ -87,6 +88,7 @@ func TestSingleTrade1(t *testing.T) {
 	require.Equal(t, int64(0), coins.AmountOf(utils.BaseCurrency).Int64())
 
 	require.True(t, tradePoolEmpty(ctx, k))
+	require.True(t, liquidityMapCorrect(ctx, k, options.LiquidityMap))
 }
 
 func TestSingleTrade2(t *testing.T) {
@@ -111,6 +113,7 @@ func TestSingleTrade2(t *testing.T) {
 		TradeDenomStart:  utils.BaseCurrency,
 		TradeDenomEnd:    "ukusd",
 		TradeCalculation: dexkeeper.FlatPrice{},
+		LiquidityMap:     make(types.LiquidityMap),
 	}
 
 	_, amount, _, err := k.ExecuteTradeStep(ctx, ctx.EventManager(), options.TradeToBase(fee))
@@ -125,6 +128,7 @@ func TestSingleTrade2(t *testing.T) {
 	require.Equal(t, int64(100), receivedAmount.Int64())
 
 	require.True(t, tradePoolEmpty(ctx, k))
+	require.True(t, liquidityMapCorrect(ctx, k, options.LiquidityMap))
 }
 
 func TestSingleTrade3(t *testing.T) {
@@ -150,6 +154,7 @@ func TestSingleTrade3(t *testing.T) {
 		CoinSource:       addr,
 		CoinTarget:       addr,
 		TradeCalculation: dexkeeper.FlatPrice{},
+		LiquidityMap:     make(types.LiquidityMap),
 	}
 
 	amountUsed, amountReceived, feePaid, err := k.ExecuteTradeStep(ctx, ctx.EventManager(), options.TradeToBase(fee))
@@ -162,6 +167,7 @@ func TestSingleTrade3(t *testing.T) {
 	require.Equal(t, int64(2), feePaid.Int64())
 
 	require.True(t, tradePoolEmpty(ctx, k))
+	require.True(t, liquidityMapCorrect(ctx, k, options.LiquidityMap))
 }
 
 func TestSingleTrade4(t *testing.T) {
@@ -187,6 +193,7 @@ func TestSingleTrade4(t *testing.T) {
 		CoinSource:       addr,
 		CoinTarget:       addr,
 		TradeCalculation: dexkeeper.FlatPrice{},
+		LiquidityMap:     make(types.LiquidityMap),
 	}
 
 	amountUsed, amountReceived, feePaid, err := k.ExecuteTradeStep(ctx, ctx.EventManager(), options.TradeToBase(fee))
@@ -199,6 +206,7 @@ func TestSingleTrade4(t *testing.T) {
 	require.Equal(t, math.NewInt(2), feePaid)
 
 	require.True(t, tradePoolEmpty(ctx, k))
+	require.True(t, liquidityMapCorrect(ctx, k, options.LiquidityMap))
 }
 
 func TestSingleTrade5(t *testing.T) {
@@ -221,6 +229,7 @@ func TestSingleTrade5(t *testing.T) {
 		TradeDenomStart:  utils.BaseCurrency,
 		TradeDenomEnd:    "ukusd",
 		TradeCalculation: dexkeeper.FlatPrice{},
+		LiquidityMap:     make(types.LiquidityMap),
 	}
 
 	_, amount, _, err := k.ExecuteTradeStep(ctx, ctx.EventManager(), options.TradeToBase(fee))
@@ -233,6 +242,7 @@ func TestSingleTrade5(t *testing.T) {
 	require.Equal(t, int64(200), feePaid.Int64())
 
 	require.True(t, tradePoolEmpty(ctx, k))
+	require.True(t, liquidityMapCorrect(ctx, k, options.LiquidityMap))
 }
 
 func TestSingleTrade6(t *testing.T) {
@@ -255,6 +265,7 @@ func TestSingleTrade6(t *testing.T) {
 		TradeDenomStart:  utils.BaseCurrency,
 		TradeDenomEnd:    "ukusd",
 		TradeCalculation: dexkeeper.FlatPrice{},
+		LiquidityMap:     make(types.LiquidityMap),
 	}
 
 	_, amount, _, err := k.ExecuteTradeStep(ctx, ctx.EventManager(), options.TradeToBase(fee))
@@ -267,6 +278,7 @@ func TestSingleTrade6(t *testing.T) {
 	require.Equal(t, int64(200), feePaid.Int64())
 
 	require.True(t, tradePoolEmpty(ctx, k))
+	require.True(t, liquidityMapCorrect(ctx, k, options.LiquidityMap))
 }
 
 func TestSingleTrade7(t *testing.T) {
@@ -290,6 +302,7 @@ func TestSingleTrade7(t *testing.T) {
 		TradeDenomStart:  utils.BaseCurrency,
 		TradeDenomEnd:    "ukusd",
 		TradeCalculation: dexkeeper.FlatPrice{},
+		LiquidityMap:     make(types.LiquidityMap),
 	}
 
 	_, amount, _, err := k.ExecuteTradeStep(ctx, ctx.EventManager(), options.TradeToBase(fee))
@@ -302,6 +315,7 @@ func TestSingleTrade7(t *testing.T) {
 	require.Equal(t, int64(2), feePaid.Int64())
 
 	require.True(t, tradePoolEmpty(ctx, k))
+	require.True(t, liquidityMapCorrect(ctx, k, options.LiquidityMap))
 }
 
 func TestSingleTrade8(t *testing.T) {
@@ -356,6 +370,7 @@ func TestSingleTrade11(t *testing.T) {
 		TradeDenomEnd:    utils.BaseCurrency,
 		TradeCalculation: dexkeeper.FlatPrice{},
 		AllowIncomplete:  false,
+		LiquidityMap:     make(types.LiquidityMap),
 	}
 
 	amountUsed, amountReceived, feePaid, _, err := k.ExecuteTrade(ctx, ctx.EventManager(), options)
@@ -367,6 +382,7 @@ func TestSingleTrade11(t *testing.T) {
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.True(t, tradePoolEmpty(ctx, k))
+	require.True(t, liquidityMapCorrect(ctx, k, options.LiquidityMap))
 }
 
 func TestSingleTrade9(t *testing.T) {
@@ -396,6 +412,7 @@ func TestSingleTrade9(t *testing.T) {
 		TradeDenomEnd:    "ukusd",
 		TradeCalculation: dexkeeper.ConstantProduct{},
 		AllowIncomplete:  false,
+		LiquidityMap:     make(types.LiquidityMap),
 	}
 
 	amountUsed, amountReceived, _, feePaid, err := k.ExecuteTrade(ctx, ctx.EventManager(), options)
@@ -407,6 +424,7 @@ func TestSingleTrade9(t *testing.T) {
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.True(t, tradePoolEmpty(ctx, k))
+	require.True(t, liquidityMapCorrect(ctx, k, options.LiquidityMap))
 }
 
 func TestTrade1(t *testing.T) {
@@ -1185,6 +1203,7 @@ func TestTrade31(t *testing.T) {
 		TradeDenomStart:  "uwusdc",
 		TradeDenomEnd:    "ukusd",
 		TradeCalculation: dexkeeper.FlatPrice{},
+		LiquidityMap:     make(types.LiquidityMap),
 	}
 
 	_, amountReceivedNet, _, err := k.ExecuteTradeStep(ctx, ctx.EventManager(), options.TradeToBase(fee))
@@ -1194,6 +1213,7 @@ func TestTrade31(t *testing.T) {
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.True(t, tradePoolEmpty(ctx, k))
+	require.True(t, liquidityMapCorrect(ctx, k, options.LiquidityMap))
 }
 
 func TestTrade32(t *testing.T) {
@@ -1215,6 +1235,7 @@ func TestTrade32(t *testing.T) {
 		TradeDenomEnd:    "ukusd",
 		TradeCalculation: dexkeeper.FlatPrice{},
 		AllowIncomplete:  true,
+		LiquidityMap:     make(types.LiquidityMap),
 	}
 
 	_, _, _, _, err = k.ExecuteTrade(ctx, ctx.EventManager(), options)
@@ -1222,6 +1243,7 @@ func TestTrade32(t *testing.T) {
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.True(t, tradePoolEmpty(ctx, k))
+	require.True(t, liquidityMapCorrect(ctx, k, options.LiquidityMap))
 }
 
 func TestTrade33(t *testing.T) {
@@ -1241,6 +1263,7 @@ func TestTrade33(t *testing.T) {
 		TradeDenomEnd:    utils.BaseCurrency,
 		TradeCalculation: dexkeeper.ConstantProduct{},
 		AllowIncomplete:  true,
+		LiquidityMap:     make(types.LiquidityMap),
 	}
 
 	_, _, _, _, err = k.ExecuteTrade(ctx, ctx.EventManager(), options)
@@ -1248,6 +1271,7 @@ func TestTrade33(t *testing.T) {
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.True(t, tradePoolEmpty(ctx, k))
+	require.True(t, liquidityMapCorrect(ctx, k, options.LiquidityMap))
 }
 
 func TestTrade34(t *testing.T) {
@@ -1267,6 +1291,7 @@ func TestTrade34(t *testing.T) {
 		TradeDenomEnd:    "uwusdc",
 		TradeCalculation: dexkeeper.ConstantProduct{},
 		AllowIncomplete:  true,
+		LiquidityMap:     make(types.LiquidityMap),
 	}
 
 	_, _, _, _, err = k.ExecuteTrade(ctx, ctx.EventManager(), options)
@@ -1274,6 +1299,7 @@ func TestTrade34(t *testing.T) {
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.True(t, tradePoolEmpty(ctx, k))
+	require.True(t, liquidityMapCorrect(ctx, k, options.LiquidityMap))
 }
 
 func TestTrade35(t *testing.T) {
@@ -1295,6 +1321,7 @@ func TestTrade35(t *testing.T) {
 		TradeDenomEnd:    "ukusd",
 		TradeCalculation: dexkeeper.ConstantProduct{},
 		AllowIncomplete:  true,
+		LiquidityMap:     make(types.LiquidityMap),
 	}
 
 	_, _, _, _, err = k.ExecuteTrade(ctx, ctx.EventManager(), options)
@@ -1302,6 +1329,7 @@ func TestTrade35(t *testing.T) {
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.True(t, tradePoolEmpty(ctx, k))
+	require.True(t, liquidityMapCorrect(ctx, k, options.LiquidityMap))
 }
 
 func liquidityBalanced(ctx context.Context, k dexkeeper.Keeper) bool {
@@ -1332,6 +1360,47 @@ func tradePoolEmpty(ctx context.Context, k dexkeeper.Keeper) bool {
 
 	for _, coin := range coins {
 		if coin.Amount.GT(math.ZeroInt()) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func liquidityMapCorrect(ctx context.Context, k dexkeeper.Keeper, lm types.LiquidityMap) bool {
+	for _, denom := range k.DenomKeeper.Denoms(ctx) {
+		if list, has := lm[denom]; has {
+			if !liquidityListsEqual(ctx, k, list, denom) {
+				return false
+			}
+		}
+	}
+
+	return true
+}
+
+func liquidityListsEqual(ctx context.Context, k dexkeeper.Keeper, lmList []*types.Liquidity, denom string) bool {
+	entries := k.GetAllLiquidityForDenom(ctx, denom)
+	if len(entries) != len(lmList) {
+		return false
+	}
+
+	for index := range len(entries) {
+		liq1, liq2 := entries[index], lmList[index]
+
+		if liq1.Index != liq2.Index {
+			return false
+		}
+
+		if liq1.Address != liq2.Address {
+			return false
+		}
+
+		if liq1.Denom != liq2.Denom {
+			return false
+		}
+
+		if !liq1.Amount.Equal(liq2.Amount) {
 			return false
 		}
 	}

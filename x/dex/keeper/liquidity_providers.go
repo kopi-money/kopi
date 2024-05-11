@@ -2,11 +2,10 @@ package keeper
 
 import (
 	"context"
-	"strconv"
-
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
+	"strconv"
 )
 
 type LiquidityProvider struct {
@@ -40,20 +39,30 @@ func (lps *LiquidityProviders) provided() *LiquidityProviders {
 	return lps
 }
 
-func (k Keeper) determineLiquidityProviders(ctx context.Context, eventManager sdk.EventManagerI, amountToReceiveLeft math.Int, denomFrom, denomTo string) (*LiquidityProviders, math.Int, error) {
+func (k Keeper) loadLiquidityList(ctx context.Context, liquidityMap types.LiquidityMap, denom string) []*types.Liquidity {
+	list, has := liquidityMap[denom]
+	if !has {
+		list = k.GetAllLiquidityForDenom(ctx, denom)
+		if liquidityMap != nil {
+			liquidityMap[denom] = list
+		}
+	}
+
+	return list
+}
+
+func (k Keeper) determineLiquidityProviders(ctx context.Context, eventManager sdk.EventManagerI, liquidityMap types.LiquidityMap, amountToReceiveLeft math.Int, denomFrom, denomTo string) (*LiquidityProviders, math.Int, error) {
 	var liquidityProviders LiquidityProviders
+	var liquidityUsed math.Int
+	var deleteIndexes []int
 	sumUsed := math.ZeroInt()
 
 	// Iterate over the existing liquidity entries for this currency
-	iterator := k.LiquidityIterator(ctx, denomTo)
-	for ; iterator.Valid(); iterator.Next() {
+	liquidityList := k.loadLiquidityList(ctx, liquidityMap, denomTo)
+	for index, liq := range liquidityList {
 		if amountToReceiveLeft.LTE(math.ZeroInt()) {
 			break
 		}
-
-		var liquidityUsed math.Int
-		var liq types.Liquidity
-		k.cdc.MustUnmarshal(iterator.Value(), &liq)
 
 		if amountToReceiveLeft.LT(liq.Amount) {
 			// the current liquidity entry will not be fully used
@@ -73,8 +82,9 @@ func (k Keeper) determineLiquidityProviders(ctx context.Context, eventManager sd
 		liq.Amount = liq.Amount.Sub(liquidityUsed)
 		if liq.Amount.Equal(math.ZeroInt()) {
 			k.RemoveLiquidity(ctx, denomTo, liq.Index, liquidityUsed)
+			deleteIndexes = append(deleteIndexes, index)
 		} else {
-			k.SetLiquidity(ctx, &liq, liquidityUsed.Neg())
+			k.SetLiquidity(ctx, liq, liquidityUsed.Neg())
 		}
 
 		sumUsed = sumUsed.Add(liquidityUsed)
@@ -89,6 +99,13 @@ func (k Keeper) determineLiquidityProviders(ctx context.Context, eventManager sd
 		)
 	}
 
+	for i, deleteIndex := range deleteIndexes {
+		deleteIndex -= i
+		liquidityList = append(liquidityList[:deleteIndex], liquidityList[deleteIndex+1:]...)
+	}
+
+	liquidityMap[denomTo] = liquidityList
+
 	coins := sdk.NewCoins(sdk.NewCoin(denomTo, sumUsed))
 	if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolLiquidity, types.PoolTrade, coins); err != nil {
 		return nil, math.Int{}, err
@@ -97,9 +114,9 @@ func (k Keeper) determineLiquidityProviders(ctx context.Context, eventManager sd
 	return &liquidityProviders, amountToReceiveLeft, nil
 }
 
-func (k Keeper) distributeFeeForLiquidityProviders(ctx context.Context, liquidityProviders *LiquidityProviders, feeForLiquidityProvidersLeft math.Int, denom string) error {
+func (k Keeper) distributeFeeForLiquidityProviders(ctx context.Context, liquidityMap types.LiquidityMap, liquidityProviders *LiquidityProviders, feeForLiquidityProvidersLeft math.Int, denom string) error {
 	providerFee := k.getProviderFee(ctx)
-	var liquidityEntries []*types.Liquidity
+	liquidityEntries := k.loadLiquidityList(ctx, liquidityMap, denom)
 
 	liquidityProviderIndex := 0
 	for feeForLiquidityProvidersLeft.GT(math.ZeroInt()) {
@@ -117,15 +134,20 @@ func (k Keeper) distributeFeeForLiquidityProviders(ctx context.Context, liquidit
 		}
 	}
 
+	liquidityMap[denom] = liquidityEntries
 	return nil
 }
 
-func (k Keeper) distributeGivenFunds(ctx context.Context, liquidityProviders *LiquidityProviders, fundsToDistribute math.Int, denom string) error {
-	var liquidityEntries []*types.Liquidity
-	for _, liquidityProvider := range *liquidityProviders.provided() {
+func (k Keeper) distributeGivenFunds(ctx context.Context, liquidityMap types.LiquidityMap, liquidityProviders *LiquidityProviders, fundsToDistribute math.Int, denom string) error {
+	liquidityEntries := k.loadLiquidityList(ctx, liquidityMap, denom)
+	provided := liquidityProviders.provided()
+
+	for _, liquidityProvider := range *provided {
 		eligable := liquidityProvider.shareProvided.Mul(fundsToDistribute.ToLegacyDec()).RoundInt()
 		liquidityEntries, _ = k.addLiquidity(ctx, denom, liquidityProvider.address, eligable, liquidityEntries)
 	}
+
+	liquidityMap[denom] = liquidityEntries
 
 	coins := sdk.NewCoins(sdk.NewCoin(denom, fundsToDistribute))
 	if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolTrade, types.PoolLiquidity, coins); err != nil {

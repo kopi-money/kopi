@@ -2,17 +2,16 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-	"sort"
-	"strconv"
-
 	"cosmossdk.io/math"
 	storetypes "cosmossdk.io/store/types"
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/utils"
 	"github.com/kopi-money/kopi/x/dex/types"
 	"github.com/pkg/errors"
+	"sort"
+	"strconv"
 
 	"cosmossdk.io/store/prefix"
 )
@@ -115,7 +114,7 @@ func (k Keeper) addLiquidity(ctx context.Context, denom, address string, amount 
 	liq := &types.Liquidity{Denom: denom, Address: address, Amount: amount}
 	k.SetLiquidity(ctx, liq, amount)
 	liquidityEntries = append(liquidityEntries, liq)
-	sort.SliceStable(liquidityEntries, func(i, j int) bool { return liquidityEntries[i].Index < liquidityEntries[j].Index })
+	//sort.SliceStable(liquidityEntries, func(i, j int) bool { return liquidityEntries[i].Index < liquidityEntries[j].Index })
 
 	return liquidityEntries, liq
 }
@@ -131,7 +130,6 @@ func (k Keeper) GetAllLiquidityForDenom(ctx context.Context, denom string) (list
 	sort.SliceStable(list, func(i, j int) bool {
 		return list[i].Index < list[j].Index
 	})
-
 	return
 }
 

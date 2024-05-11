@@ -30,6 +30,7 @@ func TestMint1(t *testing.T) {
 		TradeDenomEnd:   "ukusd",
 		AllowIncomplete: true,
 		MaxPrice:        nil,
+		LiquidityMap:    make(dextypes.LiquidityMap),
 	}
 
 	amountUsed, _, _, _, err := k.DexKeeper.ExecuteTrade(ctx, ctx.EventManager(), tradeOptions)
@@ -77,6 +78,7 @@ func mintScenario(t *testing.T, buyAmount int64) int64 {
 		TradeDenomEnd:   "ukusd",
 		AllowIncomplete: true,
 		MaxPrice:        nil,
+		LiquidityMap:    make(dextypes.LiquidityMap),
 	}
 
 	amountUsed, _, _, _, err := k.DexKeeper.ExecuteTrade(ctx, ctx.EventManager(), tradeOptions)
@@ -116,6 +118,7 @@ func TestMint3(t *testing.T) {
 		TradeDenomEnd:   utils.BaseCurrency,
 		AllowIncomplete: true,
 		MaxPrice:        nil,
+		LiquidityMap:    make(dextypes.LiquidityMap),
 	}
 
 	_, _, _, _, err = k.DexKeeper.ExecuteTrade(ctx, ctx.EventManager(), tradeOptions)

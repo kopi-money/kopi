@@ -2,16 +2,17 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-	"strconv"
-
 	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
 	"github.com/pkg/errors"
+	"strconv"
 )
 
 func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManagerI, blockHeight int64) error {
+	liquidityMap := make(types.LiquidityMap)
+
 	for _, order := range k.GetAllOrders(ctx) {
 		if blockHeight > int64(order.BlockEnd) {
 			if !order.AmountLeft.IsNil() && order.AmountLeft.GT(math.ZeroInt()) {
@@ -42,7 +43,7 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 			continue
 		}
 
-		remove, err := k.executeOrder(ctx, eventManager, &order, blockHeight)
+		remove, err := k.executeOrder(ctx, eventManager, liquidityMap, &order, blockHeight)
 		if err != nil {
 			return errors.Wrap(err, "error executing order")
 		}
@@ -68,7 +69,7 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 	return nil
 }
 
-func (k Keeper) executeOrder(ctx context.Context, eventManager sdk.EventManagerI, order *types.Order, blockHeight int64) (bool, error) {
+func (k Keeper) executeOrder(ctx context.Context, eventManager sdk.EventManagerI, liquidityMap types.LiquidityMap, order *types.Order, blockHeight int64) (bool, error) {
 	fee := k.GetTradeFee(ctx)
 	priceAmount := k.calculateAmountGivenPrice(ctx, order.DenomFrom, order.DenomTo, order.MaxPrice, fee).TruncateInt()
 	if priceAmount.LTE(math.ZeroInt()) {
@@ -95,6 +96,7 @@ func (k Keeper) executeOrder(ctx context.Context, eventManager sdk.EventManagerI
 		TradeDenomEnd:   order.DenomTo,
 		MaxPrice:        &order.MaxPrice,
 		AllowIncomplete: order.AllowIncomplete,
+		LiquidityMap:    liquidityMap,
 	}
 
 	usedAmount, receivedAmount, _, _, err := k.ExecuteTrade(ctx, eventManager, options)

@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"context"
 	"fmt"
+	"github.com/kopi-money/kopi/testutil/testdata"
 	"math/rand"
 	"strconv"
 	"testing"
@@ -537,6 +538,120 @@ func TestOrders18(t *testing.T) {
 	require.Equal(t, 1, len(k.GetAllOrders(ctx)))
 	require.NoError(t, k.ExecuteOrders(ctx, ctx.EventManager(), ctx.BlockHeight()))
 	require.Equal(t, 0, len(k.GetAllOrders(ctx)))
+}
+
+//func TestOrders19(t *testing.T) {
+//	orders1 := testOrdersFromData(t, false)
+//	orders2 := testOrdersFromData(t, true)
+//	require.True(t, compareOrderLists(orders1, orders2))
+//}
+
+func testOrdersFromData(t *testing.T, useLM bool) []types.Order {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	liquidity, err := testdata.LoadLiquidity()
+	require.NoError(t, err)
+	orders, err := testdata.LoadOrders()
+	require.NoError(t, err)
+
+	fmt.Println(len(liquidity), len(orders))
+
+	funds := make(map[string]Funds)
+	gatherFundsFromLiquidity(t, funds, liquidity)
+	gatherFundsFromOrders(t, funds, orders)
+
+	for address, addressFunds := range funds {
+		for denom, amount := range addressFunds {
+			keepertest.AddFunds(t, ctx, k.BankKeeper, denom, address, amount)
+		}
+	}
+
+	for _, order := range orders {
+		_, err = msg.AddOrder(ctx, &types.MsgAddOrder{
+			Creator:         order.Creator,
+			DenomFrom:       order.DenomFrom,
+			DenomTo:         order.DenomTo,
+			Amount:          order.AmountLeft,
+			TradeAmount:     order.TradeAmount,
+			MaxPrice:        order.MaxPrice,
+			Blocks:          100,
+			Interval:        1,
+			AllowIncomplete: order.AllowIncomplete,
+		})
+
+		require.NoError(t, err)
+	}
+
+	for _, liq := range liquidity {
+		_, err = msg.AddLiquidity(ctx, &types.MsgAddLiquidity{
+			Creator: liq.Address,
+			Denom:   liq.Denom,
+			Amount:  liq.Amount,
+		})
+		require.NoError(t, err)
+	}
+
+	require.NoError(t, k.ExecuteOrders(ctx, ctx.EventManager(), 0))
+	return k.GetAllOrders(ctx)
+}
+
+func compareOrderLists(orders1, orders2 []types.Order) bool {
+	if len(orders1) != len(orders2) {
+		return false
+	}
+
+	for index := range len(orders1) {
+		o1 := orders1[index]
+		o2 := orders2[index]
+
+		if o1.Index != o2.Index {
+			return false
+		}
+
+		if o1.Creator != o2.Creator {
+			return false
+		}
+
+		if !o1.AmountLeft.Equal(o2.AmountLeft) {
+			return false
+		}
+	}
+
+	return true
+}
+
+type Funds map[string]int64
+
+func (f Funds) add(denom string, amount int64) {
+	f[denom] += amount
+}
+
+func gatherFundsFromLiquidity(t *testing.T, funds map[string]Funds, liquidityEntries []testdata.LiquidityEntry) {
+	for _, liq := range liquidityEntries {
+		f, has := funds[liq.Address]
+		if !has {
+			funds[liq.Address] = make(Funds)
+			f = funds[liq.Address]
+		}
+
+		amount, err := strconv.Atoi(liq.Amount)
+		require.NoError(t, err)
+		f.add(liq.Denom, int64(amount))
+	}
+}
+
+func gatherFundsFromOrders(t *testing.T, funds map[string]Funds, orders []testdata.Order) {
+	for _, order := range orders {
+		f, has := funds[order.Creator]
+		if !has {
+			funds[order.Creator] = make(Funds)
+			f = funds[order.Creator]
+		}
+
+		amount, err := strconv.Atoi(order.AmountLeft)
+		require.NoError(t, err)
+		f.add(order.DenomFrom, int64(amount))
+	}
 }
 
 func randomAmount(max int) int {

@@ -101,6 +101,7 @@ func (k Keeper) mintTradeBurn(ctx context.Context, eventManager sdk.EventManager
 		AllowIncomplete:     true,
 		ExcludeFromDiscount: true,
 		ProtocolTrade:       true,
+		LiquidityMap:        make(dextypes.LiquidityMap),
 	}
 
 	amountUsed, amountReceived, _, _, err := k.DexKeeper.ExecuteTrade(ctx, eventManager, options)
