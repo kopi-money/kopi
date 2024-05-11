@@ -28,7 +28,7 @@ service Query {
     option (google.api.http).get = "/kopi/dex/liquidity/by_denom";
   }
   rpc LiquidityQueue (QueryGetLiquidityQueueRequest) returns (QueryGetLiquidityQueueResponse) {
-    option (google.api.http).get = "/kopi/dex/liquidity/queue/by_denom";
+    option (google.api.http).get = "/kopi/dex/liquidity/queue";
   }
   rpc LiquiditySum (QueryGetLiquiditySumRequest) returns (QueryGetLiquiditySumResponse) {
     option (google.api.http).get = "/kopi/dex/liquidity/sum";
@@ -183,6 +183,8 @@ message QueryGetLiquidityResponse {
 message LiquidityEntry {
   string address = 1;
   string amount = 2;
+  string denom = 3;
+  uint64 index = 4;
 }
 
 message QueryGetLiquidityQueueRequest {

@@ -21,7 +21,8 @@ import (
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 
-func TokenfactoryKeeper(t testing.TB) (keeper.Keeper, sdk.Context) {
+func TokenfactoryKeeper(t *testing.T) (keeper.Keeper, sdk.Context) {
+	dexKeeper, _, _ := DexKeeper(t)
 	storeKey := storetypes.NewKVStoreKey(types.StoreKey)
 
 	db := dbm.NewMemDB()
@@ -37,6 +38,8 @@ func TokenfactoryKeeper(t testing.TB) (keeper.Keeper, sdk.Context) {
 		cdc,
 		runtime.NewKVStoreService(storeKey),
 		log.NewNopLogger(),
+		dexKeeper.AccountKeeper,
+		dexKeeper.BankKeeper,
 		authority.String(),
 	)
 

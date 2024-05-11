@@ -675,7 +675,7 @@ func TestTrade11(t *testing.T) {
 	require.NoError(t, err)
 
 	counter := 0
-	for range k.GetLiquidityEntries(ctx, "ukusd") {
+	for range k.GetAllLiquidityForDenom(ctx, "ukusd") {
 		counter++
 	}
 
@@ -705,7 +705,7 @@ func TestTrade12(t *testing.T) {
 	require.NoError(t, err)
 
 	counter := 0
-	for range k.GetLiquidityEntries(ctx, "ukusd") {
+	for range k.GetAllLiquidityForDenom(ctx, "ukusd") {
 		counter++
 	}
 
