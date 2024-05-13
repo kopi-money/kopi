@@ -42,6 +42,11 @@ func (k Keeper) CheckReserve(ctx context.Context, eventManager sdk.EventManagerI
 			continue
 		}
 
+		// Preventing issue where protocol wants to add liquidity before denom has been whitelisted
+		if k.DenomKeeper.IsValidDenom(ctx, coin.Denom) {
+			continue
+		}
+
 		if err := k.checkReserveForDenom(ctx, eventManager, address, coin, false); err != nil {
 			return errors.Wrap(err, fmt.Sprintf("error checking reserve for %v", coin.Denom))
 		}
