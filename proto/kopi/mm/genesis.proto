@@ -3,9 +3,9 @@ package kopi.mm;
 
 import "amino/amino.proto";
 import "gogoproto/gogo.proto";
-import "kopi/mm/params.proto";
-import "kopi/mm/deposits.proto";
 import "kopi/mm/collateral.proto";
+import "kopi/mm/loans.proto";
+import "kopi/mm/params.proto";
 import "kopi/mm/redemptions.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/mm/types";

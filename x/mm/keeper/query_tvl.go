@@ -41,7 +41,7 @@ func (k Keeper) getTotalDeposited(ctx sdk.Context) (math.LegacyDec, error) {
 			return total, err
 		}
 
-		borrowed := k.GetLoansSum(ctx, CAsset.BaseDenom)
+		borrowed := k.GetLoanSum(ctx, CAsset.BaseDenom).LoanSum
 		borrowedUSD, err := k.DexKeeper.GetValueInUSD(ctx, CAsset.BaseDenom, borrowed.RoundInt())
 		if err != nil {
 			return total, err

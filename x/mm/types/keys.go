@@ -10,6 +10,7 @@ const (
 
 	KeyPrefixLoansIndex  = "Loans/index/"
 	KeyPrefixLoans       = "Loans/value/"
+	KeyPrefixLoanSums    = "LoanSums/value/"
 	KeyPrefixCollaterals = "Collaterals/value/"
 	KeyPrefixRedemptions = "Redemptions/value/"
 )

@@ -36,8 +36,6 @@ func (k Keeper) CalculateNewCAssetAmount(ctx context.Context, addedAmount math.I
 		newTokens = addedAmount
 	} else {
 		newTokens = cAssetSupply.ToLegacyDec().Quo(math.LegacyOneDec().Sub(valueShare)).RoundInt().Sub(cAssetSupply)
-		//msg := fmt.Sprintf("Given: %v, supply: %v, vaultAmount: %v, valueShare: %v, newTokens: %v", addedAmount.String(), cAssetSupply.String(), vaultAmount.String(), valueShare.String(), newTokens.String())
-		//k.logger.Info(msg)
 	}
 
 	return newTokens
@@ -46,10 +44,9 @@ func (k Keeper) CalculateNewCAssetAmount(ctx context.Context, addedAmount math.I
 // calculateCAssetValue calculates the total underlying of an CAsset. This includes funds lying in the vault as well as
 // funds in outstanding loans.
 func (k Keeper) calculateCAssetValue(ctx context.Context, cAsset *denomtypes.CAsset) math.LegacyDec {
+	loanSum := k.GetLoanSum(ctx, cAsset.BaseDenom).LoanSum
 	cAssetValue := k.GetVaultAmount(ctx, cAsset).ToLegacyDec()
-	for _, loan := range k.GetAllLoansByDenom(ctx, cAsset.BaseDenom) {
-		cAssetValue = cAssetValue.Add(loan.Amount)
-	}
+	cAssetValue = cAssetValue.Add(loanSum)
 
 	return cAssetValue
 }

@@ -83,6 +83,11 @@ func (k Keeper) handleBorrowerLiquidation(ctx context.Context, eventManager sdk.
 		})
 
 		for _, loan := range loans {
+			if loanUnderMininumThreshold(loan.cAsset, loan.value) {
+				k.updateLoan(ctx, loan.cAsset.BaseDenom, loan.Address, loan.value.Neg())
+				continue
+			}
+
 			if err = k.liquidateLoan(ctx, eventManager, liquidityMap, collateralDenoms, loan.cAsset, loan.Loan, &excessAmountBase); err != nil {
 				return errors.Wrap(err, "could not liquidate loan")
 			}
@@ -90,6 +95,14 @@ func (k Keeper) handleBorrowerLiquidation(ctx context.Context, eventManager sdk.
 	}
 
 	return nil
+}
+
+func loanUnderMininumThreshold(cAsset *denomtypes.CAsset, loanValue math.LegacyDec) bool {
+	if cAsset.MinimumLoanSize.IsNil() {
+		return false
+	}
+
+	return cAsset.MinimumLoanSize.GT(math.ZeroInt()) && loanValue.LT(cAsset.MinimumLoanSize.ToLegacyDec())
 }
 
 // liquidateLoan calculates for each collateral denom how much collateral to sell such as to repay the loan and lower
@@ -103,7 +116,8 @@ func (k Keeper) liquidateLoan(ctx context.Context, eventManager sdk.EventManager
 		return err
 	}
 
-	excessAmount = math.LegacyMinDec(excessAmount, loan.Amount)
+	loanValue := k.GetLoanValue(ctx, cAsset.BaseDenom, loan.Address)
+	excessAmount = math.LegacyMinDec(excessAmount, loanValue)
 
 	var amountReceived math.Int
 	for _, collateralDenom := range collateralDenoms {
@@ -124,16 +138,15 @@ func (k Keeper) liquidateLoan(ctx context.Context, eventManager sdk.EventManager
 		return nil
 	}
 
-	loan.Amount = loan.Amount.Sub(repayAmount)
-	if loan.Amount.LT(math.LegacyZeroDec()) {
-		amount := loan.Amount.Neg().RoundInt()
-		coins := sdk.NewCoins(sdk.NewCoin(cAsset.BaseDenom, amount))
+	excessRepayAmount := loanValue.Sub(repayAmount)
+	if excessAmount.GT(math.LegacyZeroDec()) {
+		coins := sdk.NewCoins(sdk.NewCoin(cAsset.BaseDenom, excessRepayAmount.TruncateInt()))
 		if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolVault, addr, coins); err != nil {
 			return errors.Wrap(err, "could not send excess funds back to user")
 		}
 	}
 
-	k.SetLoan(ctx, cAsset.BaseDenom, loan)
+	k.updateLoan(ctx, cAsset.BaseDenom, loan.Address, repayAmount.Neg())
 
 	repayAmountBase, err := k.DexKeeper.GetValueIn(ctx, cAsset.BaseDenom, utils.BaseCurrency, repayAmount.RoundInt())
 	if err != nil {

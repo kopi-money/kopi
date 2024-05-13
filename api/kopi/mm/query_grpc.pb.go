@@ -30,7 +30,7 @@ const (
 	Query_GetDepositUserDenomStats_FullMethodName       = "/kopi.mm.Query/GetDepositUserDenomStats"
 	Query_GetDepositStats_FullMethodName                = "/kopi.mm.Query/GetDepositStats"
 	Query_GetBorrowInterestRate_FullMethodName          = "/kopi.mm.Query/GetBorrowInterestRate"
-	Query_GetLoans_FullMethodName                       = "/kopi.mm.Query/GetLoans"
+	Query_GetLoansByDenom_FullMethodName                = "/kopi.mm.Query/GetLoansByDenom"
 	Query_GetUserLoans_FullMethodName                   = "/kopi.mm.Query/GetUserLoans"
 	Query_GetUserDenomLoan_FullMethodName               = "/kopi.mm.Query/GetUserDenomLoan"
 	Query_GetAvailableToBorrow_FullMethodName           = "/kopi.mm.Query/GetAvailableToBorrow"
@@ -63,7 +63,7 @@ type QueryClient interface {
 	GetDepositUserDenomStats(ctx context.Context, in *GetDepositUserDenomStatsQuery, opts ...grpc.CallOption) (*DepositUserStats, error)
 	GetDepositStats(ctx context.Context, in *GetDepositStatsQuery, opts ...grpc.CallOption) (*GetDepositStatsResponse, error)
 	GetBorrowInterestRate(ctx context.Context, in *GetBorrowInterestRateQuery, opts ...grpc.CallOption) (*GetBorrowInterestRateResponse, error)
-	GetLoans(ctx context.Context, in *GetLoansQuery, opts ...grpc.CallOption) (*GetLoansResponse, error)
+	GetLoansByDenom(ctx context.Context, in *GetLoansByDenomQuery, opts ...grpc.CallOption) (*GetLoansResponse, error)
 	GetUserLoans(ctx context.Context, in *GetUserLoansQuery, opts ...grpc.CallOption) (*GetUserLoansResponse, error)
 	GetUserDenomLoan(ctx context.Context, in *GetUserDenomLoanQuery, opts ...grpc.CallOption) (*GetUserDenomLoanResponse, error)
 	GetAvailableToBorrow(ctx context.Context, in *GetAvailableToBorrowRequest, opts ...grpc.CallOption) (*GetAvailableToBorrowResponse, error)
@@ -188,9 +188,9 @@ func (c *queryClient) GetBorrowInterestRate(ctx context.Context, in *GetBorrowIn
 	return out, nil
 }
 
-func (c *queryClient) GetLoans(ctx context.Context, in *GetLoansQuery, opts ...grpc.CallOption) (*GetLoansResponse, error) {
+func (c *queryClient) GetLoansByDenom(ctx context.Context, in *GetLoansByDenomQuery, opts ...grpc.CallOption) (*GetLoansResponse, error) {
 	out := new(GetLoansResponse)
-	err := c.cc.Invoke(ctx, Query_GetLoans_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_GetLoansByDenom_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -347,7 +347,7 @@ type QueryServer interface {
 	GetDepositUserDenomStats(context.Context, *GetDepositUserDenomStatsQuery) (*DepositUserStats, error)
 	GetDepositStats(context.Context, *GetDepositStatsQuery) (*GetDepositStatsResponse, error)
 	GetBorrowInterestRate(context.Context, *GetBorrowInterestRateQuery) (*GetBorrowInterestRateResponse, error)
-	GetLoans(context.Context, *GetLoansQuery) (*GetLoansResponse, error)
+	GetLoansByDenom(context.Context, *GetLoansByDenomQuery) (*GetLoansResponse, error)
 	GetUserLoans(context.Context, *GetUserLoansQuery) (*GetUserLoansResponse, error)
 	GetUserDenomLoan(context.Context, *GetUserDenomLoanQuery) (*GetUserDenomLoanResponse, error)
 	GetAvailableToBorrow(context.Context, *GetAvailableToBorrowRequest) (*GetAvailableToBorrowResponse, error)
@@ -403,8 +403,8 @@ func (UnimplementedQueryServer) GetDepositStats(context.Context, *GetDepositStat
 func (UnimplementedQueryServer) GetBorrowInterestRate(context.Context, *GetBorrowInterestRateQuery) (*GetBorrowInterestRateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBorrowInterestRate not implemented")
 }
-func (UnimplementedQueryServer) GetLoans(context.Context, *GetLoansQuery) (*GetLoansResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetLoans not implemented")
+func (UnimplementedQueryServer) GetLoansByDenom(context.Context, *GetLoansByDenomQuery) (*GetLoansResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLoansByDenom not implemented")
 }
 func (UnimplementedQueryServer) GetUserLoans(context.Context, *GetUserLoansQuery) (*GetUserLoansResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserLoans not implemented")
@@ -662,20 +662,20 @@ func _Query_GetBorrowInterestRate_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetLoans_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetLoansQuery)
+func _Query_GetLoansByDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLoansByDenomQuery)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetLoans(ctx, in)
+		return srv.(QueryServer).GetLoansByDenom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_GetLoans_FullMethodName,
+		FullMethod: Query_GetLoansByDenom_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetLoans(ctx, req.(*GetLoansQuery))
+		return srv.(QueryServer).GetLoansByDenom(ctx, req.(*GetLoansByDenomQuery))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1002,8 +1002,8 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_GetBorrowInterestRate_Handler,
 		},
 		{
-			MethodName: "GetLoans",
-			Handler:    _Query_GetLoans_Handler,
+			MethodName: "GetLoansByDenom",
+			Handler:    _Query_GetLoansByDenom_Handler,
 		},
 		{
 			MethodName: "GetUserLoans",

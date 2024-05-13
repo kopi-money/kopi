@@ -1,7 +1,7 @@
 package types
 
 import (
-	"strconv"
+	"github.com/kopi-money/kopi/utils"
 )
 
 const (
@@ -44,11 +44,8 @@ func KeyString(denom string) (key []byte) {
 	return key
 }
 
-func KeyIndex(id uint64) []byte {
-	var key []byte
-
-	idBytes := []byte(strconv.Itoa(int(id)))
-	key = append(key, idBytes...)
+func KeyIndex(index uint64) (key []byte) {
+	key = []byte(utils.PadIndex(index))
 	key = append(key, []byte("/")...)
 
 	return key
@@ -68,7 +65,7 @@ func KeyDenomIndex(denom string, index uint64) []byte {
 
 	key = append(key, []byte(denom)...)
 	key = append(key, []byte("/")...)
-	key = append(key, []byte(strconv.Itoa(int(index)))...)
+	key = append(key, []byte(utils.PadIndex(index))...)
 	key = append(key, []byte("/")...)
 
 	return key

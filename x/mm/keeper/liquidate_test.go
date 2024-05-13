@@ -59,8 +59,8 @@ func TestLiquidate1(t *testing.T) {
 
 	loans := k.GetAllLoansByDenom(ctx, "ukusd")
 	require.Equal(t, 1, len(loans))
-	loanAmount1 := k.GetAllLoansByDenom(ctx, "ukusd")[0].Amount
 
+	loanValue1 := k.GetLoanValue(ctx, "ukusd", keepertest.Bob)
 	require.NoError(t, k.HandleLiquidations(ctx, ctx.EventManager()))
 
 	found, coin = k.BankKeeper.SpendableCoins(ctx, acc.GetAddress()).Find("ukusd")
@@ -68,8 +68,8 @@ func TestLiquidate1(t *testing.T) {
 	vaultSize2 := coin.Amount
 	require.True(t, vaultSize2.GT(vaultSize1))
 
-	loanAmount2 := k.GetAllLoansByDenom(ctx, "ukusd")[0].Amount
-	require.True(t, loanAmount2.LT(loanAmount1))
+	loanValue2 := k.GetLoanValue(ctx, "ukusd", keepertest.Bob)
+	require.True(t, loanValue2.LT(loanValue1))
 }
 
 func TestLiquidate2(t *testing.T) {
@@ -99,16 +99,13 @@ func TestLiquidate2(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	loanSize1, found := k.GetLoan(ctx, "ukusd", keepertest.Bob)
-	require.True(t, found)
+	loanValue1 := k.GetLoanValue(ctx, "ukusd", keepertest.Bob)
 
 	k.ApplyInterest(ctx)
 	require.NoError(t, k.HandleLiquidations(ctx, ctx.EventManager()))
 
-	loanSize2, found := k.GetLoan(ctx, "ukusd", keepertest.Bob)
-	require.True(t, found)
-
-	require.True(t, loanSize2.Amount.LT(loanSize1.Amount))
+	loanValue2 := k.GetLoanValue(ctx, "ukusd", keepertest.Bob)
+	require.True(t, loanValue2.LT(loanValue1))
 }
 
 func TestLiquidate3(t *testing.T) {

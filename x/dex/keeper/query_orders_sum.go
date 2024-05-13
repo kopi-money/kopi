@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"github.com/pkg/errors"
 
 	"cosmossdk.io/math"
 
@@ -20,11 +21,12 @@ func (k Keeper) OrdersSum(goCtx context.Context, req *types.QueryOrdersSumReques
 
 	sum := math.LegacyZeroDec()
 	for _, order := range k.GetAllOrders(ctx) {
-		price, _ := k.GetPriceInUSD(ctx, order.DenomFrom)
-
-		if order.AmountLeft.GT(math.ZeroInt()) {
-			sum = sum.Add(price.Quo(order.AmountLeft.ToLegacyDec()))
+		value, err := k.GetValueInUSD(ctx, order.DenomFrom, order.AmountLeft)
+		if err != nil {
+			return nil, errors.Wrap(err, "culd not get order value in usd")
 		}
+
+		sum = sum.Add(value)
 	}
 
 	return &types.QueryOrdersSumResponse{Sum: sum.String()}, nil
@@ -43,10 +45,16 @@ func (k Keeper) OrdersDenomSum(goCtx context.Context, req *types.QueryOrdersDeno
 	}
 
 	orderSums := []*types.OrdersSum{}
-	for denom, sum := range ordersMap {
+	for _, denom := range k.DenomKeeper.Denoms(ctx) {
+		sum := "0"
+		orderSum, has := ordersMap[denom]
+		if has {
+			sum = orderSum.String()
+		}
+
 		orderSums = append(orderSums, &types.OrdersSum{
 			DenomFrom: denom,
-			Sum:       sum.String(),
+			Sum:       sum,
 		})
 	}
 

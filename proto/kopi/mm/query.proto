@@ -57,8 +57,8 @@ service Query {
     option (google.api.http).get = "/kopi/mm/interest_rate";
   }
 
-  rpc GetLoans (GetLoansQuery) returns (GetLoansResponse) {
-    option (google.api.http).get = "/kopi/mm/loans";
+  rpc GetLoansByDenom (GetLoansByDenomQuery) returns (GetLoansResponse) {
+    option (google.api.http).get = "/kopi/mm/loans/by_denom";
   }
 
   rpc GetUserLoans (GetUserLoansQuery) returns (GetUserLoansResponse) {
@@ -186,7 +186,8 @@ message GetCollateralDenomStatsResponse {
   string sum_usd = 3;
 }
 
-message GetLoansQuery{
+message GetLoansByDenomQuery{
+  string denom = 1;
 }
 
 message UserLoan {

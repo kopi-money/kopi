@@ -64,13 +64,7 @@ func (k msgServer) Borrow(goCtx context.Context, msg *types.MsgBorrow) (*types.V
 		return nil, types.ErrBorrowLimitExceeded
 	}
 
-	loan, found := k.GetLoan(ctx, msg.Denom, msg.Creator)
-	if !found {
-		loan = types.Loan{Address: msg.Creator, Amount: math.LegacyZeroDec()}
-	}
-
-	loan.Amount = loan.Amount.Add(amount)
-	k.SetLoan(ctx, msg.Denom, loan)
+	k.updateLoan(ctx, msg.Denom, msg.Creator, amount)
 
 	coins := sdk.NewCoins(sdk.NewCoin(msg.Denom, amount.Ceil().TruncateInt()))
 	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolVault, address, coins); err != nil {
@@ -91,12 +85,12 @@ func (k msgServer) Borrow(goCtx context.Context, msg *types.MsgBorrow) (*types.V
 func (k msgServer) RepayLoan(goCtx context.Context, msg *types.MsgRepayLoan) (*types.Void, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	loan, found := k.GetLoan(ctx, msg.Denom, msg.Creator)
-	if !found {
+	loanValue := k.GetLoanValue(ctx, msg.Denom, msg.Creator)
+	if loanValue.Equal(math.LegacyZeroDec()) {
 		return nil, types.ErrNoLoanFound
 	}
 
-	if err := k.repay(ctx, ctx.EventManager(), msg.Denom, msg.Creator, loan.Amount); err != nil {
+	if err := k.repay(ctx, ctx.EventManager(), msg.Denom, msg.Creator, loanValue); err != nil {
 		return nil, err
 	}
 
@@ -116,44 +110,38 @@ func (k msgServer) PartiallyRepayLoan(goCtx context.Context, msg *types.MsgParti
 	}
 
 	amountStr := strings.ReplaceAll(msg.Amount, ",", "")
-	amount, err := math.LegacyNewDecFromStr(amountStr)
+	repayAmount, err := math.LegacyNewDecFromStr(amountStr)
 	if err != nil {
 		return nil, types.ErrInvalidAmountFormat
 	}
 
-	if amount.LT(math.LegacyZeroDec()) {
+	if repayAmount.LT(math.LegacyZeroDec()) {
 		return nil, types.ErrNegativeAmount
 	}
 
-	if amount.Equal(math.LegacyZeroDec()) {
+	if repayAmount.Equal(math.LegacyZeroDec()) {
 		return nil, types.ErrZeroAmount
 	}
 
-	if err = k.repay(ctx, ctx.EventManager(), msg.Denom, msg.Creator, amount.Ceil()); err != nil {
+	loanValue := k.GetLoanValue(ctx, msg.Denom, msg.Creator)
+	repayAmount = math.LegacyMinDec(loanValue, repayAmount)
+
+	if err = k.repay(ctx, ctx.EventManager(), msg.Denom, msg.Creator, repayAmount); err != nil {
 		return nil, err
 	}
 
 	return &types.Void{}, nil
 }
 
-func (k Keeper) repay(ctx context.Context, eventManager sdk.EventManagerI, denom, address string, amount math.LegacyDec) error {
+func (k Keeper) repay(ctx context.Context, eventManager sdk.EventManagerI, denom, address string, repayAmount math.LegacyDec) error {
 	acc, err := sdk.AccAddressFromBech32(address)
 	if err != nil {
 		return types.ErrInvalidAddress
 	}
 
-	loan, _ := k.GetLoan(ctx, denom, address)
-	amountDec := math.LegacyMinDec(amount, loan.Amount)
+	k.updateLoan(ctx, denom, address, repayAmount.Neg())
 
-	amountInt := amountDec.Ceil().TruncateInt()
-	if err = k.checkSpendableCoins(ctx, acc, denom, amountInt); err != nil {
-		return err
-	}
-
-	loan.Amount = loan.Amount.Sub(amountDec)
-	k.SetLoan(ctx, denom, loan)
-
-	coins := sdk.NewCoins(sdk.NewCoin(denom, amountInt))
+	coins := sdk.NewCoins(sdk.NewCoin(denom, repayAmount.TruncateInt()))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolVault, coins); err != nil {
 		return err
 	}
@@ -162,7 +150,7 @@ func (k Keeper) repay(ctx context.Context, eventManager sdk.EventManagerI, denom
 		sdk.NewEvent("loan_repaid",
 			sdk.Attribute{Key: "address", Value: address},
 			sdk.Attribute{Key: "denom", Value: denom},
-			sdk.Attribute{Key: "amount", Value: amountDec.String()},
+			sdk.Attribute{Key: "amount", Value: repayAmount.String()},
 		),
 	)
 

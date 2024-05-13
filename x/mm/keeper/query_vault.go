@@ -20,7 +20,7 @@ func (k Keeper) GetVaultValues(ctx context.Context, req *types.GetVaultValuesQue
 		vault := types.Vault{
 			Denom:   cAsset.BaseDenom,
 			Balance: k.getBalance(ctx, cAsset.BaseDenom).String(),
-			LoanSum: k.GetLoansSum(ctx, cAsset.BaseDenom).String(),
+			LoanSum: k.GetLoanSum(ctx, cAsset.BaseDenom).LoanSum.String(),
 			Supply:  k.BankKeeper.GetSupply(ctx, cAsset.Name).Amount.String(),
 		}
 

@@ -11,30 +11,37 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) GetLoans(ctx context.Context, req *types.GetLoansQuery) (*types.GetLoansResponse, error) {
+func (k Keeper) GetLoansByDenom(ctx context.Context, req *types.GetLoansByDenomQuery) (*types.GetLoansResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	loans := []*types.UserLoan{}
+	cAsset, err := k.DenomKeeper.GetCAssetByBaseName(ctx, req.Denom)
+	if err != nil {
+		return nil, err
+	}
 
-	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
-		utilityRate := k.getUtilityRate(ctx, cAsset)
-		interestRate := k.calculateInterestRate(ctx, utilityRate)
+	loanSum := k.GetLoanSum(ctx, req.Denom)
+	utilityRate := k.getUtilityRate(ctx, cAsset)
+	interestRate := k.calculateInterestRate(ctx, utilityRate)
 
-		for _, loan := range k.GetAllLoansByDenom(ctx, cAsset.BaseDenom) {
-			amountBorrowedUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loan.Amount.RoundInt())
-			if err != nil {
-				return nil, err
-			}
+	var loans []*types.UserLoan
+	var amountBorrowedUSD math.LegacyDec
 
-			loans = append(loans, &types.UserLoan{
-				Denom:             cAsset.BaseDenom,
-				AmountBorrowed:    loan.Amount.String(),
-				AmountBorrowedUsd: amountBorrowedUSD.String(),
-				InterestRate:      interestRate.String(),
-			})
+	for _, loan := range k.GetAllLoansByDenom(ctx, cAsset.BaseDenom) {
+		loanValue := k.getLoanValue(loanSum, loan)
+
+		amountBorrowedUSD, err = k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loanValue.RoundInt())
+		if err != nil {
+			return nil, err
 		}
+
+		loans = append(loans, &types.UserLoan{
+			Denom:             cAsset.BaseDenom,
+			AmountBorrowed:    loanValue.String(),
+			AmountBorrowedUsd: amountBorrowedUSD.String(),
+			InterestRate:      interestRate.String(),
+		})
 	}
 
 	return &types.GetLoansResponse{Loans: loans}, nil
@@ -62,7 +69,7 @@ func (k Keeper) GetLoansStats(ctx context.Context, req *types.GetLoanStatsQuery)
 			return nil, err
 		}
 
-		loanSum := k.GetLoansSum(ctx, cAsset.BaseDenom)
+		loanSum := k.GetLoanSum(ctx, cAsset.BaseDenom).LoanSum
 		loanSumUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loanSum.RoundInt())
 		if err != nil {
 			return nil, err
@@ -103,10 +110,9 @@ func (k Keeper) GetUserLoans(ctx context.Context, req *types.GetUserLoansQuery) 
 		utilityRate := k.getUtilityRate(ctx, cAsset)
 		interestRate := k.calculateInterestRate(ctx, utilityRate)
 
-		loan, found := k.GetLoan(ctx, cAsset.BaseDenom, req.Address)
-		if !found {
-			loan.Amount = math.LegacyZeroDec()
-		}
+		loanSum := k.GetLoanSum(ctx, cAsset.BaseDenom)
+		loan, _ := k.GetLoan(ctx, cAsset.BaseDenom, req.Address)
+		loanValue := k.getLoanValue(loanSum, loan)
 
 		amountAvailable := vault.AmountOf(cAsset.BaseDenom)
 		amountAvailableUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, amountAvailable)
@@ -114,14 +120,14 @@ func (k Keeper) GetUserLoans(ctx context.Context, req *types.GetUserLoansQuery) 
 			return nil, err
 		}
 
-		amountBorrowedUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loan.Amount.RoundInt())
+		amountBorrowedUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loanValue.RoundInt())
 		if err != nil {
 			return nil, err
 		}
 
 		userLoans = append(userLoans, &types.UserLoanStat{
 			Denom:              cAsset.BaseDenom,
-			AmountBorrowed:     loan.Amount.String(),
+			AmountBorrowed:     loanValue.String(),
 			AmountBorrowedUsd:  amountBorrowedUSD.String(),
 			AmountAvailable:    amountAvailable.String(),
 			AmountAvailableUsd: amountAvailableUSD.String(),
@@ -142,17 +148,13 @@ func (k Keeper) GetUserDenomLoan(ctx context.Context, req *types.GetUserDenomLoa
 		return nil, err
 	}
 
-	loan, found := k.GetLoan(ctx, cAsset.BaseDenom, req.Address)
-	if !found {
-		loan.Amount = math.LegacyZeroDec()
-	}
-
-	amountUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loan.Amount.RoundInt())
+	loanValue := k.GetLoanValue(ctx, cAsset.BaseDenom, req.Address)
+	amountUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loanValue.RoundInt())
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.GetUserDenomLoanResponse{Amount: loan.Amount.String(), AmountUsd: amountUSD.String()}, nil
+	return &types.GetUserDenomLoanResponse{Amount: loanValue.String(), AmountUsd: amountUSD.String()}, nil
 }
 
 func (k Keeper) GetNumLoans(ctx context.Context, req *types.GetNumLoansQuery) (*types.GetNumLoansResponse, error) {
@@ -171,14 +173,14 @@ func (k Keeper) GetValueLoans(ctx context.Context, req *types.GetValueLoansQuery
 	valueUSD := math.LegacyZeroDec()
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
-		for _, loan := range k.GetAllLoansByDenom(ctx, cAsset.BaseDenom) {
-			value, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loan.Amount.RoundInt())
-			if err != nil {
-				return nil, errors.Wrap(err, "could not get value in usd")
-			}
+		loanSum := k.GetLoanSum(ctx, cAsset.BaseDenom)
 
-			valueUSD = valueUSD.Add(value)
+		value, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loanSum.LoanSum.RoundInt())
+		if err != nil {
+			return nil, errors.Wrap(err, "could not get value in usd")
 		}
+
+		valueUSD = valueUSD.Add(value)
 	}
 
 	return &types.GetValueLoansResponse{Value: valueUSD.String()}, nil

@@ -61,18 +61,15 @@ func (k Keeper) calculateCollateralValueForDenom(ctx context.Context, collateral
 func (k Keeper) calculateLoanBaseValue(ctx context.Context, address string) (math.LegacyDec, error) {
 	loanSum := math.LegacyZeroDec()
 
-	for _, CAsset := range k.DenomKeeper.GetCAssets(ctx) {
-		loan, found := k.GetLoan(ctx, CAsset.BaseDenom, address)
-		if !found {
-			continue
-		}
+	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
+		loanValue := k.GetLoanValue(ctx, cAsset.BaseDenom, address)
 
-		price, err := k.DexKeeper.CalculatePrice(ctx, CAsset.BaseDenom, utils.BaseCurrency)
+		price, err := k.DexKeeper.CalculatePrice(ctx, cAsset.BaseDenom, utils.BaseCurrency)
 		if err != nil {
 			return math.LegacyDec{}, err
 		}
 
-		loanSum = loanSum.Add(loan.Amount.Quo(price))
+		loanSum = loanSum.Add(loanValue.Quo(price))
 	}
 
 	return loanSum, nil

@@ -40,5 +40,7 @@ func TestInterest1(t *testing.T) {
 
 	loans := k.GetAllLoansByDenom(ctx, "ukusd")
 	require.Equal(t, 1, len(loans))
-	require.True(t, loans[0].Amount.GT(math.LegacyNewDec(1000)))
+
+	loanValue := k.GetLoanValue(ctx, "ukusd", keepertest.Bob)
+	require.True(t, loanValue.GT(math.LegacyNewDec(1000)))
 }

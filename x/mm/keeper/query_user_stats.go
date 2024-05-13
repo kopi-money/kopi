@@ -109,12 +109,8 @@ func (k Keeper) getUserLoansSumBase(ctx context.Context, address string) (math.L
 	sum := math.LegacyZeroDec()
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
-		loan, found := k.GetLoan(ctx, cAsset.BaseDenom, address)
-		if !found {
-			continue
-		}
-
-		valueBase, err := k.DexKeeper.GetValueInBase(ctx, cAsset.BaseDenom, loan.Amount.RoundInt())
+		loanValue := k.GetLoanValue(ctx, cAsset.BaseDenom, address)
+		valueBase, err := k.DexKeeper.GetValueInBase(ctx, cAsset.BaseDenom, loanValue.RoundInt())
 		if err != nil {
 			return sum, err
 		}
@@ -130,12 +126,8 @@ func (k Keeper) getUserLoansSumUSD(ctx context.Context, address string) (math.Le
 	interestRateSum := math.LegacyZeroDec()
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
-		loan, found := k.GetLoan(ctx, cAsset.BaseDenom, address)
-		if !found {
-			continue
-		}
-
-		valueUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loan.Amount.RoundInt())
+		loanValue := k.GetLoanValue(ctx, cAsset.BaseDenom, address)
+		valueUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loanValue.RoundInt())
 		if err != nil {
 			return sum, interestRateSum, err
 		}

@@ -100,7 +100,9 @@ func TestLoans4(t *testing.T) {
 	loans := k.GetAllLoansByDenom(ctx, "ukusd")
 	require.Equal(t, 1, len(loans))
 	require.Equal(t, keepertest.Bob, loans[0].Address)
-	require.Equal(t, math.LegacyNewDec(1000), loans[0].Amount)
+
+	loanValue := k.GetLoanValue(ctx, "ukusd", keepertest.Bob)
+	require.Equal(t, math.LegacyNewDec(1000), loanValue)
 }
 
 func TestLoans5(t *testing.T) {
@@ -148,12 +150,9 @@ func TestLoans5(t *testing.T) {
 	loans := k.GetAllLoansByDenom(ctx, "ukusd")
 	require.Equal(t, 1, len(loans))
 	require.Equal(t, keepertest.Bob, loans[0].Address)
-	require.Equal(t, math.LegacyNewDec(999), loans[0].Amount)
 
-	k.ApplyInterest(ctx)
-
-	loans = k.GetAllLoansByDenom(ctx, "ukusd")
-	require.Equal(t, 0, len(loans))
+	loanValue := k.GetLoanValue(ctx, "ukusd", keepertest.Bob)
+	require.Equal(t, math.LegacyNewDec(999), loanValue)
 }
 
 func TestLoans6(t *testing.T) {
@@ -399,4 +398,85 @@ func TestLoans13(t *testing.T) {
 	borrowableInt2 := borrowable2.Int64()
 
 	require.Less(t, borrowableInt2, borrowableInt1)
+}
+
+func TestLoans14(t *testing.T) {
+	k, _, msg, ctx := keepertest.SetupMMMsgServer(t)
+
+	_, err := msg.AddCollateral(ctx, &types.MsgAddCollateral{
+		Creator: keepertest.Alice,
+		Denom:   "ukopi",
+		Amount:  "10000000",
+	})
+	require.NoError(t, err)
+
+	_, err = msg.AddCollateral(ctx, &types.MsgAddCollateral{
+		Creator: keepertest.Bob,
+		Denom:   "ukopi",
+		Amount:  "10000000",
+	})
+	require.NoError(t, err)
+
+	_, err = msg.AddDeposit(ctx, &types.MsgAddDeposit{
+		Creator: keepertest.Alice,
+		Denom:   "ukusd",
+		Amount:  "100000",
+	})
+	require.NoError(t, err)
+
+	_, err = msg.Borrow(ctx, &types.MsgBorrow{
+		Creator: keepertest.Alice,
+		Denom:   "ukusd",
+		Amount:  "9000",
+	})
+	require.NoError(t, err)
+
+	loan, found := k.GetLoan(ctx, "ukusd", keepertest.Alice)
+	require.True(t, found)
+	require.Equal(t, math.LegacyNewDec(9000), loan.Weight)
+
+	loanSum := k.GetLoanSum(ctx, "ukusd")
+	require.Equal(t, math.LegacyNewDec(9000), loanSum.LoanSum)
+	require.Equal(t, math.LegacyNewDec(9000), loanSum.WeightSum)
+
+	_, err = msg.Borrow(ctx, &types.MsgBorrow{
+		Creator: keepertest.Bob,
+		Denom:   "ukusd",
+		Amount:  "1000",
+	})
+	require.NoError(t, err)
+
+	loan, found = k.GetLoan(ctx, "ukusd", keepertest.Bob)
+	require.True(t, found)
+	require.Equal(t, math.LegacyNewDec(1000), loan.Weight)
+
+	loanSum = k.GetLoanSum(ctx, "ukusd")
+	require.Equal(t, math.LegacyNewDec(10000), loanSum.LoanSum)
+	require.Equal(t, math.LegacyNewDec(10000), loanSum.WeightSum)
+
+	_, err = msg.RepayLoan(ctx, &types.MsgRepayLoan{
+		Creator: keepertest.Bob,
+		Denom:   "ukusd",
+	})
+	require.NoError(t, err)
+
+	_, found = k.GetLoan(ctx, "ukusd", keepertest.Bob)
+	require.True(t, !found)
+
+	loanSum = k.GetLoanSum(ctx, "ukusd")
+	require.Equal(t, math.LegacyNewDec(9000), loanSum.LoanSum)
+	require.Equal(t, math.LegacyNewDec(9000), loanSum.WeightSum)
+
+	_, err = msg.RepayLoan(ctx, &types.MsgRepayLoan{
+		Creator: keepertest.Alice,
+		Denom:   "ukusd",
+	})
+	require.NoError(t, err)
+
+	_, found = k.GetLoan(ctx, "ukusd", keepertest.Alice)
+	require.True(t, !found)
+
+	loanSum = k.GetLoanSum(ctx, "ukusd")
+	require.Equal(t, math.LegacyNewDec(0), loanSum.LoanSum)
+	require.Equal(t, math.LegacyNewDec(0), loanSum.WeightSum)
 }
