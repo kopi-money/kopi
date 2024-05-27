@@ -109,8 +109,12 @@ service Query {
     option (google.api.http).get = "/kopi/mm/redemptions/stats/by_denom";
   }
 
+  rpc GetMarketStats (GetMarketStatsQuery) returns (GetMarketStatsResponse) {
+    option (google.api.http).get = "/kopi/mm/stats/market";
+  }
+
   rpc GetUserStats (GetUserStatsQuery) returns (GetUserStatsResponse) {
-    option (google.api.http).get = "/kopi/mm/stats/{address}";
+    option (google.api.http).get = "/kopi/mm/stats/address/{address}";
   }
 
   rpc GetTotalValueLocked (GetTotalValueLockedQuery) returns (GetTotalValueLockedResponse) {
@@ -328,6 +332,19 @@ message GetCollateralUserStatsQuery {
   string address = 1;
 }
 
+message GetMarketStatsQuery {
+}
+
+message GetMarketStatsResponse {
+  string total_collateral = 1;
+  string total_deposited = 2;
+  string total_borrowed = 3;
+  string total_redeeming = 4;
+  string total_borrowable = 5;
+  string utility_rate = 6;
+  string interest_rate = 7;
+}
+
 message GetUserStatsQuery {
   string address = 1;
 }
@@ -365,14 +382,17 @@ message DepositDenomStats {
   string available_usd = 4;
   string borrowed = 5;
   string borrowed_usd = 6;
-  string redeeming = 7;
-  string redeeming_usd = 8;
-  string supply_c_asset = 9;
-  string supply_c_asset_usd = 10;
-  string interest_rate = 11;
-  string utility_rate = 12;
-  string price_base_usd = 13;
-  string price_c_asset_usd = 14;
+  string borrow_limit_usage = 7;
+  string borrow_limit = 8;
+  string borrow_limit_usd = 9;
+  string redeeming = 10;
+  string redeeming_usd = 11;
+  string supply_c_asset = 12;
+  string supply_c_asset_usd = 13;
+  string interest_rate = 14;
+  string utility_rate = 15;
+  string price_base_usd = 16;
+  string price_c_asset_usd = 17;
 }
 
 message GetDepositStatsResponse {

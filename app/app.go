@@ -441,29 +441,3 @@ func (app *App) GetIBCKeeper() *ibckeeper.Keeper {
 func (app *App) GetCapabilityScopedKeeper(moduleName string) capabilitykeeper.ScopedKeeper {
 	return app.CapabilityKeeper.ScopeToModule(moduleName)
 }
-
-// GetMaccPerms returns a copy of the module account permissions
-//
-// NOTE: This is solely to be used for testing purposes.
-func GetMaccPerms() map[string][]string {
-	dup := make(map[string][]string)
-	for _, perms := range moduleAccPerms {
-		dup[perms.Account] = perms.Permissions
-	}
-	return dup
-}
-
-// BlockedAddresses returns all the app's blocked account addresses.
-func BlockedAddresses() map[string]bool {
-	result := make(map[string]bool)
-	if len(blockAccAddrs) > 0 {
-		for _, addr := range blockAccAddrs {
-			result[addr] = true
-		}
-	} else {
-		for addr := range GetMaccPerms() {
-			result[addr] = true
-		}
-	}
-	return result
-}

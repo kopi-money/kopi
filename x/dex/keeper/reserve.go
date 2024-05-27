@@ -43,7 +43,7 @@ func (k Keeper) CheckReserve(ctx context.Context, eventManager sdk.EventManagerI
 		}
 
 		// Preventing issue where protocol wants to add liquidity before denom has been whitelisted
-		if k.DenomKeeper.IsValidDenom(ctx, coin.Denom) {
+		if !k.DenomKeeper.IsValidDenom(ctx, coin.Denom) {
 			continue
 		}
 

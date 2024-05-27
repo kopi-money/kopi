@@ -11,6 +11,80 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+func (k Keeper) GetMarketStats(ctx context.Context, req *types.GetMarketStatsQuery) (*types.GetMarketStatsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault)
+	vault := k.BankKeeper.SpendableCoins(ctx, acc.GetAddress())
+
+	totalBorrowed := math.LegacyZeroDec()
+	totalBorrowable := math.LegacyZeroDec()
+	totalCollateral := math.LegacyZeroDec()
+	totalRedeeming := math.LegacyZeroDec()
+	totalInterest := math.LegacyZeroDec()
+
+	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
+		available := vault.AmountOf(cAsset.BaseDenom)
+		availableUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, available)
+		if err != nil {
+			return nil, err
+		}
+
+		borrowed := k.GetLoanSum(ctx, cAsset.BaseDenom).LoanSum
+		borrowedUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, borrowed.RoundInt())
+		if err != nil {
+			return nil, err
+		}
+
+		redeeming := k.GetRedemptionSum(ctx, cAsset.BaseDenom)
+		redeemingUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, redeeming)
+		if err != nil {
+			return nil, err
+		}
+
+		utilityRate := k.getUtilityRate(ctx, cAsset)
+		interestRate := k.calculateInterestRate(ctx, utilityRate)
+
+		totalBorrowed = totalBorrowed.Add(borrowedUSD)
+		totalBorrowable = totalBorrowable.Add(availableUSD)
+		totalRedeeming = totalRedeeming.Add(redeemingUSD)
+		totalInterest = totalInterest.Add(borrowedUSD.Mul(interestRate))
+	}
+
+	for _, denom := range k.DenomKeeper.GetCollateralDenoms(ctx) {
+		provided := k.getCollateralSum(ctx, denom.Denom)
+		providedUSD, err := k.DexKeeper.GetValueInUSD(ctx, denom.Denom, provided)
+		if err != nil {
+			return nil, err
+		}
+
+		totalCollateral = totalCollateral.Add(providedUSD)
+	}
+
+	totalDeposited := totalBorrowed.Add(totalBorrowable)
+	utilityRate := math.LegacyZeroDec()
+	if totalDeposited.GT(math.LegacyZeroDec()) {
+		utilityRate = totalBorrowed.Quo(totalDeposited)
+	}
+
+	weightedInterestRate := math.LegacyNewDecWithPrec(5, 2)
+	if totalBorrowed.GT(math.LegacyZeroDec()) {
+		weightedInterestRate = totalInterest.Quo(totalBorrowed)
+	}
+
+	return &types.GetMarketStatsResponse{
+		TotalCollateral: totalCollateral.String(),
+		TotalBorrowable: totalBorrowable.String(),
+		TotalBorrowed:   totalBorrowed.String(),
+		TotalDeposited:  totalDeposited.String(),
+		TotalRedeeming:  totalRedeeming.String(),
+		InterestRate:    weightedInterestRate.String(),
+		UtilityRate:     utilityRate.String(),
+	}, nil
+}
+
 func (k Keeper) GetUserStats(ctx context.Context, req *types.GetUserStatsQuery) (*types.GetUserStatsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")

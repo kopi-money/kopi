@@ -42,6 +42,10 @@ func (k msgServer) AddOrder(goCtx context.Context, msg *types.MsgAddOrder) (*typ
 		return nil, err
 	}
 
+	if msg.Interval < 1 {
+		msg.Interval = 1
+	}
+
 	if maxPrice == nil || maxPrice.IsNil() {
 		return nil, types.ErrMaxPriceNotSet
 	}

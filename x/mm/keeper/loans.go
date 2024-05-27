@@ -33,14 +33,14 @@ func (k Keeper) GetGenesisLoans(ctx context.Context) (denomLoans []types.Loans) 
 }
 
 // SetLoan set a specific deposits in the store from its index
-func (k Keeper) SetLoan(ctx context.Context, denom string, loan types.Loan) int {
+func (k Keeper) SetLoan(ctx context.Context, denom string, loan types.Loan) (int64, int) {
 	storeAdapter := runtime.KVStoreAdapter(k.storeService.OpenKVStore(ctx))
 	store := prefix.NewStore(storeAdapter, types.Key(types.KeyPrefixLoans))
 
 	// If loan is empty, delete it
 	if loan.Weight.LTE(math.LegacyZeroDec()) {
 		store.Delete(types.KeyDenomAddress(denom, loan.Address))
-		return -1
+		return loan.Index, -1
 	}
 
 	change := 0
@@ -52,7 +52,7 @@ func (k Keeper) SetLoan(ctx context.Context, denom string, loan types.Loan) int 
 
 	b := k.cdc.MustMarshal(&loan)
 	store.Set(types.KeyDenomAddress(denom, loan.Address), b)
-	return change
+	return loan.Index, change
 }
 
 func (k Keeper) GetNextLoanIndex(ctx context.Context) types.NextLoanIndex {

@@ -124,7 +124,7 @@ func (k Keeper) liquidateLoan(ctx context.Context, eventManager sdk.EventManager
 		amountReceived, err = k.processLiquidation(ctx, eventManager, liquidityMap, cAsset, excessAmount, collateralDenom, addr.String())
 		if err != nil {
 			if errors.Is(err, dextypes.ErrTradeAmountTooSmall) || errors.Is(err, dextypes.ErrZeroPrice) {
-				k.logger.Error(errors.Wrap(err, "could not execute trade").Error())
+				k.logger.Debug(errors.Wrap(err, "could not execute trade").Error())
 			}
 
 			continue

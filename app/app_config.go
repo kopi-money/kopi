@@ -231,6 +231,28 @@ var (
 		stakingtypes.NotBondedPoolName,
 		// We allow the following module accounts to receive funds:
 		// govtypes.ModuleName
+
+		// DEX
+		dexmoduletypes.ModuleName,
+		dexmoduletypes.PoolTrade,
+		dexmoduletypes.PoolOrders,
+		dexmoduletypes.PoolLiquidity,
+
+		// We allow fees and reserve to receive funds in case for promotions
+		// dexmoduletypes.PoolFees,
+		// dexmoduletypes.PoolReserve,
+
+		// MM
+		mmmoduletypes.ModuleName,
+		mmmoduletypes.PoolCollateral,
+		mmmoduletypes.PoolVault,
+		mmmoduletypes.PoolRedemption,
+
+		// Swap
+		swapmoduletypes.ModuleName,
+
+		// Tokenfactory
+		tokenfactorytypes.ModuleName,
 	}
 
 	// appConfig application configuration (used by depinject)

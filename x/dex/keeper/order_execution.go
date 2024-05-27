@@ -39,7 +39,7 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 			k.RemoveOrder(ctx, order)
 		}
 
-		if uint64(blockHeight) < order.NextExecution {
+		if blockHeight%int64(order.ExecutionInterval) != 0 {
 			continue
 		}
 
@@ -118,7 +118,6 @@ func (k Keeper) executeOrder(ctx context.Context, eventManager sdk.EventManagerI
 
 	order.AmountLeft = order.AmountLeft.Sub(usedAmount)
 	order.AmountReceived = order.AmountReceived.Add(receivedAmount)
-	order.NextExecution = uint64(blockHeight) + order.ExecutionInterval
 
 	if order.AmountLeft.LT(math.ZeroInt()) {
 		return false, fmt.Errorf("order has negative amount left (%v, %v)", usedAmount.String(), order.AmountLeft.String())

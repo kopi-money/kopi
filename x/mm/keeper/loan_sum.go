@@ -33,7 +33,7 @@ func (k Keeper) SetLoanSum(ctx context.Context, loanSum types.LoanSum) {
 	store.Set(types.KeyDenom(loanSum.Denom), b)
 }
 
-func (k Keeper) updateLoan(ctx context.Context, denom, address string, valueChange math.LegacyDec) {
+func (k Keeper) updateLoan(ctx context.Context, denom, address string, valueChange math.LegacyDec) (int64, bool) {
 	loanSum := k.GetLoanSum(ctx, denom)
 	loan, _ := k.GetLoan(ctx, denom, address)
 
@@ -51,9 +51,11 @@ func (k Keeper) updateLoan(ctx context.Context, denom, address string, valueChan
 	loanSum.WeightSum = loanSum.WeightSum.Add(newWeight)
 	loanSum.LoanSum = loanSum.LoanSum.Add(newLoanValue)
 
-	numLoanChange := k.SetLoan(ctx, denom, loan)
+	loanIndex, numLoanChange := k.SetLoan(ctx, denom, loan)
 	loanSum.NumLoans += uint64(numLoanChange)
 	k.SetLoanSum(ctx, loanSum)
+
+	return loanIndex, numLoanChange == -1
 }
 
 func calculateLoanValue(loanSum types.LoanSum, weight math.LegacyDec) math.LegacyDec {

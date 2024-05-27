@@ -43,6 +43,18 @@ func (k Keeper) GetDepositStats(ctx context.Context, req *types.GetDepositStatsQ
 			return nil, err
 		}
 
+		deposited := k.calculateCAssetValue(ctx, cAsset)
+		borrowLimit := deposited.Mul(cAsset.BorrowLimit)
+		borrowLimitUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, borrowLimit.RoundInt())
+		if err != nil {
+			return nil, err
+		}
+
+		borrowLimitUsage := math.LegacyZeroDec()
+		if borrowed.GT(math.LegacyZeroDec()) {
+			borrowLimitUsage = deposited.Quo(borrowLimit)
+		}
+
 		redeeming := k.GetRedemptionSum(ctx, cAsset.BaseDenom)
 		redeemingUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, redeeming)
 		if err != nil {
@@ -75,6 +87,9 @@ func (k Keeper) GetDepositStats(ctx context.Context, req *types.GetDepositStatsQ
 		depositStats.AvailableUsd = availableUSD.String()
 		depositStats.Borrowed = borrowed.String()
 		depositStats.BorrowedUsd = borrowedUSD.String()
+		depositStats.BorrowLimit = borrowLimit.String()
+		depositStats.BorrowLimitUsd = borrowLimitUSD.String()
+		depositStats.BorrowLimitUsage = borrowLimitUsage.String()
 		depositStats.UtilityRate = utilityRate.String()
 		depositStats.InterestRate = interestRate.String()
 		depositStats.PriceBaseUsd = priceBaseUSD.String()

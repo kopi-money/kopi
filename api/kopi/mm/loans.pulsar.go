@@ -951,54 +951,54 @@ func (x *fastReflection_Loan) ProtoMethods() *protoiface.Methods {
 	}
 }
 
-var _ protoreflect.List = (*_Loans_5_list)(nil)
+var _ protoreflect.List = (*_Loans_4_list)(nil)
 
-type _Loans_5_list struct {
+type _Loans_4_list struct {
 	list *[]*Loan
 }
 
-func (x *_Loans_5_list) Len() int {
+func (x *_Loans_4_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_Loans_5_list) Get(i int) protoreflect.Value {
+func (x *_Loans_4_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
 }
 
-func (x *_Loans_5_list) Set(i int, value protoreflect.Value) {
+func (x *_Loans_4_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*Loan)
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_Loans_5_list) Append(value protoreflect.Value) {
+func (x *_Loans_4_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*Loan)
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_Loans_5_list) AppendMutable() protoreflect.Value {
+func (x *_Loans_4_list) AppendMutable() protoreflect.Value {
 	v := new(Loan)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_Loans_5_list) Truncate(n int) {
+func (x *_Loans_4_list) Truncate(n int) {
 	for i := n; i < len(*x.list); i++ {
 		(*x.list)[i] = nil
 	}
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_Loans_5_list) NewElement() protoreflect.Value {
+func (x *_Loans_4_list) NewElement() protoreflect.Value {
 	v := new(Loan)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_Loans_5_list) IsValid() bool {
+func (x *_Loans_4_list) IsValid() bool {
 	return x.list != nil
 }
 
@@ -1103,7 +1103,7 @@ func (x *fastReflection_Loans) Range(f func(protoreflect.FieldDescriptor, protor
 		}
 	}
 	if len(x.Loans) != 0 {
-		value := protoreflect.ValueOfList(&_Loans_5_list{list: &x.Loans})
+		value := protoreflect.ValueOfList(&_Loans_4_list{list: &x.Loans})
 		if !f(fd_Loans_loans, value) {
 			return
 		}
@@ -1182,9 +1182,9 @@ func (x *fastReflection_Loans) Get(descriptor protoreflect.FieldDescriptor) prot
 		return protoreflect.ValueOfBytes(value)
 	case "kopi.mm.Loans.loans":
 		if len(x.Loans) == 0 {
-			return protoreflect.ValueOfList(&_Loans_5_list{})
+			return protoreflect.ValueOfList(&_Loans_4_list{})
 		}
-		listValue := &_Loans_5_list{list: &x.Loans}
+		listValue := &_Loans_4_list{list: &x.Loans}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
@@ -1214,7 +1214,7 @@ func (x *fastReflection_Loans) Set(fd protoreflect.FieldDescriptor, value protor
 		x.WeightSum = value.Bytes()
 	case "kopi.mm.Loans.loans":
 		lv := value.List()
-		clv := lv.(*_Loans_5_list)
+		clv := lv.(*_Loans_4_list)
 		x.Loans = *clv.list
 	default:
 		if fd.IsExtension() {
@@ -1240,7 +1240,7 @@ func (x *fastReflection_Loans) Mutable(fd protoreflect.FieldDescriptor) protoref
 		if x.Loans == nil {
 			x.Loans = []*Loan{}
 		}
-		value := &_Loans_5_list{list: &x.Loans}
+		value := &_Loans_4_list{list: &x.Loans}
 		return protoreflect.ValueOfList(value)
 	case "kopi.mm.Loans.denom":
 		panic(fmt.Errorf("field denom of message kopi.mm.Loans is not mutable"))
@@ -1269,7 +1269,7 @@ func (x *fastReflection_Loans) NewField(fd protoreflect.FieldDescriptor) protore
 		return protoreflect.ValueOfBytes(nil)
 	case "kopi.mm.Loans.loans":
 		list := []*Loan{}
-		return protoreflect.ValueOfList(&_Loans_5_list{list: &list})
+		return protoreflect.ValueOfList(&_Loans_4_list{list: &list})
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.Loans"))
@@ -1399,7 +1399,7 @@ func (x *fastReflection_Loans) ProtoMethods() *protoiface.Methods {
 				copy(dAtA[i:], encoded)
 				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
 				i--
-				dAtA[i] = 0x2a
+				dAtA[i] = 0x22
 			}
 		}
 		if len(x.WeightSum) > 0 {
@@ -1407,14 +1407,14 @@ func (x *fastReflection_Loans) ProtoMethods() *protoiface.Methods {
 			copy(dAtA[i:], x.WeightSum)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.WeightSum)))
 			i--
-			dAtA[i] = 0x22
+			dAtA[i] = 0x1a
 		}
 		if len(x.LoanSum) > 0 {
 			i -= len(x.LoanSum)
 			copy(dAtA[i:], x.LoanSum)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LoanSum)))
 			i--
-			dAtA[i] = 0x1a
+			dAtA[i] = 0x12
 		}
 		if len(x.Denom) > 0 {
 			i -= len(x.Denom)
@@ -1504,7 +1504,7 @@ func (x *fastReflection_Loans) ProtoMethods() *protoiface.Methods {
 				}
 				x.Denom = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 3:
+			case 2:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LoanSum", wireType)
 				}
@@ -1538,7 +1538,7 @@ func (x *fastReflection_Loans) ProtoMethods() *protoiface.Methods {
 					x.LoanSum = []byte{}
 				}
 				iNdEx = postIndex
-			case 4:
+			case 3:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WeightSum", wireType)
 				}
@@ -1572,7 +1572,7 @@ func (x *fastReflection_Loans) ProtoMethods() *protoiface.Methods {
 					x.WeightSum = []byte{}
 				}
 				iNdEx = postIndex
-			case 5:
+			case 4:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Loans", wireType)
 				}
@@ -2347,9 +2347,9 @@ type Loans struct {
 	unknownFields protoimpl.UnknownFields
 
 	Denom     string  `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
-	LoanSum   []byte  `protobuf:"bytes,3,opt,name=loan_sum,json=loanSum,proto3" json:"loan_sum,omitempty"`
-	WeightSum []byte  `protobuf:"bytes,4,opt,name=weight_sum,json=weightSum,proto3" json:"weight_sum,omitempty"`
-	Loans     []*Loan `protobuf:"bytes,5,rep,name=loans,proto3" json:"loans,omitempty"`
+	LoanSum   []byte  `protobuf:"bytes,2,opt,name=loan_sum,json=loanSum,proto3" json:"loan_sum,omitempty"`
+	WeightSum []byte  `protobuf:"bytes,3,opt,name=weight_sum,json=weightSum,proto3" json:"weight_sum,omitempty"`
+	Loans     []*Loan `protobuf:"bytes,4,rep,name=loans,proto3" json:"loans,omitempty"`
 }
 
 func (x *Loans) Reset() {
@@ -2478,15 +2478,15 @@ var file_kopi_mm_loans_proto_rawDesc = []byte{
 	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x06, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74,
 	0x22, 0xc6, 0x01, 0x0a, 0x05, 0x4c, 0x6f, 0x61, 0x6e, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65,
 	0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
-	0x12, 0x3e, 0x0a, 0x08, 0x6c, 0x6f, 0x61, 0x6e, 0x5f, 0x73, 0x75, 0x6d, 0x18, 0x03, 0x20, 0x01,
+	0x12, 0x3e, 0x0a, 0x08, 0x6c, 0x6f, 0x61, 0x6e, 0x5f, 0x73, 0x75, 0x6d, 0x18, 0x02, 0x20, 0x01,
 	0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
 	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
 	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x07, 0x6c, 0x6f, 0x61, 0x6e, 0x53, 0x75, 0x6d,
-	0x12, 0x42, 0x0a, 0x0a, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x73, 0x75, 0x6d, 0x18, 0x04,
+	0x12, 0x42, 0x0a, 0x0a, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x73, 0x75, 0x6d, 0x18, 0x03,
 	0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
 	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x09, 0x77, 0x65, 0x69, 0x67, 0x68,
-	0x74, 0x53, 0x75, 0x6d, 0x12, 0x23, 0x0a, 0x05, 0x6c, 0x6f, 0x61, 0x6e, 0x73, 0x18, 0x05, 0x20,
+	0x74, 0x53, 0x75, 0x6d, 0x12, 0x23, 0x0a, 0x05, 0x6c, 0x6f, 0x61, 0x6e, 0x73, 0x18, 0x04, 0x20,
 	0x03, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x4c, 0x6f,
 	0x61, 0x6e, 0x52, 0x05, 0x6c, 0x6f, 0x61, 0x6e, 0x73, 0x22, 0xc0, 0x01, 0x0a, 0x07, 0x4c, 0x6f,
 	0x61, 0x6e, 0x53, 0x75, 0x6d, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01,

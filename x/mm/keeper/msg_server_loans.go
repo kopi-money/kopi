@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"cosmossdk.io/math"
@@ -64,7 +65,7 @@ func (k msgServer) Borrow(goCtx context.Context, msg *types.MsgBorrow) (*types.V
 		return nil, types.ErrBorrowLimitExceeded
 	}
 
-	k.updateLoan(ctx, msg.Denom, msg.Creator, amount)
+	loanIndex, _ := k.updateLoan(ctx, msg.Denom, msg.Creator, amount)
 
 	coins := sdk.NewCoins(sdk.NewCoin(msg.Denom, amount.Ceil().TruncateInt()))
 	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolVault, address, coins); err != nil {
@@ -76,6 +77,7 @@ func (k msgServer) Borrow(goCtx context.Context, msg *types.MsgBorrow) (*types.V
 			sdk.Attribute{Key: "address", Value: msg.Creator},
 			sdk.Attribute{Key: "denom", Value: msg.Denom},
 			sdk.Attribute{Key: "amount", Value: msg.Amount},
+			sdk.Attribute{Key: "index", Value: strconv.Itoa(int(loanIndex))},
 		),
 	)
 
@@ -139,7 +141,7 @@ func (k Keeper) repay(ctx context.Context, eventManager sdk.EventManagerI, denom
 		return types.ErrInvalidAddress
 	}
 
-	k.updateLoan(ctx, denom, address, repayAmount.Neg())
+	loanIndex, removed := k.updateLoan(ctx, denom, address, repayAmount.Neg())
 
 	coins := sdk.NewCoins(sdk.NewCoin(denom, repayAmount.TruncateInt()))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolVault, coins); err != nil {
@@ -150,9 +152,20 @@ func (k Keeper) repay(ctx context.Context, eventManager sdk.EventManagerI, denom
 		sdk.NewEvent("loan_repaid",
 			sdk.Attribute{Key: "address", Value: address},
 			sdk.Attribute{Key: "denom", Value: denom},
+			sdk.Attribute{Key: "index", Value: strconv.Itoa(int(loanIndex))},
 			sdk.Attribute{Key: "amount", Value: repayAmount.String()},
 		),
 	)
+
+	if removed {
+		eventManager.EmitEvent(
+			sdk.NewEvent("loan_removed",
+				sdk.Attribute{Key: "address", Value: address},
+				sdk.Attribute{Key: "denom", Value: denom},
+				sdk.Attribute{Key: "index", Value: strconv.Itoa(int(loanIndex))},
+			),
+		)
+	}
 
 	return nil
 }

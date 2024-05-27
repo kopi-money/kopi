@@ -19,11 +19,22 @@ func (k Keeper) OrdersSum(goCtx context.Context, req *types.QueryOrdersSumReques
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	sum := math.LegacyZeroDec()
+	denomSums := make(map[string]math.Int)
+
 	for _, order := range k.GetAllOrders(ctx) {
-		value, err := k.GetValueInUSD(ctx, order.DenomFrom, order.AmountLeft)
+		sum, has := denomSums[order.DenomFrom]
+		if !has {
+			sum = math.ZeroInt()
+		}
+
+		denomSums[order.DenomFrom] = sum.Add(order.AmountLeft)
+	}
+
+	sum := math.LegacyZeroDec()
+	for denom, denomSum := range denomSums {
+		value, err := k.GetValueInUSD(ctx, denom, denomSum)
 		if err != nil {
-			return nil, errors.Wrap(err, "culd not get order value in usd")
+			return nil, errors.Wrap(err, "could not get order value in usd")
 		}
 
 		sum = sum.Add(value)

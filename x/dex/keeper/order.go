@@ -80,9 +80,6 @@ func (k Keeper) GetAllOrdersNum(ctx context.Context) (num int) {
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.Order
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-
 		num++
 	}
 
