@@ -1,0 +1,19 @@
+syntax = "proto3";
+package kopi.dex;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/dex/types";
+
+message DiscountLevel {
+  bytes trade_amount = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+
+  bytes discount = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+}

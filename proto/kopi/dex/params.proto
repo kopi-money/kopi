@@ -1,0 +1,43 @@
+syntax = "proto3";
+package kopi.dex;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "kopi/dex/discount_level.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/dex/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (amino.name) = "kopi/x/dex/Params";
+  option (gogoproto.equal) = true;
+
+  bytes trade_fee = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+
+  bytes reserve_share = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+
+  bytes virtual_liquidity_decay = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+
+  bytes fee_reimbursement = 4 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+
+  bytes trade_amount_decay = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+
+  repeated DiscountLevel discount_levels = 6;
+
+  uint64 max_order_life = 7;
+}

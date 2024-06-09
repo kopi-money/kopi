@@ -1,0 +1,8 @@
+syntax = "proto3";
+package kopi.dex;
+
+option go_package = "github.com/kopi-money/kopi/x/dex/types";
+
+message OrderNextIndex {
+  uint64 next = 1;
+}

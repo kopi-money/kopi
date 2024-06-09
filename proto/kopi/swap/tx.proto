@@ -1,0 +1,28 @@
+syntax = "proto3";
+package kopi.swap;
+
+import "amino/amino.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "kopi/swap/params.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/swap/types";
+
+// Msg defines the Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  rpc UpdateStakingShare (MsgUpdateStakingShare) returns (Void);
+}
+
+message Void {}
+
+// MsgUpdateParams is the Msg/UpdateParams request type.
+message MsgUpdateStakingShare {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/swap/MsgUpdateStakingShare";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string staking_share = 2;
+}

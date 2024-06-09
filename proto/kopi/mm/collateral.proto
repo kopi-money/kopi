@@ -1,0 +1,26 @@
+syntax = "proto3";
+package kopi.mm;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/mm/types";
+
+message Collateral {
+  string address = 1;
+  bytes amount = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message Collaterals {
+  string denom = 1;
+  repeated Collateral collaterals = 2;
+}
+
+message CollateralSum {
+  bytes sum = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}

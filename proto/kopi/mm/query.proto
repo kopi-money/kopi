@@ -1,0 +1,496 @@
+syntax = "proto3";
+package kopi.mm;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "kopi/mm/params.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/mm/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+
+  rpc FullBalance (QueryFullBalanceRequest) returns (QueryFullBalanceResponse) {
+    option (google.api.http).get = "/kopi/mm/balance/{address}";
+  }
+
+  rpc GetCollateralStats (GetCollateralStatsQuery) returns (GetCollateralStatsResponse) {
+    option (google.api.http).get = "/kopi/mm/collateral";
+  }
+
+  rpc GetCollateralDenomStats (GetCollateralDenomStatsQuery) returns (GetCollateralDenomStatsResponse) {
+    option (google.api.http).get = "/kopi/mm/collateral/by_denom";
+  }
+
+  rpc GetCollateralUserStats (GetCollateralUserStatsQuery) returns (GetCollateralStatsResponse) {
+    option (google.api.http).get = "/kopi/mm/collateral/address/{address}";
+  }
+
+  rpc GetCollateralDenomUserStats (GetCollateralDenomUserStatsQuery) returns (GetCollateralDenomUserStatsResponse) {
+    option (google.api.http).get = "/kopi/mm/collateral/address/{address}/by_denom";
+  }
+
+  rpc GetWithdrawableCollateral (GetWithdrawableCollateralQuery) returns (GetWithdrawableCollateralResponse) {
+    option (google.api.http).get = "/kopi/mm/collateral/address/{address}/withdrawable/by_denom";
+  }
+
+  rpc GetCreditLineUsage (GetCreditLineUsageQuery) returns (GetCreditLineUsageResponse) {
+    option (google.api.http).get = "/kopi/mm/credit_line_usage/{address}";
+  }
+
+  rpc GetDepositUserStats (GetDepositUserStatsQuery) returns (GetDepositUserStatsResponse) {
+    option (google.api.http).get = "/kopi/mm/deposits/address/{address}";
+  }
+
+  rpc GetDepositUserDenomStats (GetDepositUserDenomStatsQuery) returns (DepositUserStats) {
+    option (google.api.http).get = "/kopi/mm/deposits/address/{address}/by_denom";
+  }
+
+  rpc GetDepositStats (GetDepositStatsQuery) returns (GetDepositStatsResponse) {
+    option (google.api.http).get = "/kopi/mm/deposits/stats";
+  }
+
+  rpc GetBorrowInterestRate (GetBorrowInterestRateQuery) returns (GetBorrowInterestRateResponse) {
+    option (google.api.http).get = "/kopi/mm/interest_rate";
+  }
+
+  rpc GetLoansByDenom (GetLoansByDenomQuery) returns (GetLoansResponse) {
+    option (google.api.http).get = "/kopi/mm/loans/by_denom";
+  }
+
+  rpc GetUserLoans (GetUserLoansQuery) returns (GetUserLoansResponse) {
+    option (google.api.http).get = "/kopi/mm/loans/address/{address}";
+  }
+
+  rpc GetUserDenomLoan (GetUserDenomLoanQuery) returns (GetUserDenomLoanResponse) {
+    option (google.api.http).get = "/kopi/mm/loans/address/{address}/by_denom";
+  }
+
+  rpc GetAvailableToBorrow (GetAvailableToBorrowRequest) returns (GetAvailableToBorrowResponse) {
+    option (google.api.http).get = "/kopi/mm/loans/available/{address}/by_denom";
+  }
+
+  rpc GetNumLoans (GetNumLoansQuery) returns (GetNumLoansResponse) {
+    option (google.api.http).get = "/kopi/mm/loans/num";
+  }
+
+  rpc GetNumAddressLoans (GetNumAddressLoansQuery) returns (GetNumAddressLoansResponse) {
+    option (google.api.http).get = "/kopi/mm/loans/num/{address}";
+  }
+
+  rpc GetLoansStats (GetLoanStatsQuery) returns (GetLoanStatsResponse) {
+    option (google.api.http).get = "/kopi/mm/loans/stats";
+  }
+
+  rpc GetValueLoans (GetValueLoansQuery) returns (GetValueLoansResponse) {
+    option (google.api.http).get = "/kopi/mm/loans/value";
+  }
+
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/kopi/mm/params";
+  }
+
+  rpc GetRedemptionRequest (GetRedemptionRequestQuery) returns (GetRedemptionRequestResponse) {
+    option (google.api.http).get = "/kopi/mm/redemptions/address/{address}/by_denom";
+  }
+
+  rpc GetRedemptionsRequest (GetRedemptionsQuery) returns (GetRedemptionsResponse) {
+    option (google.api.http).get = "/kopi/mm/redemptions/by_denom";
+  }
+
+  rpc GetRedemptionStatsRequest (GetRedemptionStatsRequestQuery) returns (GetRedemptionStatsRequestResponse) {
+    option (google.api.http).get = "/kopi/mm/redemptions/stats";
+  }
+
+  rpc GetRedemptionDenomStatsRequest (GetRedemptionDenomStatsRequestQuery) returns (GetRedemptionDenomStatsRequestResponse) {
+    option (google.api.http).get = "/kopi/mm/redemptions/stats/by_denom";
+  }
+
+  rpc GetMarketStats (GetMarketStatsQuery) returns (GetMarketStatsResponse) {
+    option (google.api.http).get = "/kopi/mm/stats/market";
+  }
+
+  rpc GetUserStats (GetUserStatsQuery) returns (GetUserStatsResponse) {
+    option (google.api.http).get = "/kopi/mm/stats/address/{address}";
+  }
+
+  rpc GetTotalValueLocked (GetTotalValueLockedQuery) returns (GetTotalValueLockedResponse) {
+    option (google.api.http).get = "/kopi/mm/tvl";
+  }
+
+  rpc GetVaultValues (GetVaultValuesQuery) returns (GetVaultValuesResponse) {
+    option (google.api.http).get = "/kopi/mm/vaults";
+  }
+}
+
+message GetRedemptionsQuery {
+  string denom = 1;
+}
+
+message RedemptionRequest {
+  string address = 1;
+  string amount = 2;
+  string fee = 3;
+}
+
+message GetRedemptionsResponse {
+  repeated RedemptionRequest requests = 1;
+}
+
+message GetRedemptionStatsRequestQuery {
+}
+
+message GetRedemptionStatsRequestResponse {
+  int64  num_requests = 1;
+  string withdraw_sum_usd = 2;
+
+}
+
+message GetRedemptionDenomStatsRequestQuery {
+  string denom = 1;
+}
+
+message GetRedemptionDenomStatsRequestResponse {
+  string max_fee = 1;
+  string withdraw_sum = 2;
+  int64  num_requests = 3;
+
+}
+
+message GetRedemptionRequestQuery {
+  string address = 1;
+  string denom = 2;
+}
+
+message GetRedemptionRequestResponse {
+  string fee = 1;
+  string c_asset_amount = 2;
+}
+
+message GetDepositUserDenomStatsQuery {
+  string denom = 1;
+  string address = 2;
+}
+
+message GetCollateralDenomStatsQuery {
+  string denom = 1;
+}
+
+message UserCollateral {
+  string address = 1;
+  string amount = 2;
+}
+
+message GetCollateralDenomStatsResponse {
+  repeated UserCollateral user_collateral = 1;
+  string sum = 2;
+  string sum_usd = 3;
+}
+
+message GetLoansByDenomQuery{
+  string denom = 1;
+}
+
+message UserLoan {
+  string denom = 1;
+  string amount_borrowed = 2;
+  string amount_borrowed_usd = 3;
+  string interest_rate = 6;
+}
+
+message GetLoansResponse {
+  repeated UserLoan loans = 1;
+}
+
+message GetLoanStatsQuery {
+}
+
+message DenomLoanStat {
+  string denom = 1;
+  string utility_rate = 2;
+  string interest_rate = 3;
+  string available_to_borrow = 4;
+  string available_to_borrow_usd = 5;
+  string loan_sum = 6;
+  string loan_sum_usd = 7;
+}
+
+message GetLoanStatsResponse {
+  repeated DenomLoanStat loan_stats = 1;
+  string total_available_to_borrow_usd = 2;
+  string total_loan_sum_usd = 3;
+}
+
+message GetAvailableToBorrowRequest {
+  string address = 1;
+  string denom = 2;
+}
+
+message GetAvailableToBorrowResponse {
+  string amount = 1;
+  string amount_usd = 2;
+}
+
+message GetWithdrawableCollateralQuery {
+  string address = 1;
+  string denom = 2;
+}
+
+message GetWithdrawableCollateralResponse {
+  string amount = 1;
+  string amount_usd = 2;
+}
+
+message Vault {
+  string denom = 1;
+  string balance = 2;
+  string loan_sum = 3;
+  string supply = 4;
+}
+
+message GetVaultValuesResponse {
+  repeated Vault vaults = 1;
+}
+
+message GetVaultValuesQuery {
+}
+
+message GetUserDenomLoanQuery {
+  string address = 1;
+  string denom = 2;
+}
+
+message GetUserDenomLoanResponse {
+  string amount = 1;
+  string amount_usd = 2;
+}
+
+message GetBorrowInterestRateQuery {
+  string denom = 1;
+}
+
+message GetBorrowInterestRateResponse {
+  string interest_rate = 1;
+}
+
+message GetCollateralDenomUserStatsQuery {
+  string address = 1;
+  string denom = 2;
+}
+
+message GetCollateralDenomUserStatsResponse {
+  string available = 1;
+  string available_usd = 2;
+  string provided = 3;
+  string provided_usd = 4;
+}
+
+message GetCreditLineUsageQuery {
+  string address = 1;
+}
+
+message GetCreditLineUsageResponse {
+  string usage = 1;
+}
+
+message QueryParamsRequest {
+}
+
+message GetTotalValueLockedQuery {
+}
+
+message GetNumLoansQuery {
+}
+
+message GetNumAddressLoansQuery {
+  string address = 1;
+}
+
+message GetNumAddressLoansResponse {
+  int64 amount = 2;
+}
+
+message GetValueLoansQuery {
+}
+
+message GetValueLoansResponse {
+  string value = 1;
+}
+
+message GetUserLoansQuery {
+  string address = 1;
+}
+
+message GetDepositUserStatsQuery {
+  string address = 1;
+}
+
+message GetCollateralUserStatsQuery {
+  string address = 1;
+}
+
+message GetMarketStatsQuery {
+}
+
+message GetMarketStatsResponse {
+  string total_collateral = 1;
+  string total_deposited = 2;
+  string total_borrowed = 3;
+  string total_redeeming = 4;
+  string total_borrowable = 5;
+  string utility_rate = 6;
+  string interest_rate = 7;
+}
+
+message GetUserStatsQuery {
+  string address = 1;
+}
+
+message GetDepositStatsQuery {
+}
+
+message GetCollateralStatsQuery {
+}
+
+message QueryParamsResponse {
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message CollateralDenomStats {
+  string denom = 1;
+  string amount = 2;
+  string amount_usd = 3;
+  string ltv = 4;
+  string price_usd = 5;
+  string deposited = 6;
+  string deposit_cap = 7;
+  string deposit_cap_used = 8;
+}
+
+message GetCollateralStatsResponse {
+  repeated CollateralDenomStats stats = 1;
+  string               total_usd = 2;
+}
+
+message DepositDenomStats {
+  string base_denom = 1;
+  string c_asset_denom = 2;
+  string available = 3;
+  string available_usd = 4;
+  string borrowed = 5;
+  string borrowed_usd = 6;
+  string borrow_limit_usage = 7;
+  string borrow_limit = 8;
+  string borrow_limit_usd = 9;
+  string redeeming = 10;
+  string redeeming_usd = 11;
+  string supply_c_asset = 12;
+  string supply_c_asset_usd = 13;
+  string interest_rate = 14;
+  string utility_rate = 15;
+  string price_base_usd = 16;
+  string price_c_asset_usd = 17;
+}
+
+message GetDepositStatsResponse {
+  repeated DepositDenomStats stats = 1;
+  string total_deposited_usd = 2;
+  string total_available_usd = 3;
+  string total_borrowed_usd = 4;
+  string total_redeeming_usd = 5;
+}
+
+message DepositUserStats {
+  string base_denom = 1;
+  string c_asset_denom = 2;
+
+  string c_asset_supply = 3;
+  string c_asset_value = 4;
+
+  string amount_c_asset = 5;
+  string base_equivalent = 6;
+  string value_c_asset_usd = 7;
+
+  string price_base_usd = 8;
+  string price_c_asset_usd = 9;
+
+  string redeeming = 10;
+  string redeeming_usd = 11;
+
+  string interest_rate = 12;
+}
+
+message GetDepositUserStatsResponse {
+  repeated DepositUserStats stats = 1;
+  string total_deposited_usd = 2;
+  string total_redeeming_usd = 3;
+}
+
+message GetUserStatsResponse {
+  string total_deposited = 1;
+  string total_collateral = 2;
+  string total_borrowed = 3;
+  string total_redeeming = 4;
+  string total_borrowable = 5;
+  string utility_rate = 6;
+  string interest_rate = 7;
+}
+
+message Address {
+  string address = 1;
+}
+
+message GetTotalDepositsResponse {
+  string sum = 1;
+}
+
+message GetNumLoansResponse {
+  int64 num = 1;
+}
+
+message GetTotalValueLockedResponse {
+  string sum = 1;
+}
+
+message UserLoanStat {
+  string denom = 1;
+  string amount_borrowed = 2;
+  string amount_borrowed_usd = 3;
+  string amount_available = 4;
+  string amount_available_usd = 5;
+  string interest_rate = 6;
+}
+
+message GetUserLoansResponse {
+  repeated UserLoanStat user_loans = 1;
+}
+
+message QueryFullBalanceRequest {
+  string address = 1;
+}
+
+message FullDenomBalance {
+  string denom = 1;
+  string sum = 2;
+  string sum_usd = 3;
+  string wallet = 4;
+  string wallet_usd = 5;
+  string liquidity = 6;
+  string liquidity_usd = 7;
+  string orders = 8;
+  string orders_usd = 9;
+  string collateral = 10;
+  string collateral_usd = 11;
+}
+
+message QueryFullBalanceResponse {
+  string sum = 1;
+  string sum_wallet = 2;
+  string sum_liquidity = 3;
+  string sum_orders = 4;
+  string sum_collateral = 5;
+  repeated FullDenomBalance denoms = 6;
+}

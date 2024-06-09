@@ -1,0 +1,15 @@
+syntax = "proto3";
+package kopi.dex;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/dex/types";
+
+message WalletTradeAmount {
+  string address = 1;
+
+  bytes amount = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}

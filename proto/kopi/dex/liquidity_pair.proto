@@ -1,0 +1,20 @@
+syntax = "proto3";
+package kopi.dex;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/dex/types";
+
+message LiquidityPair {
+  string denom = 1;
+
+  bytes virtual_base = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+
+  bytes virtual_other = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+}

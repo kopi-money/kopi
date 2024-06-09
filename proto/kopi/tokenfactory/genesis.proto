@@ -1,0 +1,23 @@
+syntax = "proto3";
+package kopi.tokenfactory;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "kopi/tokenfactory/params.proto";
+import "kopi/tokenfactory/denoms.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
+
+// GenesisState defines the tokenfactory module's genesis state.
+message GenesisState {
+  // params defines all the parameters of the module.
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+
+  repeated FactoryDenom factory_denoms = 2 [
+    (gogoproto.moretags) = "yaml:\"factory_denoms\"",
+    (gogoproto.nullable) = false
+  ];
+}
