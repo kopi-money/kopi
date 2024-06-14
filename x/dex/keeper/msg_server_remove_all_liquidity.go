@@ -19,7 +19,7 @@ func (k msgServer) RemoveAllLiquidityForDenom(goCtx context.Context, msg *types.
 	}
 
 	liq := k.GetLiquidityByAddress(ctx, msg.Denom, msg.Creator)
-	if err = k.RemoveLiquidityForAddress(ctx, ctx.EventManager(), msg.Denom, address, liq); err != nil {
+	if err = k.RemoveLiquidityForAddress(ctx, ctx.EventManager(), address, msg.Denom, liq); err != nil {
 		return nil, err
 	}
 
@@ -38,7 +38,7 @@ func (k Keeper) RemoveAllLiquidityForAddress(ctx context.Context, address, denom
 		}
 	}
 
-	k.updatePair(ctx, nil, denom)
+	//k.updatePair(ctx, nil, denom)
 
 	addr, err := sdk.AccAddressFromBech32(address)
 	if err != nil {

@@ -38,22 +38,10 @@ func (k Keeper) CheckMint(ctx context.Context, eventManager sdk.EventManagerI, k
 	}
 
 	referenceRatio, _ := k.DexKeeper.GetRatio(ctx, referenceDenom)
-	calculatedMintAmount := k.calcKCoinMintAmount(ctx, kCoin, *referenceRatio.Ratio)
-	mintAmount := math.MinInt(calculatedMintAmount, maxMintAmount)
-
+	mintAmount := k.calcKCoinMintAmount(ctx, referenceRatio.Ratio, kCoin)
+	mintAmount = math.MinInt(mintAmount, maxMintAmount)
 	mintAmount = k.adjustForSupplyCap(ctx, kCoin, mintAmount)
-	if mintAmount.LTE(math.ZeroInt()) {
-		return nil
-	}
-
-	// maxMintAmount is given in the denom of the kCoin's reference denom, which is why it's converted to
-	// the kCoin
-	mintAmount, _, _, err = k.DexKeeper.SimulateTradeForReserve(ctx, referenceDenom, kCoin, mintAmount)
-	if err != nil {
-		return errors.Wrap(err, "could not simulate trade")
-	}
-
-	if mintAmount.LT(math.OneInt()) {
+	if mintAmount.LTE(math.OneInt()) {
 		return nil
 	}
 
@@ -64,9 +52,10 @@ func (k Keeper) CheckMint(ctx context.Context, eventManager sdk.EventManagerI, k
 
 	address := k.AccountKeeper.GetModuleAccount(ctx, types.ModuleName).GetAddress()
 
-	options := dextypes.TradeOptions{
-		CoinSource:          address,
-		CoinTarget:          address,
+	tradeCtx := dextypes.TradeContext{
+		Context:             ctx,
+		CoinSource:          address.String(),
+		CoinTarget:          address.String(),
 		GivenAmount:         mintAmount,
 		MaxPrice:            nil,
 		TradeDenomStart:     kCoin,
@@ -76,7 +65,7 @@ func (k Keeper) CheckMint(ctx context.Context, eventManager sdk.EventManagerI, k
 		ProtocolTrade:       true,
 	}
 
-	amountUsed, amountReceived, _, _, err := k.DexKeeper.ExecuteTrade(ctx, eventManager, options)
+	amountUsed, _, amountReceived, _, _, err := k.DexKeeper.ExecuteTrade(tradeCtx)
 	if err != nil {
 		if errors.Is(err, dextypes.ErrTradeAmountTooSmall) {
 			return nil
@@ -95,8 +84,8 @@ func (k Keeper) CheckMint(ctx context.Context, eventManager sdk.EventManagerI, k
 
 	eventManager.EmitEvent(
 		sdk.NewEvent("arbitrage_trade",
-			sdk.Attribute{Key: "denom_from", Value: options.TradeDenomStart},
-			sdk.Attribute{Key: "denom_to", Value: options.TradeDenomEnd},
+			sdk.Attribute{Key: "denom_from", Value: tradeCtx.TradeDenomStart},
+			sdk.Attribute{Key: "denom_to", Value: tradeCtx.TradeDenomEnd},
 			sdk.Attribute{Key: "amount_used", Value: amountUsed.String()},
 			sdk.Attribute{Key: "amount_received", Value: amountReceived.String()},
 		),
@@ -129,12 +118,12 @@ func (k Keeper) adjustForSupplyCap(ctx context.Context, kCoin string, amountToAd
 	return amountToAdd
 }
 
-func (k Keeper) calcKCoinMintAmount(ctx context.Context, kCoin string, referenceRatio math.LegacyDec) math.Int {
+func (k Keeper) calcKCoinMintAmount(ctx context.Context, referenceRatio math.LegacyDec, kCoin string) math.Int {
+	referenceRatio = math.LegacyOneDec().Quo(referenceRatio)
 	liqBase := k.DexKeeper.GetFullLiquidityBase(ctx, kCoin)
-	liqVirtual := k.DexKeeper.GetFullLiquidityOther(ctx, kCoin)
-	constantProduct := liqBase.Mul(liqVirtual)
-	newLiqVirtual, _ := constantProduct.Quo(referenceRatio).ApproxSqrt()
-	mintAmount := newLiqVirtual.Sub(liqVirtual)
+	liqKCoin := k.DexKeeper.GetFullLiquidityOther(ctx, kCoin)
+	constantProductRoot, _ := liqBase.Mul(liqKCoin).Quo(referenceRatio).ApproxSqrt()
+	mintAmount := constantProductRoot.Sub(liqKCoin)
 	return mintAmount.TruncateInt()
 }
 

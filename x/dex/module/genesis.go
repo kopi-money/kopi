@@ -10,23 +10,15 @@ import (
 
 // InitGenesis initializes the module's state from a provided genesis state.
 func InitGenesis(goCtx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
-	if err := cache.Transact(goCtx, []cache.Cache{k}, func(ctx sdk.Context) error {
+	if err := cache.Transact(goCtx, func(ctx sdk.Context) error {
 		// Set all the liquidity
 		for _, elem := range genState.LiquidityList {
-			k.SetLiquidity(ctx, elem, elem.Amount)
-		}
-		// Set all the liquidityPair
-		for _, elem := range genState.LiquidityPairList {
-			k.SetLiquidityPair(ctx, elem)
+			k.SetLiquidity(ctx, elem)
 		}
 
-		for _, elem := range genState.LiquidityPairList {
-			k.SetRatio(ctx, types.Ratio{elem.Denom, k.PairRatio(ctx, elem.Denom)})
-		}
-
-		// Set all the liquiditySum
-		for _, elem := range genState.LiquiditySumList {
-			k.SetLiquiditySum(ctx, elem)
+		for _, elem := range genState.RatioList {
+			k.SetRatio(ctx, elem)
+			//k.SetLiquidityPair(ctx, k.CreateLiquidityPair(ctx, elem))
 		}
 
 		// Set all the order

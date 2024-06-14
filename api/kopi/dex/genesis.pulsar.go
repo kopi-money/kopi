@@ -67,7 +67,7 @@ func (x *_GenesisState_2_list) IsValid() bool {
 var _ protoreflect.List = (*_GenesisState_3_list)(nil)
 
 type _GenesisState_3_list struct {
-	list *[]*LiquidityPair
+	list *[]*Ratio
 }
 
 func (x *_GenesisState_3_list) Len() int {
@@ -83,18 +83,18 @@ func (x *_GenesisState_3_list) Get(i int) protoreflect.Value {
 
 func (x *_GenesisState_3_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*LiquidityPair)
+	concreteValue := valueUnwrapped.Interface().(*Ratio)
 	(*x.list)[i] = concreteValue
 }
 
 func (x *_GenesisState_3_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*LiquidityPair)
+	concreteValue := valueUnwrapped.Interface().(*Ratio)
 	*x.list = append(*x.list, concreteValue)
 }
 
 func (x *_GenesisState_3_list) AppendMutable() protoreflect.Value {
-	v := new(LiquidityPair)
+	v := new(Ratio)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
@@ -107,7 +107,7 @@ func (x *_GenesisState_3_list) Truncate(n int) {
 }
 
 func (x *_GenesisState_3_list) NewElement() protoreflect.Value {
-	v := new(LiquidityPair)
+	v := new(Ratio)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
@@ -115,207 +115,105 @@ func (x *_GenesisState_3_list) IsValid() bool {
 	return x.list != nil
 }
 
-var _ protoreflect.List = (*_GenesisState_6_list)(nil)
+var _ protoreflect.List = (*_GenesisState_4_list)(nil)
 
-type _GenesisState_6_list struct {
-	list *[]*Ratio
-}
-
-func (x *_GenesisState_6_list) Len() int {
-	if x.list == nil {
-		return 0
-	}
-	return len(*x.list)
-}
-
-func (x *_GenesisState_6_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
-}
-
-func (x *_GenesisState_6_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Ratio)
-	(*x.list)[i] = concreteValue
-}
-
-func (x *_GenesisState_6_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Ratio)
-	*x.list = append(*x.list, concreteValue)
-}
-
-func (x *_GenesisState_6_list) AppendMutable() protoreflect.Value {
-	v := new(Ratio)
-	*x.list = append(*x.list, v)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_GenesisState_6_list) Truncate(n int) {
-	for i := n; i < len(*x.list); i++ {
-		(*x.list)[i] = nil
-	}
-	*x.list = (*x.list)[:n]
-}
-
-func (x *_GenesisState_6_list) NewElement() protoreflect.Value {
-	v := new(Ratio)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_GenesisState_6_list) IsValid() bool {
-	return x.list != nil
-}
-
-var _ protoreflect.List = (*_GenesisState_8_list)(nil)
-
-type _GenesisState_8_list struct {
-	list *[]*LiquiditySum
-}
-
-func (x *_GenesisState_8_list) Len() int {
-	if x.list == nil {
-		return 0
-	}
-	return len(*x.list)
-}
-
-func (x *_GenesisState_8_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
-}
-
-func (x *_GenesisState_8_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*LiquiditySum)
-	(*x.list)[i] = concreteValue
-}
-
-func (x *_GenesisState_8_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*LiquiditySum)
-	*x.list = append(*x.list, concreteValue)
-}
-
-func (x *_GenesisState_8_list) AppendMutable() protoreflect.Value {
-	v := new(LiquiditySum)
-	*x.list = append(*x.list, v)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_GenesisState_8_list) Truncate(n int) {
-	for i := n; i < len(*x.list); i++ {
-		(*x.list)[i] = nil
-	}
-	*x.list = (*x.list)[:n]
-}
-
-func (x *_GenesisState_8_list) NewElement() protoreflect.Value {
-	v := new(LiquiditySum)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_GenesisState_8_list) IsValid() bool {
-	return x.list != nil
-}
-
-var _ protoreflect.List = (*_GenesisState_9_list)(nil)
-
-type _GenesisState_9_list struct {
+type _GenesisState_4_list struct {
 	list *[]*Order
 }
 
-func (x *_GenesisState_9_list) Len() int {
+func (x *_GenesisState_4_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_GenesisState_9_list) Get(i int) protoreflect.Value {
+func (x *_GenesisState_4_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
 }
 
-func (x *_GenesisState_9_list) Set(i int, value protoreflect.Value) {
+func (x *_GenesisState_4_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*Order)
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_GenesisState_9_list) Append(value protoreflect.Value) {
+func (x *_GenesisState_4_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*Order)
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_GenesisState_9_list) AppendMutable() protoreflect.Value {
+func (x *_GenesisState_4_list) AppendMutable() protoreflect.Value {
 	v := new(Order)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_GenesisState_9_list) Truncate(n int) {
+func (x *_GenesisState_4_list) Truncate(n int) {
 	for i := n; i < len(*x.list); i++ {
 		(*x.list)[i] = nil
 	}
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_GenesisState_9_list) NewElement() protoreflect.Value {
+func (x *_GenesisState_4_list) NewElement() protoreflect.Value {
 	v := new(Order)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_GenesisState_9_list) IsValid() bool {
+func (x *_GenesisState_4_list) IsValid() bool {
 	return x.list != nil
 }
 
-var _ protoreflect.List = (*_GenesisState_10_list)(nil)
+var _ protoreflect.List = (*_GenesisState_5_list)(nil)
 
-type _GenesisState_10_list struct {
+type _GenesisState_5_list struct {
 	list *[]*WalletTradeAmount
 }
 
-func (x *_GenesisState_10_list) Len() int {
+func (x *_GenesisState_5_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_GenesisState_10_list) Get(i int) protoreflect.Value {
+func (x *_GenesisState_5_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
 }
 
-func (x *_GenesisState_10_list) Set(i int, value protoreflect.Value) {
+func (x *_GenesisState_5_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*WalletTradeAmount)
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_GenesisState_10_list) Append(value protoreflect.Value) {
+func (x *_GenesisState_5_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*WalletTradeAmount)
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_GenesisState_10_list) AppendMutable() protoreflect.Value {
+func (x *_GenesisState_5_list) AppendMutable() protoreflect.Value {
 	v := new(WalletTradeAmount)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_GenesisState_10_list) Truncate(n int) {
+func (x *_GenesisState_5_list) Truncate(n int) {
 	for i := n; i < len(*x.list); i++ {
 		(*x.list)[i] = nil
 	}
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_GenesisState_10_list) NewElement() protoreflect.Value {
+func (x *_GenesisState_5_list) NewElement() protoreflect.Value {
 	v := new(WalletTradeAmount)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_GenesisState_10_list) IsValid() bool {
+func (x *_GenesisState_5_list) IsValid() bool {
 	return x.list != nil
 }
 
@@ -323,13 +221,10 @@ var (
 	md_GenesisState                      protoreflect.MessageDescriptor
 	fd_GenesisState_params               protoreflect.FieldDescriptor
 	fd_GenesisState_liquidity_list       protoreflect.FieldDescriptor
-	fd_GenesisState_liquidity_pair_list  protoreflect.FieldDescriptor
-	fd_GenesisState_liquidity_pair_count protoreflect.FieldDescriptor
-	fd_GenesisState_liquidity_next_index protoreflect.FieldDescriptor
 	fd_GenesisState_ratio_list           protoreflect.FieldDescriptor
-	fd_GenesisState_liquiditySumList     protoreflect.FieldDescriptor
 	fd_GenesisState_orderList            protoreflect.FieldDescriptor
-	fd_GenesisState_walletTradeAmount    protoreflect.FieldDescriptor
+	fd_GenesisState_wallet_trade_amount  protoreflect.FieldDescriptor
+	fd_GenesisState_liquidity_next_index protoreflect.FieldDescriptor
 	fd_GenesisState_order_next_index     protoreflect.FieldDescriptor
 )
 
@@ -338,13 +233,10 @@ func init() {
 	md_GenesisState = File_kopi_dex_genesis_proto.Messages().ByName("GenesisState")
 	fd_GenesisState_params = md_GenesisState.Fields().ByName("params")
 	fd_GenesisState_liquidity_list = md_GenesisState.Fields().ByName("liquidity_list")
-	fd_GenesisState_liquidity_pair_list = md_GenesisState.Fields().ByName("liquidity_pair_list")
-	fd_GenesisState_liquidity_pair_count = md_GenesisState.Fields().ByName("liquidity_pair_count")
-	fd_GenesisState_liquidity_next_index = md_GenesisState.Fields().ByName("liquidity_next_index")
 	fd_GenesisState_ratio_list = md_GenesisState.Fields().ByName("ratio_list")
-	fd_GenesisState_liquiditySumList = md_GenesisState.Fields().ByName("liquiditySumList")
 	fd_GenesisState_orderList = md_GenesisState.Fields().ByName("orderList")
-	fd_GenesisState_walletTradeAmount = md_GenesisState.Fields().ByName("walletTradeAmount")
+	fd_GenesisState_wallet_trade_amount = md_GenesisState.Fields().ByName("wallet_trade_amount")
+	fd_GenesisState_liquidity_next_index = md_GenesisState.Fields().ByName("liquidity_next_index")
 	fd_GenesisState_order_next_index = md_GenesisState.Fields().ByName("order_next_index")
 }
 
@@ -425,45 +317,27 @@ func (x *fastReflection_GenesisState) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
-	if len(x.LiquidityPairList) != 0 {
-		value := protoreflect.ValueOfList(&_GenesisState_3_list{list: &x.LiquidityPairList})
-		if !f(fd_GenesisState_liquidity_pair_list, value) {
+	if len(x.RatioList) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_3_list{list: &x.RatioList})
+		if !f(fd_GenesisState_ratio_list, value) {
 			return
 		}
 	}
-	if x.LiquidityPairCount != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.LiquidityPairCount)
-		if !f(fd_GenesisState_liquidity_pair_count, value) {
+	if len(x.OrderList) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_4_list{list: &x.OrderList})
+		if !f(fd_GenesisState_orderList, value) {
+			return
+		}
+	}
+	if len(x.WalletTradeAmount) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_5_list{list: &x.WalletTradeAmount})
+		if !f(fd_GenesisState_wallet_trade_amount, value) {
 			return
 		}
 	}
 	if x.LiquidityNextIndex != uint64(0) {
 		value := protoreflect.ValueOfUint64(x.LiquidityNextIndex)
 		if !f(fd_GenesisState_liquidity_next_index, value) {
-			return
-		}
-	}
-	if len(x.RatioList) != 0 {
-		value := protoreflect.ValueOfList(&_GenesisState_6_list{list: &x.RatioList})
-		if !f(fd_GenesisState_ratio_list, value) {
-			return
-		}
-	}
-	if len(x.LiquiditySumList) != 0 {
-		value := protoreflect.ValueOfList(&_GenesisState_8_list{list: &x.LiquiditySumList})
-		if !f(fd_GenesisState_liquiditySumList, value) {
-			return
-		}
-	}
-	if len(x.OrderList) != 0 {
-		value := protoreflect.ValueOfList(&_GenesisState_9_list{list: &x.OrderList})
-		if !f(fd_GenesisState_orderList, value) {
-			return
-		}
-	}
-	if len(x.WalletTradeAmount) != 0 {
-		value := protoreflect.ValueOfList(&_GenesisState_10_list{list: &x.WalletTradeAmount})
-		if !f(fd_GenesisState_walletTradeAmount, value) {
 			return
 		}
 	}
@@ -492,20 +366,14 @@ func (x *fastReflection_GenesisState) Has(fd protoreflect.FieldDescriptor) bool 
 		return x.Params != nil
 	case "kopi.dex.GenesisState.liquidity_list":
 		return len(x.LiquidityList) != 0
-	case "kopi.dex.GenesisState.liquidity_pair_list":
-		return len(x.LiquidityPairList) != 0
-	case "kopi.dex.GenesisState.liquidity_pair_count":
-		return x.LiquidityPairCount != uint64(0)
-	case "kopi.dex.GenesisState.liquidity_next_index":
-		return x.LiquidityNextIndex != uint64(0)
 	case "kopi.dex.GenesisState.ratio_list":
 		return len(x.RatioList) != 0
-	case "kopi.dex.GenesisState.liquiditySumList":
-		return len(x.LiquiditySumList) != 0
 	case "kopi.dex.GenesisState.orderList":
 		return len(x.OrderList) != 0
-	case "kopi.dex.GenesisState.walletTradeAmount":
+	case "kopi.dex.GenesisState.wallet_trade_amount":
 		return len(x.WalletTradeAmount) != 0
+	case "kopi.dex.GenesisState.liquidity_next_index":
+		return x.LiquidityNextIndex != uint64(0)
 	case "kopi.dex.GenesisState.order_next_index":
 		return x.OrderNextIndex != uint64(0)
 	default:
@@ -528,20 +396,14 @@ func (x *fastReflection_GenesisState) Clear(fd protoreflect.FieldDescriptor) {
 		x.Params = nil
 	case "kopi.dex.GenesisState.liquidity_list":
 		x.LiquidityList = nil
-	case "kopi.dex.GenesisState.liquidity_pair_list":
-		x.LiquidityPairList = nil
-	case "kopi.dex.GenesisState.liquidity_pair_count":
-		x.LiquidityPairCount = uint64(0)
-	case "kopi.dex.GenesisState.liquidity_next_index":
-		x.LiquidityNextIndex = uint64(0)
 	case "kopi.dex.GenesisState.ratio_list":
 		x.RatioList = nil
-	case "kopi.dex.GenesisState.liquiditySumList":
-		x.LiquiditySumList = nil
 	case "kopi.dex.GenesisState.orderList":
 		x.OrderList = nil
-	case "kopi.dex.GenesisState.walletTradeAmount":
+	case "kopi.dex.GenesisState.wallet_trade_amount":
 		x.WalletTradeAmount = nil
+	case "kopi.dex.GenesisState.liquidity_next_index":
+		x.LiquidityNextIndex = uint64(0)
 	case "kopi.dex.GenesisState.order_next_index":
 		x.OrderNextIndex = uint64(0)
 	default:
@@ -569,42 +431,27 @@ func (x *fastReflection_GenesisState) Get(descriptor protoreflect.FieldDescripto
 		}
 		listValue := &_GenesisState_2_list{list: &x.LiquidityList}
 		return protoreflect.ValueOfList(listValue)
-	case "kopi.dex.GenesisState.liquidity_pair_list":
-		if len(x.LiquidityPairList) == 0 {
-			return protoreflect.ValueOfList(&_GenesisState_3_list{})
-		}
-		listValue := &_GenesisState_3_list{list: &x.LiquidityPairList}
-		return protoreflect.ValueOfList(listValue)
-	case "kopi.dex.GenesisState.liquidity_pair_count":
-		value := x.LiquidityPairCount
-		return protoreflect.ValueOfUint64(value)
-	case "kopi.dex.GenesisState.liquidity_next_index":
-		value := x.LiquidityNextIndex
-		return protoreflect.ValueOfUint64(value)
 	case "kopi.dex.GenesisState.ratio_list":
 		if len(x.RatioList) == 0 {
-			return protoreflect.ValueOfList(&_GenesisState_6_list{})
+			return protoreflect.ValueOfList(&_GenesisState_3_list{})
 		}
-		listValue := &_GenesisState_6_list{list: &x.RatioList}
-		return protoreflect.ValueOfList(listValue)
-	case "kopi.dex.GenesisState.liquiditySumList":
-		if len(x.LiquiditySumList) == 0 {
-			return protoreflect.ValueOfList(&_GenesisState_8_list{})
-		}
-		listValue := &_GenesisState_8_list{list: &x.LiquiditySumList}
+		listValue := &_GenesisState_3_list{list: &x.RatioList}
 		return protoreflect.ValueOfList(listValue)
 	case "kopi.dex.GenesisState.orderList":
 		if len(x.OrderList) == 0 {
-			return protoreflect.ValueOfList(&_GenesisState_9_list{})
+			return protoreflect.ValueOfList(&_GenesisState_4_list{})
 		}
-		listValue := &_GenesisState_9_list{list: &x.OrderList}
+		listValue := &_GenesisState_4_list{list: &x.OrderList}
 		return protoreflect.ValueOfList(listValue)
-	case "kopi.dex.GenesisState.walletTradeAmount":
+	case "kopi.dex.GenesisState.wallet_trade_amount":
 		if len(x.WalletTradeAmount) == 0 {
-			return protoreflect.ValueOfList(&_GenesisState_10_list{})
+			return protoreflect.ValueOfList(&_GenesisState_5_list{})
 		}
-		listValue := &_GenesisState_10_list{list: &x.WalletTradeAmount}
+		listValue := &_GenesisState_5_list{list: &x.WalletTradeAmount}
 		return protoreflect.ValueOfList(listValue)
+	case "kopi.dex.GenesisState.liquidity_next_index":
+		value := x.LiquidityNextIndex
+		return protoreflect.ValueOfUint64(value)
 	case "kopi.dex.GenesisState.order_next_index":
 		value := x.OrderNextIndex
 		return protoreflect.ValueOfUint64(value)
@@ -634,30 +481,20 @@ func (x *fastReflection_GenesisState) Set(fd protoreflect.FieldDescriptor, value
 		lv := value.List()
 		clv := lv.(*_GenesisState_2_list)
 		x.LiquidityList = *clv.list
-	case "kopi.dex.GenesisState.liquidity_pair_list":
-		lv := value.List()
-		clv := lv.(*_GenesisState_3_list)
-		x.LiquidityPairList = *clv.list
-	case "kopi.dex.GenesisState.liquidity_pair_count":
-		x.LiquidityPairCount = value.Uint()
-	case "kopi.dex.GenesisState.liquidity_next_index":
-		x.LiquidityNextIndex = value.Uint()
 	case "kopi.dex.GenesisState.ratio_list":
 		lv := value.List()
-		clv := lv.(*_GenesisState_6_list)
+		clv := lv.(*_GenesisState_3_list)
 		x.RatioList = *clv.list
-	case "kopi.dex.GenesisState.liquiditySumList":
-		lv := value.List()
-		clv := lv.(*_GenesisState_8_list)
-		x.LiquiditySumList = *clv.list
 	case "kopi.dex.GenesisState.orderList":
 		lv := value.List()
-		clv := lv.(*_GenesisState_9_list)
+		clv := lv.(*_GenesisState_4_list)
 		x.OrderList = *clv.list
-	case "kopi.dex.GenesisState.walletTradeAmount":
+	case "kopi.dex.GenesisState.wallet_trade_amount":
 		lv := value.List()
-		clv := lv.(*_GenesisState_10_list)
+		clv := lv.(*_GenesisState_5_list)
 		x.WalletTradeAmount = *clv.list
+	case "kopi.dex.GenesisState.liquidity_next_index":
+		x.LiquidityNextIndex = value.Uint()
 	case "kopi.dex.GenesisState.order_next_index":
 		x.OrderNextIndex = value.Uint()
 	default:
@@ -691,38 +528,24 @@ func (x *fastReflection_GenesisState) Mutable(fd protoreflect.FieldDescriptor) p
 		}
 		value := &_GenesisState_2_list{list: &x.LiquidityList}
 		return protoreflect.ValueOfList(value)
-	case "kopi.dex.GenesisState.liquidity_pair_list":
-		if x.LiquidityPairList == nil {
-			x.LiquidityPairList = []*LiquidityPair{}
-		}
-		value := &_GenesisState_3_list{list: &x.LiquidityPairList}
-		return protoreflect.ValueOfList(value)
 	case "kopi.dex.GenesisState.ratio_list":
 		if x.RatioList == nil {
 			x.RatioList = []*Ratio{}
 		}
-		value := &_GenesisState_6_list{list: &x.RatioList}
-		return protoreflect.ValueOfList(value)
-	case "kopi.dex.GenesisState.liquiditySumList":
-		if x.LiquiditySumList == nil {
-			x.LiquiditySumList = []*LiquiditySum{}
-		}
-		value := &_GenesisState_8_list{list: &x.LiquiditySumList}
+		value := &_GenesisState_3_list{list: &x.RatioList}
 		return protoreflect.ValueOfList(value)
 	case "kopi.dex.GenesisState.orderList":
 		if x.OrderList == nil {
 			x.OrderList = []*Order{}
 		}
-		value := &_GenesisState_9_list{list: &x.OrderList}
+		value := &_GenesisState_4_list{list: &x.OrderList}
 		return protoreflect.ValueOfList(value)
-	case "kopi.dex.GenesisState.walletTradeAmount":
+	case "kopi.dex.GenesisState.wallet_trade_amount":
 		if x.WalletTradeAmount == nil {
 			x.WalletTradeAmount = []*WalletTradeAmount{}
 		}
-		value := &_GenesisState_10_list{list: &x.WalletTradeAmount}
+		value := &_GenesisState_5_list{list: &x.WalletTradeAmount}
 		return protoreflect.ValueOfList(value)
-	case "kopi.dex.GenesisState.liquidity_pair_count":
-		panic(fmt.Errorf("field liquidity_pair_count of message kopi.dex.GenesisState is not mutable"))
 	case "kopi.dex.GenesisState.liquidity_next_index":
 		panic(fmt.Errorf("field liquidity_next_index of message kopi.dex.GenesisState is not mutable"))
 	case "kopi.dex.GenesisState.order_next_index":
@@ -746,25 +569,17 @@ func (x *fastReflection_GenesisState) NewField(fd protoreflect.FieldDescriptor) 
 	case "kopi.dex.GenesisState.liquidity_list":
 		list := []*Liquidity{}
 		return protoreflect.ValueOfList(&_GenesisState_2_list{list: &list})
-	case "kopi.dex.GenesisState.liquidity_pair_list":
-		list := []*LiquidityPair{}
-		return protoreflect.ValueOfList(&_GenesisState_3_list{list: &list})
-	case "kopi.dex.GenesisState.liquidity_pair_count":
-		return protoreflect.ValueOfUint64(uint64(0))
-	case "kopi.dex.GenesisState.liquidity_next_index":
-		return protoreflect.ValueOfUint64(uint64(0))
 	case "kopi.dex.GenesisState.ratio_list":
 		list := []*Ratio{}
-		return protoreflect.ValueOfList(&_GenesisState_6_list{list: &list})
-	case "kopi.dex.GenesisState.liquiditySumList":
-		list := []*LiquiditySum{}
-		return protoreflect.ValueOfList(&_GenesisState_8_list{list: &list})
+		return protoreflect.ValueOfList(&_GenesisState_3_list{list: &list})
 	case "kopi.dex.GenesisState.orderList":
 		list := []*Order{}
-		return protoreflect.ValueOfList(&_GenesisState_9_list{list: &list})
-	case "kopi.dex.GenesisState.walletTradeAmount":
+		return protoreflect.ValueOfList(&_GenesisState_4_list{list: &list})
+	case "kopi.dex.GenesisState.wallet_trade_amount":
 		list := []*WalletTradeAmount{}
-		return protoreflect.ValueOfList(&_GenesisState_10_list{list: &list})
+		return protoreflect.ValueOfList(&_GenesisState_5_list{list: &list})
+	case "kopi.dex.GenesisState.liquidity_next_index":
+		return protoreflect.ValueOfUint64(uint64(0))
 	case "kopi.dex.GenesisState.order_next_index":
 		return protoreflect.ValueOfUint64(uint64(0))
 	default:
@@ -846,26 +661,8 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
-		if len(x.LiquidityPairList) > 0 {
-			for _, e := range x.LiquidityPairList {
-				l = options.Size(e)
-				n += 1 + l + runtime.Sov(uint64(l))
-			}
-		}
-		if x.LiquidityPairCount != 0 {
-			n += 1 + runtime.Sov(uint64(x.LiquidityPairCount))
-		}
-		if x.LiquidityNextIndex != 0 {
-			n += 1 + runtime.Sov(uint64(x.LiquidityNextIndex))
-		}
 		if len(x.RatioList) > 0 {
 			for _, e := range x.RatioList {
-				l = options.Size(e)
-				n += 1 + l + runtime.Sov(uint64(l))
-			}
-		}
-		if len(x.LiquiditySumList) > 0 {
-			for _, e := range x.LiquiditySumList {
 				l = options.Size(e)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
@@ -881,6 +678,9 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				l = options.Size(e)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
+		}
+		if x.LiquidityNextIndex != 0 {
+			n += 1 + runtime.Sov(uint64(x.LiquidityNextIndex))
 		}
 		if x.OrderNextIndex != 0 {
 			n += 1 + runtime.Sov(uint64(x.OrderNextIndex))
@@ -917,7 +717,12 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 		if x.OrderNextIndex != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.OrderNextIndex))
 			i--
-			dAtA[i] = 0x58
+			dAtA[i] = 0x38
+		}
+		if x.LiquidityNextIndex != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.LiquidityNextIndex))
+			i--
+			dAtA[i] = 0x30
 		}
 		if len(x.WalletTradeAmount) > 0 {
 			for iNdEx := len(x.WalletTradeAmount) - 1; iNdEx >= 0; iNdEx-- {
@@ -932,7 +737,7 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				copy(dAtA[i:], encoded)
 				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
 				i--
-				dAtA[i] = 0x52
+				dAtA[i] = 0x2a
 			}
 		}
 		if len(x.OrderList) > 0 {
@@ -948,54 +753,12 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				copy(dAtA[i:], encoded)
 				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
 				i--
-				dAtA[i] = 0x4a
-			}
-		}
-		if len(x.LiquiditySumList) > 0 {
-			for iNdEx := len(x.LiquiditySumList) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.LiquiditySumList[iNdEx])
-				if err != nil {
-					return protoiface.MarshalOutput{
-						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-						Buf:               input.Buf,
-					}, err
-				}
-				i -= len(encoded)
-				copy(dAtA[i:], encoded)
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-				i--
-				dAtA[i] = 0x42
+				dAtA[i] = 0x22
 			}
 		}
 		if len(x.RatioList) > 0 {
 			for iNdEx := len(x.RatioList) - 1; iNdEx >= 0; iNdEx-- {
 				encoded, err := options.Marshal(x.RatioList[iNdEx])
-				if err != nil {
-					return protoiface.MarshalOutput{
-						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-						Buf:               input.Buf,
-					}, err
-				}
-				i -= len(encoded)
-				copy(dAtA[i:], encoded)
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-				i--
-				dAtA[i] = 0x32
-			}
-		}
-		if x.LiquidityNextIndex != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.LiquidityNextIndex))
-			i--
-			dAtA[i] = 0x28
-		}
-		if x.LiquidityPairCount != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.LiquidityPairCount))
-			i--
-			dAtA[i] = 0x20
-		}
-		if len(x.LiquidityPairList) > 0 {
-			for iNdEx := len(x.LiquidityPairList) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.LiquidityPairList[iNdEx])
 				if err != nil {
 					return protoiface.MarshalOutput{
 						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1160,78 +923,6 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 3:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LiquidityPairList", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.LiquidityPairList = append(x.LiquidityPairList, &LiquidityPair{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.LiquidityPairList[len(x.LiquidityPairList)-1]); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				iNdEx = postIndex
-			case 4:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LiquidityPairCount", wireType)
-				}
-				x.LiquidityPairCount = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.LiquidityPairCount |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 5:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LiquidityNextIndex", wireType)
-				}
-				x.LiquidityNextIndex = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.LiquidityNextIndex |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 6:
-				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field RatioList", wireType)
 				}
 				var msglen int
@@ -1264,41 +955,7 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
-			case 8:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LiquiditySumList", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.LiquiditySumList = append(x.LiquiditySumList, &LiquiditySum{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.LiquiditySumList[len(x.LiquiditySumList)-1]); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				iNdEx = postIndex
-			case 9:
+			case 4:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OrderList", wireType)
 				}
@@ -1332,7 +989,7 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
-			case 10:
+			case 5:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WalletTradeAmount", wireType)
 				}
@@ -1366,7 +1023,26 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
-			case 11:
+			case 6:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LiquidityNextIndex", wireType)
+				}
+				x.LiquidityNextIndex = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.LiquidityNextIndex |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 7:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OrderNextIndex", wireType)
 				}
@@ -1439,17 +1115,13 @@ type GenesisState struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Params             *Params          `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
-	LiquidityList      []*Liquidity     `protobuf:"bytes,2,rep,name=liquidity_list,json=liquidityList,proto3" json:"liquidity_list,omitempty"`
-	LiquidityPairList  []*LiquidityPair `protobuf:"bytes,3,rep,name=liquidity_pair_list,json=liquidityPairList,proto3" json:"liquidity_pair_list,omitempty"`
-	LiquidityPairCount uint64           `protobuf:"varint,4,opt,name=liquidity_pair_count,json=liquidityPairCount,proto3" json:"liquidity_pair_count,omitempty"`
-	LiquidityNextIndex uint64           `protobuf:"varint,5,opt,name=liquidity_next_index,json=liquidityNextIndex,proto3" json:"liquidity_next_index,omitempty"`
-	RatioList          []*Ratio         `protobuf:"bytes,6,rep,name=ratio_list,json=ratioList,proto3" json:"ratio_list,omitempty"`
-	// this line is used by starport scaffolding # genesis/proto/state
-	LiquiditySumList  []*LiquiditySum      `protobuf:"bytes,8,rep,name=liquiditySumList,proto3" json:"liquiditySumList,omitempty"`
-	OrderList         []*Order             `protobuf:"bytes,9,rep,name=orderList,proto3" json:"orderList,omitempty"`
-	WalletTradeAmount []*WalletTradeAmount `protobuf:"bytes,10,rep,name=walletTradeAmount,proto3" json:"walletTradeAmount,omitempty"`
-	OrderNextIndex    uint64               `protobuf:"varint,11,opt,name=order_next_index,json=orderNextIndex,proto3" json:"order_next_index,omitempty"`
+	Params             *Params              `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
+	LiquidityList      []*Liquidity         `protobuf:"bytes,2,rep,name=liquidity_list,json=liquidityList,proto3" json:"liquidity_list,omitempty"`
+	RatioList          []*Ratio             `protobuf:"bytes,3,rep,name=ratio_list,json=ratioList,proto3" json:"ratio_list,omitempty"`
+	OrderList          []*Order             `protobuf:"bytes,4,rep,name=orderList,proto3" json:"orderList,omitempty"`
+	WalletTradeAmount  []*WalletTradeAmount `protobuf:"bytes,5,rep,name=wallet_trade_amount,json=walletTradeAmount,proto3" json:"wallet_trade_amount,omitempty"`
+	LiquidityNextIndex uint64               `protobuf:"varint,6,opt,name=liquidity_next_index,json=liquidityNextIndex,proto3" json:"liquidity_next_index,omitempty"`
+	OrderNextIndex     uint64               `protobuf:"varint,7,opt,name=order_next_index,json=orderNextIndex,proto3" json:"order_next_index,omitempty"`
 }
 
 func (x *GenesisState) Reset() {
@@ -1486,37 +1158,9 @@ func (x *GenesisState) GetLiquidityList() []*Liquidity {
 	return nil
 }
 
-func (x *GenesisState) GetLiquidityPairList() []*LiquidityPair {
-	if x != nil {
-		return x.LiquidityPairList
-	}
-	return nil
-}
-
-func (x *GenesisState) GetLiquidityPairCount() uint64 {
-	if x != nil {
-		return x.LiquidityPairCount
-	}
-	return 0
-}
-
-func (x *GenesisState) GetLiquidityNextIndex() uint64 {
-	if x != nil {
-		return x.LiquidityNextIndex
-	}
-	return 0
-}
-
 func (x *GenesisState) GetRatioList() []*Ratio {
 	if x != nil {
 		return x.RatioList
-	}
-	return nil
-}
-
-func (x *GenesisState) GetLiquiditySumList() []*LiquiditySum {
-	if x != nil {
-		return x.LiquiditySumList
 	}
 	return nil
 }
@@ -1535,6 +1179,13 @@ func (x *GenesisState) GetWalletTradeAmount() []*WalletTradeAmount {
 	return nil
 }
 
+func (x *GenesisState) GetLiquidityNextIndex() uint64 {
+	if x != nil {
+		return x.LiquidityNextIndex
+	}
+	return 0
+}
+
 func (x *GenesisState) GetOrderNextIndex() uint64 {
 	if x != nil {
 		return x.OrderNextIndex
@@ -1551,62 +1202,46 @@ var file_kopi_dex_genesis_proto_rawDesc = []byte{
 	0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x15, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64,
 	0x65, 0x78, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a,
 	0x18, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0x2f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64,
-	0x69, 0x74, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1d, 0x6b, 0x6f, 0x70, 0x69, 0x2f,
-	0x64, 0x65, 0x78, 0x2f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x70, 0x61,
-	0x69, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64,
-	0x65, 0x78, 0x2f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1c,
-	0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0x2f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69,
-	0x74, 0x79, 0x5f, 0x73, 0x75, 0x6d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x6b, 0x6f,
-	0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0x2f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x1a, 0x22, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0x2f, 0x77, 0x61, 0x6c,
-	0x6c, 0x65, 0x74, 0x5f, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xe3, 0x04, 0x0a, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73,
-	0x69, 0x73, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x2e, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d,
-	0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64,
-	0x65, 0x78, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52,
-	0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x40, 0x0a, 0x0e, 0x6c, 0x69, 0x71, 0x75, 0x69,
-	0x64, 0x69, 0x74, 0x79, 0x5f, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32,
-	0x13, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e, 0x4c, 0x69, 0x71, 0x75, 0x69,
-	0x64, 0x69, 0x74, 0x79, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0d, 0x6c, 0x69, 0x71, 0x75,
-	0x69, 0x64, 0x69, 0x74, 0x79, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x4d, 0x0a, 0x13, 0x6c, 0x69, 0x71,
-	0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x70, 0x61, 0x69, 0x72, 0x5f, 0x6c, 0x69, 0x73, 0x74,
-	0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65,
-	0x78, 0x2e, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x50, 0x61, 0x69, 0x72, 0x42,
-	0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x11, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79,
-	0x50, 0x61, 0x69, 0x72, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x30, 0x0a, 0x14, 0x6c, 0x69, 0x71, 0x75,
-	0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x70, 0x61, 0x69, 0x72, 0x5f, 0x63, 0x6f, 0x75, 0x6e, 0x74,
-	0x18, 0x04, 0x20, 0x01, 0x28, 0x04, 0x52, 0x12, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74,
-	0x79, 0x50, 0x61, 0x69, 0x72, 0x43, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x30, 0x0a, 0x14, 0x6c, 0x69,
-	0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x6e, 0x65, 0x78, 0x74, 0x5f, 0x69, 0x6e, 0x64,
-	0x65, 0x78, 0x18, 0x05, 0x20, 0x01, 0x28, 0x04, 0x52, 0x12, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64,
-	0x69, 0x74, 0x79, 0x4e, 0x65, 0x78, 0x74, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x34, 0x0a, 0x0a,
-	0x72, 0x61, 0x74, 0x69, 0x6f, 0x5f, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x06, 0x20, 0x03, 0x28, 0x0b,
+	0x69, 0x74, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x6b, 0x6f, 0x70, 0x69, 0x2f,
+	0x64, 0x65, 0x78, 0x2f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a,
+	0x14, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0x2f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x22, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0x2f,
+	0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x5f, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x61, 0x6d, 0x6f,
+	0x75, 0x6e, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x9a, 0x03, 0x0a, 0x0c, 0x47, 0x65,
+	0x6e, 0x65, 0x73, 0x69, 0x73, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x2e, 0x0a, 0x06, 0x70, 0x61,
+	0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x6b, 0x6f, 0x70,
+	0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x04, 0xc8, 0xde,
+	0x1f, 0x00, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x40, 0x0a, 0x0e, 0x6c, 0x69,
+	0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x02, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x13, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e, 0x4c, 0x69,
+	0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0d, 0x6c,
+	0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x34, 0x0a, 0x0a,
+	0x72, 0x61, 0x74, 0x69, 0x6f, 0x5f, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b,
 	0x32, 0x0f, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e, 0x52, 0x61, 0x74, 0x69,
 	0x6f, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x09, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x4c, 0x69,
-	0x73, 0x74, 0x12, 0x48, 0x0a, 0x10, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x53,
-	0x75, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x18, 0x08, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x6b,
-	0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74,
-	0x79, 0x53, 0x75, 0x6d, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x10, 0x6c, 0x69, 0x71, 0x75,
-	0x69, 0x64, 0x69, 0x74, 0x79, 0x53, 0x75, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x33, 0x0a, 0x09,
-	0x6f, 0x72, 0x64, 0x65, 0x72, 0x4c, 0x69, 0x73, 0x74, 0x18, 0x09, 0x20, 0x03, 0x28, 0x0b, 0x32,
-	0x0f, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e, 0x4f, 0x72, 0x64, 0x65, 0x72,
-	0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x09, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x4c, 0x69, 0x73,
-	0x74, 0x12, 0x4f, 0x0a, 0x11, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x54, 0x72, 0x61, 0x64, 0x65,
-	0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x0a, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x6b,
-	0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e, 0x57, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x54, 0x72,
-	0x61, 0x64, 0x65, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52,
-	0x11, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x54, 0x72, 0x61, 0x64, 0x65, 0x41, 0x6d, 0x6f, 0x75,
-	0x6e, 0x74, 0x12, 0x28, 0x0a, 0x10, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x6e, 0x65, 0x78, 0x74,
-	0x5f, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0e, 0x6f, 0x72,
-	0x64, 0x65, 0x72, 0x4e, 0x65, 0x78, 0x74, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x42, 0x78, 0x0a, 0x0c,
-	0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x42, 0x0c, 0x47, 0x65,
-	0x6e, 0x65, 0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x19, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b,
-	0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0xa2, 0x02, 0x03, 0x4b, 0x44, 0x58, 0xaa, 0x02, 0x08,
-	0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x44, 0x65, 0x78, 0xca, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x5c,
-	0x44, 0x65, 0x78, 0xe2, 0x02, 0x14, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0x5c, 0x47,
-	0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x09, 0x4b, 0x6f, 0x70,
-	0x69, 0x3a, 0x3a, 0x44, 0x65, 0x78, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x73, 0x74, 0x12, 0x33, 0x0a, 0x09, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x4c, 0x69, 0x73, 0x74, 0x18,
+	0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78,
+	0x2e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x09, 0x6f, 0x72,
+	0x64, 0x65, 0x72, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x51, 0x0a, 0x13, 0x77, 0x61, 0x6c, 0x6c, 0x65,
+	0x74, 0x5f, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x05,
+	0x20, 0x03, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e,
+	0x57, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x54, 0x72, 0x61, 0x64, 0x65, 0x41, 0x6d, 0x6f, 0x75, 0x6e,
+	0x74, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x11, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x54,
+	0x72, 0x61, 0x64, 0x65, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x30, 0x0a, 0x14, 0x6c, 0x69,
+	0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x6e, 0x65, 0x78, 0x74, 0x5f, 0x69, 0x6e, 0x64,
+	0x65, 0x78, 0x18, 0x06, 0x20, 0x01, 0x28, 0x04, 0x52, 0x12, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64,
+	0x69, 0x74, 0x79, 0x4e, 0x65, 0x78, 0x74, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x28, 0x0a, 0x10,
+	0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x6e, 0x65, 0x78, 0x74, 0x5f, 0x69, 0x6e, 0x64, 0x65, 0x78,
+	0x18, 0x07, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x4e, 0x65, 0x78,
+	0x74, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x42, 0x78, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f,
+	0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x50,
+	0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
+	0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65,
+	0x78, 0xa2, 0x02, 0x03, 0x4b, 0x44, 0x58, 0xaa, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x44,
+	0x65, 0x78, 0xca, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0xe2, 0x02, 0x14,
+	0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61,
+	0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x09, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x44, 0x65, 0x78,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1626,25 +1261,21 @@ var file_kopi_dex_genesis_proto_goTypes = []interface{}{
 	(*GenesisState)(nil),      // 0: kopi.dex.GenesisState
 	(*Params)(nil),            // 1: kopi.dex.Params
 	(*Liquidity)(nil),         // 2: kopi.dex.Liquidity
-	(*LiquidityPair)(nil),     // 3: kopi.dex.LiquidityPair
-	(*Ratio)(nil),             // 4: kopi.dex.Ratio
-	(*LiquiditySum)(nil),      // 5: kopi.dex.LiquiditySum
-	(*Order)(nil),             // 6: kopi.dex.Order
-	(*WalletTradeAmount)(nil), // 7: kopi.dex.WalletTradeAmount
+	(*Ratio)(nil),             // 3: kopi.dex.Ratio
+	(*Order)(nil),             // 4: kopi.dex.Order
+	(*WalletTradeAmount)(nil), // 5: kopi.dex.WalletTradeAmount
 }
 var file_kopi_dex_genesis_proto_depIdxs = []int32{
 	1, // 0: kopi.dex.GenesisState.params:type_name -> kopi.dex.Params
 	2, // 1: kopi.dex.GenesisState.liquidity_list:type_name -> kopi.dex.Liquidity
-	3, // 2: kopi.dex.GenesisState.liquidity_pair_list:type_name -> kopi.dex.LiquidityPair
-	4, // 3: kopi.dex.GenesisState.ratio_list:type_name -> kopi.dex.Ratio
-	5, // 4: kopi.dex.GenesisState.liquiditySumList:type_name -> kopi.dex.LiquiditySum
-	6, // 5: kopi.dex.GenesisState.orderList:type_name -> kopi.dex.Order
-	7, // 6: kopi.dex.GenesisState.walletTradeAmount:type_name -> kopi.dex.WalletTradeAmount
-	7, // [7:7] is the sub-list for method output_type
-	7, // [7:7] is the sub-list for method input_type
-	7, // [7:7] is the sub-list for extension type_name
-	7, // [7:7] is the sub-list for extension extendee
-	0, // [0:7] is the sub-list for field type_name
+	3, // 2: kopi.dex.GenesisState.ratio_list:type_name -> kopi.dex.Ratio
+	4, // 3: kopi.dex.GenesisState.orderList:type_name -> kopi.dex.Order
+	5, // 4: kopi.dex.GenesisState.wallet_trade_amount:type_name -> kopi.dex.WalletTradeAmount
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_kopi_dex_genesis_proto_init() }
@@ -1654,9 +1285,7 @@ func file_kopi_dex_genesis_proto_init() {
 	}
 	file_kopi_dex_params_proto_init()
 	file_kopi_dex_liquidity_proto_init()
-	file_kopi_dex_liquidity_pair_proto_init()
 	file_kopi_dex_ratio_proto_init()
-	file_kopi_dex_liquidity_sum_proto_init()
 	file_kopi_dex_order_proto_init()
 	file_kopi_dex_wallet_trade_amount_proto_init()
 	if !protoimpl.UnsafeEnabled {

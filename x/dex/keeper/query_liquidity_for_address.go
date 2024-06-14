@@ -27,11 +27,11 @@ func (k Keeper) LiquidityForAddress(goCtx context.Context, req *types.QueryLiqui
 		userAmount := k.GetLiquidityByAddress(ctx, denom, req.Address)
 		sum := k.GetLiquiditySum(ctx, denom)
 
-		userAmountUSD, _ := k.GetValueInUSD(ctx, denom, userAmount)
-		sumUSD, _ := k.GetValueInUSD(ctx, denom, sum)
+		userAmountUSD, _ := k.GetValueInUSD(ctx, denom, userAmount.ToLegacyDec())
+		sumUSD, _ := k.GetValueInUSD(ctx, denom, sum.ToLegacyDec())
 
 		availableBalance, _ := k.getAvailableBalance(ctx, req.Address, denom)
-		availableBalanceUSD, _ := k.GetValueInUSD(ctx, denom, availableBalance)
+		availableBalanceUSD, _ := k.GetValueInUSD(ctx, denom, availableBalance.ToLegacyDec())
 
 		liquidity := types.AddressLiquidity{}
 		liquidity.UserAmount = userAmount.String()

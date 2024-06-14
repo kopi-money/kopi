@@ -26,6 +26,7 @@ type BankKeeper interface {
 	SendCoinsFromModuleToAccount(ctx context.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 	SendCoinsFromAccountToModule(ctx context.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
 	SendCoinsFromModuleToModule(ctx context.Context, senderModule, recipientModule string, amt sdk.Coins) error
+	SendCoins(ctx context.Context, senderAddr, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 
 	BurnCoins(ctx context.Context, name string, amt sdk.Coins) error
 	MintCoins(ctx context.Context, name string, amt sdk.Coins) error
@@ -47,14 +48,14 @@ type DexKeeper interface {
 	cache.Cache
 
 	CalculatePrice(ctx context.Context, denomFrom, denomTo string) (math.LegacyDec, error)
-	ExecuteTrade(ctx context.Context, eventManager sdk.EventManagerI, options dextypes.TradeOptions) (math.Int, math.Int, math.Int, math.Int, error)
+	ExecuteTrade(cctx dextypes.TradeContext) (math.Int, math.Int, math.Int, math.Int, math.Int, error)
 	GetDenomValue(ctx context.Context, denom string) (math.LegacyDec, error)
 	GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int
 	GetAllOrdersByAddress(ctx context.Context, address string) []dextypes.Order
 	GetPriceInUSD(ctx context.Context, denom string) (math.LegacyDec, error)
-	GetValueInUSD(ctx context.Context, denom string, amount math.Int) (math.LegacyDec, error)
-	GetValueInBase(ctx context.Context, denom string, amount math.Int) (math.LegacyDec, error)
-	GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.Int) (math.LegacyDec, error)
+	GetValueInUSD(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
+	GetValueInBase(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
+	GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.LegacyDec) (math.LegacyDec, error)
 	NewOrdersCaches(ctx context.Context) *dextypes.OrdersCaches
-	TradeSimulation(ctx context.Context, denomFrom, denomTo, address string, amountStart math.Int, excludeFromDiscount bool) (math.Int, math.LegacyDec, math.LegacyDec, error)
+	TradeSimulation(ctx dextypes.TradeContext) (math.Int, math.LegacyDec, math.LegacyDec, error)
 }

@@ -17,27 +17,32 @@ message Params {
     (gogoproto.nullable)   = false
   ];
 
-  bytes reserve_share = 2 [
+  bytes order_fee = 2 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
 
-  bytes virtual_liquidity_decay = 3 [
+  bytes reserve_share = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
 
-  bytes fee_reimbursement = 4 [
+  bytes virtual_liquidity_decay = 4 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
 
-  bytes trade_amount_decay = 5 [
+  bytes fee_reimbursement = 5 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
 
-  repeated DiscountLevel discount_levels = 6;
+  bytes trade_amount_decay = 6 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
 
-  uint64 max_order_life = 7;
+  repeated DiscountLevel discount_levels = 7;
+
+  uint64 max_order_life = 8;
 }

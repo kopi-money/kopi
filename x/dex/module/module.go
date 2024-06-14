@@ -168,7 +168,7 @@ func (am AppModule) BeginBlock(goCtx context.Context) error {
 		return errors.Wrap(err, "could not initialize dex module")
 	}
 
-	return cache.Transact(goCtx, []cache.Cache{am.keeper}, func(ctx sdk.Context) error {
+	return cache.Transact(goCtx, func(ctx sdk.Context) error {
 		am.keeper.UpdateVirtualLiquidities(ctx)
 
 		if err := am.keeper.BeginBlockCheckReserve(ctx, ctx.EventManager(), ctx.BlockHeight()); err != nil {
@@ -182,7 +182,7 @@ func (am AppModule) BeginBlock(goCtx context.Context) error {
 // EndBlock contains the logic that is automatically triggered at the end of each block.
 // The end block implementation is optional.
 func (am AppModule) EndBlock(goCtx context.Context) error {
-	return cache.Transact(goCtx, []cache.Cache{am.keeper}, func(ctx sdk.Context) error {
+	return cache.Transact(goCtx, func(ctx sdk.Context) error {
 		if err := am.keeper.ExecuteOrders(ctx, ctx.EventManager(), ctx.BlockHeight()); err != nil {
 			return errors.Wrap(err, "error executing orders")
 		}

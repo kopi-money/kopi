@@ -29,34 +29,26 @@ func (k Keeper) GetAllDenomCollaterals(ctx context.Context) (list []types.Collat
 	return
 }
 
-func (k Keeper) CollateralIterator(ctx context.Context, denom string) *cache.Iterator[collections.Pair[string, string], types.Collateral] {
-	extraFilters := []cache.Filter[collections.Pair[string, string]]{
-		func(key collections.Pair[string, string]) bool {
-			return key.K1() == denom
-		},
+func (k Keeper) CollateralIterator(ctx context.Context, denom string) cache.Iterator[collections.Pair[string, string], types.Collateral] {
+	rng := collections.NewPrefixedPairRange[string, string](denom)
+	keyPrefix := func(key collections.Pair[string, string]) bool {
+		return key.K1() == denom
 	}
-	return k.collateral.Iterator(ctx, extraFilters...)
+	return k.collateral.Iterator(ctx, rng, keyPrefix)
 }
 
 func (k Keeper) LoadCollateral(ctx context.Context, denom, address string) (types.Collateral, bool) {
 	return k.collateral.Get(ctx, collections.Join(denom, address))
 }
 
-func (k Keeper) SetCollateral(ctx context.Context, denom, address string, amount, change math.Int) {
+func (k Keeper) SetCollateral(ctx context.Context, denom, address string, amount math.Int) {
 	key := collections.Join(denom, address)
 	k.collateral.Set(ctx, key, types.Collateral{Address: address, Amount: amount})
-	k.updateCollateralSum(ctx, denom, change)
 }
 
-func (k Keeper) removeCollateral(ctx context.Context, denom, address string, change math.Int) {
+func (k Keeper) removeCollateral(ctx context.Context, denom, address string) {
 	key := collections.Join(denom, address)
 	k.collateral.Remove(ctx, key)
-	k.updateCollateralSum(ctx, denom, change)
-}
-
-func (k Keeper) updateCollateralSum(ctx context.Context, denom string, change math.Int) {
-	collateralSum := k.getCollateralSum(ctx, denom).Add(change)
-	k.setCollateralSum(ctx, denom, collateralSum)
 }
 
 func (k Keeper) getCollateralForDenomForAddress(ctx context.Context, denom, address string) (types.Collateral, bool) {
@@ -102,7 +94,7 @@ func (k Keeper) calcCollateralValueBase(ctx context.Context, address string) (ma
 			continue
 		}
 
-		value := amount.ToLegacyDec().Mul(collateralDenom.Ltv).RoundInt()
+		value := amount.ToLegacyDec().Mul(collateralDenom.Ltv)
 		valueBase, err := k.DexKeeper.GetValueInBase(ctx, collateralDenom.Denom, value)
 		if err != nil {
 			return math.LegacyDec{}, errors.Wrap(err, "could not convert collateral amount to base")
@@ -114,43 +106,43 @@ func (k Keeper) calcCollateralValueBase(ctx context.Context, address string) (ma
 	return sum, nil
 }
 
-func (k Keeper) CalcWithdrawableCollateralAmount(ctx context.Context, address, denom string) (math.Int, error) {
+func (k Keeper) CalcWithdrawableCollateralAmount(ctx context.Context, address, denom string) (math.LegacyDec, error) {
 	loanSumBase, err := k.getUserLoansSumBase(ctx, address)
 	if err != nil {
-		return math.Int{}, errors.Wrap(err, "could not get loan sum")
+		return math.LegacyDec{}, errors.Wrap(err, "could not get loan sum")
 	}
 
 	// When there are no outstanding loans, the whole collateral amount can be withdrawn
 	if loanSumBase.Equal(math.LegacyZeroDec()) {
 		amount := k.getCollateralForDenomForAddressWithDefault(ctx, denom, address)
-		return amount, nil
+		return amount.ToLegacyDec(), nil
 	}
 
 	collateralDenomLTV, err := k.DenomKeeper.GetLTV(ctx, denom)
 	if err != nil {
-		return math.Int{}, err
+		return math.LegacyDec{}, err
 	}
 
 	collateralSumBase, err := k.calcCollateralValueBase(ctx, address)
 	if err != nil {
-		return math.Int{}, errors.Wrap(err, "could not calculate collateral sum without")
+		return math.LegacyDec{}, errors.Wrap(err, "could not calculate collateral sum without")
 	}
 
 	if loanSumBase.GT(math.LegacyZeroDec()) && loanSumBase.GTE(collateralSumBase) {
-		return math.ZeroInt(), nil
+		return math.LegacyZeroDec(), nil
 	}
 
 	excessAmountBase := collateralSumBase.Sub(loanSumBase)
-	excessAmount, err := k.DexKeeper.GetValueIn(ctx, utils.BaseCurrency, denom, excessAmountBase.RoundInt())
+	excessAmount, err := k.DexKeeper.GetValueIn(ctx, utils.BaseCurrency, denom, excessAmountBase)
 	if err != nil {
-		return math.Int{}, errors.Wrap(err, "could not convert back to denom currency")
+		return math.LegacyDec{}, errors.Wrap(err, "could not convert back to denom currency")
 	}
 
 	excessAmount = excessAmount.Quo(collateralDenomLTV)
 	collateral := k.getCollateralForDenomForAddressWithDefault(ctx, denom, address)
-	excessAmountInt := math.MinInt(collateral, excessAmount.TruncateInt())
+	excessAmount = math.LegacyMinDec(collateral.ToLegacyDec(), excessAmount)
 
-	return excessAmountInt, nil
+	return excessAmount, nil
 }
 
 func compareCollaterals(c1, c2 types.Collateral) bool {

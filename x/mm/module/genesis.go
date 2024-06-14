@@ -10,7 +10,7 @@ import (
 
 // InitGenesis initializes the module's state from a provided genesis state.
 func InitGenesis(goCtx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
-	if err := cache.Transact(goCtx, []cache.Cache{k}, func(ctx sdk.Context) error {
+	if err := cache.Transact(goCtx, func(ctx sdk.Context) error {
 		// this line is used by starport scaffolding # genesis/module/init
 		if err := k.SetParams(ctx, genState.Params); err != nil {
 			return err
@@ -33,18 +33,20 @@ func InitGenesis(goCtx sdk.Context, k keeper.Keeper, genState types.GenesisState
 
 		for _, collaterals := range genState.Collaterals {
 			for _, collateral := range collaterals.Collaterals {
-				k.SetCollateral(ctx, collaterals.Denom, collateral.Address, collateral.Amount, collateral.Amount)
+				k.SetCollateral(ctx, collaterals.Denom, collateral.Address, collateral.Amount)
 			}
 		}
 
 		for _, denomRedemptions := range genState.DenomRedemptions {
 			for _, denomRedemption := range denomRedemptions.Redemptions {
-				k.SetRedemption(ctx, denomRedemptions.Denom, types.Redemption{
+				if err := k.SetRedemption(ctx, denomRedemptions.Denom, types.Redemption{
 					Address: denomRedemption.Address,
 					AddedAt: denomRedemption.AddedAt,
 					Amount:  denomRedemption.Amount,
 					Fee:     denomRedemption.Fee,
-				})
+				}); err != nil {
+					panic(err)
+				}
 			}
 		}
 

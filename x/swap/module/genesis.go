@@ -10,7 +10,7 @@ import (
 
 // InitGenesis initializes the module's state from a provided genesis state.
 func InitGenesis(goCtx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
-	if err := cache.Transact(goCtx, []cache.Cache{k}, func(ctx sdk.Context) error {
+	if err := cache.Transact(goCtx, func(ctx sdk.Context) error {
 
 		// this line is used by starport scaffolding # genesis/module/init
 		if err := k.SetParams(ctx, genState.Params); err != nil {

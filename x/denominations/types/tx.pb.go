@@ -72,6 +72,7 @@ type MsgAddDEXDenom struct {
 	Name         string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Factor       string `protobuf:"bytes,3,opt,name=factor,proto3" json:"factor,omitempty"`
 	MinLiquidity string `protobuf:"bytes,4,opt,name=min_liquidity,json=minLiquidity,proto3" json:"min_liquidity,omitempty"`
+	MinOrderSize string `protobuf:"bytes,5,opt,name=min_order_size,json=minOrderSize,proto3" json:"min_order_size,omitempty"`
 }
 
 func (m *MsgAddDEXDenom) Reset()         { *m = MsgAddDEXDenom{} }
@@ -135,24 +136,31 @@ func (m *MsgAddDEXDenom) GetMinLiquidity() string {
 	return ""
 }
 
-type MsgUpdateDEXDenom struct {
+func (m *MsgAddDEXDenom) GetMinOrderSize() string {
+	if m != nil {
+		return m.MinOrderSize
+	}
+	return ""
+}
+
+type MsgUpdateDEXDenomMinimumLiquidity struct {
 	Authority    string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Name         string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	MinLiquidity string `protobuf:"bytes,3,opt,name=min_liquidity,json=minLiquidity,proto3" json:"min_liquidity,omitempty"`
 }
 
-func (m *MsgUpdateDEXDenom) Reset()         { *m = MsgUpdateDEXDenom{} }
-func (m *MsgUpdateDEXDenom) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdateDEXDenom) ProtoMessage()    {}
-func (*MsgUpdateDEXDenom) Descriptor() ([]byte, []int) {
+func (m *MsgUpdateDEXDenomMinimumLiquidity) Reset()         { *m = MsgUpdateDEXDenomMinimumLiquidity{} }
+func (m *MsgUpdateDEXDenomMinimumLiquidity) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateDEXDenomMinimumLiquidity) ProtoMessage()    {}
+func (*MsgUpdateDEXDenomMinimumLiquidity) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{2}
 }
-func (m *MsgUpdateDEXDenom) XXX_Unmarshal(b []byte) error {
+func (m *MsgUpdateDEXDenomMinimumLiquidity) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdateDEXDenom) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgUpdateDEXDenomMinimumLiquidity) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdateDEXDenom.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgUpdateDEXDenomMinimumLiquidity.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -162,35 +170,95 @@ func (m *MsgUpdateDEXDenom) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdateDEXDenom) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdateDEXDenom.Merge(m, src)
+func (m *MsgUpdateDEXDenomMinimumLiquidity) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateDEXDenomMinimumLiquidity.Merge(m, src)
 }
-func (m *MsgUpdateDEXDenom) XXX_Size() int {
+func (m *MsgUpdateDEXDenomMinimumLiquidity) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdateDEXDenom) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdateDEXDenom.DiscardUnknown(m)
+func (m *MsgUpdateDEXDenomMinimumLiquidity) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateDEXDenomMinimumLiquidity.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdateDEXDenom proto.InternalMessageInfo
+var xxx_messageInfo_MsgUpdateDEXDenomMinimumLiquidity proto.InternalMessageInfo
 
-func (m *MsgUpdateDEXDenom) GetAuthority() string {
+func (m *MsgUpdateDEXDenomMinimumLiquidity) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgUpdateDEXDenom) GetName() string {
+func (m *MsgUpdateDEXDenomMinimumLiquidity) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *MsgUpdateDEXDenom) GetMinLiquidity() string {
+func (m *MsgUpdateDEXDenomMinimumLiquidity) GetMinLiquidity() string {
 	if m != nil {
 		return m.MinLiquidity
+	}
+	return ""
+}
+
+type MsgUpdateDEXDenomMinimumOrderSize struct {
+	Authority    string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	Name         string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	MinOrderSize string `protobuf:"bytes,3,opt,name=min_order_size,json=minOrderSize,proto3" json:"min_order_size,omitempty"`
+}
+
+func (m *MsgUpdateDEXDenomMinimumOrderSize) Reset()         { *m = MsgUpdateDEXDenomMinimumOrderSize{} }
+func (m *MsgUpdateDEXDenomMinimumOrderSize) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateDEXDenomMinimumOrderSize) ProtoMessage()    {}
+func (*MsgUpdateDEXDenomMinimumOrderSize) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6ba97ecacef12ed2, []int{3}
+}
+func (m *MsgUpdateDEXDenomMinimumOrderSize) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateDEXDenomMinimumOrderSize) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateDEXDenomMinimumOrderSize.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateDEXDenomMinimumOrderSize) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateDEXDenomMinimumOrderSize.Merge(m, src)
+}
+func (m *MsgUpdateDEXDenomMinimumOrderSize) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateDEXDenomMinimumOrderSize) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateDEXDenomMinimumOrderSize.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateDEXDenomMinimumOrderSize proto.InternalMessageInfo
+
+func (m *MsgUpdateDEXDenomMinimumOrderSize) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgUpdateDEXDenomMinimumOrderSize) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *MsgUpdateDEXDenomMinimumOrderSize) GetMinOrderSize() string {
+	if m != nil {
+		return m.MinOrderSize
 	}
 	return ""
 }
@@ -204,13 +272,14 @@ type MsgAddKCoin struct {
 	MaxBurnAmount string   `protobuf:"bytes,6,opt,name=max_burn_amount,json=maxBurnAmount,proto3" json:"max_burn_amount,omitempty"`
 	Factor        string   `protobuf:"bytes,7,opt,name=factor,proto3" json:"factor,omitempty"`
 	MinLiquidity  string   `protobuf:"bytes,8,opt,name=min_liquidity,json=minLiquidity,proto3" json:"min_liquidity,omitempty"`
+	MinOrderSize  string   `protobuf:"bytes,9,opt,name=min_order_size,json=minOrderSize,proto3" json:"min_order_size,omitempty"`
 }
 
 func (m *MsgAddKCoin) Reset()         { *m = MsgAddKCoin{} }
 func (m *MsgAddKCoin) String() string { return proto.CompactTextString(m) }
 func (*MsgAddKCoin) ProtoMessage()    {}
 func (*MsgAddKCoin) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{3}
+	return fileDescriptor_6ba97ecacef12ed2, []int{4}
 }
 func (m *MsgAddKCoin) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -295,6 +364,13 @@ func (m *MsgAddKCoin) GetMinLiquidity() string {
 	return ""
 }
 
+func (m *MsgAddKCoin) GetMinOrderSize() string {
+	if m != nil {
+		return m.MinOrderSize
+	}
+	return ""
+}
+
 type MsgUpdateKCoinSupply struct {
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Denom     string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
@@ -305,7 +381,7 @@ func (m *MsgUpdateKCoinSupply) Reset()         { *m = MsgUpdateKCoinSupply{} }
 func (m *MsgUpdateKCoinSupply) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateKCoinSupply) ProtoMessage()    {}
 func (*MsgUpdateKCoinSupply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{4}
+	return fileDescriptor_6ba97ecacef12ed2, []int{5}
 }
 func (m *MsgUpdateKCoinSupply) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -365,7 +441,7 @@ func (m *MsgUpdateKCoinBurnAmount) Reset()         { *m = MsgUpdateKCoinBurnAmou
 func (m *MsgUpdateKCoinBurnAmount) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateKCoinBurnAmount) ProtoMessage()    {}
 func (*MsgUpdateKCoinBurnAmount) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{5}
+	return fileDescriptor_6ba97ecacef12ed2, []int{6}
 }
 func (m *MsgUpdateKCoinBurnAmount) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -425,7 +501,7 @@ func (m *MsgUpdateKCoinMintAmount) Reset()         { *m = MsgUpdateKCoinMintAmou
 func (m *MsgUpdateKCoinMintAmount) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateKCoinMintAmount) ProtoMessage()    {}
 func (*MsgUpdateKCoinMintAmount) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{6}
+	return fileDescriptor_6ba97ecacef12ed2, []int{7}
 }
 func (m *MsgUpdateKCoinMintAmount) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -485,7 +561,7 @@ func (m *MsgAddKCoinReferences) Reset()         { *m = MsgAddKCoinReferences{} }
 func (m *MsgAddKCoinReferences) String() string { return proto.CompactTextString(m) }
 func (*MsgAddKCoinReferences) ProtoMessage()    {}
 func (*MsgAddKCoinReferences) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{7}
+	return fileDescriptor_6ba97ecacef12ed2, []int{8}
 }
 func (m *MsgAddKCoinReferences) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -545,7 +621,7 @@ func (m *MsgRemoveKCoinReferences) Reset()         { *m = MsgRemoveKCoinReferenc
 func (m *MsgRemoveKCoinReferences) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoveKCoinReferences) ProtoMessage()    {}
 func (*MsgRemoveKCoinReferences) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{8}
+	return fileDescriptor_6ba97ecacef12ed2, []int{9}
 }
 func (m *MsgRemoveKCoinReferences) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -606,7 +682,7 @@ func (m *MsgAddCollateralDenom) Reset()         { *m = MsgAddCollateralDenom{} }
 func (m *MsgAddCollateralDenom) String() string { return proto.CompactTextString(m) }
 func (*MsgAddCollateralDenom) ProtoMessage()    {}
 func (*MsgAddCollateralDenom) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{9}
+	return fileDescriptor_6ba97ecacef12ed2, []int{10}
 }
 func (m *MsgAddCollateralDenom) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -673,7 +749,7 @@ func (m *MsgUpdateCollateralDenomLTV) Reset()         { *m = MsgUpdateCollateral
 func (m *MsgUpdateCollateralDenomLTV) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateCollateralDenomLTV) ProtoMessage()    {}
 func (*MsgUpdateCollateralDenomLTV) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{10}
+	return fileDescriptor_6ba97ecacef12ed2, []int{11}
 }
 func (m *MsgUpdateCollateralDenomLTV) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -733,7 +809,7 @@ func (m *MsgUpdateCollateralDenomMaxDeposit) Reset()         { *m = MsgUpdateCol
 func (m *MsgUpdateCollateralDenomMaxDeposit) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateCollateralDenomMaxDeposit) ProtoMessage()    {}
 func (*MsgUpdateCollateralDenomMaxDeposit) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{11}
+	return fileDescriptor_6ba97ecacef12ed2, []int{12}
 }
 func (m *MsgUpdateCollateralDenomMaxDeposit) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -790,14 +866,15 @@ type MsgAddCAsset struct {
 	DexFeeShare  string `protobuf:"bytes,4,opt,name=dex_fee_share,json=dexFeeShare,proto3" json:"dex_fee_share,omitempty"`
 	Factor       string `protobuf:"bytes,5,opt,name=factor,proto3" json:"factor,omitempty"`
 	MinLiquidity string `protobuf:"bytes,6,opt,name=min_liquidity,json=minLiquidity,proto3" json:"min_liquidity,omitempty"`
-	BorrowLimit  string `protobuf:"bytes,7,opt,name=borrow_limit,json=borrowLimit,proto3" json:"borrow_limit,omitempty"`
+	MinOrderSize string `protobuf:"bytes,7,opt,name=min_order_size,json=minOrderSize,proto3" json:"min_order_size,omitempty"`
+	BorrowLimit  string `protobuf:"bytes,8,opt,name=borrow_limit,json=borrowLimit,proto3" json:"borrow_limit,omitempty"`
 }
 
 func (m *MsgAddCAsset) Reset()         { *m = MsgAddCAsset{} }
 func (m *MsgAddCAsset) String() string { return proto.CompactTextString(m) }
 func (*MsgAddCAsset) ProtoMessage()    {}
 func (*MsgAddCAsset) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{12}
+	return fileDescriptor_6ba97ecacef12ed2, []int{13}
 }
 func (m *MsgAddCAsset) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -868,6 +945,13 @@ func (m *MsgAddCAsset) GetMinLiquidity() string {
 	return ""
 }
 
+func (m *MsgAddCAsset) GetMinOrderSize() string {
+	if m != nil {
+		return m.MinOrderSize
+	}
+	return ""
+}
+
 func (m *MsgAddCAsset) GetBorrowLimit() string {
 	if m != nil {
 		return m.BorrowLimit
@@ -885,7 +969,7 @@ func (m *MsgUpdateCAssetDexFeeShare) Reset()         { *m = MsgUpdateCAssetDexFe
 func (m *MsgUpdateCAssetDexFeeShare) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateCAssetDexFeeShare) ProtoMessage()    {}
 func (*MsgUpdateCAssetDexFeeShare) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{13}
+	return fileDescriptor_6ba97ecacef12ed2, []int{14}
 }
 func (m *MsgUpdateCAssetDexFeeShare) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -945,7 +1029,7 @@ func (m *MsgUpdateCAssetBorrowLimit) Reset()         { *m = MsgUpdateCAssetBorro
 func (m *MsgUpdateCAssetBorrowLimit) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateCAssetBorrowLimit) ProtoMessage()    {}
 func (*MsgUpdateCAssetBorrowLimit) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{14}
+	return fileDescriptor_6ba97ecacef12ed2, []int{15}
 }
 func (m *MsgUpdateCAssetBorrowLimit) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1005,7 +1089,7 @@ func (m *MsgUpdateCAssetMinimumLoanSize) Reset()         { *m = MsgUpdateCAssetM
 func (m *MsgUpdateCAssetMinimumLoanSize) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateCAssetMinimumLoanSize) ProtoMessage()    {}
 func (*MsgUpdateCAssetMinimumLoanSize) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{15}
+	return fileDescriptor_6ba97ecacef12ed2, []int{16}
 }
 func (m *MsgUpdateCAssetMinimumLoanSize) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1058,7 +1142,8 @@ func (m *MsgUpdateCAssetMinimumLoanSize) GetMinimumLoanSize() string {
 func init() {
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "kopi.denominations.MsgUpdateParamsResponse")
 	proto.RegisterType((*MsgAddDEXDenom)(nil), "kopi.denominations.MsgAddDEXDenom")
-	proto.RegisterType((*MsgUpdateDEXDenom)(nil), "kopi.denominations.MsgUpdateDEXDenom")
+	proto.RegisterType((*MsgUpdateDEXDenomMinimumLiquidity)(nil), "kopi.denominations.MsgUpdateDEXDenomMinimumLiquidity")
+	proto.RegisterType((*MsgUpdateDEXDenomMinimumOrderSize)(nil), "kopi.denominations.MsgUpdateDEXDenomMinimumOrderSize")
 	proto.RegisterType((*MsgAddKCoin)(nil), "kopi.denominations.MsgAddKCoin")
 	proto.RegisterType((*MsgUpdateKCoinSupply)(nil), "kopi.denominations.MsgUpdateKCoinSupply")
 	proto.RegisterType((*MsgUpdateKCoinBurnAmount)(nil), "kopi.denominations.MsgUpdateKCoinBurnAmount")
@@ -1077,77 +1162,81 @@ func init() {
 func init() { proto.RegisterFile("kopi/denominations/tx.proto", fileDescriptor_6ba97ecacef12ed2) }
 
 var fileDescriptor_6ba97ecacef12ed2 = []byte{
-	// 1119 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x58, 0x41, 0x6f, 0x1b, 0x45,
-	0x14, 0xee, 0x66, 0x9b, 0xd0, 0xbc, 0x24, 0x2d, 0x59, 0xa5, 0xc4, 0x75, 0x54, 0x27, 0xdd, 0x8a,
-	0x2a, 0x35, 0xc4, 0x2e, 0x0d, 0x2a, 0xc2, 0x02, 0x89, 0x38, 0xa1, 0x87, 0x12, 0x4b, 0xc8, 0x01,
+	// 1179 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x58, 0x4f, 0x6f, 0x1b, 0x45,
+	0x14, 0xef, 0x76, 0x9b, 0xb4, 0x7e, 0xf9, 0x53, 0xb2, 0x4a, 0x89, 0x9b, 0xa8, 0x4e, 0xb2, 0x45,
+	0x28, 0x35, 0xc4, 0x2e, 0x0d, 0x04, 0xc9, 0x02, 0x89, 0x38, 0xa1, 0x12, 0x25, 0x16, 0xc8, 0x01,
 	0x54, 0xf5, 0xc0, 0x6a, 0x9d, 0x9d, 0x38, 0x03, 0x9e, 0x19, 0xb3, 0xb3, 0x0e, 0x4e, 0x0f, 0x08,
-	0x71, 0xe0, 0xc0, 0x89, 0x7f, 0xc0, 0x5f, 0x88, 0x04, 0x77, 0x04, 0xe2, 0x80, 0xb8, 0x10, 0x7a,
-	0x81, 0x03, 0x12, 0x55, 0x72, 0xc8, 0xdf, 0x40, 0x3b, 0xbb, 0xf6, 0xae, 0x77, 0xd6, 0x6b, 0xaf,
-	0xe3, 0xc0, 0x25, 0xd9, 0x7d, 0xef, 0xcd, 0xbc, 0xef, 0x7b, 0xef, 0xcd, 0xbe, 0x37, 0x86, 0xa5,
-	0x4f, 0x59, 0x13, 0x17, 0x2d, 0x44, 0x19, 0xc1, 0xd4, 0x74, 0x30, 0xa3, 0xbc, 0xe8, 0xb4, 0x0b,
-	0x4d, 0x9b, 0x39, 0x4c, 0xd3, 0x5c, 0x65, 0xa1, 0x47, 0x99, 0x9d, 0x37, 0x09, 0xa6, 0xac, 0x28,
-	0xfe, 0x7a, 0x66, 0xd9, 0xc5, 0x5d, 0xc6, 0x09, 0xe3, 0x45, 0xc2, 0xeb, 0xc5, 0x83, 0xd7, 0xdc,
-	0x7f, 0xbe, 0xe2, 0x86, 0xa7, 0x30, 0xc4, 0x5b, 0xd1, 0x7b, 0xf1, 0x55, 0x0b, 0x75, 0x56, 0x67,
-	0x9e, 0xdc, 0x7d, 0xf2, 0xa5, 0xcb, 0x31, 0x68, 0x9a, 0xa6, 0x6d, 0x12, 0x7f, 0x99, 0x7e, 0x03,
-	0x16, 0x2b, 0xbc, 0xfe, 0x61, 0xd3, 0x32, 0x1d, 0xf4, 0xbe, 0x50, 0x54, 0x11, 0x6f, 0x32, 0xca,
-	0x91, 0xfe, 0x87, 0x02, 0x57, 0x2b, 0xbc, 0xbe, 0x61, 0x59, 0x5b, 0xef, 0x3e, 0xde, 0x72, 0xb7,
-	0xd0, 0x1e, 0xc0, 0xb4, 0xd9, 0x72, 0xf6, 0x99, 0x8d, 0x9d, 0xc3, 0x8c, 0xb2, 0xa2, 0xac, 0x4e,
-	0x97, 0x33, 0xcf, 0x7e, 0x58, 0x5b, 0xf0, 0x91, 0x6c, 0x58, 0x96, 0x8d, 0x38, 0xdf, 0x71, 0x6c,
-	0x4c, 0xeb, 0xd5, 0xc0, 0x54, 0xd3, 0xe0, 0x32, 0x35, 0x09, 0xca, 0x4c, 0xb8, 0x4b, 0xaa, 0xe2,
-	0x59, 0x7b, 0x09, 0xa6, 0xf6, 0xcc, 0x5d, 0x87, 0xd9, 0x19, 0x55, 0x48, 0xfd, 0x37, 0xed, 0x36,
-	0xcc, 0x11, 0x4c, 0x8d, 0x06, 0xfe, 0xac, 0x85, 0x2d, 0xd7, 0xcf, 0x65, 0xa1, 0x9e, 0x25, 0x98,
-	0x6e, 0x77, 0x64, 0xa5, 0x07, 0x5f, 0x9d, 0x1d, 0xe5, 0x03, 0x07, 0xdf, 0x9c, 0x1d, 0xe5, 0x6f,
-	0x0b, 0xaa, 0xed, 0x08, 0xd9, 0x5e, 0x02, 0xfa, 0x8f, 0x0a, 0xcc, 0x77, 0xf9, 0x5e, 0x08, 0x2d,
-	0x09, 0xbe, 0x1a, 0x03, 0xff, 0x4d, 0x19, 0xfe, 0x9d, 0x7e, 0xf0, 0x7b, 0xb1, 0xea, 0x7f, 0x4f,
-	0xc0, 0x8c, 0x47, 0xea, 0xbd, 0x4d, 0x86, 0xe9, 0xc8, 0xd8, 0x17, 0x60, 0x52, 0xb8, 0xf2, 0xc1,
-	0x7b, 0x2f, 0x5a, 0x0e, 0xc0, 0x46, 0x7b, 0xc8, 0x46, 0x74, 0x17, 0xf1, 0x8c, 0xba, 0xa2, 0xae,
-	0x4e, 0x57, 0x43, 0x12, 0xed, 0x26, 0x00, 0x31, 0xdb, 0x06, 0x6f, 0x35, 0x9b, 0x8d, 0x4e, 0x66,
-	0xa6, 0x89, 0xd9, 0xde, 0x11, 0x02, 0xed, 0x0e, 0x5c, 0x73, 0xd5, 0x04, 0x53, 0xc7, 0x30, 0x09,
-	0x6b, 0x51, 0x27, 0x33, 0x29, 0x6c, 0xe6, 0x88, 0xd9, 0xae, 0x60, 0xea, 0x6c, 0x08, 0x61, 0xc7,
-	0xae, 0xd6, 0xb2, 0x69, 0xc7, 0x6e, 0xaa, 0x6b, 0x57, 0x6e, 0xd9, 0xd4, 0xb7, 0x0b, 0x6a, 0xe4,
-	0x85, 0xe4, 0x1a, 0xb9, 0x12, 0x13, 0xe4, 0x75, 0x39, 0xc8, 0x2b, 0x09, 0x35, 0x22, 0xc2, 0xa9,
-	0xff, 0xa4, 0xc0, 0x42, 0x37, 0xe8, 0x42, 0xe4, 0x53, 0x1b, 0x6f, 0x9c, 0x7b, 0xe3, 0xa8, 0x46,
-	0xe2, 0x58, 0x7a, 0x4b, 0x86, 0x7e, 0x37, 0xb9, 0x3e, 0x42, 0x50, 0xf5, 0x67, 0x0a, 0x64, 0x7a,
-	0x15, 0xa1, 0x90, 0x8e, 0x97, 0x47, 0x4c, 0x22, 0xd5, 0x98, 0x44, 0x96, 0xde, 0x91, 0x09, 0xad,
-	0x0d, 0x41, 0x28, 0xd8, 0x21, 0x86, 0x54, 0xa8, 0x9e, 0x2e, 0x84, 0x54, 0xb8, 0x8a, 0xd5, 0x98,
-	0x2a, 0x1e, 0x95, 0x54, 0xb0, 0x83, 0xfe, 0x8b, 0x02, 0xd7, 0x43, 0xd5, 0x57, 0x0d, 0x0e, 0xda,
-	0x7f, 0x7a, 0xac, 0x4b, 0x6f, 0xcb, 0x4c, 0xf2, 0x83, 0x8e, 0x4a, 0x00, 0x56, 0xff, 0xcd, 0xcb,
-	0x4d, 0x15, 0x11, 0x76, 0x80, 0xfe, 0x5f, 0x26, 0x69, 0x72, 0x12, 0x8b, 0x57, 0xff, 0xb3, 0x9b,
-	0x93, 0x4d, 0xd6, 0x68, 0x98, 0x0e, 0xb2, 0xcd, 0xc6, 0xf9, 0xda, 0x44, 0x3c, 0x93, 0x17, 0x41,
-	0x6d, 0x38, 0x07, 0x7e, 0x65, 0xb9, 0x8f, 0xda, 0x32, 0xcc, 0xb8, 0x75, 0x67, 0xa1, 0x26, 0xe3,
-	0xd8, 0xf1, 0xbf, 0xae, 0xee, 0x77, 0x62, 0xcb, 0x93, 0xa4, 0x4d, 0x53, 0x04, 0xbf, 0xfe, 0xb3,
-	0x02, 0x4b, 0xdd, 0x52, 0x8c, 0x28, 0xb7, 0x3f, 0xf8, 0xe8, 0xa2, 0xf9, 0x95, 0x36, 0x65, 0xf8,
-	0xf7, 0x92, 0xcf, 0x8b, 0x0c, 0x52, 0xff, 0x47, 0x01, 0xbd, 0x9f, 0xbe, 0xd2, 0x0d, 0xd5, 0x98,
-	0xb9, 0x44, 0x32, 0xa3, 0x4a, 0x99, 0x79, 0x24, 0x53, 0x7b, 0x23, 0x15, 0xb5, 0x00, 0xba, 0xfe,
-	0xfd, 0x04, 0xcc, 0xfa, 0x09, 0xdc, 0xe0, 0x1c, 0x39, 0x63, 0x1d, 0x4f, 0x6e, 0x02, 0xd4, 0x4c,
-	0x8e, 0x0c, 0x8f, 0xa4, 0xdf, 0x78, 0x5c, 0x89, 0x57, 0xe2, 0x3a, 0xcc, 0x59, 0xa8, 0x6d, 0xec,
-	0x21, 0x64, 0xf0, 0x7d, 0xd3, 0x46, 0x7e, 0x11, 0xce, 0x58, 0xa8, 0xfd, 0x10, 0xa1, 0x1d, 0x57,
-	0x14, 0x6a, 0xca, 0x93, 0xc9, 0x4d, 0x79, 0x4a, 0x6e, 0xca, 0xda, 0x2d, 0x98, 0xad, 0x31, 0xdb,
-	0x66, 0x9f, 0x1b, 0x0d, 0x4c, 0xb0, 0xe3, 0xf7, 0xf5, 0x19, 0x4f, 0xb6, 0xed, 0x8a, 0x4a, 0xaf,
-	0xcb, 0xb1, 0xbc, 0x95, 0x54, 0xe5, 0x22, 0x48, 0xfa, 0xb1, 0x02, 0xd9, 0x20, 0xb8, 0x42, 0xb6,
-	0x15, 0x02, 0x3d, 0xce, 0x18, 0x4a, 0x41, 0x52, 0xa5, 0x20, 0x95, 0xca, 0x32, 0x89, 0xe2, 0x80,
-	0x82, 0x88, 0x62, 0xd6, 0x7f, 0x97, 0x29, 0x95, 0x83, 0x38, 0x8d, 0x95, 0x52, 0x34, 0x2d, 0xaa,
-	0x9c, 0x96, 0x51, 0x19, 0x85, 0x20, 0xeb, 0xcf, 0x15, 0xc8, 0x45, 0xd4, 0x15, 0x4c, 0x31, 0x69,
-	0x91, 0x6d, 0x66, 0xd2, 0x1d, 0xfc, 0x74, 0xbc, 0x89, 0xca, 0xc3, 0x3c, 0xf1, 0xb6, 0x37, 0x1a,
-	0xcc, 0xa4, 0x06, 0xc7, 0x4f, 0x3b, 0xc9, 0xba, 0x46, 0x7a, 0xfd, 0x96, 0x1e, 0xca, 0xf4, 0xd6,
-	0x87, 0xa1, 0x17, 0xc1, 0x7f, 0xff, 0xbb, 0x39, 0x50, 0x2b, 0xbc, 0xae, 0x7d, 0x0c, 0x33, 0xe1,
-	0x9b, 0x93, 0x5e, 0x90, 0xaf, 0x7e, 0x85, 0xde, 0xcb, 0x49, 0xf6, 0x95, 0x3e, 0x36, 0x71, 0xb7,
-	0x33, 0xcd, 0x82, 0xab, 0x91, 0x5b, 0xcc, 0xcb, 0x89, 0xcb, 0x47, 0xf3, 0xf2, 0x18, 0xae, 0x74,
-	0x6f, 0x1a, 0xcb, 0xfd, 0x29, 0x08, 0x83, 0x74, 0x3b, 0x7f, 0x02, 0xf3, 0xf2, 0x90, 0xbd, 0x9a,
-	0xb8, 0x43, 0xc8, 0x32, 0x9d, 0x2f, 0x1b, 0xae, 0xc7, 0xcf, 0x8d, 0xaf, 0x0e, 0xf6, 0x17, 0x58,
-	0x9f, 0xc7, 0x67, 0x68, 0x00, 0x1f, 0xc2, 0x67, 0x60, 0x9d, 0xce, 0x67, 0x03, 0xb4, 0x98, 0x51,
-	0xf2, 0xee, 0x80, 0xbc, 0x05, 0xa6, 0xa9, 0x19, 0xc6, 0x4f, 0x7c, 0xfd, 0x18, 0xc6, 0x5a, 0x8f,
-	0xc2, 0x30, 0x3a, 0x98, 0x25, 0x30, 0x8c, 0x98, 0xa6, 0xf3, 0xd6, 0x86, 0x4c, 0xdf, 0x61, 0xa9,
-	0x98, 0xb8, 0x91, 0xbc, 0x20, 0x9d, 0xe7, 0xaf, 0x15, 0x58, 0x1e, 0x38, 0xe2, 0xa4, 0x41, 0x10,
-	0xac, 0x4b, 0x07, 0xe4, 0x09, 0x4c, 0x07, 0x83, 0xc8, 0x4a, 0x42, 0x9c, 0x85, 0x45, 0xba, 0xbd,
-	0x0f, 0x60, 0xb1, 0x5f, 0xbb, 0x2e, 0x24, 0x73, 0x8b, 0xda, 0x9f, 0xcb, 0x6f, 0xb8, 0xa7, 0x0e,
-	0xe3, 0x37, 0x64, 0x9f, 0xce, 0xef, 0x17, 0xb0, 0x94, 0xd4, 0xf9, 0xee, 0x0f, 0xe1, 0x3b, 0xb2,
-	0x26, 0x95, 0xff, 0xec, 0xe4, 0x97, 0x67, 0x47, 0x79, 0xa5, 0xfc, 0xe8, 0xd7, 0x93, 0x9c, 0x72,
-	0x7c, 0x92, 0x53, 0x9e, 0x9f, 0xe4, 0x94, 0x6f, 0x4f, 0x73, 0x97, 0x8e, 0x4f, 0x73, 0x97, 0xfe,
-	0x3a, 0xcd, 0x5d, 0x7a, 0x72, 0xaf, 0x8e, 0x9d, 0xfd, 0x56, 0xad, 0xb0, 0xcb, 0x88, 0x68, 0xed,
-	0x6b, 0x84, 0x51, 0x74, 0x18, 0xdf, 0xe5, 0x9d, 0xc3, 0x26, 0xe2, 0xb5, 0x29, 0xf1, 0x2b, 0xe2,
-	0xfa, 0xbf, 0x01, 0x00, 0x00, 0xff, 0xff, 0x29, 0x7c, 0xe9, 0x8f, 0xf6, 0x14, 0x00, 0x00,
+	0x55, 0x88, 0x03, 0x27, 0x3e, 0x4a, 0x0e, 0x7c, 0x01, 0x10, 0x12, 0x88, 0x0b, 0x51, 0x2f, 0xc0,
+	0x89, 0x2a, 0x39, 0xe4, 0x23, 0x70, 0x45, 0xfb, 0xc7, 0xbb, 0xeb, 0x9d, 0xf5, 0xda, 0x9b, 0x6c,
+	0xe1, 0x92, 0xec, 0xbe, 0xf7, 0x66, 0xde, 0xef, 0xf7, 0xfe, 0xec, 0xbc, 0x31, 0x2c, 0x7c, 0xce,
+	0xda, 0xb8, 0x6c, 0x20, 0xca, 0x08, 0xa6, 0xba, 0x85, 0x19, 0xe5, 0x65, 0xab, 0x5b, 0x6a, 0x9b,
+	0xcc, 0x62, 0x8a, 0x62, 0x2b, 0x4b, 0x7d, 0xca, 0xf9, 0x19, 0x9d, 0x60, 0xca, 0xca, 0xce, 0x5f,
+	0xd7, 0x6c, 0x7e, 0x6e, 0x97, 0x71, 0xc2, 0x78, 0x99, 0xf0, 0x66, 0xf9, 0xe0, 0x35, 0xfb, 0x9f,
+	0xa7, 0xb8, 0xe9, 0x2a, 0x34, 0xe7, 0xad, 0xec, 0xbe, 0x78, 0xaa, 0xd9, 0x26, 0x6b, 0x32, 0x57,
+	0x6e, 0x3f, 0x79, 0xd2, 0xc5, 0x18, 0x34, 0x6d, 0xdd, 0xd4, 0x89, 0xb7, 0x4c, 0xbd, 0x09, 0x73,
+	0x35, 0xde, 0xfc, 0xb8, 0x6d, 0xe8, 0x16, 0xfa, 0xd0, 0x51, 0xd4, 0x11, 0x6f, 0x33, 0xca, 0x91,
+	0xfa, 0x8f, 0x04, 0xd3, 0x35, 0xde, 0xdc, 0x30, 0x8c, 0xad, 0x77, 0x1f, 0x6e, 0xd9, 0x5b, 0x28,
+	0xeb, 0x90, 0xd3, 0x3b, 0xd6, 0x3e, 0x33, 0xb1, 0x75, 0x98, 0x97, 0x96, 0xa4, 0x95, 0x5c, 0x35,
+	0xff, 0xf4, 0x87, 0xd5, 0x59, 0x0f, 0xc9, 0x86, 0x61, 0x98, 0x88, 0xf3, 0x1d, 0xcb, 0xc4, 0xb4,
+	0x59, 0x0f, 0x4c, 0x15, 0x05, 0xae, 0x50, 0x9d, 0xa0, 0xfc, 0x65, 0x7b, 0x49, 0xdd, 0x79, 0x56,
+	0x5e, 0x84, 0xf1, 0x3d, 0x7d, 0xd7, 0x62, 0x66, 0x5e, 0x76, 0xa4, 0xde, 0x9b, 0x72, 0x1b, 0xa6,
+	0x08, 0xa6, 0x5a, 0x0b, 0x7f, 0xd1, 0xc1, 0x86, 0xed, 0xe7, 0x8a, 0xa3, 0x9e, 0x24, 0x98, 0x6e,
+	0xf7, 0x64, 0xca, 0x4b, 0x30, 0x6d, 0x1b, 0x31, 0xd3, 0x40, 0xa6, 0xc6, 0xf1, 0x63, 0x94, 0x1f,
+	0xf3, 0xad, 0x3e, 0xb0, 0x85, 0x3b, 0xf8, 0x31, 0xaa, 0xac, 0x3f, 0x39, 0x3b, 0x2a, 0x06, 0x30,
+	0xbe, 0x3b, 0x3b, 0x2a, 0xde, 0x76, 0x02, 0xd2, 0x8d, 0x84, 0xa4, 0x9f, 0xa6, 0xfa, 0xb7, 0x04,
+	0xcb, 0x7e, 0x54, 0x7a, 0xd2, 0x1a, 0xa6, 0x98, 0x74, 0x48, 0x80, 0x21, 0xcb, 0x60, 0x08, 0xa4,
+	0x65, 0x91, 0x74, 0xe5, 0x3d, 0x91, 0xce, 0xfa, 0x20, 0x3a, 0xc9, 0xd8, 0xd5, 0x67, 0x09, 0x0c,
+	0xfd, 0xf8, 0x65, 0xca, 0x50, 0xcc, 0x98, 0x1c, 0x93, 0xb1, 0x0b, 0x53, 0xf4, 0xb7, 0x52, 0x9f,
+	0xc8, 0x30, 0xe1, 0xe6, 0xf5, 0xfd, 0x4d, 0x86, 0xe9, 0xb9, 0xc9, 0xcc, 0xc2, 0x98, 0xe3, 0xda,
+	0x63, 0xe3, 0xbe, 0x28, 0x05, 0x00, 0x13, 0xed, 0x21, 0x13, 0xd1, 0x5d, 0xc4, 0xf3, 0xf2, 0x92,
+	0xbc, 0x92, 0xab, 0x87, 0x24, 0xca, 0x2d, 0x00, 0xa2, 0x77, 0x35, 0xde, 0x69, 0xb7, 0x5b, 0xbd,
+	0x12, 0xce, 0x11, 0xbd, 0xbb, 0xe3, 0x08, 0x94, 0x97, 0xe1, 0xba, 0xad, 0x26, 0x98, 0x5a, 0x9a,
+	0x4e, 0x58, 0x87, 0x5a, 0x5e, 0x01, 0x4f, 0x11, 0xbd, 0x5b, 0xc3, 0xd4, 0xda, 0x70, 0x84, 0x3d,
+	0xbb, 0x46, 0xc7, 0xa4, 0x3d, 0xbb, 0x71, 0xdf, 0xae, 0xda, 0x31, 0xa9, 0x67, 0x17, 0x34, 0xd3,
+	0xd5, 0xe4, 0x66, 0xba, 0x36, 0x52, 0x33, 0xe5, 0x62, 0x52, 0xb3, 0x26, 0xa6, 0x66, 0x29, 0xa1,
+	0x99, 0x9c, 0xa0, 0xab, 0x3f, 0x4a, 0x30, 0xeb, 0xa7, 0xca, 0x11, 0x79, 0x01, 0xc8, 0x36, 0x1b,
+	0xfd, 0xd1, 0x96, 0x23, 0xd1, 0xae, 0xbc, 0x25, 0x42, 0xbf, 0x93, 0x5c, 0x55, 0x21, 0xa8, 0xea,
+	0x53, 0x09, 0xf2, 0xfd, 0x8a, 0x50, 0xe0, 0xb3, 0xe5, 0x11, 0x93, 0x6e, 0x39, 0x26, 0xdd, 0x95,
+	0x77, 0x44, 0x42, 0xab, 0x23, 0x10, 0x0a, 0x76, 0x88, 0x21, 0x15, 0xaa, 0xba, 0xe7, 0x42, 0x2a,
+	0x5c, 0xeb, 0x72, 0x4c, 0xad, 0x9f, 0x97, 0x54, 0xb0, 0x83, 0xfa, 0xb3, 0x04, 0x37, 0x42, 0xd5,
+	0x57, 0x0f, 0xda, 0xf1, 0x3f, 0x6d, 0xfe, 0xca, 0xdb, 0x22, 0x93, 0xe2, 0xb0, 0x56, 0x09, 0xc0,
+	0xaa, 0xbf, 0xb9, 0xb9, 0xa9, 0x23, 0xc2, 0x0e, 0xd0, 0xff, 0xcb, 0x24, 0x4d, 0x4e, 0x62, 0xf1,
+	0xaa, 0x7f, 0xf8, 0x39, 0xd9, 0x64, 0xad, 0x96, 0x6e, 0x21, 0x53, 0x6f, 0x5d, 0x6c, 0x98, 0x88,
+	0x67, 0xf2, 0x02, 0xc8, 0x2d, 0xeb, 0xc0, 0xab, 0x2c, 0xfb, 0x51, 0x59, 0x84, 0x09, 0xbb, 0xee,
+	0x0c, 0xd4, 0x66, 0x1c, 0x5b, 0xde, 0x37, 0xd8, 0xfe, 0x4e, 0x6c, 0xb9, 0x92, 0xb4, 0x69, 0x8a,
+	0xe0, 0x57, 0x7f, 0x92, 0x60, 0xc1, 0x2f, 0xc5, 0x88, 0x72, 0xfb, 0xa3, 0x4f, 0x9e, 0x37, 0xbf,
+	0xca, 0xa6, 0x08, 0xff, 0x6e, 0x72, 0xbf, 0x88, 0x20, 0xed, 0x51, 0x47, 0x1d, 0xa4, 0xaf, 0xf9,
+	0xa1, 0xca, 0x98, 0x4b, 0x24, 0x33, 0xb2, 0x90, 0x99, 0x07, 0x22, 0xb5, 0x37, 0x53, 0x51, 0x0b,
+	0xa0, 0xab, 0x7f, 0x5d, 0x86, 0x49, 0x2f, 0x81, 0x1b, 0x9c, 0x23, 0x2b, 0xd3, 0xa9, 0xe6, 0x16,
+	0x40, 0x43, 0xe7, 0x48, 0x73, 0x49, 0x7a, 0x07, 0x8f, 0x2d, 0x71, 0x4b, 0x5c, 0x85, 0x29, 0x03,
+	0x75, 0xb5, 0x3d, 0x84, 0x34, 0xbe, 0xaf, 0x9b, 0xc8, 0x2b, 0xc2, 0x09, 0x03, 0x75, 0xef, 0x23,
+	0xb4, 0x63, 0x8b, 0x42, 0x47, 0xf7, 0x58, 0xf2, 0xd1, 0x3d, 0x3e, 0xd2, 0xd1, 0x7d, 0x55, 0x3c,
+	0xba, 0x95, 0x65, 0x98, 0x6c, 0x30, 0xd3, 0x64, 0x5f, 0x6a, 0x2d, 0x4c, 0xb0, 0xe5, 0x0d, 0x01,
+	0x13, 0xae, 0x6c, 0xdb, 0x16, 0x55, 0x5e, 0x17, 0x23, 0xbe, 0x9c, 0xd4, 0x0b, 0x4e, 0x28, 0xd5,
+	0x63, 0x09, 0xe6, 0x83, 0x14, 0x38, 0xb2, 0xad, 0x10, 0xb5, 0x2c, 0x23, 0x2d, 0x84, 0x52, 0x16,
+	0x42, 0x59, 0xa9, 0x8a, 0x24, 0xca, 0x43, 0xca, 0x26, 0x8a, 0x59, 0xfd, 0x5d, 0xa4, 0x54, 0x0d,
+	0xe2, 0x94, 0x29, 0xa5, 0x68, 0x5a, 0x64, 0x31, 0x2d, 0xe7, 0x65, 0x14, 0x82, 0x6c, 0xcf, 0xfa,
+	0x85, 0x88, 0xba, 0x77, 0x1f, 0x60, 0x3a, 0xcd, 0x7c, 0xd0, 0x2f, 0xc2, 0x0c, 0x71, 0xb7, 0xd7,
+	0x5a, 0x4c, 0xa7, 0xe1, 0x59, 0xff, 0x3a, 0xe9, 0xf7, 0x5b, 0xb9, 0x2f, 0xd2, 0x5b, 0x1b, 0x85,
+	0x5e, 0x04, 0xff, 0xbd, 0x5f, 0xa6, 0x41, 0xae, 0xf1, 0xa6, 0xf2, 0x29, 0x4c, 0x84, 0xaf, 0xab,
+	0x6a, 0x49, 0xbc, 0x6f, 0x97, 0xfa, 0xef, 0x7a, 0xf3, 0xaf, 0x0c, 0xb0, 0x89, 0xbb, 0x12, 0x2b,
+	0xdf, 0x48, 0x50, 0x18, 0x72, 0x2b, 0x7c, 0x23, 0x71, 0xbf, 0x41, 0xcb, 0x32, 0x82, 0x11, 0xb4,
+	0x7c, 0x2a, 0x18, 0xfe, 0xb2, 0x74, 0x30, 0x1e, 0xc2, 0x35, 0xff, 0x76, 0xb5, 0x38, 0x38, 0xd4,
+	0x8e, 0x41, 0xba, 0x9d, 0x3f, 0x83, 0x19, 0xf1, 0xca, 0xb0, 0x92, 0xb8, 0x43, 0xc8, 0x32, 0x9d,
+	0x2f, 0x13, 0x6e, 0xc4, 0x4f, 0xc1, 0xaf, 0x0e, 0xf7, 0x17, 0x58, 0x5f, 0xc4, 0x67, 0xe8, 0x3a,
+	0x31, 0x82, 0xcf, 0xc0, 0x3a, 0x9d, 0xcf, 0x16, 0x28, 0x31, 0x83, 0xf1, 0x9d, 0x21, 0x79, 0x0b,
+	0x4c, 0x53, 0x33, 0x8c, 0x9f, 0x5f, 0x07, 0x31, 0x8c, 0xb5, 0x3e, 0x0f, 0xc3, 0xe8, 0x98, 0x99,
+	0xc0, 0x30, 0x62, 0x9a, 0xce, 0x5b, 0x17, 0xf2, 0x03, 0x47, 0xbf, 0x72, 0xe2, 0x46, 0xe2, 0x82,
+	0x74, 0x9e, 0xbf, 0x95, 0x60, 0x71, 0xe8, 0xc0, 0x96, 0x06, 0x41, 0xb0, 0x2e, 0x1d, 0x90, 0x47,
+	0x90, 0x0b, 0xc6, 0xaa, 0xa5, 0x84, 0x38, 0x3b, 0x16, 0xe9, 0xf6, 0x3e, 0x80, 0xb9, 0x41, 0x63,
+	0x45, 0x29, 0x99, 0x5b, 0xd4, 0xfe, 0x42, 0x7e, 0xc3, 0x67, 0xff, 0x28, 0x7e, 0x43, 0xf6, 0xe9,
+	0xfc, 0x7e, 0x05, 0x0b, 0x49, 0x27, 0xf4, 0xbd, 0x11, 0x7c, 0x47, 0xd6, 0xa4, 0xf2, 0x3f, 0x3f,
+	0xf6, 0xf5, 0xd9, 0x51, 0x51, 0xaa, 0x3e, 0xf8, 0xf5, 0xa4, 0x20, 0x1d, 0x9f, 0x14, 0xa4, 0x67,
+	0x27, 0x05, 0xe9, 0xfb, 0xd3, 0xc2, 0xa5, 0xe3, 0xd3, 0xc2, 0xa5, 0x3f, 0x4f, 0x0b, 0x97, 0x1e,
+	0xdd, 0x6d, 0x62, 0x6b, 0xbf, 0xd3, 0x28, 0xed, 0x32, 0xe2, 0x8c, 0x20, 0xab, 0x84, 0x51, 0x74,
+	0x18, 0x3f, 0x8d, 0x58, 0x87, 0x6d, 0xc4, 0x1b, 0xe3, 0xce, 0x4f, 0xcc, 0x6b, 0xff, 0x06, 0x00,
+	0x00, 0xff, 0xff, 0xca, 0x85, 0xd3, 0xd0, 0x13, 0x17, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1163,7 +1252,8 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
 	AddDEXDenom(ctx context.Context, in *MsgAddDEXDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateDEXDenom(ctx context.Context, in *MsgUpdateDEXDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	UpdateDEXDenomMinimumLiquidity(ctx context.Context, in *MsgUpdateDEXDenomMinimumLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	UpdateDEXDenomMinimumOrderSize(ctx context.Context, in *MsgUpdateDEXDenomMinimumOrderSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	AddKCoin(ctx context.Context, in *MsgAddKCoin, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	UpdateKCoinSupply(ctx context.Context, in *MsgUpdateKCoinSupply, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	UpdateKCoinMintAmount(ctx context.Context, in *MsgUpdateKCoinMintAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
@@ -1196,9 +1286,18 @@ func (c *msgClient) AddDEXDenom(ctx context.Context, in *MsgAddDEXDenom, opts ..
 	return out, nil
 }
 
-func (c *msgClient) UpdateDEXDenom(ctx context.Context, in *MsgUpdateDEXDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) UpdateDEXDenomMinimumLiquidity(ctx context.Context, in *MsgUpdateDEXDenomMinimumLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/UpdateDEXDenom", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/UpdateDEXDenomMinimumLiquidity", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateDEXDenomMinimumOrderSize(ctx context.Context, in *MsgUpdateDEXDenomMinimumOrderSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/UpdateDEXDenomMinimumOrderSize", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1325,7 +1424,8 @@ func (c *msgClient) UpdateCAssetMinimumLoanSize(ctx context.Context, in *MsgUpda
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	AddDEXDenom(context.Context, *MsgAddDEXDenom) (*MsgUpdateParamsResponse, error)
-	UpdateDEXDenom(context.Context, *MsgUpdateDEXDenom) (*MsgUpdateParamsResponse, error)
+	UpdateDEXDenomMinimumLiquidity(context.Context, *MsgUpdateDEXDenomMinimumLiquidity) (*MsgUpdateParamsResponse, error)
+	UpdateDEXDenomMinimumOrderSize(context.Context, *MsgUpdateDEXDenomMinimumOrderSize) (*MsgUpdateParamsResponse, error)
 	AddKCoin(context.Context, *MsgAddKCoin) (*MsgUpdateParamsResponse, error)
 	UpdateKCoinSupply(context.Context, *MsgUpdateKCoinSupply) (*MsgUpdateParamsResponse, error)
 	UpdateKCoinMintAmount(context.Context, *MsgUpdateKCoinMintAmount) (*MsgUpdateParamsResponse, error)
@@ -1348,8 +1448,11 @@ type UnimplementedMsgServer struct {
 func (*UnimplementedMsgServer) AddDEXDenom(ctx context.Context, req *MsgAddDEXDenom) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddDEXDenom not implemented")
 }
-func (*UnimplementedMsgServer) UpdateDEXDenom(ctx context.Context, req *MsgUpdateDEXDenom) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateDEXDenom not implemented")
+func (*UnimplementedMsgServer) UpdateDEXDenomMinimumLiquidity(ctx context.Context, req *MsgUpdateDEXDenomMinimumLiquidity) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateDEXDenomMinimumLiquidity not implemented")
+}
+func (*UnimplementedMsgServer) UpdateDEXDenomMinimumOrderSize(ctx context.Context, req *MsgUpdateDEXDenomMinimumOrderSize) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateDEXDenomMinimumOrderSize not implemented")
 }
 func (*UnimplementedMsgServer) AddKCoin(ctx context.Context, req *MsgAddKCoin) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddKCoin not implemented")
@@ -1413,20 +1516,38 @@ func _Msg_AddDEXDenom_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateDEXDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateDEXDenom)
+func _Msg_UpdateDEXDenomMinimumLiquidity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateDEXDenomMinimumLiquidity)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateDEXDenom(ctx, in)
+		return srv.(MsgServer).UpdateDEXDenomMinimumLiquidity(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/UpdateDEXDenom",
+		FullMethod: "/kopi.denominations.Msg/UpdateDEXDenomMinimumLiquidity",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateDEXDenom(ctx, req.(*MsgUpdateDEXDenom))
+		return srv.(MsgServer).UpdateDEXDenomMinimumLiquidity(ctx, req.(*MsgUpdateDEXDenomMinimumLiquidity))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateDEXDenomMinimumOrderSize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateDEXDenomMinimumOrderSize)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateDEXDenomMinimumOrderSize(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kopi.denominations.Msg/UpdateDEXDenomMinimumOrderSize",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateDEXDenomMinimumOrderSize(ctx, req.(*MsgUpdateDEXDenomMinimumOrderSize))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1674,8 +1795,12 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_AddDEXDenom_Handler,
 		},
 		{
-			MethodName: "UpdateDEXDenom",
-			Handler:    _Msg_UpdateDEXDenom_Handler,
+			MethodName: "UpdateDEXDenomMinimumLiquidity",
+			Handler:    _Msg_UpdateDEXDenomMinimumLiquidity_Handler,
+		},
+		{
+			MethodName: "UpdateDEXDenomMinimumOrderSize",
+			Handler:    _Msg_UpdateDEXDenomMinimumOrderSize_Handler,
 		},
 		{
 			MethodName: "AddKCoin",
@@ -1777,6 +1902,13 @@ func (m *MsgAddDEXDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.MinOrderSize) > 0 {
+		i -= len(m.MinOrderSize)
+		copy(dAtA[i:], m.MinOrderSize)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MinOrderSize)))
+		i--
+		dAtA[i] = 0x2a
+	}
 	if len(m.MinLiquidity) > 0 {
 		i -= len(m.MinLiquidity)
 		copy(dAtA[i:], m.MinLiquidity)
@@ -1808,7 +1940,7 @@ func (m *MsgAddDEXDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUpdateDEXDenom) Marshal() (dAtA []byte, err error) {
+func (m *MsgUpdateDEXDenomMinimumLiquidity) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1818,12 +1950,12 @@ func (m *MsgUpdateDEXDenom) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdateDEXDenom) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgUpdateDEXDenomMinimumLiquidity) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUpdateDEXDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgUpdateDEXDenomMinimumLiquidity) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1832,6 +1964,50 @@ func (m *MsgUpdateDEXDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.MinLiquidity)
 		copy(dAtA[i:], m.MinLiquidity)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.MinLiquidity)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateDEXDenomMinimumOrderSize) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateDEXDenomMinimumOrderSize) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateDEXDenomMinimumOrderSize) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.MinOrderSize) > 0 {
+		i -= len(m.MinOrderSize)
+		copy(dAtA[i:], m.MinOrderSize)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MinOrderSize)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -1872,6 +2048,13 @@ func (m *MsgAddKCoin) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.MinOrderSize) > 0 {
+		i -= len(m.MinOrderSize)
+		copy(dAtA[i:], m.MinOrderSize)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MinOrderSize)))
+		i--
+		dAtA[i] = 0x4a
+	}
 	if len(m.MinLiquidity) > 0 {
 		i -= len(m.MinLiquidity)
 		copy(dAtA[i:], m.MinLiquidity)
@@ -2321,6 +2504,13 @@ func (m *MsgAddCAsset) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.BorrowLimit)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.BorrowLimit)))
 		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.MinOrderSize) > 0 {
+		i -= len(m.MinOrderSize)
+		copy(dAtA[i:], m.MinOrderSize)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MinOrderSize)))
+		i--
 		dAtA[i] = 0x3a
 	}
 	if len(m.MinLiquidity) > 0 {
@@ -2542,10 +2732,14 @@ func (m *MsgAddDEXDenom) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.MinOrderSize)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
-func (m *MsgUpdateDEXDenom) Size() (n int) {
+func (m *MsgUpdateDEXDenomMinimumLiquidity) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2560,6 +2754,27 @@ func (m *MsgUpdateDEXDenom) Size() (n int) {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	l = len(m.MinLiquidity)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUpdateDEXDenomMinimumOrderSize) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MinOrderSize)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -2603,6 +2818,10 @@ func (m *MsgAddKCoin) Size() (n int) {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	l = len(m.MinLiquidity)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MinOrderSize)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -2812,6 +3031,10 @@ func (m *MsgAddCAsset) Size() (n int) {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	l = len(m.MinLiquidity)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MinOrderSize)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -3098,6 +3321,38 @@ func (m *MsgAddDEXDenom) Unmarshal(dAtA []byte) error {
 			}
 			m.MinLiquidity = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinOrderSize", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MinOrderSize = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -3119,7 +3374,7 @@ func (m *MsgAddDEXDenom) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUpdateDEXDenom) Unmarshal(dAtA []byte) error {
+func (m *MsgUpdateDEXDenomMinimumLiquidity) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3142,10 +3397,10 @@ func (m *MsgUpdateDEXDenom) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdateDEXDenom: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgUpdateDEXDenomMinimumLiquidity: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdateDEXDenom: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgUpdateDEXDenomMinimumLiquidity: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3243,6 +3498,152 @@ func (m *MsgUpdateDEXDenom) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.MinLiquidity = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateDEXDenomMinimumOrderSize) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateDEXDenomMinimumOrderSize: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateDEXDenomMinimumOrderSize: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinOrderSize", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MinOrderSize = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -3549,6 +3950,38 @@ func (m *MsgAddKCoin) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.MinLiquidity = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinOrderSize", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MinOrderSize = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -4993,6 +5426,38 @@ func (m *MsgAddCAsset) Unmarshal(dAtA []byte) error {
 			m.MinLiquidity = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinOrderSize", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MinOrderSize = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field BorrowLimit", wireType)
 			}

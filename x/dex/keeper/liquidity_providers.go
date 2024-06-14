@@ -1,11 +1,9 @@
 package keeper
 
 import (
-	"context"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
-	"strconv"
 )
 
 type LiquidityProvider struct {
@@ -39,7 +37,7 @@ func (lps *LiquidityProviders) provided() *LiquidityProviders {
 	return lps
 }
 
-func (k Keeper) determineLiquidityProviders(ctx context.Context, eventManager sdk.EventManagerI, ordersCaches *types.OrdersCaches, amountToReceiveLeft math.Int, denomFrom, denomTo string) (*LiquidityProviders, math.Int, error) {
+func (k Keeper) determineLiquidityProviders(ctx types.TradeStepContext, amountToReceiveLeft math.Int, denomTo string) (*LiquidityProviders, math.Int, error) {
 	var (
 		liquidityProviders LiquidityProviders
 		liquidityUsed      math.Int
@@ -48,7 +46,7 @@ func (k Keeper) determineLiquidityProviders(ctx context.Context, eventManager sd
 	)
 
 	// Iterate over the existing liquidity entries for this currency
-	liquidityList := ordersCaches.LiquidityMap.Get(denomTo)
+	liquidityList := ctx.OrdersCaches.LiquidityMap.Get(denomTo)
 	for _, liq := range liquidityList {
 		if amountToReceiveLeft.LTE(math.ZeroInt()) {
 			break
@@ -56,12 +54,10 @@ func (k Keeper) determineLiquidityProviders(ctx context.Context, eventManager sd
 
 		if amountToReceiveLeft.LT(liq.Amount) {
 			// the current liquidity entry will not be fully used
-
 			liquidityUsed = amountToReceiveLeft
 			amountToReceiveLeft = math.ZeroInt()
 		} else {
 			// the current liquidity entry will be fully used
-
 			liquidityUsed = liq.Amount
 			amountToReceiveLeft = amountToReceiveLeft.Sub(liq.Amount)
 		}
@@ -71,34 +67,25 @@ func (k Keeper) determineLiquidityProviders(ctx context.Context, eventManager sd
 
 		liq.Amount = liq.Amount.Sub(liquidityUsed)
 		if liq.Amount.Equal(math.ZeroInt()) {
-			k.RemoveLiquidity(ctx, denomTo, liq.Index, liquidityUsed)
+			k.RemoveLiquidity(ctx.TradeContext.Context, denomTo, liq.Index, liquidityUsed)
 			deleteIndexes = append(deleteIndexes, liq.Index)
 		} else {
-			k.SetLiquidity(ctx, liq, liquidityUsed.Neg())
+			k.SetLiquidity(ctx.TradeContext.Context, liq)
 		}
 
 		sumUsed = sumUsed.Add(liquidityUsed)
-
-		eventManager.EmitEvent(
-			sdk.NewEvent("liquidity_used",
-				sdk.Attribute{Key: "address", Value: liq.Address},
-				sdk.Attribute{Key: "denom", Value: denomFrom},
-				sdk.Attribute{Key: "amount", Value: liquidityUsed.String()},
-				sdk.Attribute{Key: "index", Value: strconv.Itoa(int(liq.Index))},
-			),
-		)
 	}
 
 	coins := sdk.NewCoins(sdk.NewCoin(denomTo, sumUsed))
-	//poolBalance := ordersCaches.DexPool.Get().Sub(coins...)
-	//ordersCaches.DexPool.Set(poolBalance)
+	ctx.OrdersCaches.LiquidityPool.Set(ctx.OrdersCaches.LiquidityPool.Get().Sub(coins...))
 
 	liquidityList = removeIndexes(liquidityList, deleteIndexes)
-	ordersCaches.LiquidityMap.Set(denomTo, liquidityList)
-
-	if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolLiquidity, types.PoolTrade, coins); err != nil {
-		return nil, math.Int{}, err
-	}
+	ctx.OrdersCaches.LiquidityMap.Set(denomTo, liquidityList)
+	ctx.TradeBalances.AddTransfer(
+		ctx.OrdersCaches.AccPoolLiquidity.Get().String(),
+		ctx.OrdersCaches.AccPoolTrade.Get().String(),
+		denomTo, sumUsed,
+	)
 
 	return &liquidityProviders, amountToReceiveLeft, nil
 }
@@ -120,50 +107,59 @@ func removeIndexes(liquidityList []types.Liquidity, indexes []uint64) (list []ty
 	return
 }
 
-func (k Keeper) distributeFeeForLiquidityProviders(ctx context.Context, ordersCaches *types.OrdersCaches, liquidityProviders *LiquidityProviders, feeForLiquidityProvidersLeft math.Int, denom string) error {
-	providerFee := k.getProviderFee(ctx)
-	liquidityEntries := ordersCaches.LiquidityMap.Get(denom)
+func (k Keeper) distributeFeeForLiquidityProviders(ctx types.TradeStepContext, liquidityProviders *LiquidityProviders, feeForLiquidityProvidersLeft math.Int, denom string) error {
+	providerFee := k.getProviderFee(ctx.TradeContext.Context)
+	liquidityEntries := ctx.TradeContext.OrdersCaches.LiquidityMap.Get(denom)
 
 	liquidityProviderIndex := 0
+	sendSum := math.ZeroInt()
+
 	for feeForLiquidityProvidersLeft.GT(math.ZeroInt()) {
 		liquidityProvider := (*liquidityProviders)[liquidityProviderIndex]
 		liquidityProviderIndex += 1
 
 		amount := math.MinInt(feeForLiquidityProvidersLeft, liquidityProvider.amountProvided.RoundInt())
+		sendSum = sendSum.Add(amount)
 		feeForLiquidityProvidersLeft = feeForLiquidityProvidersLeft.Sub(amount)
 		liquidityProvider.amountProvided = liquidityProvider.amountProvided.Mul(providerFee)
-		liquidityEntries, _ = k.addLiquidity(ctx, denom, liquidityProvider.address, amount, liquidityEntries)
-
-		coins := sdk.NewCoins(sdk.NewCoin(denom, amount))
-		//poolBalance := ordersCaches.DexPool.Get().Add(coins...)
-		//ordersCaches.DexPool.Set(poolBalance)
-
-		if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolTrade, types.PoolLiquidity, coins); err != nil {
-			return err
-		}
+		liquidityEntries, _ = k.addLiquidity(ctx.TradeContext.Context, denom, liquidityProvider.address, amount, liquidityEntries)
 	}
 
-	ordersCaches.LiquidityMap.Set(denom, liquidityEntries)
+	coins := sdk.NewCoins(sdk.NewCoin(denom, sendSum))
+	ctx.OrdersCaches.LiquidityPool.Set(ctx.OrdersCaches.LiquidityPool.Get().Add(coins...))
+	ctx.OrdersCaches.LiquidityMap.Set(denom, liquidityEntries)
+
+	ctx.TradeContext.TradeBalances.AddTransfer(
+		ctx.OrdersCaches.AccPoolTrade.Get().String(),
+		ctx.OrdersCaches.AccPoolLiquidity.Get().String(),
+		denom, sendSum,
+	)
 
 	return nil
 }
 
-func (k Keeper) distributeGivenFunds(ctx context.Context, ordersCaches *types.OrdersCaches, liquidityProviders *LiquidityProviders, fundsToDistribute math.Int, denom string) error {
+func (k Keeper) distributeGivenFunds(ctx types.TradeStepContext, ordersCaches *types.OrdersCaches, liquidityProviders *LiquidityProviders, fundsToDistribute math.Int, denom string) error {
 	liquidityEntries := ordersCaches.LiquidityMap.Get(denom)
 	provided := liquidityProviders.provided()
 
 	for _, liquidityProvider := range *provided {
 		eligable := liquidityProvider.shareProvided.Mul(fundsToDistribute.ToLegacyDec()).RoundInt()
-		liquidityEntries, _ = k.addLiquidity(ctx, denom, liquidityProvider.address, eligable, liquidityEntries)
+		liquidityEntries, _ = k.addLiquidity(ctx.TradeContext.Context, denom, liquidityProvider.address, eligable, liquidityEntries)
 	}
+
+	//if denom == "ukopi" {
+	//	current := ctx.OrdersCaches.LiquidityPool.Get().AmountOf("ukopi")
+	//	newSum := current.Add(fundsToDistribute)
+	//	fmt.Println(fmt.Sprintf("%v + %v =  %v", current.String(), fundsToDistribute.String(), newSum))
+	//}
 
 	coins := sdk.NewCoins(sdk.NewCoin(denom, fundsToDistribute))
-	//poolBalance := ordersCaches.DexPool.Get().Add(coins...)
-	//ordersCaches.DexPool.Set(poolBalance)
-
-	if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolTrade, types.PoolLiquidity, coins); err != nil {
-		return err
-	}
+	ordersCaches.LiquidityPool.Set(ordersCaches.LiquidityPool.Get().Add(coins...))
+	ctx.TradeBalances.AddTransfer(
+		ordersCaches.AccPoolTrade.Get().String(),
+		ordersCaches.AccPoolLiquidity.Get().String(),
+		denom, fundsToDistribute,
+	)
 
 	return nil
 }

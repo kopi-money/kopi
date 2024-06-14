@@ -34,7 +34,7 @@ func (k Keeper) OrdersSum(goCtx context.Context, req *types.QueryOrdersSumReques
 
 	sum := math.LegacyZeroDec()
 	for denom, denomSum := range denomSums {
-		value, err := k.GetValueInUSD(ctx, denom, denomSum)
+		value, err := k.GetValueInUSD(ctx, denom, denomSum.ToLegacyDec())
 		if err != nil {
 			return nil, errors.Wrap(err, "could not get order value in usd")
 		}

@@ -17,10 +17,3 @@ message Collaterals {
   string denom = 1;
   repeated Collateral collaterals = 2;
 }
-
-message CollateralSum {
-  bytes sum = 1 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-}

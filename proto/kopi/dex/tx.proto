@@ -30,6 +30,7 @@ service Msg {
   rpc UpdateOrder                (MsgUpdateOrder) returns (Order);
 
   rpc UpdateTradeFee              (MsgUpdateTradeFee) returns (Void);
+  rpc UpdateOrderFee              (MsgUpdateOrderFee) returns (Void);
   rpc UpdateReserveShare          (MsgUpdateReserveShare) returns (Void);
   rpc UpdateVirtualLiquidityDecay (MsgUpdateVirtualLiquidityDecay) returns (Void);
   rpc UpdateFeeReimbursement      (MsgUpdateFeeReimbursement) returns (Void);
@@ -92,6 +93,14 @@ message MsgUpdateTradeFee {
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string trade_fee = 2;
+}
+
+message MsgUpdateOrderFee {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/dex/MsgUpdateOrderFee";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string order_fee = 2;
 }
 
 message Void {}

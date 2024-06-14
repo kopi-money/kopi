@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"github.com/kopi-money/kopi/cache"
 	"testing"
 
 	"cosmossdk.io/log"
@@ -37,6 +38,7 @@ func SwapKeeper(t *testing.T) (swapkeeper.Keeper, dexkeeper.Keeper, sdk.Context)
 		dexKeeper,
 		authority.String(),
 	)
+	cache.AddCache(swapKeeper)
 
 	require.NoError(t, swapKeeper.SetParams(ctx, swaptypes.DefaultParams()))
 

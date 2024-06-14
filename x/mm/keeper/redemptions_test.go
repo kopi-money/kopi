@@ -37,16 +37,14 @@ func TestRedemptions2(t *testing.T) {
 		Amount:  "10",
 	})
 
-	_, err := msg.CreateRedemptionRequest(ctx, &types.MsgCreateRedemptionRequest{
+	require.NoError(t, keepertest.CreateRedemptionRequest(ctx, msg, &types.MsgCreateRedemptionRequest{
 		Creator:      keepertest.Alice,
 		Denom:        "uckusd",
 		CAssetAmount: "10",
 		Fee:          "0.1",
-	})
+	}))
 
-	require.NoError(t, err)
-
-	require.NoError(t, k.HandleRedemptions(ctx, ctx.EventManager()))
+	require.NoError(t, handleRedemptions(ctx, k))
 
 	iterator := k.RedemptionIterator(ctx, "ukusd")
 	require.Equal(t, 0, len(iterator.GetAll()))
@@ -61,38 +59,30 @@ func TestRedemptions2(t *testing.T) {
 func TestRedemptions3(t *testing.T) {
 	k, _, msg, ctx := keepertest.SetupMMMsgServer(t)
 
-	_, err := msg.AddDeposit(ctx, &types.MsgAddDeposit{
+	require.NoError(t, keepertest.AddDeposit(ctx, msg, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
 		Amount:  "10000",
-	})
+	}))
 
-	require.NoError(t, err)
-
-	_, err = msg.AddCollateral(ctx, &types.MsgAddCollateral{
+	require.NoError(t, keepertest.AddCollateral(ctx, msg, &types.MsgAddCollateral{
 		Creator: keepertest.Bob,
 		Denom:   "ukopi",
 		Amount:  "1000000",
-	})
+	}))
 
-	require.NoError(t, err)
-
-	_, err = msg.Borrow(ctx, &types.MsgBorrow{
+	require.NoError(t, keepertest.Borrow(ctx, msg, &types.MsgBorrow{
 		Creator: keepertest.Bob,
 		Denom:   "ukusd",
 		Amount:  "9000",
-	})
+	}))
 
-	require.NoError(t, err)
-
-	_, err = msg.CreateRedemptionRequest(ctx, &types.MsgCreateRedemptionRequest{
+	require.NoError(t, keepertest.CreateRedemptionRequest(ctx, msg, &types.MsgCreateRedemptionRequest{
 		Creator:      keepertest.Alice,
 		Denom:        "uckusd",
 		CAssetAmount: "2000",
 		Fee:          "0.1",
-	})
-
-	require.NoError(t, err)
+	}))
 
 	iterator := k.RedemptionIterator(ctx, "ukusd")
 	redemptions := iterator.GetAll()
@@ -102,7 +92,7 @@ func TestRedemptions3(t *testing.T) {
 	require.Equal(t, math.NewInt(2000), redemptions[0].Amount)
 	require.Equal(t, math.LegacyNewDecWithPrec(1, 1), redemptions[0].Fee)
 
-	require.NoError(t, k.HandleRedemptions(ctx, ctx.EventManager()))
+	require.NoError(t, handleRedemptions(ctx, k))
 
 	iterator = k.RedemptionIterator(ctx, "ukusd")
 	redemptions = iterator.GetAll()
@@ -112,20 +102,18 @@ func TestRedemptions3(t *testing.T) {
 	require.Equal(t, math.NewInt(1000), redemptions[0].Amount)
 	require.Equal(t, math.LegacyNewDecWithPrec(1, 1), redemptions[0].Fee)
 
-	_, err = msg.PartiallyRepayLoan(ctx, &types.MsgPartiallyRepayLoan{
+	require.NoError(t, keepertest.PartiallyRepayLoan(ctx, msg, &types.MsgPartiallyRepayLoan{
 		Creator: keepertest.Bob,
 		Denom:   "ukusd",
 		Amount:  "1",
-	})
-
-	require.NoError(t, k.HandleRedemptions(ctx, ctx.EventManager()))
+	}))
 
 	iterator = k.RedemptionIterator(ctx, "ukusd")
 	redemptions = iterator.GetAll()
 	require.Equal(t, 1, len(redemptions))
 
 	require.Equal(t, keepertest.Alice, redemptions[0].Address)
-	require.Equal(t, math.NewInt(949), redemptions[0].Amount)
+	require.Equal(t, int64(1000), redemptions[0].Amount.Int64())
 	require.Equal(t, math.LegacyNewDecWithPrec(1, 1), redemptions[0].Fee)
 }
 
@@ -166,16 +154,14 @@ func TestRedemptions6(t *testing.T) {
 		Amount:  "1000",
 	})
 
-	_, err := msg.CreateRedemptionRequest(ctx, &types.MsgCreateRedemptionRequest{
+	require.NoError(t, keepertest.CreateRedemptionRequest(ctx, msg, &types.MsgCreateRedemptionRequest{
 		Creator:      keepertest.Alice,
 		Denom:        "uckusd",
 		CAssetAmount: "1000",
 		Fee:          "0.5",
-	})
+	}))
 
-	require.NoError(t, err)
-
-	require.NoError(t, k.HandleRedemptions(ctx, ctx.EventManager()))
+	require.NoError(t, handleRedemptions(ctx, k))
 
 	iterator := k.RedemptionIterator(ctx, "ukusd")
 	require.Equal(t, 0, len(iterator.GetAll()))
@@ -196,14 +182,12 @@ func TestRedemptions7(t *testing.T) {
 		Amount:  "1000",
 	})
 
-	_, err := msg.CreateRedemptionRequest(ctx, &types.MsgCreateRedemptionRequest{
+	require.NoError(t, keepertest.CreateRedemptionRequest(ctx, msg, &types.MsgCreateRedemptionRequest{
 		Creator:      keepertest.Alice,
 		Denom:        "uckusd",
 		CAssetAmount: "1000",
 		Fee:          "0.5",
-	})
-
-	require.NoError(t, err)
+	}))
 
 	iterator := k.RedemptionIterator(ctx, "ukusd")
 	require.Equal(t, 1, len(iterator.GetAll()))

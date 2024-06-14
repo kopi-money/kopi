@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"github.com/kopi-money/kopi/cache"
 	"testing"
 
 	"cosmossdk.io/log"
@@ -35,6 +36,7 @@ func MmKeeper(t *testing.T) (dexkeeper.Keeper, mmkeeper.Keeper, sdk.Context) {
 		dexKeeper,
 		authority.String(),
 	)
+	cache.AddCache(mmKeeper)
 
 	require.NoError(t, mmKeeper.SetParams(ctx, MMTestingParams()))
 

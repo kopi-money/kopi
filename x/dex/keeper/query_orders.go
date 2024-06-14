@@ -40,7 +40,7 @@ func (k Keeper) OrdersNum(_ context.Context, req *types.QueryOrdersNumRequest) (
 }
 
 func (k Keeper) toOrderResponse(ctx context.Context, order types.Order) (*types.OrderResponse, error) {
-	amountLeftUSD, err := k.GetValueInUSD(ctx, order.DenomFrom, order.AmountLeft)
+	amountLeftUSD, err := k.GetValueInUSD(ctx, order.DenomFrom, order.AmountLeft.ToLegacyDec())
 	if err != nil {
 		return nil, errors.Wrap(err, "could not get amount received in usd")
 	}

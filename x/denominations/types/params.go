@@ -90,46 +90,55 @@ func createDefaultDexDenoms() []*DexDenom {
 		{
 			Name:         utils.BaseCurrency,
 			MinLiquidity: math.NewInt(10_000),
+			MinOrderSize: math.NewInt(1),
 		},
 		{
 			Name:         "uwusdc",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 1)),
+			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
 			MinLiquidity: math.NewInt(10_000_000),
+			MinOrderSize: math.NewInt(1),
 		},
 		{
 			Name:         "uwusdt",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 1)),
+			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
 			MinLiquidity: math.NewInt(10_000_000),
+			MinOrderSize: math.NewInt(1_000_000),
 		},
 		{
 			Name:         "ukusd",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 1)),
+			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
 			MinLiquidity: math.NewInt(10_000_000),
+			MinOrderSize: math.NewInt(1),
 		},
 		{
 			Name:         "uckusd",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 1)),
+			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
 			MinLiquidity: math.NewInt(10_000_000),
+			MinOrderSize: math.NewInt(1_000_000),
 		},
 		{
 			Name:         "ucwusdc",
-			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 1)),
+			Factor:       decPtr(math.LegacyNewDecWithPrec(25, 2)),
 			MinLiquidity: math.NewInt(10_000_000),
+			MinOrderSize: math.NewInt(1_000_000),
 		},
 		{
 			Name:         "swbtc",
 			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 3)),
 			MinLiquidity: math.NewInt(1_000),
+			MinOrderSize: math.NewInt(1_000_000),
 		},
 		{
 			Name:         "skbtc",
 			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 3)),
 			MinLiquidity: math.NewInt(1_000),
+			MinOrderSize: math.NewInt(1_000_000),
 		},
 		{
 			Name:         "sckbtc",
 			Factor:       decPtr(math.LegacyNewDecWithPrec(1, 3)),
 			MinLiquidity: math.NewInt(1_000),
+			MinOrderSize: math.NewInt(1_000_000),
 		},
 	}
 }
@@ -442,6 +451,14 @@ func validateDexDenoms(v any) error {
 func validateDexDenom(dexDenom *DexDenom) error {
 	if dexDenom.Name == "" {
 		return fmt.Errorf("dex denom name cannot be empty")
+	}
+
+	if dexDenom.MinOrderSize.IsNil() {
+		return fmt.Errorf("min order size is nil")
+	}
+
+	if dexDenom.MinOrderSize.LTE(math.ZeroInt()) {
+		return fmt.Errorf("minimum order size has to be bigger than zero")
 	}
 
 	if dexDenom.Name != utils.BaseCurrency {

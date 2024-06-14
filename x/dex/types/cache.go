@@ -3,22 +3,31 @@ package types
 import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/kopi-money/kopi/measurement"
 )
 
+type LoadAccAddress func() sdk.AccAddress
+type LoadOrderFee func() math.LegacyDec
 type LoadPoolBalance func() sdk.Coins
 type LoadLiquidityPair func(denom string) LiquidityPair
 type LoadFullLiquidity func(denom string) math.LegacyDec
 type LoadLiquidity func(denom string) []Liquidity
 
-func NewOrderCaches(lpb LoadPoolBalance, llp LoadLiquidityPair, lflb, lflo LoadFullLiquidity, ll LoadLiquidity) *OrdersCaches {
+func NewOrderCaches(lat, lar, lal, laf LoadAccAddress, lof LoadOrderFee, lpb LoadPoolBalance, llp LoadLiquidityPair, lflb, lflo LoadFullLiquidity, ll LoadLiquidity) *OrdersCaches {
 	return &OrdersCaches{
-		DexPool:            newItemCache(lpb),
+		AccPoolTrade:       newItemCache(lat),
+		AccPoolReserve:     newItemCache(lar),
+		AccPoolLiquidity:   newItemCache(lal),
+		AccPoolFees:        newItemCache(laf),
+		OrderFee:           newItemCache(lof),
+		LiquidityPool:      newItemCache(lpb),
 		LiquidityPair:      newOrderCache(llp),
 		FullLiquidityBase:  newOrderCache(lflb),
 		FullLiquidityOther: newOrderCache(lflo),
 		LiquidityMap:       newLiquidityMap(ll),
 
-		PriceAmounts: make(map[Pair]math.LegacyDec),
+		PriceAmounts:          make(map[Pair]math.LegacyDec),
+		MaximumTradableAmount: make(map[string]*math.LegacyDec),
 	}
 }
 
@@ -28,12 +37,19 @@ type Pair struct {
 }
 
 type OrdersCaches struct {
-	DexPool            *ItemCache[sdk.Coins]
-	LiquidityPair      *MapCache[LiquidityPair]
-	FullLiquidityBase  *MapCache[math.LegacyDec]
-	FullLiquidityOther *MapCache[math.LegacyDec]
-	PriceAmounts       map[Pair]math.LegacyDec
-	LiquidityMap       *LiquidityMap
+	AccPoolReserve        *ItemCache[sdk.AccAddress]
+	AccPoolTrade          *ItemCache[sdk.AccAddress]
+	AccPoolLiquidity      *ItemCache[sdk.AccAddress]
+	AccPoolFees           *ItemCache[sdk.AccAddress]
+	OrderFee              *ItemCache[math.LegacyDec]
+	LiquidityPool         *ItemCache[sdk.Coins]
+	LiquidityPair         *MapCache[LiquidityPair]
+	FullLiquidityBase     *MapCache[math.LegacyDec]
+	FullLiquidityOther    *MapCache[math.LegacyDec]
+	PriceAmounts          map[Pair]math.LegacyDec
+	LiquidityMap          *LiquidityMap
+	MaximumTradableAmount map[string]*math.LegacyDec
+	Measurement           *measurement.Measurement
 }
 
 func (oc *OrdersCaches) Clear() {
@@ -58,9 +74,9 @@ func (ic *ItemCache[T]) Set(t T) {
 }
 
 func (ic *ItemCache[T]) Get() T {
-	//if ic.item != nil {
-	//	return *ic.item
-	//}
+	if ic.item != nil {
+		return *ic.item
+	}
 
 	item := ic.loader()
 	ic.item = &item

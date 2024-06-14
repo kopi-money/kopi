@@ -64,7 +64,14 @@ func PowDec(amount int64) sdkmath.LegacyDec {
 
 func addFunds(ctx context.Context, k bankkeeper.BaseKeeper, t *testing.T) {
 	addresses := []string{Alice, Bob, Carol}
-	denoms := []string{"ukopi", "ukusd", "uwusdc", "ukbtc", "uwbtc"}
+	denoms := []string{
+		"ukopi",
+		"ukusd",
+		"uwusdc",
+		"ukbtc",
+		"uwbtc",
+		"ibc/8E27BA2D5493AF5636760E354E46004562C46AB7EC0CC4C1CA14E9E20E2545B5",
+	}
 
 	for _, address := range addresses {
 		for _, denom := range denoms {

@@ -15,9 +15,20 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 	poolAddress := k.AccountKeeper.GetModuleAccount(ctx, types.PoolOrders).GetAddress()
 	fee := k.GetTradeFee(ctx)
 	iterator := k.OrderIterator(ctx)
+	tradeBalances := NewTradeBalances()
 
-	for iterator.Valid() {
-		order := iterator.GetNext()
+	// At this point we know that there are no changes in the ongoing transaction. To avoid the costly iteration over
+	// two lists (of which the second is empty but needs to be checked at every step), we just get all the items from
+	// cache directly
+	orders := iterator.GetAllFromCache()
+
+	for _, keyValue := range orders {
+		order := keyValue.Value().Value()
+		if order == nil {
+			k.logger.Info("order is nil, should not happen")
+			continue
+		}
+
 		blockEnd := k.calculateBlockEnd(ctx, blockHeight, int64(order.NumBlocks))
 		if blockHeight > blockEnd {
 			if !order.AmountLeft.IsNil() && order.AmountLeft.GT(math.ZeroInt()) {
@@ -34,14 +45,15 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 				),
 			)
 
-			k.RemoveOrder(ctx, order)
+			k.RemoveOrder(ctx, *order)
+			continue
 		}
 
 		if (order.AddedAt+blockHeight)%int64(order.ExecutionInterval) != 0 {
 			continue
 		}
 
-		remove, err := k.executeOrder(ctx, eventManager, ordersCaches, poolAddress, fee, &order)
+		remove, err := k.executeOrder(ctx, eventManager, ordersCaches, tradeBalances, poolAddress, fee, order)
 		if err != nil {
 			return errors.Wrap(err, "error executing order")
 		}
@@ -53,14 +65,19 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 				),
 			)
 
-			k.RemoveOrder(ctx, order)
+			k.RemoveOrder(ctx, *order)
+			continue
 		}
+	}
+
+	if err := tradeBalances.Settle(ctx, k.BankKeeper); err != nil {
+		return errors.Wrap(err, "could not settle trade balances")
 	}
 
 	return nil
 }
 
-func (k Keeper) executeOrder(ctx context.Context, eventManager sdk.EventManagerI, ordersCaches *types.OrdersCaches, poolAddress sdk.AccAddress, fee math.LegacyDec, order *types.Order) (bool, error) {
+func (k Keeper) executeOrder(ctx context.Context, eventManager sdk.EventManagerI, ordersCaches *types.OrdersCaches, tradeBalances *TradeBalances, poolAddress sdk.AccAddress, fee math.LegacyDec, order *types.Order) (bool, error) {
 	denomPair := types.Pair{DenomFrom: order.DenomFrom, DenomTo: order.DenomTo}
 	previousMaxPrice, has := ordersCaches.PriceAmounts[denomPair]
 	if has && order.MaxPrice.LT(previousMaxPrice) {
@@ -86,18 +103,21 @@ func (k Keeper) executeOrder(ctx context.Context, eventManager sdk.EventManagerI
 	}
 
 	address := sdk.MustAccAddressFromBech32(order.Creator)
-	options := types.TradeOptions{
-		CoinSource:      poolAddress,
-		CoinTarget:      address,
+	tradeCtx := types.TradeContext{
+		Context:         ctx,
+		CoinSource:      poolAddress.String(),
+		CoinTarget:      address.String(),
 		GivenAmount:     amount,
 		TradeDenomStart: order.DenomFrom,
 		TradeDenomEnd:   order.DenomTo,
 		MaxPrice:        &order.MaxPrice,
 		AllowIncomplete: order.AllowIncomplete,
+		TradeBalances:   tradeBalances,
 		OrdersCaches:    ordersCaches,
+		IsOrder:         true,
 	}
 
-	usedAmount, receivedAmount, _, _, err := k.ExecuteTrade(ctx, eventManager, options)
+	usedAmount, _, receivedAmount, _, _, err := k.executeTrade(tradeCtx)
 	if err != nil {
 		if errors.Is(err, types.ErrTradeAmountTooSmall) {
 			return false, nil
@@ -116,11 +136,17 @@ func (k Keeper) executeOrder(ctx context.Context, eventManager sdk.EventManagerI
 
 	order.AmountLeft = order.AmountLeft.Sub(usedAmount)
 
+	// AmountLeft should never be negative zero. The comparison is still considering lower
+	// than zero to cover potential rounding issues
+	fullyExecuted := order.AmountLeft.LTE(math.ZeroInt())
+
 	if order.AmountLeft.LT(math.ZeroInt()) {
 		return false, fmt.Errorf("order has negative amount left (%v, %v)", usedAmount.String(), order.AmountLeft.String())
 	}
 
-	k.SetOrder(ctx, *order)
+	if !fullyExecuted {
+		k.SetOrder(ctx, *order)
+	}
 
 	eventManager.EmitEvent(
 		sdk.NewEvent("order_executed",
@@ -130,9 +156,6 @@ func (k Keeper) executeOrder(ctx context.Context, eventManager sdk.EventManagerI
 		),
 	)
 
-	// AmountLeft should never be negative zero. The comparison is still considering lower
-	// than zero to cover potential rounding issues
-	fullyExecuted := order.AmountLeft.LTE(math.ZeroInt())
 	return fullyExecuted, nil
 }
 

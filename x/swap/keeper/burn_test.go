@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"context"
 	"fmt"
+	"github.com/kopi-money/kopi/cache"
 	"testing"
 
 	"cosmossdk.io/math"
@@ -34,27 +35,36 @@ func TestBurn1(t *testing.T) {
 	price1, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
 	require.NoError(t, err)
 
-	_, err = msg.Trade(ctx, &dextypes.MsgTrade{
+	_, err = keepertest.Trade(ctx, msg, &dextypes.MsgTrade{
 		Creator:   keepertest.Bob,
-		DenomFrom: "uwusdc",
-		DenomTo:   "ukusd",
+		DenomFrom: "ukusd",
+		DenomTo:   "uwusdc",
 		Amount:    "10000",
 	})
 	require.NoError(t, err)
 
 	price2, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
 	require.NoError(t, err)
-	require.True(t, price2.LT(price1))
+	require.True(t, price2.GT(price1))
 
 	dexKeeper := k.DexKeeper.(dexkeeper.Keeper)
-	require.NoError(t, dexKeeper.BeginBlockCheckReserve(ctx, ctx.EventManager(), ctx.BlockHeight()))
+	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		return dexKeeper.BeginBlockCheckReserve(innerCtx, innerCtx.EventManager(), innerCtx.BlockHeight())
+	}))
 
 	priceBase, err := k.DexKeeper.CalculatePrice(ctx, utils.BaseCurrency, "uwusdc")
 	require.NoError(t, err)
 	require.False(t, priceBase.IsNil())
 
-	require.NoError(t, k.Burn(ctx, ctx.EventManager()))
+	maxBurnAmount := k.DenomKeeper.MaxBurnAmount(ctx, "ukusd")
+	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		return k.CheckBurn(innerCtx, innerCtx.EventManager(), "ukusd", maxBurnAmount)
+	}))
 	require.True(t, liquidityBalanced(ctx, dexK))
+
+	price3, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
+	require.NoError(t, err)
+	require.True(t, price3.LT(price2))
 }
 
 func TestBurn2(t *testing.T) {
@@ -72,7 +82,7 @@ func TestBurn2(t *testing.T) {
 
 	price1, _ := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
 
-	_, err = msg.Trade(ctx, &dextypes.MsgTrade{
+	_, err = keepertest.Trade(ctx, msg, &dextypes.MsgTrade{
 		Creator:   keepertest.Bob,
 		DenomFrom: "ukusd",
 		DenomTo:   "uwusdc",
@@ -89,7 +99,9 @@ func TestBurn2(t *testing.T) {
 	require.False(t, priceBase.IsNil())
 
 	for i := 0; i < 10; i++ {
-		require.NoError(t, k.Burn(ctx, ctx.EventManager()))
+		require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+			return k.Burn(innerCtx, innerCtx.EventManager())
+		}))
 
 		var price3 math.LegacyDec
 		price3, err = k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
@@ -104,8 +116,10 @@ func addLiquidity(ctx sdk.Context, k keeper.Keeper, t *testing.T, denom string, 
 	addr, err := sdk.AccAddressFromBech32(keepertest.Alice)
 	require.NoError(t, err)
 
-	err = k.DexKeeper.AddLiquidity(ctx, ctx.EventManager(), addr, denom, math.NewInt(amount))
-	require.NoError(t, err)
+	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		return k.DexKeeper.AddLiquidity(innerCtx, innerCtx.EventManager(), addr, denom, math.NewInt(amount))
+	}))
+
 	liq := k.DexKeeper.GetLiquiditySum(ctx, denom)
 	require.Equal(t, liq.Int64(), amount)
 }
@@ -123,8 +137,10 @@ func addReserveFundsToDex(ctx sdk.Context, acc swaptypes.AccountKeeper, dex swap
 	mintAcc := acc.GetModuleAccount(ctx, swaptypes.ModuleName).GetAddress()
 	err = bank.SendCoins(ctx, mintAcc, addr, coins)
 	require.NoError(t, err)
-	err = dex.AddLiquidity(ctx, ctx.EventManager(), reserveAcc.GetAddress(), denom, math.LegacyNewDec(amount).RoundInt())
-	require.NoError(t, err)
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		return dex.AddLiquidity(innerCtx, innerCtx.EventManager(), reserveAcc.GetAddress(), denom, math.LegacyNewDec(amount).RoundInt())
+	}))
 }
 
 func TestBurn3(t *testing.T) {
@@ -145,9 +161,10 @@ func burnScenario(t *testing.T, sellAmount int64) int64 {
 	addLiquidity(ctx, k, t, "uwusdc", 10000)
 	addReserveFundsToDex(ctx, k.AccountKeeper, k.DexKeeper, k.BankKeeper, t, "ukusd", 10)
 
-	tradeOptions := dextypes.TradeOptions{
-		CoinSource:      addr,
-		CoinTarget:      addr,
+	tradeCtx := dextypes.TradeContext{
+		Context:         ctx,
+		CoinSource:      addr.String(),
+		CoinTarget:      addr.String(),
 		GivenAmount:     math.NewInt(sellAmount),
 		TradeDenomStart: "ukusd",
 		TradeDenomEnd:   "uwusdc",
@@ -155,8 +172,13 @@ func burnScenario(t *testing.T, sellAmount int64) int64 {
 		MaxPrice:        nil,
 	}
 
-	amountUsed, _, _, _, err := k.DexKeeper.ExecuteTrade(ctx, ctx.EventManager(), tradeOptions)
-	require.NoError(t, err)
+	var amountUsed math.Int
+	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		tradeCtx.Context = innerCtx
+		amountUsed, _, _, _, _, err = k.DexKeeper.ExecuteTrade(tradeCtx)
+		return err
+	}))
+
 	require.True(t, amountUsed.GT(math.ZeroInt()))
 
 	price1, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
@@ -164,8 +186,10 @@ func burnScenario(t *testing.T, sellAmount int64) int64 {
 	require.True(t, price1.GT(math.LegacyOneDec()))
 
 	maxBurnAmount := k.DenomKeeper.MaxBurnAmount(ctx, "ukusd")
-	require.NoError(t, k.CheckBurn(ctx, ctx.EventManager(), "ukusd", maxBurnAmount))
 
+	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		return k.CheckBurn(innerCtx, innerCtx.EventManager(), "ukusd", maxBurnAmount)
+	}))
 	_, err = k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
 	require.NoError(t, err)
 	require.True(t, liquidityBalanced(ctx, dexK))

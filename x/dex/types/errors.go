@@ -30,4 +30,5 @@ var (
 	ErrTradeAmountTooSmall = sdkerrors.Register(ModuleName, 1120, "trade amount too small")
 	ErrNilRatio            = sdkerrors.Register(ModuleName, 1121, "ratio is nil")
 	ErrZeroPrice           = sdkerrors.Register(ModuleName, 1122, "zero price")
+	ErrOrderSizeTooSmall   = sdkerrors.Register(ModuleName, 1123, "order size too small")
 )

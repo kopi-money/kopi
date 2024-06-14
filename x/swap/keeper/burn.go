@@ -39,15 +39,8 @@ func (k Keeper) CheckBurn(ctx context.Context, eventManager sdk.EventManagerI, k
 	}
 
 	referenceRatio, _ := k.DexKeeper.GetRatio(ctx, referenceDenom)
-	if referenceRatio.Ratio == nil || referenceRatio.Ratio.GT(math.LegacyOneDec()) {
-		return nil
-	}
-
-	mintAmountBase, err := k.calcBaseMintAmount(ctx, referenceDenom, kCoin, maxBurnAmount)
-	if err != nil {
-		return errors.Wrap(err, "could not calc base mint amount")
-	}
-
+	mintAmountBase := k.calcBaseMintAmount(ctx, referenceRatio.Ratio, kCoin)
+	mintAmountBase = math.MinInt(mintAmountBase, maxBurnAmount)
 	if mintAmountBase.LTE(math.ZeroInt()) {
 		return nil
 	}
@@ -68,22 +61,12 @@ func (k Keeper) CheckBurn(ctx context.Context, eventManager sdk.EventManagerI, k
 	return nil
 }
 
-func (k Keeper) calcBaseMintAmount(ctx context.Context, referenceDenom, kCoin string, maxBurnAmount math.Int) (math.Int, error) {
-	liqReference := k.DexKeeper.GetFullLiquidityOther(ctx, referenceDenom)
-	liqVirtual := k.DexKeeper.GetFullLiquidityOther(ctx, kCoin)
-
-	amountDiff := liqVirtual.Sub(liqReference)
-	if amountDiff.LTE(math.LegacyZeroDec()) {
-		return math.ZeroInt(), nil
-	}
-
-	amountReference := math.MinInt(amountDiff.RoundInt(), maxBurnAmount)
-	mintAmount, _, _, err := k.DexKeeper.SimulateTradeForReserve(ctx, referenceDenom, utils.BaseCurrency, amountReference)
-	if err != nil {
-		return math.Int{}, err
-	}
-
-	return mintAmount, nil
+func (k Keeper) calcBaseMintAmount(ctx context.Context, referenceRatio math.LegacyDec, kCoin string) math.Int {
+	liqBase := k.DexKeeper.GetFullLiquidityBase(ctx, kCoin)
+	liqKCoin := k.DexKeeper.GetFullLiquidityOther(ctx, kCoin)
+	constantProductRoot, _ := liqBase.Mul(liqKCoin).Quo(referenceRatio).ApproxSqrt()
+	mintAmount := constantProductRoot.Sub(liqBase)
+	return mintAmount.TruncateInt()
 }
 
 // This function mints new XKP, buys the kCoin and then burns the tokens it has bought.
@@ -95,10 +78,11 @@ func (k Keeper) mintTradeBurn(ctx context.Context, eventManager sdk.EventManager
 
 	address := k.AccountKeeper.GetModuleAccount(ctx, types.ModuleName).GetAddress()
 
-	options := dextypes.TradeOptions{
+	tradeCtx := dextypes.TradeContext{
+		Context:             ctx,
 		GivenAmount:         mintAmountBase,
-		CoinSource:          address,
-		CoinTarget:          address,
+		CoinSource:          address.String(),
+		CoinTarget:          address.String(),
 		MaxPrice:            nil,
 		TradeDenomStart:     utils.BaseCurrency,
 		TradeDenomEnd:       kCoin,
@@ -107,7 +91,7 @@ func (k Keeper) mintTradeBurn(ctx context.Context, eventManager sdk.EventManager
 		ProtocolTrade:       true,
 	}
 
-	amountUsed, amountReceived, _, _, err := k.DexKeeper.ExecuteTrade(ctx, eventManager, options)
+	amountUsed, _, amountReceived, _, _, err := k.DexKeeper.ExecuteTrade(tradeCtx)
 	if err != nil {
 		if errors.Is(err, dextypes.ErrTradeAmountTooSmall) {
 			return nil
@@ -121,8 +105,8 @@ func (k Keeper) mintTradeBurn(ctx context.Context, eventManager sdk.EventManager
 
 	eventManager.EmitEvent(
 		sdk.NewEvent("arbitrage_trade",
-			sdk.Attribute{Key: "denom_from", Value: options.TradeDenomStart},
-			sdk.Attribute{Key: "denom_to", Value: options.TradeDenomEnd},
+			sdk.Attribute{Key: "denom_from", Value: tradeCtx.TradeDenomStart},
+			sdk.Attribute{Key: "denom_to", Value: tradeCtx.TradeDenomEnd},
 			sdk.Attribute{Key: "amount_used", Value: amountUsed.String()},
 			sdk.Attribute{Key: "amount_received", Value: amountReceived.String()},
 		))

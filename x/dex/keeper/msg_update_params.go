@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/kopi-money/kopi/cache"
 
 	"cosmossdk.io/math"
 
@@ -11,159 +12,183 @@ import (
 )
 
 func (k msgServer) UpdateTradeFee(goCtx context.Context, req *types.MsgUpdateTradeFee) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-	}
+	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+		if k.GetAuthority() != req.Authority {
+			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+		}
 
-	ctx := startTX(sdk.UnwrapSDKContext(goCtx))
-	defer k.CommitToCache(ctx)
-	defer k.CommitToDB(ctx)
+		tradeFee, err := math.LegacyNewDecFromStr(req.TradeFee)
+		if err != nil {
+			return err
+		}
 
-	tradeFee, err := math.LegacyNewDecFromStr(req.TradeFee)
-	if err != nil {
-		return nil, err
-	}
+		params := k.GetParams(ctx)
+		params.TradeFee = tradeFee
 
-	params := k.GetParams(ctx)
-	params.TradeFee = tradeFee
+		if err = k.SetParams(ctx, params); err != nil {
+			return err
+		}
 
-	if err = k.SetParams(ctx, params); err != nil {
-		return nil, err
-	}
+		return nil
+	})
 
-	return &types.Void{}, nil
+	return &types.Void{}, err
+}
+
+func (k msgServer) UpdateOrderFee(goCtx context.Context, req *types.MsgUpdateOrderFee) (*types.Void, error) {
+	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+		if k.GetAuthority() != req.Authority {
+			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+		}
+
+		orderFee, err := math.LegacyNewDecFromStr(req.OrderFee)
+		if err != nil {
+			return err
+		}
+
+		params := k.GetParams(ctx)
+		params.OrderFee = orderFee
+
+		if err = k.SetParams(ctx, params); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return &types.Void{}, err
 }
 
 func (k msgServer) UpdateReserveShare(goCtx context.Context, req *types.MsgUpdateReserveShare) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-	}
+	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+		if k.GetAuthority() != req.Authority {
+			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+		}
 
-	ctx := startTX(sdk.UnwrapSDKContext(goCtx))
-	defer k.CommitToCache(ctx)
-	defer k.CommitToDB(ctx)
+		reserveShare, err := math.LegacyNewDecFromStr(req.ReserveShare)
+		if err != nil {
+			return err
+		}
 
-	reserveShare, err := math.LegacyNewDecFromStr(req.ReserveShare)
-	if err != nil {
-		return nil, err
-	}
+		params := k.GetParams(ctx)
+		params.ReserveShare = reserveShare
 
-	params := k.GetParams(ctx)
-	params.ReserveShare = reserveShare
+		if err = k.SetParams(ctx, params); err != nil {
+			return err
+		}
 
-	if err = k.SetParams(ctx, params); err != nil {
-		return nil, err
-	}
+		return nil
+	})
 
-	return &types.Void{}, nil
+	return &types.Void{}, err
 }
 
 func (k msgServer) UpdateVirtualLiquidityDecay(goCtx context.Context, req *types.MsgUpdateVirtualLiquidityDecay) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-	}
+	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+		if k.GetAuthority() != req.Authority {
+			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+		}
 
-	ctx := startTX(sdk.UnwrapSDKContext(goCtx))
-	defer k.CommitToCache(ctx)
-	defer k.CommitToDB(ctx)
+		virtualLiquidityDecay, err := math.LegacyNewDecFromStr(req.VirtualLiquidityDecay)
+		if err != nil {
+			return err
+		}
 
-	virtualLiquidityDecay, err := math.LegacyNewDecFromStr(req.VirtualLiquidityDecay)
-	if err != nil {
-		return nil, err
-	}
+		params := k.GetParams(ctx)
+		params.VirtualLiquidityDecay = virtualLiquidityDecay
 
-	params := k.GetParams(ctx)
-	params.VirtualLiquidityDecay = virtualLiquidityDecay
+		if err = k.SetParams(ctx, params); err != nil {
+			return err
+		}
 
-	if err = k.SetParams(ctx, params); err != nil {
-		return nil, err
-	}
+		return nil
+	})
 
-	return &types.Void{}, nil
+	return &types.Void{}, err
 }
 
 func (k msgServer) UpdateFeeReimbursement(goCtx context.Context, req *types.MsgUpdateFeeReimbursement) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-	}
+	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+		if k.GetAuthority() != req.Authority {
+			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+		}
 
-	ctx := startTX(sdk.UnwrapSDKContext(goCtx))
-	defer k.CommitToCache(ctx)
-	defer k.CommitToDB(ctx)
+		feeReimbursement, err := math.LegacyNewDecFromStr(req.FeeReimbursement)
+		if err != nil {
+			return err
+		}
 
-	feeReimbursement, err := math.LegacyNewDecFromStr(req.FeeReimbursement)
-	if err != nil {
-		return nil, err
-	}
+		params := k.GetParams(ctx)
+		params.FeeReimbursement = feeReimbursement
 
-	params := k.GetParams(ctx)
-	params.FeeReimbursement = feeReimbursement
+		if err = k.SetParams(ctx, params); err != nil {
+			return err
+		}
 
-	if err = k.SetParams(ctx, params); err != nil {
-		return nil, err
-	}
+		return nil
+	})
 
-	return &types.Void{}, nil
+	return &types.Void{}, err
 }
 
 func (k msgServer) UpdateMaxOrderLife(goCtx context.Context, req *types.MsgUpdateMaxOrderLife) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-	}
+	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+		if k.GetAuthority() != req.Authority {
+			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+		}
 
-	ctx := startTX(sdk.UnwrapSDKContext(goCtx))
-	defer k.CommitToCache(ctx)
-	defer k.CommitToDB(ctx)
+		params := k.GetParams(ctx)
+		params.MaxOrderLife = req.MaxOrderLife
 
-	params := k.GetParams(ctx)
-	params.MaxOrderLife = req.MaxOrderLife
+		if err := k.SetParams(ctx, params); err != nil {
+			return err
+		}
 
-	if err := k.SetParams(ctx, params); err != nil {
-		return nil, err
-	}
+		return nil
+	})
 
-	return &types.Void{}, nil
+	return &types.Void{}, err
 }
 
 func (k msgServer) UpdateTradeAmountDecay(goCtx context.Context, req *types.MsgUpdateTradeAmountDecay) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-	}
+	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+		if k.GetAuthority() != req.Authority {
+			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+		}
 
-	ctx := startTX(sdk.UnwrapSDKContext(goCtx))
-	defer k.CommitToCache(ctx)
-	defer k.CommitToDB(ctx)
+		tradeAmountDecay, err := math.LegacyNewDecFromStr(req.TradeAmountDecay)
+		if err != nil {
+			return err
+		}
 
-	tradeAmountDecay, err := math.LegacyNewDecFromStr(req.TradeAmountDecay)
-	if err != nil {
-		return nil, err
-	}
+		params := k.GetParams(ctx)
+		params.TradeAmountDecay = tradeAmountDecay
 
-	params := k.GetParams(ctx)
-	params.TradeAmountDecay = tradeAmountDecay
+		if err = k.SetParams(ctx, params); err != nil {
+			return err
+		}
 
-	if err = k.SetParams(ctx, params); err != nil {
-		return nil, err
-	}
+		return nil
+	})
 
-	return &types.Void{}, nil
+	return &types.Void{}, err
 }
 
 func (k msgServer) UpdateDiscountLevels(goCtx context.Context, req *types.MsgUpdateDiscountLevels) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-	}
+	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+		if k.GetAuthority() != req.Authority {
+			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+		}
 
-	ctx := startTX(sdk.UnwrapSDKContext(goCtx))
-	defer k.CommitToCache(ctx)
-	defer k.CommitToDB(ctx)
+		params := k.GetParams(ctx)
+		params.DiscountLevels = req.DiscountLevels
 
-	params := k.GetParams(ctx)
-	params.DiscountLevels = req.DiscountLevels
+		if err := k.SetParams(ctx, params); err != nil {
+			return err
+		}
 
-	if err := k.SetParams(ctx, params); err != nil {
-		return nil, err
-	}
+		return nil
+	})
 
-	return &types.Void{}, nil
+	return &types.Void{}, err
 }

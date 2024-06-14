@@ -23,7 +23,7 @@ func (k Keeper) calculateBorrowableAmount(ctx context.Context, address, borrowDe
 	borrowableBaseValue := collateralBaseValue.Sub(loanBaseValue)
 	borrowableBaseValue = math.LegacyMaxDec(math.LegacyZeroDec(), borrowableBaseValue)
 
-	borrowableValue, err := k.DexKeeper.GetValueIn(ctx, utils.BaseCurrency, borrowDenom, borrowableBaseValue.TruncateInt())
+	borrowableValue, err := k.DexKeeper.GetValueIn(ctx, utils.BaseCurrency, borrowDenom, borrowableBaseValue)
 	if err != nil {
 		return math.LegacyDec{}, err
 	}
@@ -66,12 +66,12 @@ func (k Keeper) calculateLoanBaseValue(ctx context.Context, address string) (mat
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		loanValue := k.GetLoanValue(ctx, cAsset.BaseDenom, address)
 
-		price, err := k.DexKeeper.CalculatePrice(ctx, cAsset.BaseDenom, utils.BaseCurrency)
+		loanValueBase, err := k.DexKeeper.GetValueInBase(ctx, cAsset.BaseDenom, loanValue)
 		if err != nil {
 			return math.LegacyDec{}, err
 		}
 
-		loanSum = loanSum.Add(loanValue.Quo(price))
+		loanSum = loanSum.Add(loanValueBase)
 	}
 
 	return loanSum, nil

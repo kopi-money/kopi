@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"github.com/kopi-money/kopi/cache"
 	"github.com/kopi-money/kopi/x/dex/types"
 	"testing"
 
@@ -21,9 +22,9 @@ func TestTradeAmount1(t *testing.T) {
 	offer := math.NewInt(10_000)
 
 	acc, _ := sdk.AccAddressFromBech32(keepertest.Bob)
-	options := types.TradeOptions{
-		CoinSource:       acc,
-		CoinTarget:       acc,
+	tradeCtx := types.TradeContext{
+		CoinSource:       keepertest.Bob,
+		CoinTarget:       keepertest.Bob,
 		GivenAmount:      offer,
 		TradeDenomStart:  "ukusd",
 		TradeDenomEnd:    utils.BaseCurrency,
@@ -31,14 +32,26 @@ func TestTradeAmount1(t *testing.T) {
 		AllowIncomplete:  false,
 	}
 
-	_, amountReceived, _, _, err := k.ExecuteTrade(ctx, ctx.EventManager(), options)
+	var amountReceived math.Int
+	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		tradeCtx.Context = innerCtx
+		_, _, amountReceived, _, _, err = k.ExecuteTrade(tradeCtx)
+		return err
+	}))
 
 	tradeAmount1 := k.GetTradeAmount(ctx, acc.String())
 	require.Equal(t, tradeAmount1.Amount, amountReceived.ToLegacyDec())
 
-	_, amountReceived, _, _, err = k.ExecuteTrade(ctx, ctx.EventManager(), options)
+	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		tradeCtx.Context = innerCtx
+		_, _, amountReceived, _, _, err = k.ExecuteTrade(tradeCtx)
+		return err
+	}))
 
-	k.TradeAmountDecay(ctx)
+	_ = cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		k.TradeAmountDecay(innerCtx)
+		return nil
+	})
 
 	tradeAmount2 := k.GetTradeAmount(ctx, acc.String())
 	require.True(t, tradeAmount2.Amount.LT(tradeAmount1.Amount))

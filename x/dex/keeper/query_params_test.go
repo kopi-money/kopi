@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/kopi-money/kopi/cache"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -12,7 +14,9 @@ import (
 func TestParamsQuery(t *testing.T) {
 	keeper, ctx, _ := keepertest.DexKeeper(t)
 	params := types.DefaultParams()
-	require.NoError(t, keeper.SetParams(ctx, params))
+	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		return keeper.SetParams(innerCtx, params)
+	}))
 
 	response, err := keeper.Params(ctx, &types.QueryParamsRequest{})
 	require.NoError(t, err)

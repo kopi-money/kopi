@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"github.com/kopi-money/kopi/utils"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -20,7 +21,7 @@ func (k Keeper) LiquidityAll(c context.Context, req *types.QueryGetLiquidityAllR
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
 		val := k.GetLiquiditySum(ctx, denom)
 
-		amountUSD, err := k.GetValueInUSD(ctx, denom, val)
+		amountUSD, err := k.GetValueInUSD(ctx, denom, val.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
@@ -58,13 +59,12 @@ func (k Keeper) Liquidity(ctx context.Context, req *types.QueryGetLiquidityReque
 	res := types.QueryGetLiquidityResponse{}
 	res.Amount = k.GetLiquiditySum(ctx, req.Denom).String()
 
-	pair, found := k.GetLiquidityPair(ctx, req.Denom)
-	if found {
-		res.VirtualOther = pair.VirtualOther.String()
-		res.VirtualBase = pair.VirtualBase.String()
-	} else {
-		res.VirtualOther = math.LegacyZeroDec().String()
-		res.VirtualBase = math.LegacyZeroDec().String()
+	if req.Denom != utils.BaseCurrency {
+		pair, err := k.GetLiquidityPair(ctx, req.Denom)
+		if err == nil {
+			res.VirtualOther = pair.VirtualOther.String()
+			res.VirtualBase = pair.VirtualBase.String()
+		}
 	}
 
 	res.Sum = k.getSummedLiquidity(ctx, req.Denom).String()

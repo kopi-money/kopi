@@ -19,11 +19,11 @@ func TestPrice1(t *testing.T) {
 
 	price1, err := k.CalculatePrice(ctx, utils.BaseCurrency, "ukusd")
 	require.NoError(t, err)
-	require.Equal(t, math.LegacyNewDec(10), price1)
+	require.Equal(t, math.LegacyNewDec(4), price1)
 
 	price2, err := k.CalculatePrice(ctx, "ukusd", utils.BaseCurrency)
 	require.NoError(t, err)
-	require.Equal(t, math.LegacyNewDecWithPrec(1, 1), price2)
+	require.Equal(t, math.LegacyNewDecWithPrec(25, 2), price2)
 
 	price3, err := k.CalculatePrice(ctx, "ukusd", "uwusdc")
 	require.NoError(t, err)

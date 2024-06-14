@@ -73,12 +73,16 @@ func (k Keeper) CheckCache(ctx context.Context) error {
 	return k.caches.CheckCache(ctx)
 }
 
+func (k Keeper) Rollback(ctx context.Context) {
+	k.caches.Rollback(ctx)
+}
+
 func (k Keeper) CommitToCache(ctx context.Context) {
 	k.caches.CommitToCache(ctx)
 }
 
-func (k Keeper) Rollback(ctx context.Context) {
-	k.caches.Rollback(ctx)
+func (k Keeper) Clear(ctx context.Context) {
+	k.caches.Clear(ctx)
 }
 
 func (k Keeper) ClearTransactions() {

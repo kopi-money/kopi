@@ -25,22 +25,20 @@ func (k Keeper) validateMsg(ctx context.Context, creator, denom string, amount m
 		return nil, types.ErrInvalidAddress
 	}
 
-	if err = k.checkSpendableCoins(ctx, address, denom, amount); err != nil {
+	if err = k.checkSpendableCoins(ctx, creator, denom, amount); err != nil {
 		return nil, errors.Wrap(err, "error checking spendable coins")
 	}
 
 	return address, nil
 }
 
-func (k Keeper) checkSpendableCoins(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int) error {
-	var spendableCoins math.Int
-	for _, coin := range k.BankKeeper.SpendableCoins(ctx, address) {
-		if coin.Denom == denom {
-			spendableCoins = coin.Amount
-			break
-		}
+func (k Keeper) checkSpendableCoins(ctx context.Context, address, denom string, amount math.Int) error {
+	acc, err := sdk.AccAddressFromBech32(address)
+	if err != nil {
+		return types.ErrInvalidAddress
 	}
 
+	spendableCoins := k.BankKeeper.SpendableCoins(ctx, acc).AmountOf(denom)
 	if spendableCoins.IsNil() || amount.GT(spendableCoins) {
 		return types.ErrNotEnoughFunds
 	}

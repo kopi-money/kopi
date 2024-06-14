@@ -10,7 +10,7 @@ import (
 
 // SetOrder sets a specific order in the store from its index. When the index is zero, i.e. it's a new entry,
 // the NextIndex is increased and updated as well.
-func (k Keeper) SetOrder(ctx context.Context, order types.Order) (uint64, error) {
+func (k Keeper) SetOrder(ctx context.Context, order types.Order) uint64 {
 	if order.Index == 0 {
 		nextIndex, _ := k.ordersNextIndex.Get(ctx)
 		nextIndex += 1
@@ -19,12 +19,7 @@ func (k Keeper) SetOrder(ctx context.Context, order types.Order) (uint64, error)
 	}
 
 	k.orders.Set(ctx, order.Index, order)
-
-	if err := k.CheckOrderPoolBalance(ctx, order.DenomFrom); err != nil {
-		return order.Index, err
-	}
-
-	return order.Index, nil
+	return order.Index
 }
 
 // GetOrder returns a order from its id
@@ -34,6 +29,7 @@ func (k Keeper) GetOrder(ctx context.Context, index uint64) (val types.Order, fo
 
 // RemoveOrder removes a order from the store
 func (k Keeper) RemoveOrder(ctx context.Context, order types.Order) {
+	k.logger.Info(fmt.Sprintf("RO, %v", order.Index))
 	k.orders.Remove(ctx, order.Index)
 }
 
@@ -43,7 +39,7 @@ func (k Keeper) CheckOrderPoolBalance(ctx context.Context, denom string) error {
 		sumOrder   int64
 	)
 
-	iterator := k.orders.Iterator(ctx)
+	iterator := k.orders.Iterator(ctx, nil, nil)
 	for iterator.Valid() {
 		order := iterator.GetNext()
 		if order.DenomFrom != denom {
@@ -63,13 +59,13 @@ func (k Keeper) CheckOrderPoolBalance(ctx context.Context, denom string) error {
 
 	diff := poolAmount - sumOrder
 	if diff != 0 {
-		return fmt.Errorf("%v / %v", poolAmount, sumOrder)
+		return fmt.Errorf("denom: %v, poolAmount: %v, %v", denom, poolAmount, sumOrder)
 	}
 
 	return nil
 }
 
-func (k Keeper) ordersSum(ctx context.Context) map[string]math.Int {
+func (k Keeper) GetOrdersSum(ctx context.Context) map[string]math.Int {
 	denomSums := make(map[string]math.Int)
 
 	iterator := k.OrderIterator(ctx)
@@ -86,16 +82,20 @@ func (k Keeper) ordersSum(ctx context.Context) map[string]math.Int {
 	return denomSums
 }
 
-func (k Keeper) OrderIterator(ctx context.Context) *cache.Iterator[uint64, types.Order] {
-	return k.orders.Iterator(ctx)
+func (k Keeper) OrderIterator(ctx context.Context) cache.Iterator[uint64, types.Order] {
+	return k.orders.Iterator(ctx, nil, nil)
 }
 
 func (k Keeper) GetAllOrdersNum() int {
 	return k.orders.Size()
 }
 
+func (k Keeper) NumRunningOrderTransactions() int {
+	return k.orders.NumRunningTransactions()
+}
+
 func (k Keeper) GetAllOrdersByAddress(ctx context.Context, address string) (list []types.Order) {
-	iterator := k.orders.Iterator(ctx)
+	iterator := k.orders.Iterator(ctx, nil, nil)
 	for iterator.Valid() {
 		order := iterator.GetNext()
 		if order.Creator == address {

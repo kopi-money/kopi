@@ -1,6 +1,18 @@
 package cache
 
-import "context"
+import (
+	"context"
+	"cosmossdk.io/collections"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
+
+type Iterator[K, V any] interface {
+	Valid() bool
+	GetAll() []V
+	GetNext() V
+	GetNextKeyValue() KeyValue[K, Entry[V]]
+	GetAllFromCache() []KeyValue[K, Entry[V]]
+}
 
 type Filter[K any] func(k K) bool
 
@@ -9,9 +21,10 @@ type IteratorList[K, V any] struct {
 	currentItem *KeyValue[K, Entry[V]]
 
 	deleteList []K
-	filters    []Filter[K]
+	filter     Filter[K]
 
-	index int
+	index    int
+	useEmpty bool
 }
 
 func (il *IteratorList[K, V]) stepToNextValue() {
@@ -19,15 +32,12 @@ func (il *IteratorList[K, V]) stepToNextValue() {
 		return
 	}
 
-outer:
 	for il.index < il.orderedList.Size() {
 		entry := il.orderedList.GetByIndex(il.index)
 		il.index++
 
-		for _, filter := range il.filters {
-			if !filter(entry.key) {
-				continue outer
-			}
+		if il.filter != nil && !il.filter(entry.key) {
+			continue
 		}
 
 		if len(il.deleteList) > 0 {
@@ -37,7 +47,7 @@ outer:
 			}
 		}
 
-		if entry.value.exists {
+		if il.useEmpty || entry.value.value != nil {
 			il.currentItem = &entry
 			return
 		}
@@ -60,7 +70,62 @@ func (il *IteratorList[K, V]) next() KeyValue[K, Entry[V]] {
 	return item
 }
 
-type Iterator[K, V any] struct {
+func newIterator[K, V any](ctx context.Context, cache, changes *OrderedList[K, Entry[V]], mapCache *MapCache[K, V], deleted []K, rng collections.Ranger[K], filter Filter[K]) Iterator[K, V] {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	if sdkCtx.BlockHeight() == mapCache.currentHeight {
+		return newCacheIterator(ctx, cache, changes, mapCache, deleted, filter)
+	} else {
+		return newCollectionIterator(sdkCtx, mapCache, rng)
+	}
+}
+
+type CollectionIterator[K, V any] struct {
+	iterator collections.Iterator[K, V]
+}
+
+func (c CollectionIterator[K, V]) GetAll() (list []V) {
+	for c.Valid() {
+		list = append(list, c.GetNext())
+	}
+
+	return
+}
+
+// Probably not the most elegant way to do this
+func (c CollectionIterator[K, V]) GetAllFromCache() []KeyValue[K, Entry[V]] {
+	panic("implement me")
+}
+
+func (c CollectionIterator[K, V]) Valid() bool {
+	return c.iterator.Valid()
+}
+
+func (c CollectionIterator[K, V]) GetNext() V {
+	v, _ := c.iterator.Value()
+	c.iterator.Next()
+	return v
+}
+
+func (c CollectionIterator[K, V]) GetNextKeyValue() KeyValue[K, Entry[V]] {
+	c.iterator.Next()
+	kv, _ := c.iterator.KeyValue()
+	return KeyValue[K, Entry[V]]{
+		key: kv.Key,
+		value: Entry[V]{
+			value: &kv.Value,
+			cost:  0,
+		},
+	}
+}
+
+func newCollectionIterator[K, V any](ctx context.Context, mapCache *MapCache[K, V], rng collections.Ranger[K]) Iterator[K, V] {
+	iterator, _ := mapCache.collection.Iterate(ctx, rng)
+	return &CollectionIterator[K, V]{
+		iterator: iterator,
+	}
+}
+
+type CacheIterator[K, V any] struct {
 	ctx            context.Context
 	changes        *IteratorList[K, V]
 	cache          *IteratorList[K, V]
@@ -68,17 +133,18 @@ type Iterator[K, V any] struct {
 	smallestDelete *K
 }
 
-func newIterator[K, V any](ctx context.Context, cache, changes *OrderedList[K, Entry[V]], mapCache *MapCache[K, V], deleted []K, filters ...Filter[K]) *Iterator[K, V] {
-	iterator := Iterator[K, V]{
+func newCacheIterator[K, V any](ctx context.Context, cache, changes *OrderedList[K, Entry[V]], mapCache *MapCache[K, V], deleted []K, filter Filter[K]) Iterator[K, V] {
+	iterator := CacheIterator[K, V]{
 		ctx: ctx,
 		changes: &IteratorList[K, V]{
 			orderedList: changes,
-			filters:     filters,
+			filter:      filter,
 		},
 		cache: &IteratorList[K, V]{
 			orderedList: cache,
-			filters:     filters,
+			filter:      filter,
 			deleteList:  deleted,
+			useEmpty:    true,
 		},
 		mapCache: mapCache,
 	}
@@ -87,16 +153,16 @@ func newIterator[K, V any](ctx context.Context, cache, changes *OrderedList[K, E
 	return &iterator
 }
 
-func (it *Iterator[K, V]) stepBoth() {
+func (it *CacheIterator[K, V]) stepBoth() {
 	it.changes.stepToNextValue()
 	it.cache.stepToNextValue()
 }
 
-func (it *Iterator[K, V]) Valid() bool {
+func (it *CacheIterator[K, V]) Valid() bool {
 	return it.changes.currentItem != nil || it.cache.currentItem != nil
 }
 
-func (it *Iterator[K, V]) GetNext() V {
+func (it *CacheIterator[K, V]) GetNext() V {
 	next := it.GetNextKeyValue()
 	if next.value.value == nil {
 		value, _ := it.mapCache.Get(it.ctx, next.key)
@@ -106,7 +172,7 @@ func (it *Iterator[K, V]) GetNext() V {
 	return *next.value.value
 }
 
-func (it *Iterator[K, V]) GetNextKeyValue() KeyValue[K, Entry[V]] {
+func (it *CacheIterator[K, V]) GetNextKeyValue() KeyValue[K, Entry[V]] {
 	if it.changes.has() && !it.cache.has() {
 		return it.changes.next()
 	}
@@ -127,7 +193,11 @@ func (it *Iterator[K, V]) GetNextKeyValue() KeyValue[K, Entry[V]] {
 	}
 }
 
-func (it *Iterator[K, V]) GetAll() (list []V) {
+func (it *CacheIterator[K, V]) GetAllFromCache() []KeyValue[K, Entry[V]] {
+	return it.cache.orderedList.GetAll()
+}
+
+func (it *CacheIterator[K, V]) GetAll() (list []V) {
 	for it.Valid() {
 		list = append(list, it.GetNext())
 	}

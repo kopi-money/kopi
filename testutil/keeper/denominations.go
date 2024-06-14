@@ -40,6 +40,7 @@ type Keys struct {
 
 func DenomKeeper(t *testing.T) (denomkeeper.Keeper, sdk.Context, *Keys) {
 	initSDKConfig()
+	cache.NewTranscationHandler()
 
 	registry := codectypes.NewInterfaceRegistry()
 	cdc := codec.NewProtoCodec(registry)
@@ -75,6 +76,7 @@ func DenomKeeper(t *testing.T) (denomkeeper.Keeper, sdk.Context, *Keys) {
 		log.NewNopLogger(),
 		authority.String(),
 	)
+	cache.AddCache(denomKeeper)
 
 	ctx := sdk.NewContext(stateStore, cmtproto.Header{}, false, log.NewNopLogger())
 	params := denomtypes.DefaultParams()
@@ -83,13 +85,13 @@ func DenomKeeper(t *testing.T) (denomkeeper.Keeper, sdk.Context, *Keys) {
 	params.DexDenoms = append(params.DexDenoms, &denomtypes.DexDenom{
 		Name:         "ibc/8E27BA2D5493AF5636760E354E46004562C46AB7EC0CC4C1CA14E9E20E2545B5",
 		Factor:       &factor,
-		MinLiquidity: math.NewInt(100000),
+		MinLiquidity: math.NewInt(100_000),
+		MinOrderSize: math.NewInt(1_000_000),
 	})
 
-	ctx = ctx.WithContext(cache.NewCacheContext(ctx.Context(), ctx.BlockHeight()))
-	require.NoError(t, denomKeeper.SetParams(ctx, params))
-	require.NoError(t, denomKeeper.CommitToDB(ctx))
-	denomKeeper.CommitToCache(ctx)
+	require.NoError(t, cache.Transact(ctx, func(innerCntext sdk.Context) error {
+		return denomKeeper.SetParams(innerCntext, params)
+	}))
 
 	return denomKeeper, ctx, &keys
 }

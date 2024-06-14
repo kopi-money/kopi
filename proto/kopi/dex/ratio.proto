@@ -10,7 +10,7 @@ message Ratio {
 
   bytes ratio = 2 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable)   = true
+    (gogoproto.nullable)   = false
   ];
 
 }

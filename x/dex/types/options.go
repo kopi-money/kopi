@@ -1,12 +1,14 @@
 package types
 
 import (
+	"context"
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/utils"
 )
 
-type TradeOptions struct {
+type TradeContext struct {
+	context.Context
+
 	GivenAmount math.Int
 	MaxPrice    *math.LegacyDec
 
@@ -16,17 +18,25 @@ type TradeOptions struct {
 	AllowIncomplete     bool
 	ExcludeFromDiscount bool
 	ProtocolTrade       bool
+	IsOrder             bool
 
-	CoinSource      sdk.AccAddress
-	CoinTarget      sdk.AccAddress
-	DiscountAddress sdk.AccAddress
+	CoinSource      string
+	CoinTarget      string
+	DiscountAddress string
 
+	TradeBalances    TradeBalances
 	TradeCalculation TradeCalculation
 	OrdersCaches     *OrdersCaches
 }
 
-type TradeStepOptions struct {
-	TradeOptions
+type TradeBalances interface {
+	AddTransfer(string, string, string, math.Int)
+	NetBalance(string, string) math.Int
+	Settle(context.Context, BankKeeper) error
+}
+
+type TradeStepContext struct {
+	TradeContext
 
 	StepDenomFrom string
 	StepDenomTo   string
@@ -35,21 +45,21 @@ type TradeStepOptions struct {
 	TradeFee math.LegacyDec
 }
 
-func (to TradeOptions) TradeToBase(tradeFee math.LegacyDec) TradeStepOptions {
-	return TradeStepOptions{
-		TradeOptions:  to,
-		StepDenomFrom: to.TradeDenomStart,
+func (tc TradeContext) TradeToBase(tradeFee math.LegacyDec) TradeStepContext {
+	return TradeStepContext{
+		TradeContext:  tc,
+		StepDenomFrom: tc.TradeDenomStart,
 		StepDenomTo:   utils.BaseCurrency,
-		Amount:        to.GivenAmount,
+		Amount:        tc.GivenAmount,
 		TradeFee:      tradeFee,
 	}
 }
 
-func (to TradeOptions) TradeToTarget(tradeFee math.LegacyDec, amount math.Int) TradeStepOptions {
-	return TradeStepOptions{
-		TradeOptions:  to,
+func (tc TradeContext) TradeToTarget(tradeFee math.LegacyDec, amount math.Int) TradeStepContext {
+	return TradeStepContext{
+		TradeContext:  tc,
 		StepDenomFrom: utils.BaseCurrency,
-		StepDenomTo:   to.TradeDenomEnd,
+		StepDenomTo:   tc.TradeDenomEnd,
 		Amount:        amount,
 		TradeFee:      tradeFee,
 	}

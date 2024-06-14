@@ -53,7 +53,9 @@ func (k msgServer) CreateRedemptionRequest(goCtx context.Context, msg *types.Msg
 		Fee:     fee,
 	}
 
-	k.redemptions.Set(ctx, key, redemption)
+	if err = k.SetRedemption(ctx, cAsset.BaseDenom, redemption); err != nil {
+		return nil, errors.Wrap(err, "could not set redemption request")
+	}
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent("redemption_request_created",
@@ -141,7 +143,9 @@ func (k msgServer) UpdateRedemptionRequest(goCtx context.Context, msg *types.Msg
 	redemption.Fee = fee
 	redemption.Amount = cAssetAmount
 
-	k.redemptions.Set(ctx, key, redemption)
+	if err = k.SetRedemption(ctx, cAsset.BaseDenom, redemption); err != nil {
+		return nil, errors.Wrap(err, "could not set redemption")
+	}
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent("redemption_request_updated",

@@ -7,7 +7,6 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/kopi-money/kopi/utils"
 	"github.com/kopi-money/kopi/x/dex/types"
 )
 
@@ -24,7 +23,7 @@ func (k msgServer) RemoveLiquidity(goCtx context.Context, msg *types.MsgRemoveLi
 		return nil, errors.Wrap(err, "error validating message")
 	}
 
-	if err = k.RemoveLiquidityForAddress(ctx, ctx.EventManager(), msg.Denom, address, amount); err != nil {
+	if err = k.RemoveLiquidityForAddress(ctx, ctx.EventManager(), address, msg.Denom, amount); err != nil {
 		return nil, errors.Wrap(err, "could not remove liquidity for address")
 	}
 
@@ -43,37 +42,9 @@ func (k Keeper) RemoveAllLiquidityForModule(ctx context.Context, eventManager sd
 	return nil
 }
 
-func (k Keeper) RemoveLiquidityForModule(ctx context.Context, eventManager sdk.EventManagerI, denom, module string, amount math.Int) error {
-	address := k.AccountKeeper.GetModuleAccount(ctx, module).GetAddress()
-	removed, err := k.removeLiquidityForAddress(ctx, eventManager, denom, address.String(), amount)
-	if err != nil {
-		return err
-	}
-
-	coins := sdk.NewCoins(sdk.NewCoin(denom, removed))
-	if err = k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolLiquidity, module, coins); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (k Keeper) RemoveLiquidityForAddress(ctx context.Context, eventManager sdk.EventManagerI, denom string, addr sdk.AccAddress, amount math.Int) error {
-	removed, err := k.removeLiquidityForAddress(ctx, eventManager, denom, addr.String(), amount)
-	if err != nil {
-		return err
-	}
-
-	coins := sdk.NewCoins(sdk.NewCoin(denom, removed))
-	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolLiquidity, addr, coins); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (k Keeper) removeLiquidityForAddress(ctx context.Context, eventManager sdk.EventManagerI, denom, address string, amount math.Int) (math.Int, error) {
+func (k Keeper) RemoveLiquidityForAddress(ctx context.Context, eventManager sdk.EventManagerI, accAddr sdk.AccAddress, denom string, amount math.Int) error {
 	removed := math.ZeroInt()
+	address := accAddr.String()
 
 	iterator := k.LiquidityIterator(ctx, denom)
 	for iterator.Valid() {
@@ -85,7 +56,7 @@ func (k Keeper) removeLiquidityForAddress(ctx context.Context, eventManager sdk.
 				amountRemoved = amount
 				removed = removed.Add(amount)
 				liq.Amount = liq.Amount.Sub(amount)
-				k.SetLiquidity(ctx, liq, amount.Neg())
+				k.SetLiquidity(ctx, liq)
 				amount = math.ZeroInt()
 			} else {
 				amountRemoved = liq.Amount
@@ -110,17 +81,22 @@ func (k Keeper) removeLiquidityForAddress(ctx context.Context, eventManager sdk.
 		}
 	}
 
+	coins := sdk.NewCoins(sdk.NewCoin(denom, removed))
+	if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolLiquidity, accAddr, coins); err != nil {
+		return err
+	}
+
 	if amount.GT(math.ZeroInt()) {
-		return removed, types.ErrNotEnoughFunds
+		return types.ErrNotEnoughFunds
 	}
 
-	if denom != utils.BaseCurrency {
-		k.updatePair(ctx, nil, denom)
-	} else {
-		k.updatePairs(ctx, nil)
-	}
+	//if denom != utils.BaseCurrency {
+	//	k.updatePair(ctx, nil, denom)
+	//} else {
+	//	k.updatePairs(ctx, nil)
+	//}
 
-	return removed, nil
+	return nil
 }
 
 func (k Keeper) removeAllLiquidityForAddress(ctx context.Context, eventManager sdk.EventManagerI, denom, address string) math.Int {
@@ -145,11 +121,11 @@ func (k Keeper) removeAllLiquidityForAddress(ctx context.Context, eventManager s
 		)
 	}
 
-	if denom != utils.BaseCurrency {
-		k.updatePair(ctx, nil, denom)
-	} else {
-		k.updatePairs(ctx, nil)
-	}
+	//if denom != utils.BaseCurrency {
+	//	k.updatePair(ctx, nil, denom)
+	//} else {
+	//	k.updatePairs(ctx, nil)
+	//}
 
 	return removed
 }

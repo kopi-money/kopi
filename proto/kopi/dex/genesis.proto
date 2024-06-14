@@ -5,9 +5,7 @@ package kopi.dex;
 import "gogoproto/gogo.proto";
 import "kopi/dex/params.proto";
 import "kopi/dex/liquidity.proto";
-import "kopi/dex/liquidity_pair.proto";
 import "kopi/dex/ratio.proto";
-import "kopi/dex/liquidity_sum.proto";
 import "kopi/dex/order.proto";
 import "kopi/dex/wallet_trade_amount.proto";
 
@@ -18,16 +16,15 @@ option go_package = "github.com/kopi-money/kopi/x/dex/types";
 // GenesisState defines the dex module's genesis state.
 message GenesisState {
   Params        params = 1 [(gogoproto.nullable) = false];
-  repeated Liquidity     liquidity_list = 2 [(gogoproto.nullable) = false];
-  repeated LiquidityPair liquidity_pair_list = 3 [(gogoproto.nullable) = false];
-  uint64        liquidity_pair_count = 4;
-  uint64        liquidity_next_index = 5;
-  repeated Ratio         ratio_list = 6 [(gogoproto.nullable) = false];
+
+  repeated Liquidity         liquidity_list = 2 [(gogoproto.nullable) = false];
+  repeated Ratio             ratio_list = 3 [(gogoproto.nullable) = false];
+  repeated Order             orderList = 4 [(gogoproto.nullable) = false];
+  repeated WalletTradeAmount wallet_trade_amount = 5 [(gogoproto.nullable) = false];
+
+  uint64 liquidity_next_index = 6;
+  uint64 order_next_index = 7;
 
   // this line is used by starport scaffolding # genesis/proto/state
-  repeated LiquiditySum liquiditySumList = 8 [(gogoproto.nullable) = false];
-  repeated Order        orderList = 9 [(gogoproto.nullable) = false];
-  repeated WalletTradeAmount walletTradeAmount = 10 [(gogoproto.nullable) = false];
-  uint64       order_next_index = 11;
 }
 

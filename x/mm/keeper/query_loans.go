@@ -26,7 +26,7 @@ func (k Keeper) GetLoansByDenom(ctx context.Context, req *types.GetLoansByDenomQ
 	utilityRate := k.getUtilityRate(ctx, cAsset)
 	interestRate := k.calculateInterestRate(ctx, utilityRate)
 
-	var loans []*types.UserLoan
+	var loans []*types.DenomLoan
 	var amountBorrowedUSD math.LegacyDec
 
 	iterator := k.LoanIterator(ctx, cAsset.BaseDenom)
@@ -34,20 +34,23 @@ func (k Keeper) GetLoansByDenom(ctx context.Context, req *types.GetLoansByDenomQ
 		loan := iterator.GetNext()
 		loanValue := k.getLoanValue(loanSum, loan)
 
-		amountBorrowedUSD, err = k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loanValue.RoundInt())
+		amountBorrowedUSD, err = k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loanValue)
 		if err != nil {
 			return nil, err
 		}
 
-		loans = append(loans, &types.UserLoan{
-			Denom:             cAsset.BaseDenom,
+		loans = append(loans, &types.DenomLoan{
+			LoanIndex:         loan.Index,
+			Address:           loan.Address,
 			AmountBorrowed:    loanValue.String(),
 			AmountBorrowedUsd: amountBorrowedUSD.String(),
-			InterestRate:      interestRate.String(),
 		})
 	}
 
-	return &types.GetLoansResponse{Loans: loans}, nil
+	return &types.GetLoansResponse{
+		Loans:        loans,
+		InterestRate: interestRate.String(),
+	}, nil
 }
 
 func (k Keeper) GetLoansStats(ctx context.Context, req *types.GetLoanStatsQuery) (*types.GetLoanStatsResponse, error) {
@@ -67,13 +70,13 @@ func (k Keeper) GetLoansStats(ctx context.Context, req *types.GetLoanStatsQuery)
 		interestRate := k.calculateInterestRate(ctx, utilityRate)
 
 		amountAvailable := vault.AmountOf(cAsset.BaseDenom)
-		amountAvailableUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, amountAvailable)
+		amountAvailableUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, amountAvailable.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
 
 		loanSum := k.GetLoanSumWithDefault(ctx, cAsset.BaseDenom).LoanSum
-		loanSumUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loanSum.RoundInt())
+		loanSumUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loanSum)
 		if err != nil {
 			return nil, err
 		}
@@ -115,8 +118,11 @@ func (k Keeper) GetUserLoans(ctx context.Context, req *types.GetUserLoansQuery) 
 
 		loanSum := k.GetLoanSumWithDefault(ctx, cAsset.BaseDenom)
 
-		loan, _ := k.loans.Get(ctx, collections.Join(cAsset.BaseDenom, req.Address))
-		loanValue := k.getLoanValue(loanSum, loan)
+		loan, has := k.loans.Get(ctx, collections.Join(cAsset.BaseDenom, req.Address))
+		loanValue := math.LegacyZeroDec()
+		if has {
+			loanValue = k.getLoanValue(loanSum, loan)
+		}
 
 		vaultAmount := vault.AmountOf(cAsset.BaseDenom)
 		amountAvailable, err := k.calculateBorrowableAmount(ctx, req.Address, cAsset.BaseDenom)
@@ -126,12 +132,12 @@ func (k Keeper) GetUserLoans(ctx context.Context, req *types.GetUserLoansQuery) 
 
 		amountAvailable = math.LegacyMinDec(vaultAmount.ToLegacyDec(), amountAvailable)
 
-		amountAvailableUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, amountAvailable.RoundInt())
+		amountAvailableUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, amountAvailable)
 		if err != nil {
 			return nil, err
 		}
 
-		amountBorrowedUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loanValue.RoundInt())
+		amountBorrowedUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loanValue)
 		if err != nil {
 			return nil, err
 		}
@@ -160,7 +166,7 @@ func (k Keeper) GetUserDenomLoan(ctx context.Context, req *types.GetUserDenomLoa
 	}
 
 	loanValue := k.GetLoanValue(ctx, cAsset.BaseDenom, req.Address)
-	amountUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loanValue.RoundInt())
+	amountUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loanValue)
 	if err != nil {
 		return nil, err
 	}
@@ -186,7 +192,7 @@ func (k Keeper) GetValueLoans(ctx context.Context, req *types.GetValueLoansQuery
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		loanSum := k.GetLoanSumWithDefault(ctx, cAsset.BaseDenom)
 
-		value, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loanSum.LoanSum.RoundInt())
+		value, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDenom, loanSum.LoanSum)
 		if err != nil {
 			return nil, errors.Wrap(err, "could not get value in usd")
 		}

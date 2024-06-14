@@ -21,22 +21,28 @@ func (k Keeper) CalculateParity(ctx context.Context, kCoin string) (*math.Legacy
 		return nil, referenceDenom, errors.Wrap(err, "could not get highest price denom")
 	}
 
-	referenceRatio, _ := k.GetRatio(ctx, referenceDenom)
-	kCoinRatio, _ := k.GetRatio(ctx, kCoin)
-	if referenceRatio.Ratio == nil {
-		return nil, referenceDenom, nil
+	referenceRatio, err := k.GetRatio(ctx, referenceDenom)
+	if err != nil {
+		return nil, referenceDenom, err
 	}
 
-	parity := (*referenceRatio.Ratio).Quo(*kCoinRatio.Ratio)
+	kCoinRatio, err := k.GetRatio(ctx, kCoin)
+	if err != nil {
+		return nil, referenceDenom, err
+	}
+
+	parity := referenceRatio.Ratio.Quo(kCoinRatio.Ratio)
 	return &parity, referenceDenom, nil
 }
 
-// GetHighestPriceDenom returns the highest price of all reference denoms given one unit of a kCoin. For example,
+// GetHighestPriceDenom returns the highest valued of all reference denoms given one unit of a kCoin. For example,
 // kUSD is connected to axlUSDC, axlUSDT and others. The price of those currencies can fluctuate or even depeg, so the
-// highest price is used as "true" price.
+// most valued price is used as "true" price.
 func (k Keeper) GetHighestPriceDenom(ctx context.Context, kCoin string) (math.LegacyDec, string, error) {
-	referencePrice := math.LegacyZeroDec()
-	var referenceDenom string
+	var (
+		referencePrice math.LegacyDec
+		referenceDenom string
+	)
 
 	for _, reference := range k.DenomKeeper.ReferenceDenoms(ctx, kCoin) {
 		price, err := k.CalculatePrice(ctx, kCoin, reference)
@@ -44,7 +50,7 @@ func (k Keeper) GetHighestPriceDenom(ctx context.Context, kCoin string) (math.Le
 			return referencePrice, referenceDenom, errors.Wrap(err, "could not calculate price")
 		}
 
-		if price.GT(referencePrice) {
+		if referencePrice.IsNil() || price.GT(referencePrice) {
 			referencePrice = price
 			referenceDenom = reference
 		}

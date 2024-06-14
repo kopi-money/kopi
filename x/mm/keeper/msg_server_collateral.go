@@ -42,7 +42,7 @@ func (k msgServer) AddCollateral(goCtx context.Context, msg *types.MsgAddCollate
 	}
 
 	newAmount := collateral.Amount.Add(amount)
-	k.SetCollateral(ctx, msg.Denom, msg.Creator, newAmount, amount)
+	k.SetCollateral(ctx, msg.Denom, msg.Creator, newAmount)
 
 	coins := sdk.NewCoins(sdk.NewCoin(msg.Denom, amount))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, address, types.PoolCollateral, coins); err != nil {
@@ -88,7 +88,7 @@ func (k msgServer) RemoveCollateral(goCtx context.Context, msg *types.MsgRemoveC
 		return nil, types.ErrNegativeCollateral
 	}
 
-	k.SetCollateral(ctx, msg.Denom, msg.Creator, newAmount, amount.Neg())
+	k.SetCollateral(ctx, msg.Denom, msg.Creator, newAmount)
 
 	coins := sdk.NewCoins(sdk.NewCoin(msg.Denom, amount))
 	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolCollateral, address, coins); err != nil {

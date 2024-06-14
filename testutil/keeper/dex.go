@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"github.com/kopi-money/kopi/cache"
 	"strconv"
 	"testing"
 
@@ -89,10 +90,15 @@ func DexKeeper(t *testing.T) (dexkeeper.Keeper, sdk.Context, *Keys) {
 		denomKeeper,
 		authority.String(),
 	)
+	cache.AddCache(dexKeeper)
 
-	require.NoError(t, dexKeeper.SetParams(ctx, dextypes.DefaultParams()))
+	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		if err := dexKeeper.SetParams(innerCtx, dextypes.DefaultParams()); err != nil {
+			return err
+		}
 
-	dexKeeper.InitPairs(ctx)
+		return nil
+	}))
 
 	gs := dextypes.DefaultGenesis()
 	dexmodule.InitGenesis(ctx, dexKeeper, *gs)
@@ -118,8 +124,100 @@ func AddLiquidity(ctx context.Context, k dextypes.MsgServer, address, denom stri
 		Denom:   denom,
 		Amount:  strconv.Itoa(int(amount)),
 	}
-	_, err := k.AddLiquidity(ctx, &add)
-	return err
+
+	return cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		_, err := k.AddLiquidity(innerCtx, &add)
+		return err
+	})
+}
+
+func AddOrder(ctx context.Context, k dextypes.MsgServer, msg *dextypes.MsgAddOrder) error {
+	return cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		_, err := k.AddOrder(innerCtx, msg)
+		return err
+	})
+}
+
+func UpdateOrder(ctx context.Context, k dextypes.MsgServer, msg *dextypes.MsgUpdateOrder) error {
+	return cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		_, err := k.UpdateOrder(innerCtx, msg)
+		return err
+	})
+}
+
+func RemoveOrder(ctx context.Context, k dextypes.MsgServer, msg *dextypes.MsgRemoveOrder) error {
+	return cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		_, err := k.RemoveOrder(innerCtx, msg)
+		return err
+	})
+}
+
+func AddDeposit(ctx context.Context, k mmtypes.MsgServer, msg *mmtypes.MsgAddDeposit) error {
+	return cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		_, err := k.AddDeposit(innerCtx, msg)
+		return err
+	})
+}
+
+func AddCollateral(ctx context.Context, k mmtypes.MsgServer, msg *mmtypes.MsgAddCollateral) error {
+	return cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		_, err := k.AddCollateral(innerCtx, msg)
+		return err
+	})
+}
+
+func Borrow(ctx context.Context, k mmtypes.MsgServer, msg *mmtypes.MsgBorrow) error {
+	return cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		_, err := k.Borrow(innerCtx, msg)
+		return err
+	})
+}
+
+func RepayLoan(ctx context.Context, k mmtypes.MsgServer, msg *mmtypes.MsgRepayLoan) error {
+	return cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		_, err := k.RepayLoan(innerCtx, msg)
+		return err
+	})
+}
+
+func PartiallyRepayLoan(ctx context.Context, k mmtypes.MsgServer, msg *mmtypes.MsgPartiallyRepayLoan) error {
+	return cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		_, err := k.PartiallyRepayLoan(innerCtx, msg)
+		return err
+	})
+}
+
+func CreateRedemptionRequest(ctx context.Context, k mmtypes.MsgServer, msg *mmtypes.MsgCreateRedemptionRequest) error {
+	return cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		_, err := k.CreateRedemptionRequest(innerCtx, msg)
+		return err
+	})
+}
+
+func UpdateRedemptionRequest(ctx context.Context, k mmtypes.MsgServer, msg *mmtypes.MsgUpdateRedemptionRequest) error {
+	return cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		_, err := k.UpdateRedemptionRequest(innerCtx, msg)
+		return err
+	})
+}
+
+func CancelRedemptionRequest(ctx context.Context, k mmtypes.MsgServer, msg *mmtypes.MsgCancelRedemptionRequest) error {
+	return cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		_, err := k.CancelRedemptionRequest(innerCtx, msg)
+		return err
+	})
+}
+
+func Trade(ctx context.Context, k dextypes.MsgServer, msgTrade *dextypes.MsgTrade) (*dextypes.MsgTradeResponse, error) {
+	var res *dextypes.MsgTradeResponse
+	var err error
+
+	err = cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		res, err = k.Trade(innerCtx, msgTrade)
+		return err
+	})
+
+	return res, err
 }
 
 func RemoveLiquidity(ctx context.Context, k dextypes.MsgServer, address, denom string, amount int64) error {
@@ -128,8 +226,11 @@ func RemoveLiquidity(ctx context.Context, k dextypes.MsgServer, address, denom s
 		Denom:   denom,
 		Amount:  strconv.Itoa(int(amount)),
 	}
-	_, err := k.RemoveLiquidity(ctx, &rem)
-	return err
+
+	return cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		_, err := k.RemoveLiquidity(innerCtx, &rem)
+		return err
+	})
 }
 
 func SetupDexMsgServer(t *testing.T) (dexkeeper.Keeper, dextypes.MsgServer, sdk.Context) {

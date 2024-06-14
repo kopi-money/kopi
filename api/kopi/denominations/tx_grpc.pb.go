@@ -20,7 +20,8 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	Msg_AddDEXDenom_FullMethodName                     = "/kopi.denominations.Msg/AddDEXDenom"
-	Msg_UpdateDEXDenom_FullMethodName                  = "/kopi.denominations.Msg/UpdateDEXDenom"
+	Msg_UpdateDEXDenomMinimumLiquidity_FullMethodName  = "/kopi.denominations.Msg/UpdateDEXDenomMinimumLiquidity"
+	Msg_UpdateDEXDenomMinimumOrderSize_FullMethodName  = "/kopi.denominations.Msg/UpdateDEXDenomMinimumOrderSize"
 	Msg_AddKCoin_FullMethodName                        = "/kopi.denominations.Msg/AddKCoin"
 	Msg_UpdateKCoinSupply_FullMethodName               = "/kopi.denominations.Msg/UpdateKCoinSupply"
 	Msg_UpdateKCoinMintAmount_FullMethodName           = "/kopi.denominations.Msg/UpdateKCoinMintAmount"
@@ -41,7 +42,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MsgClient interface {
 	AddDEXDenom(ctx context.Context, in *MsgAddDEXDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	UpdateDEXDenom(ctx context.Context, in *MsgUpdateDEXDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	UpdateDEXDenomMinimumLiquidity(ctx context.Context, in *MsgUpdateDEXDenomMinimumLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	UpdateDEXDenomMinimumOrderSize(ctx context.Context, in *MsgUpdateDEXDenomMinimumOrderSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	AddKCoin(ctx context.Context, in *MsgAddKCoin, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	UpdateKCoinSupply(ctx context.Context, in *MsgUpdateKCoinSupply, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	UpdateKCoinMintAmount(ctx context.Context, in *MsgUpdateKCoinMintAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
@@ -74,9 +76,18 @@ func (c *msgClient) AddDEXDenom(ctx context.Context, in *MsgAddDEXDenom, opts ..
 	return out, nil
 }
 
-func (c *msgClient) UpdateDEXDenom(ctx context.Context, in *MsgUpdateDEXDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) UpdateDEXDenomMinimumLiquidity(ctx context.Context, in *MsgUpdateDEXDenomMinimumLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, Msg_UpdateDEXDenom_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_UpdateDEXDenomMinimumLiquidity_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateDEXDenomMinimumOrderSize(ctx context.Context, in *MsgUpdateDEXDenomMinimumOrderSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, Msg_UpdateDEXDenomMinimumOrderSize_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -205,7 +216,8 @@ func (c *msgClient) UpdateCAssetMinimumLoanSize(ctx context.Context, in *MsgUpda
 // for forward compatibility
 type MsgServer interface {
 	AddDEXDenom(context.Context, *MsgAddDEXDenom) (*MsgUpdateParamsResponse, error)
-	UpdateDEXDenom(context.Context, *MsgUpdateDEXDenom) (*MsgUpdateParamsResponse, error)
+	UpdateDEXDenomMinimumLiquidity(context.Context, *MsgUpdateDEXDenomMinimumLiquidity) (*MsgUpdateParamsResponse, error)
+	UpdateDEXDenomMinimumOrderSize(context.Context, *MsgUpdateDEXDenomMinimumOrderSize) (*MsgUpdateParamsResponse, error)
 	AddKCoin(context.Context, *MsgAddKCoin) (*MsgUpdateParamsResponse, error)
 	UpdateKCoinSupply(context.Context, *MsgUpdateKCoinSupply) (*MsgUpdateParamsResponse, error)
 	UpdateKCoinMintAmount(context.Context, *MsgUpdateKCoinMintAmount) (*MsgUpdateParamsResponse, error)
@@ -229,8 +241,11 @@ type UnimplementedMsgServer struct {
 func (UnimplementedMsgServer) AddDEXDenom(context.Context, *MsgAddDEXDenom) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddDEXDenom not implemented")
 }
-func (UnimplementedMsgServer) UpdateDEXDenom(context.Context, *MsgUpdateDEXDenom) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateDEXDenom not implemented")
+func (UnimplementedMsgServer) UpdateDEXDenomMinimumLiquidity(context.Context, *MsgUpdateDEXDenomMinimumLiquidity) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateDEXDenomMinimumLiquidity not implemented")
+}
+func (UnimplementedMsgServer) UpdateDEXDenomMinimumOrderSize(context.Context, *MsgUpdateDEXDenomMinimumOrderSize) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateDEXDenomMinimumOrderSize not implemented")
 }
 func (UnimplementedMsgServer) AddKCoin(context.Context, *MsgAddKCoin) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddKCoin not implemented")
@@ -302,20 +317,38 @@ func _Msg_AddDEXDenom_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateDEXDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateDEXDenom)
+func _Msg_UpdateDEXDenomMinimumLiquidity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateDEXDenomMinimumLiquidity)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateDEXDenom(ctx, in)
+		return srv.(MsgServer).UpdateDEXDenomMinimumLiquidity(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_UpdateDEXDenom_FullMethodName,
+		FullMethod: Msg_UpdateDEXDenomMinimumLiquidity_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateDEXDenom(ctx, req.(*MsgUpdateDEXDenom))
+		return srv.(MsgServer).UpdateDEXDenomMinimumLiquidity(ctx, req.(*MsgUpdateDEXDenomMinimumLiquidity))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateDEXDenomMinimumOrderSize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateDEXDenomMinimumOrderSize)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateDEXDenomMinimumOrderSize(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateDEXDenomMinimumOrderSize_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateDEXDenomMinimumOrderSize(ctx, req.(*MsgUpdateDEXDenomMinimumOrderSize))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -566,8 +599,12 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_AddDEXDenom_Handler,
 		},
 		{
-			MethodName: "UpdateDEXDenom",
-			Handler:    _Msg_UpdateDEXDenom_Handler,
+			MethodName: "UpdateDEXDenomMinimumLiquidity",
+			Handler:    _Msg_UpdateDEXDenomMinimumLiquidity_Handler,
+		},
+		{
+			MethodName: "UpdateDEXDenomMinimumOrderSize",
+			Handler:    _Msg_UpdateDEXDenomMinimumOrderSize_Handler,
 		},
 		{
 			MethodName: "AddKCoin",

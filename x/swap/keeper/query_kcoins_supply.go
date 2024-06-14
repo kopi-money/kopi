@@ -24,7 +24,7 @@ func (k Keeper) KCoinSupply(ctx context.Context, req *types.QueryKCoinSupplyRequ
 		return nil, err
 	}
 
-	ratioVirtual, _ := k.DexKeeper.GetRatio(ctx, req.Denom)
+	ratioKCoin, _ := k.DexKeeper.GetRatio(ctx, req.Denom)
 	ratioReference, _ := k.DexKeeper.GetRatio(ctx, denom)
 
 	return &types.QueryKCoinSupplyResponse{
@@ -32,6 +32,6 @@ func (k Keeper) KCoinSupply(ctx context.Context, req *types.QueryKCoinSupplyRequ
 		Price:          price.String(),
 		ReferenceDenom: denom,
 		RatioReference: ratioReference.Ratio.String(),
-		RatioVirtual:   ratioVirtual.Ratio.String(),
+		RatioVirtual:   ratioKCoin.Ratio.String(),
 	}, nil
 }

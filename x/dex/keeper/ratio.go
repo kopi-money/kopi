@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-
 	"github.com/kopi-money/kopi/x/dex/types"
 )
 
@@ -14,17 +13,25 @@ func (k Keeper) RemoveRatio(ctx context.Context, ratio types.Ratio) {
 	k.ratios.Remove(ctx, ratio.Denom)
 }
 
-func (k Keeper) GetRatio(ctx context.Context, denom string) (val types.Ratio, found bool) {
-	return k.ratios.Get(ctx, denom)
+func (k Keeper) GetRatio(ctx context.Context, denom string) (types.Ratio, error) {
+	ratio, has := k.ratios.Get(ctx, denom)
+	if !has {
+		fac, err := k.DenomKeeper.InitialVirtualLiquidityFactor(ctx, denom)
+		if err != nil {
+			return types.Ratio{}, err
+		}
+
+		ratio = types.Ratio{
+			Denom: denom,
+			Ratio: fac,
+		}
+	}
+
+	return ratio, nil
 }
 
 func (k Keeper) GetAllRatio(ctx context.Context) (list []types.Ratio) {
-	iterator := k.ratios.Iterator(ctx)
-	for iterator.Valid() {
-		list = append(list, iterator.GetNext())
-	}
-
-	return
+	return k.ratios.Iterator(ctx, nil, nil).GetAll()
 }
 
 func compareRatios(r1, r2 types.Ratio) bool {
@@ -32,19 +39,5 @@ func compareRatios(r1, r2 types.Ratio) bool {
 		return false
 	}
 
-	if r1.Ratio != nil && r2.Ratio != nil {
-		if !r1.Ratio.Equal(*r2.Ratio) {
-			return false
-		}
-	}
-
-	if r1.Ratio != nil && r2.Ratio == nil {
-		return false
-	}
-
-	if r1.Ratio == nil && r2.Ratio != nil {
-		return false
-	}
-
-	return true
+	return r1.Ratio.Equal(r2.Ratio)
 }

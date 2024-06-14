@@ -4,7 +4,6 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/kopi-money/kopi/x/dex/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -25,9 +24,9 @@ func (k Keeper) LiquidityPair(c context.Context, req *types.QueryGetLiquidityPai
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	liquidityPair, found := k.GetLiquidityPair(ctx, req.Denom)
-	if !found {
-		return nil, sdkerrors.ErrKeyNotFound
+	liquidityPair, err := k.GetLiquidityPair(ctx, req.Denom)
+	if err != nil {
+		return nil, err
 	}
 
 	fullOther := k.GetFullLiquidityOther(ctx, req.Denom)

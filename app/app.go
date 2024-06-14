@@ -333,50 +333,36 @@ func New(
 }
 
 func (app *App) registerCacheHandling() {
-	transactionModules := cache.Caches{
+	cache.AddCaches(cache.Caches{
 		app.DenominationsKeeper,
 		app.DexKeeper,
 		app.MMKeeper,
 		app.SwapKeeper,
-	}
-
-	app.SetBeginBlocker(func(ctx sdk.Context) (sdk.BeginBlock, error) {
-		for _, transactionModule := range transactionModules {
-			if err := transactionModule.Initialize(ctx); err != nil {
-				return sdk.BeginBlock{}, err
-			}
-			transactionModule.ClearTransactions()
-		}
-
-		return sdk.BeginBlock{}, nil
 	})
 
-	app.SetCacheTransactionInit(func(ctx sdk.Context) sdk.Context {
-		return ctx.WithContext(cache.NewCacheContext(ctx.Context(), ctx.BlockHeight()))
+	app.SetBeginBlocker(func(ctx sdk.Context) (sdk.BeginBlock, error) {
+		err := cache.TransactionHandler.Initialize(ctx)
+		return sdk.BeginBlock{}, err
+	})
+
+	app.SetCacheTransactionInit(func(ctx sdk.Context, finalizing bool) sdk.Context {
+		return ctx.WithContext(cache.NewCacheContext(ctx.Context(), ctx.BlockHeight(), finalizing))
 	})
 
 	app.SetCacheTransactionCommitToDB(func(ctx sdk.Context) error {
-		for _, transactionModule := range transactionModules {
-			if err := transactionModule.CommitToDB(ctx); err != nil {
-				return err
-			}
-		}
-
-		return nil
-	})
-
-	app.SetCacheTransactionCommitToCache(func(ctx sdk.Context) error {
-		for _, transactionModule := range transactionModules {
-			transactionModule.CommitToCache(ctx)
-		}
-
-		return nil
+		return cache.TransactionHandler.CommitToDB(ctx)
 	})
 
 	app.SetCacheTransactionRollback(func(ctx sdk.Context) {
-		for _, transactionModule := range transactionModules {
-			transactionModule.Rollback(ctx)
-		}
+		cache.TransactionHandler.Rollback(ctx)
+	})
+
+	app.SetCacheTransactionCommitToCache(func(ctx sdk.Context) {
+		cache.TransactionHandler.CommitToCache(ctx)
+	})
+
+	app.SetCacheTransactionClear(func(ctx sdk.Context) {
+		cache.TransactionHandler.Clear(ctx)
 	})
 }
 

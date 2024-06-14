@@ -22,13 +22,12 @@ func (k Keeper) LoadRedemptionRequest(ctx context.Context, denom, address string
 	return k.redemptions.Get(ctx, collections.Join(denom, address))
 }
 
-func (k Keeper) RedemptionIterator(ctx context.Context, denom string) *cache.Iterator[collections.Pair[string, string], types.Redemption] {
-	extraFilters := []cache.Filter[collections.Pair[string, string]]{
-		func(key collections.Pair[string, string]) bool {
-			return key.K1() == denom
-		},
+func (k Keeper) RedemptionIterator(ctx context.Context, denom string) cache.Iterator[collections.Pair[string, string], types.Redemption] {
+	rng := collections.NewPrefixedPairRange[string, string](denom)
+	keyPrefix := func(key collections.Pair[string, string]) bool {
+		return key.K1() == denom
 	}
-	return k.redemptions.Iterator(ctx, extraFilters...)
+	return k.redemptions.Iterator(ctx, rng, keyPrefix)
 }
 
 func (k Keeper) GetDenomRedemptions(ctx context.Context) (list []types.DenomRedemption) {
@@ -51,17 +50,30 @@ func (k Keeper) GetDenomRedemptions(ctx context.Context) (list []types.DenomRede
 }
 
 // SetRedemption set a specific withdrawals in the store
-func (k Keeper) updateRedemption(ctx context.Context, denom string, redemption types.Redemption) {
+func (k Keeper) updateRedemption(ctx context.Context, denom string, redemption types.Redemption) error {
 	if redemption.Amount.LTE(math.ZeroInt()) {
 		k.removeRedemption(ctx, denom, redemption.Address)
+		return nil
 	} else {
-		k.SetRedemption(ctx, denom, redemption)
+		if err := k.SetRedemption(ctx, denom, redemption); err != nil {
+			return errors.Wrap(err, "could not set redemption")
+		}
+
+		return nil
 	}
 }
 
-func (k Keeper) SetRedemption(ctx context.Context, denom string, redemption types.Redemption) {
+func (k Keeper) SetRedemption(ctx context.Context, denom string, redemption types.Redemption) error {
+	if redemption.Address == "" {
+		return fmt.Errorf("redemption with empty address given")
+	}
+	if redemption.Amount.IsNil() {
+		return fmt.Errorf("redemption with nil amount given")
+	}
+
 	key := collections.Join(denom, redemption.Address)
 	k.redemptions.Set(ctx, key, redemption)
+	return nil
 }
 
 func (k Keeper) removeRedemption(ctx context.Context, denom, address string) {
@@ -103,6 +115,9 @@ func (k Keeper) handleRedemptionsForCAsset(ctx context.Context, eventManager sdk
 		return nil
 	}
 
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	k.logger.Info(fmt.Sprintf("(%v / %v): %v", sdkCtx.BlockHeight(), cAsset.BaseDenom, len(redemptions)))
+
 	moduleAccount := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault)
 	found, coin := k.BankKeeper.SpendableCoins(ctx, moduleAccount.GetAddress()).Find(cAsset.BaseDenom)
 	if !found || coin.Amount.Equal(math.ZeroInt()) {
@@ -122,6 +137,11 @@ func (k Keeper) handleRedemptionsForCAsset(ctx context.Context, eventManager sdk
 		redemption := redemptions[0]
 		redemptions = redemptions[1:]
 
+		if redemption.Amount.IsNil() {
+			k.logger.Error(fmt.Sprintf("RRN (%v / %v)", redemption.Address, cAsset.BaseDenom))
+			continue
+		}
+
 		sentAmount, err := k.handleSingleRedemption(ctx, eventManager, cAsset, redemption, available)
 		if err != nil {
 			return err
@@ -138,7 +158,9 @@ func (k Keeper) handleSingleRedemption(ctx context.Context, eventManager sdk.Eve
 
 	// Update the entry and process the payout
 	entry.Amount = entry.Amount.Sub(redemptionAmountCAsset.RoundInt())
-	k.updateRedemption(ctx, cAsset.BaseDenom, entry)
+	if err := k.updateRedemption(ctx, cAsset.BaseDenom, entry); err != nil {
+		return math.LegacyDec{}, errors.Wrap(err, "could not update redemption request")
+	}
 
 	// subtract the priority cost set by the user to be handled with higher priority
 	feeCost := grossRedemptionAmountBase.Mul(entry.Fee)

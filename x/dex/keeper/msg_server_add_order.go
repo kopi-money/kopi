@@ -23,6 +23,10 @@ func (k msgServer) AddOrder(goCtx context.Context, msg *types.MsgAddOrder) (*typ
 		return nil, err
 	}
 
+	if amount.LT(k.DenomKeeper.MinOrderSize(ctx, msg.DenomFrom)) {
+		return nil, types.ErrOrderSizeTooSmall
+	}
+
 	if msg.TradeAmount == "" {
 		msg.TradeAmount = "0"
 	}
@@ -72,10 +76,7 @@ func (k msgServer) AddOrder(goCtx context.Context, msg *types.MsgAddOrder) (*typ
 		AllowIncomplete:   msg.AllowIncomplete,
 	}
 
-	order.Index, err = k.SetOrder(ctx, order)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not set order")
-	}
+	order.Index = k.SetOrder(ctx, order)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent("order_created",

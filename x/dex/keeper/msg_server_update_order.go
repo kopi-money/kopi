@@ -31,6 +31,10 @@ func (k msgServer) UpdateOrder(goCtx context.Context, msg *types.MsgUpdateOrder)
 		return nil, errors.Wrap(err, "could not parse amount")
 	}
 
+	if amount.LT(k.DenomKeeper.MinOrderSize(ctx, order.DenomFrom)) {
+		return nil, types.ErrOrderSizeTooSmall
+	}
+
 	if msg.TradeAmount == "" {
 		msg.TradeAmount = "0"
 	}
@@ -45,7 +49,7 @@ func (k msgServer) UpdateOrder(goCtx context.Context, msg *types.MsgUpdateOrder)
 		return nil, errors.Wrap(err, "could not send coins to address")
 	}
 
-	if err = k.checkSpendableCoins(ctx, address, order.DenomFrom, amount); err != nil {
+	if err = k.checkSpendableCoins(ctx, msg.Creator, order.DenomFrom, amount); err != nil {
 		return nil, errors.Wrap(err, "could not check spendable coins")
 	}
 

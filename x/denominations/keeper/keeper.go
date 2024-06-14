@@ -57,12 +57,10 @@ func NewKeeper(
 		caches: caches,
 
 		params: cache.NewItemCache(
-			collections.NewItem(
-				sb,
-				PrefixParams,
-				"params",
-				codec.CollValue[types.Params](cdc),
-			),
+			sb,
+			PrefixParams,
+			"params",
+			codec.CollValue[types.Params](cdc),
 			caches,
 			func(v1, v2 types.Params) bool { return true },
 		),
@@ -81,12 +79,16 @@ func (k Keeper) CheckCache(ctx context.Context) error {
 	return k.caches.CheckCache(ctx)
 }
 
+func (k Keeper) Rollback(ctx context.Context) {
+	k.caches.Rollback(ctx)
+}
+
 func (k Keeper) CommitToCache(ctx context.Context) {
 	k.caches.CommitToCache(ctx)
 }
 
-func (k Keeper) Rollback(ctx context.Context) {
-	k.caches.Rollback(ctx)
+func (k Keeper) Clear(ctx context.Context) {
+	k.caches.Clear(ctx)
 }
 
 func (k Keeper) ClearTransactions() {

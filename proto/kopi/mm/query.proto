@@ -198,11 +198,20 @@ message UserLoan {
   string denom = 1;
   string amount_borrowed = 2;
   string amount_borrowed_usd = 3;
-  string interest_rate = 6;
+  string interest_rate = 4;
+  uint64 loan_index = 5;
+}
+
+message DenomLoan {
+  string address = 1;
+  string amount_borrowed = 2;
+  string amount_borrowed_usd = 3;
+  uint64 loan_index = 4;
 }
 
 message GetLoansResponse {
-  repeated UserLoan loans = 1;
+  repeated DenomLoan loans = 1;
+  string interest_rate = 2;
 }
 
 message GetLoanStatsQuery {
@@ -361,11 +370,11 @@ message QueryParamsResponse {
 
 message CollateralDenomStats {
   string denom = 1;
-  string amount = 2;
-  string amount_usd = 3;
+  string deposited_market = 2;
+  string deposited_market_usd = 3;
   string ltv = 4;
   string price_usd = 5;
-  string deposited = 6;
+  string deposited_user = 6;
   string deposit_cap = 7;
   string deposit_cap_used = 8;
 }

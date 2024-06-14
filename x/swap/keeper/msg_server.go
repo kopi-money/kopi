@@ -19,5 +19,5 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 var _ types.MsgServer = msgServer{}
 
 func startTX(ctx sdk.Context) sdk.Context {
-	return ctx.WithContext(cache.NewCacheContext(ctx.Context(), ctx.BlockHeight()))
+	return ctx.WithContext(cache.NewCacheContext(ctx.Context(), ctx.BlockHeight(), true))
 }

@@ -13,16 +13,10 @@ func (k Keeper) ExportGenesis(ctx context.Context) *types.GenesisState {
 
 	genesis.LiquidityList = k.GetAllLiquidity(ctx)
 	genesis.LiquidityNextIndex, _ = k.liquidityEntriesNextIndex.Get(ctx)
-	genesis.LiquidityPairList = k.GetAllLiquidityPair(ctx)
 	genesis.RatioList = k.GetAllRatio(ctx)
 	genesis.OrderNextIndex = oni.Next
 
-	liquiditySumIterator := k.liquiditySums.Iterator(ctx)
-	for liquiditySumIterator.Valid() {
-		genesis.LiquiditySumList = append(genesis.LiquiditySumList, liquiditySumIterator.GetNext())
-	}
-
-	orderIterator := k.orders.Iterator(ctx)
+	orderIterator := k.orders.Iterator(ctx, nil, nil)
 	for orderIterator.Valid() {
 		genesis.OrderList = append(genesis.OrderList, orderIterator.GetNext())
 	}

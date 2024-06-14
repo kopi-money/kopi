@@ -40,7 +40,7 @@ func (k Keeper) GetRedemptionStatsRequest(ctx context.Context, req *types.GetRed
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		denomRequestSum, _, denomNumRequests := k.getRedemptionDenomStats(ctx, cAsset.Name)
-		requestSumUsd, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, denomRequestSum)
+		requestSumUsd, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.Name, denomRequestSum.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}

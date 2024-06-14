@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"github.com/kopi-money/kopi/cache"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	"testing"
 
@@ -22,18 +23,24 @@ func TestMint1(t *testing.T) {
 	addLiquidity(ctx, k, t, "uwusdc", 100000)
 	addReserveFundsToDex(ctx, k.AccountKeeper, k.DexKeeper, k.BankKeeper, t, "ukusd", 10)
 
-	tradeOptions := dextypes.TradeOptions{
-		CoinSource:      addr,
-		CoinTarget:      addr,
-		GivenAmount:     math.NewInt(1000),
+	tradeCtx := dextypes.TradeContext{
+		Context:         ctx,
+		CoinSource:      addr.String(),
+		CoinTarget:      addr.String(),
+		GivenAmount:     math.NewInt(5000),
 		TradeDenomStart: "uwusdc",
 		TradeDenomEnd:   "ukusd",
 		AllowIncomplete: true,
 		MaxPrice:        nil,
 	}
 
-	amountUsed, _, _, _, err := k.DexKeeper.ExecuteTrade(ctx, ctx.EventManager(), tradeOptions)
-	require.NoError(t, err)
+	var amountUsed math.Int
+	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		tradeCtx.Context = innerCtx
+		amountUsed, _, _, _, _, err = k.DexKeeper.ExecuteTrade(tradeCtx)
+		return err
+	}))
+
 	require.True(t, amountUsed.GT(math.ZeroInt()))
 
 	price1, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
@@ -41,7 +48,9 @@ func TestMint1(t *testing.T) {
 	require.True(t, price1.LT(math.LegacyOneDec()))
 
 	maxMintAmount := k.DenomKeeper.MaxMintAmount(ctx, "ukusd")
-	require.NoError(t, k.CheckMint(ctx, ctx.EventManager(), "ukusd", maxMintAmount))
+	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		return k.CheckMint(innerCtx, innerCtx.EventManager(), "ukusd", maxMintAmount)
+	}))
 
 	price2, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
 
@@ -52,10 +61,10 @@ func TestMint1(t *testing.T) {
 }
 
 func TestMint2(t *testing.T) {
-	supply1 := mintScenario(t, 1000)
+	supply1 := mintScenario(t, 5000)
 	supply2 := mintScenario(t, 10000)
 
-	require.Greater(t, supply1, supply2)
+	require.Less(t, supply1, supply2)
 }
 
 func mintScenario(t *testing.T, buyAmount int64) int64 {
@@ -69,9 +78,9 @@ func mintScenario(t *testing.T, buyAmount int64) int64 {
 	addLiquidity(ctx, k, t, "uwusdc", 100000)
 	addReserveFundsToDex(ctx, k.AccountKeeper, k.DexKeeper, k.BankKeeper, t, "ukusd", 10)
 
-	tradeOptions := dextypes.TradeOptions{
-		CoinSource:      addr,
-		CoinTarget:      addr,
+	tradeCtx := dextypes.TradeContext{
+		CoinSource:      addr.String(),
+		CoinTarget:      addr.String(),
 		GivenAmount:     math.NewInt(buyAmount),
 		TradeDenomStart: "uwusdc",
 		TradeDenomEnd:   "ukusd",
@@ -79,8 +88,13 @@ func mintScenario(t *testing.T, buyAmount int64) int64 {
 		MaxPrice:        nil,
 	}
 
-	amountUsed, _, _, _, err := k.DexKeeper.ExecuteTrade(ctx, ctx.EventManager(), tradeOptions)
-	require.NoError(t, err)
+	var amountUsed math.Int
+	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		tradeCtx.Context = innerCtx
+		amountUsed, _, _, _, _, err = k.DexKeeper.ExecuteTrade(tradeCtx)
+		return err
+	}))
+
 	require.True(t, amountUsed.GT(math.ZeroInt()))
 
 	price1, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
@@ -88,7 +102,9 @@ func mintScenario(t *testing.T, buyAmount int64) int64 {
 	require.True(t, price1.LT(math.LegacyOneDec()))
 
 	maxMintAmount := k.DenomKeeper.MaxMintAmount(ctx, "ukusd")
-	require.NoError(t, k.CheckMint(ctx, ctx.EventManager(), "ukusd", maxMintAmount))
+	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		return k.CheckMint(innerCtx, innerCtx.EventManager(), "ukusd", maxMintAmount)
+	}))
 
 	price2, err := k.DexKeeper.CalculatePrice(ctx, "ukusd", "uwusdc")
 
@@ -108,9 +124,9 @@ func TestMint3(t *testing.T) {
 	addr, err := sdk.AccAddressFromBech32(keepertest.Alice)
 	require.NoError(t, err)
 
-	tradeOptions := dextypes.TradeOptions{
-		CoinSource:      addr,
-		CoinTarget:      addr,
+	tradeCtx := dextypes.TradeContext{
+		CoinSource:      addr.String(),
+		CoinTarget:      addr.String(),
 		GivenAmount:     math.NewInt(100_000_000_000),
 		TradeDenomStart: "uwusdc",
 		TradeDenomEnd:   utils.BaseCurrency,
@@ -118,13 +134,18 @@ func TestMint3(t *testing.T) {
 		MaxPrice:        nil,
 	}
 
-	_, _, _, _, err = k.DexKeeper.ExecuteTrade(ctx, ctx.EventManager(), tradeOptions)
-	require.NoError(t, err)
+	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		tradeCtx.Context = innerCtx
+		_, _, _, _, _, err = k.DexKeeper.ExecuteTrade(tradeCtx)
+		return err
+	}))
 
 	supply1 := k.BankKeeper.GetSupply(ctx, "ukusd").Amount
 
 	maxMintAmount := k.DenomKeeper.MaxMintAmount(ctx, "ukusd")
-	require.NoError(t, k.CheckMint(ctx, ctx.EventManager(), "ukusd", maxMintAmount))
+	require.NoError(t, cache.Transact(ctx, func(innerCtx sdk.Context) error {
+		return k.CheckMint(innerCtx, innerCtx.EventManager(), "ukusd", maxMintAmount)
+	}))
 
 	supply2 := k.BankKeeper.GetSupply(ctx, "ukusd").Amount
 

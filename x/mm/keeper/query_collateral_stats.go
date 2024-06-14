@@ -23,7 +23,7 @@ func (k Keeper) GetCollateralStats(ctx context.Context, req *types.GetCollateral
 
 	for _, denom := range k.DenomKeeper.GetCollateralDenoms(ctx) {
 		sum := k.getCollateralSum(ctx, denom.Denom)
-		sumUSD, err := k.DexKeeper.GetValueInUSD(ctx, denom.Denom, sum)
+		sumUSD, err := k.DexKeeper.GetValueInUSD(ctx, denom.Denom, sum.ToLegacyDec())
 		if err != nil {
 			return nil, errors.Wrap(err, "could not get collateral sum in usd")
 		}
@@ -45,14 +45,14 @@ func (k Keeper) GetCollateralStats(ctx context.Context, req *types.GetCollateral
 		}
 
 		stats = append(stats, &types.CollateralDenomStats{
-			Denom:          denom.Denom,
-			Amount:         sum.String(),
-			AmountUsd:      sumUSD.String(),
-			Ltv:            denom.Ltv.String(),
-			PriceUsd:       priceUSD.String(),
-			Deposited:      sum.String(),
-			DepositCap:     depositCap.String(),
-			DepositCapUsed: depositCapUsed.String(),
+			Denom:              denom.Denom,
+			DepositedMarket:    sum.String(),
+			DepositedMarketUsd: sumUSD.String(),
+			Ltv:                denom.Ltv.String(),
+			PriceUsd:           priceUSD.String(),
+			DepositedUser:      sum.String(),
+			DepositCap:         depositCap.String(),
+			DepositCapUsed:     depositCapUsed.String(),
 		})
 	}
 
@@ -83,7 +83,7 @@ func (k Keeper) GetCollateralDenomStats(ctx context.Context, req *types.GetColla
 		})
 	}
 
-	sumUSD, err := k.DexKeeper.GetValueInUSD(ctx, denom.Denom, sum)
+	sumUSD, err := k.DexKeeper.GetValueInUSD(ctx, denom.Denom, sum.ToLegacyDec())
 	if err != nil {
 		return nil, err
 	}
@@ -109,21 +109,20 @@ func (k Keeper) GetCollateralUserStats(ctx context.Context, req *types.GetCollat
 			collateral.Amount = math.ZeroInt()
 		}
 
-		sumUSD, err := k.DexKeeper.GetValueInUSD(ctx, denom.Denom, collateral.Amount)
-		if err != nil {
-			continue
-		}
-
 		depositCap, err := k.DenomKeeper.GetDepositCap(ctx, denom.Denom)
 		if err != nil {
 			return nil, errors.Wrap(err, "could not get deposit cap")
 		}
 
-		sum := k.getCollateralSum(ctx, denom.Denom)
+		collateralSum := k.getCollateralSum(ctx, denom.Denom)
+		collateralSumUSD, err := k.DexKeeper.GetValueInUSD(ctx, denom.Denom, collateral.Amount.ToLegacyDec())
+		if err != nil {
+			continue
+		}
 
 		depositCapUsed := math.LegacyZeroDec()
 		if depositCap.GT(math.ZeroInt()) {
-			depositCapUsed = sum.ToLegacyDec().Quo(depositCap.ToLegacyDec())
+			depositCapUsed = collateralSum.ToLegacyDec().Quo(depositCap.ToLegacyDec())
 		}
 
 		priceUSD, err := k.DexKeeper.GetPriceInUSD(ctx, denom.Denom)
@@ -131,17 +130,17 @@ func (k Keeper) GetCollateralUserStats(ctx context.Context, req *types.GetCollat
 			return nil, errors.Wrap(err, "could not get price in usd")
 		}
 
-		totalUSD = totalUSD.Add(sumUSD)
+		totalUSD = totalUSD.Add(collateralSumUSD)
 
 		stats = append(stats, &types.CollateralDenomStats{
-			Denom:          denom.Denom,
-			Amount:         collateral.Amount.String(),
-			AmountUsd:      sumUSD.String(),
-			Ltv:            denom.Ltv.String(),
-			PriceUsd:       priceUSD.String(),
-			Deposited:      sum.String(),
-			DepositCap:     depositCap.String(),
-			DepositCapUsed: depositCapUsed.String(),
+			Denom:              denom.Denom,
+			DepositedMarket:    collateralSum.String(),
+			DepositedMarketUsd: collateralSumUSD.String(),
+			Ltv:                denom.Ltv.String(),
+			PriceUsd:           priceUSD.String(),
+			DepositedUser:      collateral.Amount.String(),
+			DepositCap:         depositCap.String(),
+			DepositCapUsed:     depositCapUsed.String(),
 		})
 	}
 
@@ -159,7 +158,7 @@ func (k Keeper) GetCollateralDenomUserStats(ctx context.Context, req *types.GetC
 	}
 
 	available := k.BankKeeper.SpendableCoin(ctx, address, req.Denom)
-	availableUSD, err := k.DexKeeper.GetValueInUSD(ctx, req.Denom, available.Amount)
+	availableUSD, err := k.DexKeeper.GetValueInUSD(ctx, req.Denom, available.Amount.ToLegacyDec())
 	if err != nil {
 		return nil, errors.Wrap(err, "could not get available value in used")
 	}
@@ -169,7 +168,7 @@ func (k Keeper) GetCollateralDenomUserStats(ctx context.Context, req *types.GetC
 		collateral.Amount = math.ZeroInt()
 	}
 
-	providedUSD, err := k.DexKeeper.GetValueInUSD(ctx, req.Denom, collateral.Amount)
+	providedUSD, err := k.DexKeeper.GetValueInUSD(ctx, req.Denom, collateral.Amount.ToLegacyDec())
 	if err != nil {
 		return nil, errors.Wrap(err, "could not get provided value in used")
 	}

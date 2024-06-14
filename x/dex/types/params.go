@@ -11,6 +11,7 @@ import (
 
 var (
 	KeyTradeFee              = []byte("TradeFee")
+	KeyOrderFee              = []byte("OrderFee")
 	KeyVirtualLiquidityDecay = []byte("VirtualLiquidityDecay")
 	KeyReserveShare          = []byte("ReserveShare")
 	KeyFeeReimbursement      = []byte("FeeReimbursement")
@@ -23,6 +24,7 @@ var _ paramtypes.ParamSet = (*Params)(nil)
 var (
 	FeeReimbursement      = math.LegacyNewDecWithPrec(5, 1)      // 0.5
 	TradeFee              = math.LegacyNewDecWithPrec(1, 3)      // 0.001 -> 0.1%
+	OrderFee              = math.LegacyNewDecWithPrec(5, 3)      // 0.005 -> 0.5%
 	ReserveShare          = math.LegacyNewDecWithPrec(5, 1)      // 0.5 -> 50%
 	VirtualLiquidityDecay = math.LegacyNewDecWithPrec(999997, 6) // 0.999997
 	TradeAmountDecay      = math.LegacyNewDecWithPrec(95, 2)     // 0.95
@@ -48,6 +50,7 @@ func ParamKeyTable() paramtypes.KeyTable {
 func DefaultParams() Params {
 	return Params{
 		TradeFee:              TradeFee,
+		OrderFee:              OrderFee,
 		VirtualLiquidityDecay: VirtualLiquidityDecay,
 		ReserveShare:          ReserveShare,
 		FeeReimbursement:      FeeReimbursement,
@@ -61,6 +64,7 @@ func DefaultParams() Params {
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(KeyTradeFee, &p.TradeFee, validateZeroOne),
+		paramtypes.NewParamSetPair(KeyOrderFee, &p.OrderFee, validateZeroOne),
 		paramtypes.NewParamSetPair(KeyVirtualLiquidityDecay, &p.VirtualLiquidityDecay, validateZeroOne),
 		paramtypes.NewParamSetPair(KeyReserveShare, &p.ReserveShare, validateZeroOne),
 		paramtypes.NewParamSetPair(KeyFeeReimbursement, &p.FeeReimbursement, validateLessThanOne),
@@ -77,6 +81,10 @@ func (p Params) Validate() error {
 
 	if err := validateZeroOne(p.TradeFee); err != nil {
 		return errors.Wrap(err, "invalid trade fee")
+	}
+
+	if err := validateZeroOne(p.OrderFee); err != nil {
+		return errors.Wrap(err, "invalid order fee")
 	}
 
 	if err := validateZeroOne(p.VirtualLiquidityDecay); err != nil {

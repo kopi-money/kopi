@@ -13,13 +13,11 @@ import (
 func TestLoans1(t *testing.T) {
 	_, _, msg, ctx := keepertest.SetupMMMsgServer(t)
 
-	_, err := msg.Borrow(ctx, &types.MsgBorrow{
+	require.Error(t, keepertest.Borrow(ctx, msg, &types.MsgBorrow{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
 		Amount:  "100",
-	})
-
-	require.Error(t, err)
+	}))
 }
 
 func TestLoans2(t *testing.T) {
@@ -31,13 +29,11 @@ func TestLoans2(t *testing.T) {
 		Amount:  "100",
 	})
 
-	_, err := msg.Borrow(ctx, &types.MsgBorrow{
+	require.Error(t, keepertest.Borrow(ctx, msg, &types.MsgBorrow{
 		Creator: keepertest.Bob,
 		Denom:   "ukusd",
 		Amount:  "100",
-	})
-
-	require.Error(t, err)
+	}))
 }
 
 func TestLoans3(t *testing.T) {
@@ -49,19 +45,17 @@ func TestLoans3(t *testing.T) {
 		Amount:  "100",
 	})
 
-	_, _ = msg.AddCollateral(ctx, &types.MsgAddCollateral{
+	require.NoError(t, keepertest.AddCollateral(ctx, msg, &types.MsgAddCollateral{
 		Creator: keepertest.Bob,
 		Denom:   "ukopi",
 		Amount:  "1000",
-	})
+	}))
 
-	_, err := msg.Borrow(ctx, &types.MsgBorrow{
+	require.Error(t, keepertest.Borrow(ctx, msg, &types.MsgBorrow{
 		Creator: keepertest.Bob,
 		Denom:   "ukusd",
 		Amount:  "101",
-	})
-
-	require.Error(t, err)
+	}))
 }
 
 func TestLoans4(t *testing.T) {
@@ -78,19 +72,17 @@ func TestLoans4(t *testing.T) {
 		Amount:  "10000",
 	})
 
-	_, _ = msg.AddCollateral(ctx, &types.MsgAddCollateral{
+	require.NoError(t, keepertest.AddCollateral(ctx, msg, &types.MsgAddCollateral{
 		Creator: keepertest.Bob,
 		Denom:   "ukopi",
 		Amount:  "100000",
-	})
+	}))
 
-	_, err := msg.Borrow(ctx, &types.MsgBorrow{
+	require.NoError(t, keepertest.Borrow(ctx, msg, &types.MsgBorrow{
 		Creator: keepertest.Bob,
 		Denom:   "ukusd",
 		Amount:  "1000",
-	})
-
-	require.NoError(t, err)
+	}))
 
 	coins = k.BankKeeper.SpendableCoins(ctx, acc)
 	_, balance2 := coins.Find("ukusd")
@@ -121,27 +113,23 @@ func TestLoans5(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	_, err = msg.AddCollateral(ctx, &types.MsgAddCollateral{
+	require.NoError(t, keepertest.AddCollateral(ctx, msg, &types.MsgAddCollateral{
 		Creator: keepertest.Bob,
 		Denom:   "ukopi",
 		Amount:  "100000",
-	})
-	require.NoError(t, err)
+	}))
 
-	_, err = msg.Borrow(ctx, &types.MsgBorrow{
+	require.NoError(t, keepertest.Borrow(ctx, msg, &types.MsgBorrow{
 		Creator: keepertest.Bob,
 		Denom:   "ukusd",
 		Amount:  "1000",
-	})
-	require.NoError(t, err)
+	}))
 
-	_, err = msg.PartiallyRepayLoan(ctx, &types.MsgPartiallyRepayLoan{
+	require.NoError(t, keepertest.PartiallyRepayLoan(ctx, msg, &types.MsgPartiallyRepayLoan{
 		Creator: keepertest.Bob,
 		Denom:   "ukusd",
 		Amount:  "1",
-	})
-
-	require.NoError(t, err)
+	}))
 
 	coins = k.BankKeeper.SpendableCoins(ctx, acc)
 	_, balance2 := coins.Find("ukusd")
@@ -171,25 +159,23 @@ func TestLoans6(t *testing.T) {
 		Amount:  "10000",
 	})
 
-	_, _ = msg.AddCollateral(ctx, &types.MsgAddCollateral{
+	require.NoError(t, keepertest.AddCollateral(ctx, msg, &types.MsgAddCollateral{
 		Creator: keepertest.Bob,
 		Denom:   "ukopi",
 		Amount:  "100000",
-	})
+	}))
 
-	_, _ = msg.Borrow(ctx, &types.MsgBorrow{
+	require.NoError(t, keepertest.Borrow(ctx, msg, &types.MsgBorrow{
 		Creator: keepertest.Bob,
 		Denom:   "ukusd",
 		Amount:  "1000",
-	})
+	}))
 
-	_, err := msg.PartiallyRepayLoan(ctx, &types.MsgPartiallyRepayLoan{
+	require.NoError(t, keepertest.PartiallyRepayLoan(ctx, msg, &types.MsgPartiallyRepayLoan{
 		Creator: keepertest.Bob,
 		Denom:   "ukusd",
 		Amount:  "1001",
-	})
-
-	require.NoError(t, err)
+	}))
 
 	coins = k.BankKeeper.SpendableCoins(ctx, acc)
 	_, balance2 := coins.Find("ukusd")
@@ -215,28 +201,24 @@ func TestLoans7(t *testing.T) {
 
 	require.NoError(t, err)
 
-	_, err = msg.AddCollateral(ctx, &types.MsgAddCollateral{
+	require.NoError(t, keepertest.AddCollateral(ctx, msg, &types.MsgAddCollateral{
 		Creator: keepertest.Bob,
 		Denom:   "ukopi",
 		Amount:  "100000",
-	})
+	}))
 
 	require.NoError(t, err)
 
-	_, err = msg.Borrow(ctx, &types.MsgBorrow{
+	require.NoError(t, keepertest.Borrow(ctx, msg, &types.MsgBorrow{
 		Creator: keepertest.Bob,
 		Denom:   "ukusd",
 		Amount:  "1000",
-	})
+	}))
 
-	require.NoError(t, err)
-
-	_, err = msg.RepayLoan(ctx, &types.MsgRepayLoan{
+	require.NoError(t, keepertest.RepayLoan(ctx, msg, &types.MsgRepayLoan{
 		Creator: keepertest.Bob,
 		Denom:   "ukusd",
-	})
-
-	require.NoError(t, err)
+	}))
 
 	coins = k.BankKeeper.SpendableCoins(ctx, acc)
 	_, balance2 := coins.Find("ukusd")
@@ -259,19 +241,19 @@ func TestLoans8(t *testing.T) {
 
 	borrowable, err := k.CalcAvailableToBorrow(ctx, keepertest.Alice, "ukusd")
 	require.NoError(t, err)
-	require.Equal(t, math.ZeroInt(), borrowable)
+	require.Equal(t, int64(0), borrowable.TruncateInt().Int64())
 }
 
 func TestLoans9(t *testing.T) {
 	k, _, msg, ctx := keepertest.SetupMMMsgServer(t)
 
-	_, err := msg.AddCollateral(ctx, &types.MsgAddCollateral{
+	require.NoError(t, keepertest.AddCollateral(ctx, msg, &types.MsgAddCollateral{
 		Creator: keepertest.Alice,
 		Denom:   "ukopi",
 		Amount:  "10000",
-	})
+	}))
 
-	_, err = msg.AddDeposit(ctx, &types.MsgAddDeposit{
+	_, err := msg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
 		Amount:  "10000",
@@ -281,19 +263,19 @@ func TestLoans9(t *testing.T) {
 
 	borrowable, err := k.CalcAvailableToBorrow(ctx, keepertest.Alice, "ukusd")
 	require.NoError(t, err)
-	require.Equal(t, int64(500), borrowable.Int64())
+	require.Equal(t, int64(1250), borrowable.TruncateInt().Int64())
 }
 
 func TestLoans10(t *testing.T) {
 	k, _, msg, ctx := keepertest.SetupMMMsgServer(t)
 
-	_, err := msg.AddCollateral(ctx, &types.MsgAddCollateral{
+	require.NoError(t, keepertest.AddCollateral(ctx, msg, &types.MsgAddCollateral{
 		Creator: keepertest.Alice,
 		Denom:   "ukopi",
 		Amount:  "10000000",
-	})
+	}))
 
-	_, err = msg.AddDeposit(ctx, &types.MsgAddDeposit{
+	_, err := msg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
 		Amount:  "10000",
@@ -303,45 +285,42 @@ func TestLoans10(t *testing.T) {
 
 	withdrawable, err := k.CalcAvailableToBorrow(ctx, keepertest.Alice, "ukusd")
 	require.NoError(t, err)
-	require.Equal(t, math.NewInt(10000), withdrawable)
+	require.Equal(t, int64(10000), withdrawable.TruncateInt().Int64())
 }
 
 func TestLoans11(t *testing.T) {
 	_, _, msg, ctx := keepertest.SetupMMMsgServer(t)
 
-	_, err := msg.AddCollateral(ctx, &types.MsgAddCollateral{
+	require.NoError(t, keepertest.AddCollateral(ctx, msg, &types.MsgAddCollateral{
 		Creator: keepertest.Alice,
 		Denom:   "ukopi",
 		Amount:  "100000000",
-	})
-	require.NoError(t, err)
+	}))
 
-	_, err = msg.AddDeposit(ctx, &types.MsgAddDeposit{
+	_, err := msg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
 		Amount:  "10000",
 	})
 	require.NoError(t, err)
 
-	_, err = msg.Borrow(ctx, &types.MsgBorrow{
+	require.NoError(t, keepertest.Borrow(ctx, msg, &types.MsgBorrow{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
 		Amount:  "7500",
-	})
-	require.NoError(t, err)
+	}))
 }
 
 func TestLoans12(t *testing.T) {
 	k, _, msg, ctx := keepertest.SetupMMMsgServer(t)
 
-	_, err := msg.AddCollateral(ctx, &types.MsgAddCollateral{
+	require.NoError(t, keepertest.AddCollateral(ctx, msg, &types.MsgAddCollateral{
 		Creator: keepertest.Alice,
 		Denom:   "ukopi",
-		Amount:  "10000000",
-	})
-	require.NoError(t, err)
+		Amount:  "2500000",
+	}))
 
-	_, err = msg.AddDeposit(ctx, &types.MsgAddDeposit{
+	_, err := msg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
 		Amount:  "1000000",
@@ -351,53 +330,49 @@ func TestLoans12(t *testing.T) {
 	borrowable, err := k.CalcAvailableToBorrow(ctx, keepertest.Alice, "ukusd")
 	require.NoError(t, err)
 
-	_, err = msg.Borrow(ctx, &types.MsgBorrow{
+	require.NoError(t, keepertest.Borrow(ctx, msg, &types.MsgBorrow{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
 		Amount:  borrowable.String(),
-	})
-	require.NoError(t, err)
+	}))
 }
 
 func TestLoans13(t *testing.T) {
 	k, _, msg, ctx := keepertest.SetupMMMsgServer(t)
 
-	_, err := msg.AddCollateral(ctx, &types.MsgAddCollateral{
+	require.NoError(t, keepertest.AddCollateral(ctx, msg, &types.MsgAddCollateral{
 		Creator: keepertest.Alice,
 		Denom:   "ukopi",
 		Amount:  "10000000",
-	})
-	require.NoError(t, err)
+	}))
 
-	_, err = msg.AddDeposit(ctx, &types.MsgAddDeposit{
+	_, err := msg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
 		Amount:  "100000",
 	})
 	require.NoError(t, err)
 
-	_, err = msg.AddDeposit(ctx, &types.MsgAddDeposit{
+	require.NoError(t, keepertest.AddCollateral(ctx, msg, &types.MsgAddCollateral{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
 		Amount:  "100000",
-	})
-	require.NoError(t, err)
+	}))
 
 	borrowable1, err := k.CalcAvailableToBorrow(ctx, keepertest.Alice, "ukusd")
 	require.NoError(t, err)
 
-	_, err = msg.Borrow(ctx, &types.MsgBorrow{
+	require.NoError(t, keepertest.Borrow(ctx, msg, &types.MsgBorrow{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
 		Amount:  "1000",
-	})
-	require.NoError(t, err)
+	}))
 
 	borrowable2, err := k.CalcAvailableToBorrow(ctx, keepertest.Alice, "ukusd")
 	require.NoError(t, err)
 
-	borrowableInt1 := borrowable1.Int64()
-	borrowableInt2 := borrowable2.Int64()
+	borrowableInt1 := borrowable1.TruncateInt().Int64()
+	borrowableInt2 := borrowable2.TruncateInt().Int64()
 
 	require.Less(t, borrowableInt2, borrowableInt1)
 }
@@ -405,33 +380,30 @@ func TestLoans13(t *testing.T) {
 func TestLoans14(t *testing.T) {
 	k, _, msg, ctx := keepertest.SetupMMMsgServer(t)
 
-	_, err := msg.AddCollateral(ctx, &types.MsgAddCollateral{
+	require.NoError(t, keepertest.AddCollateral(ctx, msg, &types.MsgAddCollateral{
 		Creator: keepertest.Alice,
 		Denom:   "ukopi",
 		Amount:  "10000000",
-	})
-	require.NoError(t, err)
+	}))
 
-	_, err = msg.AddCollateral(ctx, &types.MsgAddCollateral{
+	require.NoError(t, keepertest.AddCollateral(ctx, msg, &types.MsgAddCollateral{
 		Creator: keepertest.Bob,
 		Denom:   "ukopi",
 		Amount:  "10000000",
-	})
-	require.NoError(t, err)
+	}))
 
-	_, err = msg.AddDeposit(ctx, &types.MsgAddDeposit{
+	_, err := msg.AddDeposit(ctx, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
 		Amount:  "100000",
 	})
 	require.NoError(t, err)
 
-	_, err = msg.Borrow(ctx, &types.MsgBorrow{
+	require.NoError(t, keepertest.Borrow(ctx, msg, &types.MsgBorrow{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
 		Amount:  "9000",
-	})
-	require.NoError(t, err)
+	}))
 
 	loan, found := k.LoadLoan(ctx, "ukusd", keepertest.Alice)
 	require.True(t, found)
@@ -441,12 +413,11 @@ func TestLoans14(t *testing.T) {
 	require.Equal(t, math.LegacyNewDec(9000), loanSum.LoanSum)
 	require.Equal(t, math.LegacyNewDec(9000), loanSum.WeightSum)
 
-	_, err = msg.Borrow(ctx, &types.MsgBorrow{
+	require.NoError(t, keepertest.Borrow(ctx, msg, &types.MsgBorrow{
 		Creator: keepertest.Bob,
 		Denom:   "ukusd",
 		Amount:  "1000",
-	})
-	require.NoError(t, err)
+	}))
 
 	loan, found = k.LoadLoan(ctx, "ukusd", keepertest.Bob)
 	require.True(t, found)
@@ -456,11 +427,10 @@ func TestLoans14(t *testing.T) {
 	require.Equal(t, math.LegacyNewDec(10000), loanSum.LoanSum)
 	require.Equal(t, math.LegacyNewDec(10000), loanSum.WeightSum)
 
-	_, err = msg.RepayLoan(ctx, &types.MsgRepayLoan{
+	require.NoError(t, keepertest.RepayLoan(ctx, msg, &types.MsgRepayLoan{
 		Creator: keepertest.Bob,
 		Denom:   "ukusd",
-	})
-	require.NoError(t, err)
+	}))
 
 	_, found = k.LoadLoan(ctx, "ukusd", keepertest.Bob)
 	require.True(t, !found)
@@ -469,11 +439,10 @@ func TestLoans14(t *testing.T) {
 	require.Equal(t, math.LegacyNewDec(9000), loanSum.LoanSum)
 	require.Equal(t, math.LegacyNewDec(9000), loanSum.WeightSum)
 
-	_, err = msg.RepayLoan(ctx, &types.MsgRepayLoan{
+	require.NoError(t, keepertest.RepayLoan(ctx, msg, &types.MsgRepayLoan{
 		Creator: keepertest.Alice,
 		Denom:   "ukusd",
-	})
-	require.NoError(t, err)
+	}))
 
 	_, found = k.LoadLoan(ctx, "ukusd", keepertest.Alice)
 	require.True(t, !found)

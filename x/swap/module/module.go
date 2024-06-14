@@ -5,6 +5,7 @@ import (
 	"cosmossdk.io/errors"
 	"encoding/json"
 	"fmt"
+	"github.com/kopi-money/kopi/cache"
 	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 
@@ -168,24 +169,18 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 
 // EndBlock contains the logic that is automatically triggered at the end of each block.
 // The end block implementation is optional.
-func (am AppModule) EndBlock(_ context.Context) error {
-	return nil
-	//keepers := []cache.Cache{
-	//	am.keeper,
-	//	am.keeper.DexKeeper,
-	//}
-	//
-	//return cache.Transact(goCtx, keepers, func(ctx sdk.Context) error {
-	//	if err := am.keeper.Burn(ctx, ctx.EventManager()); err != nil {
-	//		return errors.Wrap(err, "error burning end of block")
-	//	}
-	//
-	//	if err := am.keeper.Mint(ctx, ctx.EventManager()); err != nil {
-	//		return errors.Wrap(err, "error minting end of block")
-	//	}
-	//
-	//	return nil
-	//})
+func (am AppModule) EndBlock(goCtx context.Context) error {
+	return cache.Transact(goCtx, func(ctx sdk.Context) error {
+		if err := am.keeper.Burn(ctx, ctx.EventManager()); err != nil {
+			return errors.Wrap(err, "error burning end of block")
+		}
+
+		if err := am.keeper.Mint(ctx, ctx.EventManager()); err != nil {
+			return errors.Wrap(err, "error minting end of block")
+		}
+
+		return nil
+	})
 }
 
 // IsOnePerModuleType implements the depinject.OnePerModuleType interface.

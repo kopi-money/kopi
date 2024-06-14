@@ -9,6 +9,10 @@ type KeyValue[K, V any] struct {
 	value V
 }
 
+func (kv KeyValue[K, V]) Value() V {
+	return kv.value
+}
+
 type OrderedList[K, V any] struct {
 	comparer KeyComparer
 	list     []KeyValue[K, V]
@@ -31,6 +35,11 @@ func (ol *OrderedList[K, V]) Clear() {
 
 func (ol *OrderedList[K, V]) GetByIndex(index int) KeyValue[K, V] {
 	return ol.list[index]
+}
+
+func (ol *OrderedList[K, V]) Has(key K) bool {
+	_, has := ol.GetIndex(key)
+	return has
 }
 
 func (ol *OrderedList[K, V]) Get(key K) (V, bool) {

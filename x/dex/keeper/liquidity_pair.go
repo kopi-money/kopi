@@ -7,92 +7,22 @@ import (
 	"github.com/kopi-money/kopi/x/dex/types"
 )
 
-// SetLiquidityPair set a specific liquidityPair in the store
-func (k Keeper) SetLiquidityPair(ctx context.Context, liquidityPair types.LiquidityPair) {
-	k.liquidityPairs.Set(ctx, liquidityPair.Denom, liquidityPair)
-}
+func (k Keeper) GetLiquidityPair(ctx context.Context, denom string) (types.LiquidityPair, error) {
+	ratio, err := k.GetRatio(ctx, denom)
+	if err != nil {
+		return types.LiquidityPair{}, err
+	}
 
-func (k Keeper) GetLiquidityPair(ctx context.Context, denom string) (types.LiquidityPair, bool) {
-	return k.liquidityPairs.Get(ctx, denom)
+	return k.CreateLiquidityPair(ctx, ratio), nil
 }
 
 func (k Keeper) GetAllLiquidityPair(ctx context.Context) (list []types.LiquidityPair) {
-	iterator := k.liquidityPairs.Iterator(ctx)
-	for iterator.Valid() {
-		list = append(list, iterator.GetNext())
+	for _, denom := range k.DenomKeeper.Denoms(ctx) {
+		pair, _ := k.GetLiquidityPair(ctx, denom)
+		list = append(list, pair)
 	}
 
 	return
-}
-
-func (k Keeper) InitPairs(ctx context.Context) {
-	liqBase := k.GetLiquiditySum(ctx, utils.BaseCurrency)
-	if !liqBase.IsNil() {
-		for _, denom := range k.DenomKeeper.Denoms(ctx) {
-			if denom != utils.BaseCurrency {
-				k.initPair(ctx, liqBase, denom)
-			}
-		}
-	}
-}
-
-func (k Keeper) initPair(ctx context.Context, liqBase math.Int, denom string) {
-	fac := k.DenomKeeper.InitialVirtualLiquidityFactor(ctx, denom)
-
-	pair, found := k.GetLiquidityPair(ctx, denom)
-	if !found {
-		pair.Denom = denom
-		pair.VirtualBase = math.LegacyZeroDec()
-		pair.VirtualOther = liqBase.ToLegacyDec().Mul(fac)
-		k.SetLiquidityPair(ctx, pair)
-	}
-
-	ratio, found := k.GetRatio(ctx, denom)
-	if !found || found && ratio.Ratio == nil {
-		ratio.Denom = denom
-		ratio.Ratio = &fac
-		k.SetRatio(ctx, ratio)
-	}
-}
-
-func (k Keeper) updatePairs(ctx context.Context, ordersCaches *types.OrdersCaches) {
-	for _, denom := range k.DenomKeeper.Denoms(ctx) {
-		if denom != utils.BaseCurrency {
-			k.updatePair(ctx, ordersCaches, denom)
-		}
-	}
-}
-
-// updatePair updates the virtual liquidity for a denom pair. This function only is called after having added liqudity
-// to a pair.
-func (k Keeper) updatePair(ctx context.Context, ordersCaches *types.OrdersCaches, denom string) {
-	pair, _ := k.GetLiquidityPair(ctx, denom)
-	ratio, found := k.GetRatio(ctx, denom)
-
-	if ratio.Ratio != nil {
-		liqBase := k.GetLiquiditySum(ctx, utils.BaseCurrency)
-		liqOther := k.GetLiquiditySum(ctx, denom)
-
-		liqBaseDec := liqBase.ToLegacyDec()
-		liqOtherDec := liqOther.ToLegacyDec()
-
-		if liqBaseDec.Mul(*ratio.Ratio).GT(liqOtherDec) {
-			pair.VirtualBase = math.LegacyZeroDec()
-			pair.VirtualOther = k.calcVirtualAmountOther(ctx, *ratio.Ratio, denom)
-		} else {
-			pair.VirtualBase = k.calcVirtualAmountBase(ctx, *ratio.Ratio, denom)
-			pair.VirtualOther = math.LegacyZeroDec()
-		}
-
-		k.SetLiquidityPair(ctx, pair)
-
-		if ordersCaches != nil {
-			ordersCaches.LiquidityPair.Set(denom, pair)
-		}
-	} else if !found || ratio.Ratio == nil {
-		liqBase := k.GetLiquiditySum(ctx, utils.BaseCurrency)
-		k.initPair(ctx, liqBase, denom)
-	}
 }
 
 func (k Keeper) calcVirtualAmountOther(ctx context.Context, ratio math.LegacyDec, denom string) math.LegacyDec {
@@ -113,15 +43,23 @@ func (k Keeper) calcVirtualAmountBase(ctx context.Context, ratio math.LegacyDec,
 	return liqOtherDec.Quo(ratio).Sub(liqBaseDec)
 }
 
-func (k Keeper) PairRatio(ctx context.Context, denom string) *math.LegacyDec {
-	liqBase := k.GetFullLiquidityBase(ctx, denom)
-	liqOther := k.GetFullLiquidityOther(ctx, denom)
-	if !liqOther.GT(math.LegacyZeroDec()) {
-		return nil
+func (k Keeper) CreateLiquidityPair(ctx context.Context, ratio types.Ratio) (pair types.LiquidityPair) {
+	liqBase := k.GetLiquiditySum(ctx, utils.BaseCurrency)
+	liqOther := k.GetLiquiditySum(ctx, ratio.Denom)
+
+	liqBaseDec := liqBase.ToLegacyDec()
+	liqOtherDec := liqOther.ToLegacyDec()
+
+	pair.Denom = ratio.Denom
+	if liqBaseDec.Mul(ratio.Ratio).GT(liqOtherDec) {
+		pair.VirtualBase = math.LegacyZeroDec()
+		pair.VirtualOther = k.calcVirtualAmountOther(ctx, ratio.Ratio, ratio.Denom)
+	} else {
+		pair.VirtualBase = k.calcVirtualAmountBase(ctx, ratio.Ratio, ratio.Denom)
+		pair.VirtualOther = math.LegacyZeroDec()
 	}
 
-	ratio := liqBase.Mul(liqOther)
-	return &ratio
+	return
 }
 
 func (k Keeper) GetFullLiquidity(ordersCaches *types.OrdersCaches, denom, other string) math.LegacyDec {

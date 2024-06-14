@@ -3,6 +3,7 @@ package cache
 import (
 	"context"
 	"cosmossdk.io/collections"
+	"cosmossdk.io/collections/codec"
 	storetypes "cosmossdk.io/store/types"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,8 +12,10 @@ import (
 )
 
 type ItemTransaction[V any] struct {
-	txKey  string
-	change Entry[V]
+	txKey TXKey
+
+	previous *Entry[V]
+	change   Entry[V]
 }
 
 type ItemTransactions[V any] struct {
@@ -21,19 +24,11 @@ type ItemTransactions[V any] struct {
 	transactions []*ItemTransaction[V]
 }
 
-func (mt *ItemTransactions[V]) Get(txKey string) *ItemTransaction[V] {
-	if txKey == "" {
-		return nil
-	}
-
+func (mt *ItemTransactions[V]) Get(txKey TXKey) *ItemTransaction[V] {
 	return mt.get(txKey)
 }
 
-func (mt *ItemTransactions[V]) GetCreate(txKey string) *ItemTransaction[V] {
-	if txKey == "" {
-		return nil
-	}
-
+func (mt *ItemTransactions[V]) GetCreate(txKey TXKey) *ItemTransaction[V] {
 	itemTransaction := mt.get(txKey)
 	if itemTransaction != nil {
 		return itemTransaction
@@ -45,7 +40,7 @@ func (mt *ItemTransactions[V]) GetCreate(txKey string) *ItemTransaction[V] {
 	return itemTransaction
 }
 
-func (mt *ItemTransactions[V]) get(key string) *ItemTransaction[V] {
+func (mt *ItemTransactions[V]) get(key TXKey) *ItemTransaction[V] {
 	mt.RLock()
 	defer mt.RUnlock()
 
@@ -71,13 +66,13 @@ func (mt *ItemTransactions[V]) set(itemTransaction *ItemTransaction[V]) {
 	mt.transactions = append(mt.transactions, itemTransaction)
 }
 
-func (mt *ItemTransactions[V]) remove(key string) {
+func (mt *ItemTransactions[V]) remove(key TXKey) {
 	mt.Lock()
 	defer mt.Unlock()
 
 	index := -1
 	for i, itemTransaction := range mt.transactions {
-		if itemTransaction.txKey == key {
+		if itemTransaction.txKey.equals(key) {
 			index = i
 			break
 		}
@@ -89,148 +84,209 @@ func (mt *ItemTransactions[V]) remove(key string) {
 }
 
 type ItemCache[V any] struct {
+	vc codec.ValueCodec[V]
+
 	collection collections.Item[V]
 
 	item *Entry[V]
 
-	transactions *ItemTransactions[V]
-	comparer     ValueComparer[V]
+	transactions  *ItemTransactions[V]
+	comparer      ValueComparer[V]
+	name          string
+	currentHeight int64
 }
 
-func NewItemCache[V any](collection collections.Item[V], caches *Caches, comparer ValueComparer[V]) *ItemCache[V] {
+func NewItemCache[V any](sb *collections.SchemaBuilder, prefix []byte, name string, vc codec.ValueCodec[V], caches *Caches, comparer ValueComparer[V]) *ItemCache[V] {
 	ic := &ItemCache[V]{
-		collection:   collection,
+		collection: collections.NewItem(
+			sb,
+			prefix,
+			name,
+			vc,
+		),
+		vc:           vc,
 		transactions: &ItemTransactions[V]{},
 		comparer:     comparer,
+		name:         name,
 	}
 
 	*caches = append(*caches, ic)
 	return ic
 }
 
-func (it *ItemCache[V]) Initialize(goCtx context.Context) error {
-	ctx := sdk.UnwrapSDKContext(goCtx)
+func (ic *ItemCache[V]) Initialize(ctx context.Context) error {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	ic.currentHeight = sdkCtx.BlockHeight()
 
-	if it.item != nil {
+	if ic.item != nil {
 		return nil
 	}
 
-	item := it.loadFromStorage(ctx, false)
-	it.item = &item
+	item, has := ic.loadFromStorage(sdkCtx)
+	if has {
+		ic.item = &item
+	}
 
 	return nil
 }
 
-func (it *ItemCache[V]) Get(ctx context.Context) (V, bool) {
-	txKey, hasTX := getTXKey(ctx)
-	if hasTX {
-		change := it.transactions.Get(txKey)
+func (ic *ItemCache[V]) Get(ctx context.Context) (V, bool) {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+
+	txKey := getTXKey(ctx)
+	if txKey != nil {
+		change := ic.transactions.Get(*txKey)
 		if change != nil {
-			return getEntry(ctx, change.change, true)
+			return getEntry(ctx, change.change)
 		}
 	}
 
-	if it.item != nil {
-		return getEntry(ctx, *it.item, hasTX)
+	if ic.item == nil || sdkCtx.BlockHeight() != ic.currentHeight {
+		item, has := ic.loadFromStorage(ctx)
+		if has {
+			return *item.value, true
+		} else {
+			var v V
+			return v, false
+		}
 	}
 
-	item := it.loadFromStorage(ctx, false)
-	it.item = &item
-	return getEntry(ctx, item, false)
+	if ic.item != nil {
+		return getEntry(ctx, *ic.item)
+	}
+
+	item, has := ic.loadFromStorage(ctx)
+	if !has {
+		var v V
+		return v, false
+	}
+
+	ic.item = &item
+	return getEntry(ctx, item)
 }
 
-func (it *ItemCache[V]) loadFromStorage(goCtx context.Context, preventGasConsumption bool) Entry[V] {
+func (ic *ItemCache[V]) loadFromStorage(goCtx context.Context) (Entry[V], bool) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if preventGasConsumption {
-		ctx = ctx.WithGasMeter(storetypes.NewInfiniteGasMeter())
-	}
-
-	before := ctx.GasMeter().GasConsumed()
-	value, err := it.collection.Get(ctx)
-	after := ctx.GasMeter().GasConsumed()
+	gasMeter := ctx.GasMeter()
+	ctx = ctx.WithGasMeter(storetypes.NewInfiniteGasMeter())
+	value, err := ic.collection.Get(ctx)
+	ctx = ctx.WithGasMeter(gasMeter)
 
 	if err != nil {
-		return Entry[V]{}
+		return Entry[V]{}, false
 	}
 
 	return Entry[V]{
-		value:       &value,
-		consumption: after - before,
-	}
+		value: &value,
+		cost:  CalculateReadCostItem(ic.vc, value),
+	}, true
 }
 
-func (it *ItemCache[V]) Set(ctx context.Context, value V) {
-	txKey, has := getTXKey(ctx)
-	if !has {
-		panic("calling set without initialized cache transaction")
+func (ic *ItemCache[V]) Set(goCtx context.Context, value V) {
+	txKey := getTXKey(goCtx)
+	if txKey == nil {
+		panic("calling Set without initialized cache transaction")
 	}
 
-	itemTransaction := it.transactions.GetCreate(txKey)
+	itemTransaction := ic.transactions.GetCreate(*txKey)
+	if itemTransaction.previous == nil {
+		itemTransaction.previous = ic.item
+	}
+
 	itemTransaction.change = Entry[V]{value: &value}
-	it.transactions.set(itemTransaction)
+	ic.transactions.set(itemTransaction)
 }
 
-func (it *ItemCache[V]) Remove(ctx context.Context) {
-	txKey, has := getTXKey(ctx)
-	if !has {
-		panic("calling set without initialized cache transaction")
+func (ic *ItemCache[V]) Remove(goCtx context.Context) {
+	txKey := getTXKey(goCtx)
+	if txKey == nil {
+		panic("calling Remove without initialized cache transaction")
 	}
 
-	itemTransaction := it.transactions.GetCreate(txKey)
+	itemTransaction := ic.transactions.GetCreate(*txKey)
+	if itemTransaction.previous == nil {
+		itemTransaction.previous = ic.item
+	}
+
 	itemTransaction.change = Entry[V]{}
 }
 
-func (it *ItemCache[V]) Rollback(ctx context.Context) {
-	txKey, has := getTXKey(ctx)
-	if !has {
-		panic("committing without cache transaction")
+func (ic *ItemCache[V]) Clear(ctx context.Context) {
+	txKey := getTXKey(ctx)
+	if txKey == nil {
+		panic("Clear without cache transaction")
 	}
 
-	it.transactions.remove(txKey)
+	ic.transactions.remove(*txKey)
 }
 
-func (it *ItemCache[V]) CommitToDB(ctx context.Context) error {
-	txKey, has := getTXKey(ctx)
-	if !has {
-		panic("committing without cache transaction")
+func (ic *ItemCache[V]) CommitToDB(goCtx context.Context) error {
+	txKey := getTXKey(goCtx)
+	if txKey == nil {
+		panic("CommitToDB without cache transaction")
 	}
 
-	itemTransaction := it.transactions.Get(txKey)
-	it.item = nil
-
+	itemTransaction := ic.transactions.Get(*txKey)
 	if itemTransaction != nil {
 		if itemTransaction.change.value != nil {
-			if err := it.collection.Set(ctx, *itemTransaction.change.value); err != nil {
+			if err := ic.collection.Set(goCtx, *itemTransaction.change.value); err != nil {
 				return err
 			}
 		} else {
-			return it.collection.Remove(ctx)
+			if err := ic.collection.Remove(goCtx); err != nil {
+				return err
+			}
 		}
 	}
 
 	return nil
 }
 
-func (it *ItemCache[V]) CommitToCache(ctx context.Context) {
-	txKey, has := getTXKey(ctx)
-	if !has {
-		panic("committing without cache transaction")
+func (ic *ItemCache[V]) Rollback(goCtx context.Context) {
+	txKey := getTXKey(goCtx)
+	if txKey == nil {
+		panic("Rollback without cache transaction")
 	}
 
-	itemTransaction := it.transactions.Get(txKey)
-	it.item = nil
-
+	itemTransaction := ic.transactions.Get(*txKey)
 	if itemTransaction != nil {
-		//if itemTransaction.change.has {
-		//	item := it.loadFromStorage(ctx, true)
-		//	it.item = &item
-		//}
+		ctx := sdk.UnwrapSDKContext(goCtx)
+		gasMeter := ctx.GasMeter()
+		ctx = ctx.WithGasMeter(storetypes.NewInfiniteGasMeter())
+
+		if itemTransaction.previous != nil && itemTransaction.previous.value != nil {
+			_ = ic.collection.Set(ctx, *itemTransaction.previous.value)
+		} else {
+			_ = ic.collection.Remove(ctx)
+		}
+
+		ctx = ctx.WithGasMeter(gasMeter)
 	}
 }
 
-func (it *ItemCache[V]) ClearTransactions() {
-	it.transactions.transactions = nil
+func (ic *ItemCache[V]) CommitToCache(ctx context.Context) {
+	txKey := getTXKey(ctx)
+	if txKey == nil {
+		panic("CommitToCache without cache transaction")
+	}
+
+	itemTransaction := ic.transactions.Get(*txKey)
+	if itemTransaction != nil {
+		if itemTransaction.change.value != nil {
+			itemTransaction.change.cost = CalculateReadCostItem(ic.vc, *itemTransaction.change.value)
+			ic.item = &itemTransaction.change
+		} else {
+			ic.item = nil
+		}
+
+	}
+
+	ic.transactions.remove(*txKey)
+}
+
+func (ic *ItemCache[V]) ClearTransactions() {
+	ic.transactions.transactions = nil
 }
 
 func (ic *ItemCache[V]) CheckCache(ctx context.Context) error {

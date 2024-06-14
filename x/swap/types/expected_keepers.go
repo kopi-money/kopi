@@ -35,15 +35,15 @@ type DexKeeper interface {
 	AddLiquidity(ctx context.Context, eventManager sdk.EventManagerI, address sdk.AccAddress, denom string, amount math.Int) error
 	CalculateParity(ctx context.Context, kCoin string) (*math.LegacyDec, string, error)
 	CalculatePrice(ctx context.Context, denomFrom, denomTo string) (math.LegacyDec, error)
-	ExecuteTrade(ctx context.Context, eventManager sdk.EventManagerI, options dextypes.TradeOptions) (math.Int, math.Int, math.Int, math.Int, error)
+	ExecuteTrade(ctx dextypes.TradeContext) (math.Int, math.Int, math.Int, math.Int, math.Int, error)
 	GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int
 	GetFullLiquidityBase(ctx context.Context, denomOther string) math.LegacyDec
 	GetFullLiquidityOther(ctx context.Context, denom string) math.LegacyDec
 	GetLiquiditySum(ctx context.Context, denom string) math.Int
-	GetRatio(ctx context.Context, denom string) (dextypes.Ratio, bool)
+	GetRatio(ctx context.Context, denom string) (dextypes.Ratio, error)
 	RemoveAllLiquidityForModule(ctx context.Context, eventManager sdk.EventManagerI, denom, module string) error
-	RemoveLiquidityForModule(ctx context.Context, eventManager sdk.EventManagerI, denom, module string, amount math.Int) error
-	SimulateTradeForReserve(ctx context.Context, denomFrom, denomTo string, amount math.Int) (math.Int, math.LegacyDec, math.LegacyDec, error)
+	RemoveLiquidityForAddress(ctx context.Context, eventManager sdk.EventManagerI, accAddress sdk.AccAddress, denom string, amount math.Int) error
+	SimulateTradeForReserve(ctx dextypes.TradeContext) (math.Int, math.LegacyDec, math.LegacyDec, error)
 }
 
 type DenomKeeper interface {

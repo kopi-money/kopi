@@ -7,7 +7,8 @@ import (
 
 var (
 	_ sdk.Msg = &MsgAddDEXDenom{}
-	_ sdk.Msg = &MsgUpdateDEXDenom{}
+	_ sdk.Msg = &MsgUpdateDEXDenomMinimumLiquidity{}
+	_ sdk.Msg = &MsgUpdateDEXDenomMinimumOrderSize{}
 )
 
 func (m *MsgAddDEXDenom) ValidateBasic() error {
@@ -18,7 +19,15 @@ func (m *MsgAddDEXDenom) ValidateBasic() error {
 	return nil
 }
 
-func (m *MsgUpdateDEXDenom) ValidateBasic() error {
+func (m *MsgUpdateDEXDenomMinimumLiquidity) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+		return errorsmod.Wrap(err, "invalid authority address")
+	}
+
+	return nil
+}
+
+func (m *MsgUpdateDEXDenomMinimumOrderSize) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
 		return errorsmod.Wrap(err, "invalid authority address")
 	}

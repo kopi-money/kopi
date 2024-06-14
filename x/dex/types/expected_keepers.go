@@ -42,11 +42,12 @@ type ParamSubspace interface {
 type DenomKeeper interface {
 	Denoms(ctx context.Context) []string
 	GetCAssetByBaseName(ctx context.Context, baseDenom string) (*denomtypes.CAsset, error)
-	InitialVirtualLiquidityFactor(ctx context.Context, denom string) math.LegacyDec
+	InitialVirtualLiquidityFactor(ctx context.Context, denom string) (math.LegacyDec, error)
 	IsNativeDenom(ctx context.Context, denom string) bool
 	IsValidDenom(ctx context.Context, denom string) bool
 	IsKCoin(ctx context.Context, denom string) bool
 	MinLiquidity(ctx context.Context, denom string) math.Int
+	MinOrderSize(ctx context.Context, denom string) math.Int
 	ReferenceDenoms(ctx context.Context, kCoin string) []string
 	KCoins(ctx context.Context) (kCoins []string)
 }

@@ -36,7 +36,6 @@ type (
 
 		// Collections
 		collateral    *cache.MapCache[collections.Pair[string, string], types.Collateral]
-		collateralSum *cache.MapCache[string, types.CollateralSum]
 		loans         *cache.MapCache[collections.Pair[string, string], types.Loan]
 		loanNextIndex *cache.ItemCache[uint64]
 		loansSum      *cache.MapCache[string, types.LoanSum]
@@ -82,76 +81,53 @@ func NewKeeper(
 		caches: caches,
 
 		collateral: cache.NewCacheMap(
-			collections.NewMap(
-				sb,
-				PrefixCollateral,
-				"collateral_entries",
-				collections.PairKeyCodec(collections.StringKey, collections.StringKey),
-				codec.CollValue[types.Collateral](cdc),
-			),
+			sb,
+			PrefixCollateral,
+			"collateral_entries",
+			collections.PairKeyCodec(collections.StringKey, collections.StringKey),
+			codec.CollValue[types.Collateral](cdc),
 			caches,
 			cache.StringStringComparer,
 			compareCollaterals,
 		),
 
-		collateralSum: cache.NewCacheMap(
-			collections.NewMap(
-				sb,
-				PrefixCollateralSum,
-				"collateral_sum",
-				collections.StringKey,
-				codec.CollValue[types.CollateralSum](cdc),
-			),
-			caches,
-			cache.StringComparer,
-			compareCollateralSums,
-		),
-
 		loans: cache.NewCacheMap(
-			collections.NewMap(
-				sb,
-				PrefixLoans,
-				"loans_list",
-				collections.PairKeyCodec(collections.StringKey, collections.StringKey),
-				codec.CollValue[types.Loan](cdc),
-			),
+			sb,
+			PrefixLoans,
+			"loans_list",
+			collections.PairKeyCodec(collections.StringKey, collections.StringKey),
+			codec.CollValue[types.Loan](cdc),
 			caches,
 			cache.StringStringComparer,
 			compareLoans,
 		),
 
 		loanNextIndex: cache.NewItemCache(
-			collections.NewItem(
-				sb,
-				PrefixLoanNextIndex,
-				"loans_next_index",
-				collections.Uint64Value,
-			),
+			sb,
+			PrefixLoanNextIndex,
+			"loans_next_index",
+			collections.Uint64Value,
 			caches,
 			cache.ValueComparerUint64,
 		),
 
 		loansSum: cache.NewCacheMap(
-			collections.NewMap(
-				sb,
-				PrefixLoanSum,
-				"loans_sum",
-				collections.StringKey,
-				codec.CollValue[types.LoanSum](cdc),
-			),
+			sb,
+			PrefixLoanSum,
+			"loans_sum",
+			collections.StringKey,
+			codec.CollValue[types.LoanSum](cdc),
 			caches,
 			cache.StringComparer,
 			compareLoanSums,
 		),
 
 		redemptions: cache.NewCacheMap(
-			collections.NewMap(
-				sb,
-				PrefixRedemptions,
-				"redemptions",
-				collections.PairKeyCodec(collections.StringKey, collections.StringKey),
-				codec.CollValue[types.Redemption](cdc),
-			),
+			sb,
+			PrefixRedemptions,
+			"redemptions",
+			collections.PairKeyCodec(collections.StringKey, collections.StringKey),
+			codec.CollValue[types.Redemption](cdc),
 			caches,
 			cache.StringStringComparer,
 			compareRedemptions,
@@ -171,12 +147,16 @@ func (k Keeper) CheckCache(ctx context.Context) error {
 	return k.caches.CheckCache(ctx)
 }
 
+func (k Keeper) Rollback(ctx context.Context) {
+	k.caches.Rollback(ctx)
+}
+
 func (k Keeper) CommitToCache(ctx context.Context) {
 	k.caches.CommitToCache(ctx)
 }
 
-func (k Keeper) Rollback(ctx context.Context) {
-	k.caches.Rollback(ctx)
+func (k Keeper) Clear(ctx context.Context) {
+	k.caches.Clear(ctx)
 }
 
 func (k Keeper) ClearTransactions() {

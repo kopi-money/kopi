@@ -36,13 +36,13 @@ func (k Keeper) getTotalDeposited(ctx sdk.Context) (math.LegacyDec, error) {
 
 	for _, CAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		available := k.GetVaultAmount(ctx, CAsset)
-		availableUSD, err := k.DexKeeper.GetValueInUSD(ctx, CAsset.BaseDenom, available)
+		availableUSD, err := k.DexKeeper.GetValueInUSD(ctx, CAsset.BaseDenom, available.ToLegacyDec())
 		if err != nil {
 			return total, err
 		}
 
 		borrowed := k.GetLoanSumWithDefault(ctx, CAsset.BaseDenom).LoanSum
-		borrowedUSD, err := k.DexKeeper.GetValueInUSD(ctx, CAsset.BaseDenom, borrowed.RoundInt())
+		borrowedUSD, err := k.DexKeeper.GetValueInUSD(ctx, CAsset.BaseDenom, borrowed)
 		if err != nil {
 			return total, err
 		}
@@ -59,7 +59,7 @@ func (k Keeper) getTotalCollateral(ctx sdk.Context) (math.LegacyDec, error) {
 
 	for _, denom := range k.DenomKeeper.GetCollateralDenoms(ctx) {
 		sum := k.getCollateralSum(ctx, denom.Denom)
-		sumUSD, err := k.DexKeeper.GetValueInUSD(ctx, denom.Denom, sum)
+		sumUSD, err := k.DexKeeper.GetValueInUSD(ctx, denom.Denom, sum.ToLegacyDec())
 		if err != nil {
 			return total, err
 		}

@@ -13,14 +13,18 @@ func (k Keeper) Ratio(ctx context.Context, req *types.QueryGetRatioRequest) (*ty
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	val, found := k.GetRatio(ctx, req.Denom)
-	if !found {
-		return nil, status.Error(codes.NotFound, "not found")
+	if !k.DenomKeeper.IsValidDenom(ctx, req.Denom) {
+		return nil, types.ErrDenomNotFound
+	}
+
+	ratio, err := k.GetRatio(ctx, req.Denom)
+	if err != nil {
+		return nil, err
 	}
 
 	return &types.QueryGetRatioResponse{Ratio: types.RatioResponse{
 		Denom: req.Denom,
-		Ratio: val.Ratio.String(),
+		Ratio: ratio.Ratio.String(),
 	}}, nil
 }
 

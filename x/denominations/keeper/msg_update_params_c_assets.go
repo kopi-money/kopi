@@ -4,6 +4,7 @@ import (
 	"context"
 	"cosmossdk.io/math"
 	"fmt"
+	"github.com/kopi-money/kopi/cache"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,177 +13,183 @@ import (
 )
 
 func (k msgServer) AddCAsset(goCtx context.Context, req *types.MsgAddCAsset) (*types.MsgUpdateParamsResponse, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-	}
+	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+		if k.GetAuthority() != req.Authority {
+			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+		}
 
-	ctx := startTX(sdk.UnwrapSDKContext(goCtx))
-	defer k.CommitToCache(ctx)
-	defer k.CommitToDB(ctx)
+		params := k.GetParams(ctx)
 
-	params := k.GetParams(ctx)
+		dexFeeShare, err := math.LegacyNewDecFromStr(req.DexFeeShare)
+		if err != nil {
+			return err
+		}
 
-	dexFeeShare, err := math.LegacyNewDecFromStr(req.DexFeeShare)
-	if err != nil {
-		return nil, err
-	}
+		borrowLimit, err := math.LegacyNewDecFromStr(req.BorrowLimit)
+		if err != nil {
+			return err
+		}
 
-	borrowLimit, err := math.LegacyNewDecFromStr(req.BorrowLimit)
-	if err != nil {
-		return nil, err
-	}
+		factor, err := math.LegacyNewDecFromStr(req.Factor)
+		if err != nil {
+			return err
+		}
 
-	factor, err := math.LegacyNewDecFromStr(req.Factor)
-	if err != nil {
-		return nil, err
-	}
+		minLiquidity, ok := math.NewIntFromString(req.MinLiquidity)
+		if !ok {
+			return fmt.Errorf("given min liquidity is no valid math.Int: \"%v\"", req.MinLiquidity)
+		}
 
-	minLiquidity, ok := math.NewIntFromString(req.MinLiquidity)
-	if !ok {
-		return nil, fmt.Errorf("given min liquidity is no valid math.Int: \"%v\"", req.MinLiquidity)
-	}
+		minOrderSize, ok := math.NewIntFromString(req.MinOrderSize)
+		if !ok {
+			return fmt.Errorf("given min order size is no valid math.Int: \"%v\"", req.MinOrderSize)
+		}
 
-	params.CAssets = append(params.CAssets, &types.CAsset{
-		Name:        req.Name,
-		BaseDenom:   req.BaseDenom,
-		DexFeeShare: dexFeeShare,
-		BorrowLimit: borrowLimit,
+		params.CAssets = append(params.CAssets, &types.CAsset{
+			Name:        req.Name,
+			BaseDenom:   req.BaseDenom,
+			DexFeeShare: dexFeeShare,
+			BorrowLimit: borrowLimit,
+		})
+
+		if !k.IsValidDenom(ctx, req.Name) {
+			params.DexDenoms = append(params.DexDenoms, &types.DexDenom{
+				Name:         req.Name,
+				Factor:       &factor,
+				MinLiquidity: minLiquidity,
+				MinOrderSize: minOrderSize,
+			})
+		}
+
+		if err = k.SetParams(ctx, params); err != nil {
+			return err
+		}
+
+		return nil
 	})
 
-	if !k.IsValidDenom(ctx, req.Name) {
-		params.DexDenoms = append(params.DexDenoms, &types.DexDenom{
-			Name:         req.Name,
-			Factor:       &factor,
-			MinLiquidity: minLiquidity,
-		})
-	}
-
-	if err = k.SetParams(ctx, params); err != nil {
-		return nil, err
-	}
-
-	return &types.MsgUpdateParamsResponse{}, nil
+	return &types.MsgUpdateParamsResponse{}, err
 }
 
 func (k msgServer) UpdateCAssetDexFeeShare(goCtx context.Context, req *types.MsgUpdateCAssetDexFeeShare) (*types.MsgUpdateParamsResponse, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-	}
-
-	ctx := startTX(sdk.UnwrapSDKContext(goCtx))
-	defer k.CommitToCache(ctx)
-	defer k.CommitToDB(ctx)
-
-	params := k.GetParams(ctx)
-
-	dexFeeShare, err := math.LegacyNewDecFromStr(req.DexFeeShare)
-	if err != nil {
-		return nil, err
-	}
-
-	cAssets := []*types.CAsset{}
-	found := false
-
-	for _, cAsset := range params.CAssets {
-		if cAsset.Name == req.Name {
-			cAsset.DexFeeShare = dexFeeShare
-			found = true
+	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+		if k.GetAuthority() != req.Authority {
+			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		cAssets = append(cAssets, cAsset)
-	}
+		params := k.GetParams(ctx)
 
-	if !found {
-		return nil, types.ErrInvalidCAsset
-	}
+		dexFeeShare, err := math.LegacyNewDecFromStr(req.DexFeeShare)
+		if err != nil {
+			return err
+		}
 
-	params.CAssets = cAssets
+		cAssets := []*types.CAsset{}
+		found := false
 
-	if err = k.SetParams(ctx, params); err != nil {
-		return nil, err
-	}
+		for _, cAsset := range params.CAssets {
+			if cAsset.Name == req.Name {
+				cAsset.DexFeeShare = dexFeeShare
+				found = true
+			}
 
-	return &types.MsgUpdateParamsResponse{}, nil
+			cAssets = append(cAssets, cAsset)
+		}
+
+		if !found {
+			return types.ErrInvalidCAsset
+		}
+
+		params.CAssets = cAssets
+
+		if err = k.SetParams(ctx, params); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return &types.MsgUpdateParamsResponse{}, err
 }
 
 func (k msgServer) UpdateCAssetBorrowLimit(goCtx context.Context, req *types.MsgUpdateCAssetBorrowLimit) (*types.MsgUpdateParamsResponse, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-	}
-
-	ctx := startTX(sdk.UnwrapSDKContext(goCtx))
-	defer k.CommitToCache(ctx)
-	defer k.CommitToDB(ctx)
-
-	params := k.GetParams(ctx)
-
-	borrowLimit, err := math.LegacyNewDecFromStr(req.BorrowLimit)
-	if err != nil {
-		return nil, err
-	}
-
-	cAssets := []*types.CAsset{}
-	found := false
-
-	for _, cAsset := range params.CAssets {
-		if cAsset.Name == req.Name {
-			cAsset.BorrowLimit = borrowLimit
-			found = true
+	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+		if k.GetAuthority() != req.Authority {
+			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		cAssets = append(cAssets, cAsset)
-	}
+		params := k.GetParams(ctx)
 
-	if !found {
-		return nil, types.ErrInvalidCAsset
-	}
+		borrowLimit, err := math.LegacyNewDecFromStr(req.BorrowLimit)
+		if err != nil {
+			return err
+		}
 
-	params.CAssets = cAssets
+		cAssets := []*types.CAsset{}
+		found := false
 
-	if err = k.SetParams(ctx, params); err != nil {
-		return nil, err
-	}
+		for _, cAsset := range params.CAssets {
+			if cAsset.Name == req.Name {
+				cAsset.BorrowLimit = borrowLimit
+				found = true
+			}
 
-	return &types.MsgUpdateParamsResponse{}, nil
+			cAssets = append(cAssets, cAsset)
+		}
+
+		if !found {
+			return types.ErrInvalidCAsset
+		}
+
+		params.CAssets = cAssets
+
+		if err = k.SetParams(ctx, params); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return &types.MsgUpdateParamsResponse{}, err
 }
 
 func (k msgServer) UpdateCAssetMinimumLoanSize(goCtx context.Context, req *types.MsgUpdateCAssetMinimumLoanSize) (*types.MsgUpdateParamsResponse, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-	}
-
-	ctx := startTX(sdk.UnwrapSDKContext(goCtx))
-	defer k.CommitToCache(ctx)
-	defer k.CommitToDB(ctx)
-
-	params := k.GetParams(ctx)
-
-	minimumLoanSize, ok := math.NewIntFromString(req.MinimumLoanSize)
-	if !ok {
-		return nil, types.ErrInvalidAmount
-	}
-
-	cAssets := []*types.CAsset{}
-	found := false
-
-	for _, cAsset := range params.CAssets {
-		if cAsset.Name == req.Name {
-			cAsset.MinimumLoanSize = minimumLoanSize
-			found = true
+	err := cache.Transact(goCtx, func(ctx sdk.Context) error {
+		if k.GetAuthority() != req.Authority {
+			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		cAssets = append(cAssets, cAsset)
-	}
+		params := k.GetParams(ctx)
 
-	if !found {
-		return nil, types.ErrInvalidCAsset
-	}
+		minimumLoanSize, ok := math.NewIntFromString(req.MinimumLoanSize)
+		if !ok {
+			return types.ErrInvalidAmount
+		}
 
-	params.CAssets = cAssets
+		cAssets := []*types.CAsset{}
+		found := false
 
-	if err := k.SetParams(ctx, params); err != nil {
-		return nil, err
-	}
+		for _, cAsset := range params.CAssets {
+			if cAsset.Name == req.Name {
+				cAsset.MinimumLoanSize = minimumLoanSize
+				found = true
+			}
 
-	return &types.MsgUpdateParamsResponse{}, nil
+			cAssets = append(cAssets, cAsset)
+		}
+
+		if !found {
+			return types.ErrInvalidCAsset
+		}
+
+		params.CAssets = cAssets
+
+		if err := k.SetParams(ctx, params); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return &types.MsgUpdateParamsResponse{}, err
 }

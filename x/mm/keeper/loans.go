@@ -78,13 +78,12 @@ func (k Keeper) LoadLoan(ctx context.Context, denom, address string) (types.Loan
 	return k.loans.Get(ctx, collections.Join(denom, address))
 }
 
-func (k Keeper) LoanIterator(ctx context.Context, denom string) *cache.Iterator[collections.Pair[string, string], types.Loan] {
-	extraFilters := []cache.Filter[collections.Pair[string, string]]{
-		func(key collections.Pair[string, string]) bool {
-			return key.K1() == denom
-		},
+func (k Keeper) LoanIterator(ctx context.Context, denom string) cache.Iterator[collections.Pair[string, string], types.Loan] {
+	rng := collections.NewPrefixedPairRange[string, string](denom)
+	keyPrefix := func(key collections.Pair[string, string]) bool {
+		return key.K1() == denom
 	}
-	return k.loans.Iterator(ctx, extraFilters...)
+	return k.loans.Iterator(ctx, rng, keyPrefix)
 }
 
 func (k Keeper) GetLoanValue(ctx context.Context, denom, address string) math.LegacyDec {
@@ -175,17 +174,17 @@ func (k Keeper) getBorrowers(ctx context.Context) []string {
 	return borrowers
 }
 
-func (k Keeper) CalcAvailableToBorrow(ctx context.Context, address, denom string) (math.Int, error) {
+func (k Keeper) CalcAvailableToBorrow(ctx context.Context, address, denom string) (math.LegacyDec, error) {
 	borrowable, err := k.calculateBorrowableAmount(ctx, address, denom)
 	if err != nil {
-		return math.Int{}, errors.Wrap(err, "could not calculate borrowable amount")
+		return math.LegacyDec{}, errors.Wrap(err, "could not calculate borrowable amount")
 	}
 
 	acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault)
 	vault := k.BankKeeper.SpendableCoins(ctx, acc.GetAddress())
 	available := vault.AmountOf(denom)
 
-	return math.MinInt(available, borrowable.TruncateInt()), nil
+	return math.LegacyMinDec(available.ToLegacyDec(), borrowable), nil
 }
 
 func (k Keeper) checkBorrowLimitExceeded(ctx context.Context, cAsset *denomtypes.CAsset, amount math.LegacyDec) bool {

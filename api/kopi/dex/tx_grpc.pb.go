@@ -28,6 +28,7 @@ const (
 	Msg_RemoveOrders_FullMethodName                = "/kopi.dex.Msg/RemoveOrders"
 	Msg_UpdateOrder_FullMethodName                 = "/kopi.dex.Msg/UpdateOrder"
 	Msg_UpdateTradeFee_FullMethodName              = "/kopi.dex.Msg/UpdateTradeFee"
+	Msg_UpdateOrderFee_FullMethodName              = "/kopi.dex.Msg/UpdateOrderFee"
 	Msg_UpdateReserveShare_FullMethodName          = "/kopi.dex.Msg/UpdateReserveShare"
 	Msg_UpdateVirtualLiquidityDecay_FullMethodName = "/kopi.dex.Msg/UpdateVirtualLiquidityDecay"
 	Msg_UpdateFeeReimbursement_FullMethodName      = "/kopi.dex.Msg/UpdateFeeReimbursement"
@@ -50,6 +51,7 @@ type MsgClient interface {
 	RemoveOrders(ctx context.Context, in *MsgRemoveOrders, opts ...grpc.CallOption) (*Void, error)
 	UpdateOrder(ctx context.Context, in *MsgUpdateOrder, opts ...grpc.CallOption) (*Order, error)
 	UpdateTradeFee(ctx context.Context, in *MsgUpdateTradeFee, opts ...grpc.CallOption) (*Void, error)
+	UpdateOrderFee(ctx context.Context, in *MsgUpdateOrderFee, opts ...grpc.CallOption) (*Void, error)
 	UpdateReserveShare(ctx context.Context, in *MsgUpdateReserveShare, opts ...grpc.CallOption) (*Void, error)
 	UpdateVirtualLiquidityDecay(ctx context.Context, in *MsgUpdateVirtualLiquidityDecay, opts ...grpc.CallOption) (*Void, error)
 	UpdateFeeReimbursement(ctx context.Context, in *MsgUpdateFeeReimbursement, opts ...grpc.CallOption) (*Void, error)
@@ -147,6 +149,15 @@ func (c *msgClient) UpdateTradeFee(ctx context.Context, in *MsgUpdateTradeFee, o
 	return out, nil
 }
 
+func (c *msgClient) UpdateOrderFee(ctx context.Context, in *MsgUpdateOrderFee, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateOrderFee_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) UpdateReserveShare(ctx context.Context, in *MsgUpdateReserveShare, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
 	err := c.cc.Invoke(ctx, Msg_UpdateReserveShare_FullMethodName, in, out, opts...)
@@ -215,6 +226,7 @@ type MsgServer interface {
 	RemoveOrders(context.Context, *MsgRemoveOrders) (*Void, error)
 	UpdateOrder(context.Context, *MsgUpdateOrder) (*Order, error)
 	UpdateTradeFee(context.Context, *MsgUpdateTradeFee) (*Void, error)
+	UpdateOrderFee(context.Context, *MsgUpdateOrderFee) (*Void, error)
 	UpdateReserveShare(context.Context, *MsgUpdateReserveShare) (*Void, error)
 	UpdateVirtualLiquidityDecay(context.Context, *MsgUpdateVirtualLiquidityDecay) (*Void, error)
 	UpdateFeeReimbursement(context.Context, *MsgUpdateFeeReimbursement) (*Void, error)
@@ -254,6 +266,9 @@ func (UnimplementedMsgServer) UpdateOrder(context.Context, *MsgUpdateOrder) (*Or
 }
 func (UnimplementedMsgServer) UpdateTradeFee(context.Context, *MsgUpdateTradeFee) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateTradeFee not implemented")
+}
+func (UnimplementedMsgServer) UpdateOrderFee(context.Context, *MsgUpdateOrderFee) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrderFee not implemented")
 }
 func (UnimplementedMsgServer) UpdateReserveShare(context.Context, *MsgUpdateReserveShare) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateReserveShare not implemented")
@@ -448,6 +463,24 @@ func _Msg_UpdateTradeFee_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateOrderFee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateOrderFee)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateOrderFee(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateOrderFee_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateOrderFee(ctx, req.(*MsgUpdateOrderFee))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_UpdateReserveShare_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgUpdateReserveShare)
 	if err := dec(in); err != nil {
@@ -598,6 +631,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateTradeFee",
 			Handler:    _Msg_UpdateTradeFee_Handler,
+		},
+		{
+			MethodName: "UpdateOrderFee",
+			Handler:    _Msg_UpdateOrderFee_Handler,
 		},
 		{
 			MethodName: "UpdateReserveShare",

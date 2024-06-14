@@ -70,14 +70,14 @@ func (k Keeper) ReferenceDenoms(ctx context.Context, kCoinName string) []string 
 }
 
 // InitialVirtualLiquidityFactor returns the factor used for initial virtual liquidity for a denom.
-func (k Keeper) InitialVirtualLiquidityFactor(ctx context.Context, denom string) math.LegacyDec {
+func (k Keeper) InitialVirtualLiquidityFactor(ctx context.Context, denom string) (math.LegacyDec, error) {
 	for _, dexDenom := range k.GetParams(ctx).DexDenoms {
 		if dexDenom.Name == denom {
-			return *dexDenom.Factor
+			return *dexDenom.Factor, nil
 		}
 	}
 
-	panic(fmt.Sprintf("no initial virtual liquidity factor found for %v", denom))
+	return math.LegacyDec{}, fmt.Errorf("no initial virtual liquidity factor found for %v", denom)
 }
 
 func (k Keeper) MaxSupply(ctx context.Context, kCoinName string) math.Int {
@@ -118,6 +118,16 @@ func (k Keeper) MinLiquidity(ctx context.Context, denom string) math.Int {
 	}
 
 	panic(fmt.Sprintf("no minimum liquidity found for %v", denom))
+}
+
+func (k Keeper) MinOrderSize(ctx context.Context, denom string) math.Int {
+	for _, dexDenom := range k.GetParams(ctx).DexDenoms {
+		if dexDenom.Name == denom {
+			return dexDenom.MinOrderSize
+		}
+	}
+
+	panic(fmt.Sprintf("no minimum order size found for %v", denom))
 }
 
 func (k Keeper) GetCAssets(ctx context.Context) []*types.CAsset {

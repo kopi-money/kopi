@@ -3,6 +3,7 @@ package cache
 import (
 	"context"
 	"cosmossdk.io/collections"
+	"cosmossdk.io/collections/codec"
 	"cosmossdk.io/errors"
 	storetypes "cosmossdk.io/store/types"
 	"fmt"
@@ -10,34 +11,45 @@ import (
 	"sync"
 )
 
+type CollectionMap[K, V any] interface {
+	Get(ctx context.Context, key K) (V, error)
+	Iterate(ctx context.Context, ranger collections.Ranger[K]) (collections.Iterator[K, V], error)
+	Set(ctx context.Context, key K, value V) error
+	Remove(ctx context.Context, key K) error
+	GetName() string
+}
+
 type Entry[V any] struct {
-	// The actual value from storage. THe value is nil when it has been removed
 	value *V
+	cost  uint64
+}
 
-	// The gas cost for reading this value
-	consumption uint64
-
-	// exists indicates whether for a given key there is a value in storage
-	exists bool
+func (e Entry[V]) Value() *V {
+	return e.value
 }
 
 type MapTransaction[K, V any] struct {
-	key     string
-	changes *OrderedList[K, Entry[V]]
+	key      TXKey
+	changes  *OrderedList[K, Entry[V]]
+	previous *OrderedList[K, Entry[V]]
 
 	removals []K
 	comparer KeyComparer
 }
 
-func (mt *MapTransaction[K, V]) remove(key K) {
+func (mt *MapTransaction[K, V]) remove(key K, previous Entry[V]) {
 	mt.addToRemovals(key)
 	mt.changes.Set(KeyValue[K, Entry[V]]{
-		key: key,
-		value: Entry[V]{
-			value:  nil,
-			exists: false,
-		},
+		key:   key,
+		value: Entry[V]{},
 	})
+
+	if has := mt.previous.Has(key); !has {
+		mt.previous.Set(KeyValue[K, Entry[V]]{
+			key:   key,
+			value: previous,
+		})
+	}
 }
 
 func (mt *MapTransaction[K, V]) addToRemovals(key K) {
@@ -50,9 +62,16 @@ func (mt *MapTransaction[K, V]) addToRemovals(key K) {
 	mt.removals = append(mt.removals, key)
 }
 
-func (mt *MapTransaction[K, V]) set(keyValue KeyValue[K, Entry[V]]) {
+func (mt *MapTransaction[K, V]) set(keyValue KeyValue[K, Entry[V]], previous Entry[V]) {
 	mt.removeFromRemovals(keyValue.key)
 	mt.changes.Set(keyValue)
+
+	if has := mt.previous.Has(keyValue.key); !has {
+		mt.previous.Set(KeyValue[K, Entry[V]]{
+			key:   keyValue.key,
+			value: previous,
+		})
+	}
 }
 
 func (mt *MapTransaction[K, V]) removeFromRemovals(key K) {
@@ -76,11 +95,7 @@ type MapTransactions[K, V any] struct {
 	transactions []*MapTransaction[K, V]
 }
 
-func (mt *MapTransactions[K, V]) Get(key string) *MapTransaction[K, V] {
-	if key == "" {
-		return nil
-	}
-
+func (mt *MapTransactions[K, V]) Get(key TXKey) *MapTransaction[K, V] {
 	mapTransaction := mt.get(key)
 	if mapTransaction != nil {
 		return mapTransaction
@@ -89,6 +104,7 @@ func (mt *MapTransactions[K, V]) Get(key string) *MapTransaction[K, V] {
 	mapTransaction = &MapTransaction[K, V]{
 		key:      key,
 		changes:  newOrderedList[K, Entry[V]](mt.comparer),
+		previous: newOrderedList[K, Entry[V]](mt.comparer),
 		comparer: mt.comparer,
 	}
 	mt.set(mapTransaction)
@@ -96,7 +112,7 @@ func (mt *MapTransactions[K, V]) Get(key string) *MapTransaction[K, V] {
 	return mapTransaction
 }
 
-func (mt *MapTransactions[K, V]) get(key string) *MapTransaction[K, V] {
+func (mt *MapTransactions[K, V]) get(key TXKey) *MapTransaction[K, V] {
 	mt.RLock()
 	defer mt.RUnlock()
 
@@ -116,13 +132,13 @@ func (mt *MapTransactions[K, V]) set(mapTransaction *MapTransaction[K, V]) {
 	mt.transactions = append(mt.transactions, mapTransaction)
 }
 
-func (mt *MapTransactions[K, V]) remove(key string) {
+func (mt *MapTransactions[K, V]) remove(key TXKey) {
 	mt.Lock()
 	defer mt.Unlock()
 
 	index := -1
 	for i, mapTransaction := range mt.transactions {
-		if mapTransaction.key == key {
+		if mapTransaction.key.equals(key) {
 			index = i
 			break
 		}
@@ -133,13 +149,10 @@ func (mt *MapTransactions[K, V]) remove(key string) {
 	}
 }
 
-func getEntry[V any](goCtx context.Context, entry Entry[V], consume bool) (V, bool) {
-	if consume {
-		ctx := sdk.UnwrapSDKContext(goCtx)
-		ctx.GasMeter().ConsumeGas(entry.consumption, "")
-	}
-
+func getEntry[V any](ctx context.Context, entry Entry[V]) (V, bool) {
 	if entry.value != nil {
+		sdkCtx := sdk.UnwrapSDKContext(ctx)
+		sdkCtx.GasMeter().ConsumeGas(entry.cost, "")
 		return *entry.value, true
 	}
 
@@ -150,19 +163,28 @@ func getEntry[V any](goCtx context.Context, entry Entry[V], consume bool) (V, bo
 type MapCache[K, V any] struct {
 	sync.Mutex
 
-	collection    collections.Map[K, V]
+	kc     codec.KeyCodec[K]
+	vc     codec.ValueCodec[V]
+	prefix []byte
+
+	collection    CollectionMap[K, V]
 	cache         *OrderedList[K, Entry[V]]
 	transactions  *MapTransactions[K, V]
 	keyComparer   KeyComparer
 	valueComparer ValueComparer[V]
 	initialized   bool
+	currentHeight int64
 }
 
-func NewCacheMap[K, V any](collection collections.Map[K, V], caches *Caches, keyComparer KeyComparer, valueComparer ValueComparer[V]) *MapCache[K, V] {
+func NewCacheMap[K, V any](sb *collections.SchemaBuilder, prefix []byte, name string, kc codec.KeyCodec[K], vc codec.ValueCodec[V], caches *Caches, keyComparer KeyComparer, valueComparer ValueComparer[V]) *MapCache[K, V] {
 	mc := &MapCache[K, V]{
+		kc:     kc,
+		vc:     vc,
+		prefix: prefix,
+
 		cache:         newOrderedList[K, Entry[V]](keyComparer),
 		transactions:  &MapTransactions[K, V]{comparer: keyComparer},
-		collection:    collection,
+		collection:    collections.NewMap(sb, prefix, name, kc, vc),
 		keyComparer:   keyComparer,
 		valueComparer: valueComparer,
 	}
@@ -171,12 +193,18 @@ func NewCacheMap[K, V any](collection collections.Map[K, V], caches *Caches, key
 	return mc
 }
 
-func (mc *MapCache[K, V]) Initialize(goCtx context.Context) error {
+func (mc *MapCache[K, V]) NumRunningTransactions() int {
+	return len(mc.transactions.transactions)
+}
+
+func (mc *MapCache[K, V]) Initialize(ctx context.Context) error {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	mc.currentHeight = sdkCtx.BlockHeight()
+
 	if mc.initialized {
 		return nil
 	}
 
-	ctx := sdk.UnwrapSDKContext(goCtx)
 	iterator, err := mc.collection.Iterate(ctx, nil)
 	if err != nil {
 		return errors.Wrap(err, "could not create collection iterator")
@@ -190,11 +218,13 @@ func (mc *MapCache[K, V]) Initialize(goCtx context.Context) error {
 	for ; iterator.Valid(); iterator.Next() {
 		key, err = iterator.Key()
 		if err != nil {
-			return errors.Wrap(err, "could not get KeyValue")
+			return errors.Wrap(err, "could not get key")
 		}
 
-		entry := mc.loadFromStorage(ctx, key, false)
-		entries = append(entries, KeyValue[K, Entry[V]]{key: key, value: entry})
+		entry, has := mc.loadFromStorage(ctx, key)
+		if has {
+			entries = append(entries, KeyValue[K, Entry[V]]{key: key, value: entry})
+		}
 	}
 
 	mc.cache.set(entries)
@@ -204,99 +234,110 @@ func (mc *MapCache[K, V]) Initialize(goCtx context.Context) error {
 }
 
 func (mc *MapCache[K, V]) Get(ctx context.Context, key K) (V, bool) {
-	if !mc.initialized {
-		_ = mc.Initialize(ctx)
-	}
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
-	txKey, hasTX := getTXKey(ctx)
-	if hasTX {
-		mapTransaction := mc.transactions.Get(txKey)
+	txKey := getTXKey(ctx)
+	if txKey != nil {
+		mapTransaction := mc.transactions.Get(*txKey)
 		change, has := mapTransaction.changes.Get(key)
 		if has {
-			return getEntry(ctx, change, true)
+			return getEntry(ctx, change)
+		}
+	}
+
+	if sdkCtx.BlockHeight() != mc.currentHeight {
+		entry, has := mc.loadFromStorage(ctx, key)
+		if has {
+			return *entry.value, true
+		} else {
+			var v V
+			return v, false
 		}
 	}
 
 	entry, has := mc.cache.Get(key)
-	if has && entry.exists && entry.value != nil {
-		return getEntry(ctx, entry, hasTX)
+	if has && entry.value != nil {
+		return getEntry(ctx, entry)
 	}
 
-	entry = mc.loadFromStorage(ctx, key, false)
-	mc.cache.Set(KeyValue[K, Entry[V]]{
-		key:   key,
-		value: entry,
-	})
-
-	return getEntry(ctx, entry, false)
+	var v V
+	return v, false
 }
 
-func (mc *MapCache[K, V]) loadFromStorage(goCtx context.Context, key K, preventGasConsumption bool) Entry[V] {
-	ctx := sdk.UnwrapSDKContext(goCtx)
+func (mc *MapCache[K, V]) loadFromStorage(ctx context.Context, key K) (Entry[V], bool) {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
-	if preventGasConsumption {
-		ctx = ctx.WithGasMeter(storetypes.NewInfiniteGasMeter())
-	}
-
-	before := ctx.GasMeter().GasConsumed()
+	gasMeter := sdkCtx.GasMeter()
+	ctx = sdkCtx.WithGasMeter(storetypes.NewInfiniteGasMeter())
 	value, err := mc.collection.Get(ctx, key)
-	after := ctx.GasMeter().GasConsumed()
+	ctx = sdkCtx.WithGasMeter(gasMeter)
 
-	entry := Entry[V]{
-		exists:      true,
-		consumption: after - before,
+	if err != nil {
+		return Entry[V]{}, false
 	}
 
-	if err == nil {
-		entry.value = &value
-	}
-
-	return entry
+	return Entry[V]{
+		value: &value,
+		cost:  CalculateReadCostMap(mc.prefix, mc.kc, mc.vc, key, value),
+	}, true
 }
 
 func (mc *MapCache[K, V]) Set(ctx context.Context, key K, value V) {
-	txKey, has := getTXKey(ctx)
-	if !has {
+	txKey := getTXKey(ctx)
+	if txKey == nil {
+		getTXKey(ctx)
 		panic("calling set without initialized cache transaction")
 	}
 
-	mapTransaction := mc.transactions.Get(txKey)
-	mapTransaction.set(KeyValue[K, Entry[V]]{
+	previous, has := mc.cache.Get(key)
+	if !has {
+		previous = Entry[V]{}
+	}
+
+	newEntry := KeyValue[K, Entry[V]]{
 		key: key,
 		value: Entry[V]{
-			value:  &value,
-			exists: true,
+			value: &value,
+			cost:  CalculateReadCostMap(mc.prefix, mc.kc, mc.vc, key, value),
 		},
-	})
+	}
+
+	mapTransaction := mc.transactions.Get(*txKey)
+	mapTransaction.set(newEntry, previous)
 }
 
 func (mc *MapCache[K, V]) Remove(ctx context.Context, key K) {
-	txKey, has := getTXKey(ctx)
-	if !has {
+	txKey := getTXKey(ctx)
+	if txKey == nil {
 		panic("calling set without initialized cache transaction")
 	}
 
-	mapTransaction := mc.transactions.Get(txKey)
-	mapTransaction.remove(key)
+	previous, has := mc.cache.Get(key)
+	if !has {
+		previous = Entry[V]{}
+	}
+
+	mapTransaction := mc.transactions.Get(*txKey)
+	mapTransaction.remove(key, previous)
 }
 
 // Iterator returns an iterator which contains a list of all keys. Since the cache doesn't know about all keys, they
 // have to be loaded from storage first. Then interim changes to the data have to be applied to the keys, i.e.
 // adding new ones or removes those that have been deleted. If new keys are added, the list has to be sorted once more.
-func (mc *MapCache[K, V]) Iterator(ctx context.Context, filters ...Filter[K]) *Iterator[K, V] {
+func (mc *MapCache[K, V]) Iterator(ctx context.Context, rng collections.Ranger[K], filter Filter[K]) Iterator[K, V] {
 	var changes *OrderedList[K, Entry[V]]
 	var removals []K
 
-	txKey, has := getTXKey(ctx)
-	if has {
-		mapTransaction := mc.transactions.Get(txKey)
+	txKey := getTXKey(ctx)
+	if txKey != nil {
+		mapTransaction := mc.transactions.Get(*txKey)
 		changes = mapTransaction.changes
 		removals = mapTransaction.removals
 	} else {
 		changes = newOrderedList[K, Entry[V]](mc.keyComparer)
 	}
 
-	return newIterator(ctx, mc.cache, changes, mc, removals, filters...)
+	return newIterator(ctx, mc.cache, changes, mc, removals, rng, filter)
 }
 
 func (mc *MapCache[K, V]) Size() int {
@@ -304,12 +345,12 @@ func (mc *MapCache[K, V]) Size() int {
 }
 
 func (mc *MapCache[K, V]) CommitToDB(ctx context.Context) error {
-	txKey, has := getTXKey(ctx)
-	if !has {
+	txKey := getTXKey(ctx)
+	if txKey == nil {
 		panic("calling commit without initialized cache transaction")
 	}
 
-	for _, change := range mc.transactions.Get(txKey).changes.GetAll() {
+	for _, change := range mc.transactions.Get(*txKey).changes.GetAll() {
 		if change.value.value != nil {
 			if err := mc.collection.Set(ctx, change.key, *change.value.value); err != nil {
 				return errors.Wrap(err, "could not add value to collection")
@@ -324,36 +365,53 @@ func (mc *MapCache[K, V]) CommitToDB(ctx context.Context) error {
 	return nil
 }
 
-func (mc *MapCache[K, V]) CommitToCache(ctx context.Context) {
-	txKey, has := getTXKey(ctx)
-	if !has {
+func (mc *MapCache[K, V]) Rollback(ctx context.Context) {
+	txKey := getTXKey(ctx)
+	if txKey == nil {
 		panic("calling commit without initialized cache transaction")
 	}
 
-	for _, change := range mc.transactions.Get(txKey).changes.GetAll() {
-		if change.value.value == nil {
-			mc.cache.Remove(change.key)
+	// Setting an infinite gas meter because we never want the following actions to fail due to out of gas reasons.
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	sdkCtx = sdkCtx.WithGasMeter(storetypes.NewInfiniteGasMeter())
+
+	previous := mc.transactions.Get(*txKey).previous.GetAll()
+	for _, change := range previous {
+		if change.value.value != nil {
+			_ = mc.collection.Set(sdkCtx, change.key, *change.value.value)
 		} else {
+			_ = mc.collection.Remove(sdkCtx, change.key)
+		}
+	}
+}
+
+func (mc *MapCache[K, V]) CommitToCache(ctx context.Context) {
+	txKey := getTXKey(ctx)
+	if txKey == nil {
+		panic("calling commit without initialized cache transaction")
+	}
+
+	for _, change := range mc.transactions.Get(*txKey).changes.GetAll() {
+		if change.value.value != nil {
 			mc.cache.Set(KeyValue[K, Entry[V]]{
-				key: change.key,
-				value: Entry[V]{
-					value:  nil,
-					exists: change.value.value != nil,
-				},
+				key:   change.key,
+				value: change.value,
 			})
+		} else {
+			mc.cache.Remove(change.key)
 		}
 	}
 
-	mc.transactions.remove(txKey)
+	mc.transactions.remove(*txKey)
 }
 
-func (mc *MapCache[K, V]) Rollback(ctx context.Context) {
-	txKey, has := getTXKey(ctx)
-	if !has {
-		panic("calling rollback without initialized cache transaction")
+func (mc *MapCache[K, V]) Clear(ctx context.Context) {
+	txKey := getTXKey(ctx)
+	if txKey == nil {
+		panic("calling Clear without initialized cache transaction")
 	}
 
-	mc.transactions.remove(txKey)
+	mc.transactions.remove(*txKey)
 }
 
 func (mc *MapCache[K, V]) ClearTransactions() {
@@ -372,23 +430,32 @@ func (mc *MapCache[K, V]) CheckCache(ctx context.Context) error {
 	return nil
 }
 
-func (mc *MapCache[K, V]) checkCollectionComplete(ctx context.Context) error {
-	iterator := mc.Iterator(ctx)
+func (mc *MapCache[K, V]) checkCollectionComplete(goCtx context.Context) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	iterator := mc.Iterator(goCtx, nil, nil)
 
 	var keyValue KeyValue[K, Entry[V]]
 	for iterator.Valid() {
 		keyValue = iterator.GetNextKeyValue()
-		if !keyValue.value.exists {
+		if keyValue.value.value != nil {
 			continue
 		}
 
+		before := ctx.GasMeter().GasConsumed()
 		value, err := mc.collection.Get(ctx, keyValue.key)
 		if err != nil {
 			return fmt.Errorf("could not get key: %v", keyValue.key)
 		}
+		after := ctx.GasMeter().GasConsumed()
 
 		if !mc.valueComparer(*keyValue.value.value, value) {
 			return fmt.Errorf("differing values for key: %v", keyValue.key)
+		}
+
+		consumption := after - before
+		if consumption != keyValue.value.cost {
+			return fmt.Errorf("consumption: %v, cache consumption: %v", consumption, keyValue.value.cost)
 		}
 	}
 
@@ -417,7 +484,7 @@ func (mc *MapCache[K, V]) checkCacheComplete(ctx context.Context) error {
 			continue
 		}
 
-		if value.exists && !mc.valueComparer(keyValue.Value, *value.value) {
+		if !mc.valueComparer(keyValue.Value, *value.value) {
 			return fmt.Errorf("differing values for key: %v", keyValue.Key)
 		}
 	}

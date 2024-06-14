@@ -171,12 +171,7 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 // EndBlock contains the logic that is automatically triggered at the end of each block.
 // The end block implementation is optional.
 func (am AppModule) EndBlock(goCtx context.Context) error {
-	keepers := []cache.Cache{
-		am.keeper,
-		am.keeper.DexKeeper,
-	}
-
-	return cache.Transact(goCtx, keepers, func(ctx sdk.Context) error {
+	return cache.Transact(goCtx, func(ctx sdk.Context) error {
 		am.keeper.ApplyInterest(ctx)
 
 		if err := am.keeper.HandleLiquidations(ctx, ctx.EventManager()); err != nil {
