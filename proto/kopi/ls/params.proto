@@ -1,0 +1,15 @@
+syntax = "proto3";
+package kopi.ls;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/ls/types";
+
+// Params defines the parameters for the module.
+message Params {
+  option (amino.name) = "kopi/x/ls/Params";
+  option (gogoproto.equal) = true;
+
+  int64 top_n_validators = 1;
+}

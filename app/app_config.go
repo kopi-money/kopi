@@ -74,6 +74,7 @@ import (
 	blocktimemodulev1 "github.com/kopi-money/kopi/api/kopi/blockspeed/module"
 	denominationsmodulev1 "github.com/kopi-money/kopi/api/kopi/denominations/module"
 	dexmodulev1 "github.com/kopi-money/kopi/api/kopi/dex/module"
+	lsmodulev1 "github.com/kopi-money/kopi/api/kopi/ls/module"
 	mmmodulev1 "github.com/kopi-money/kopi/api/kopi/mm/module"
 	reservemodulev1 "github.com/kopi-money/kopi/api/kopi/reserve/module"
 	strategiesmodulev1 "github.com/kopi-money/kopi/api/kopi/strategies/module"
@@ -85,6 +86,8 @@ import (
 	denominationsmoduletypes "github.com/kopi-money/kopi/x/denominations/types"
 	_ "github.com/kopi-money/kopi/x/dex/module" // import for side-effects
 	dexmoduletypes "github.com/kopi-money/kopi/x/dex/types"
+	_ "github.com/kopi-money/kopi/x/ls/module" // import for side-effects
+	lsmoduletypes "github.com/kopi-money/kopi/x/ls/types"
 	_ "github.com/kopi-money/kopi/x/mm/module" // import for side-effects
 	mmmoduletypes "github.com/kopi-money/kopi/x/mm/types"
 	_ "github.com/kopi-money/kopi/x/reserve/module" // import for side-effects
@@ -140,6 +143,7 @@ var (
 		strategiesmoduletypes.ModuleName,
 		reservemoduletypes.ModuleName,
 		blockspeedmoduletypes.ModuleName,
+		lsmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 
@@ -172,6 +176,7 @@ var (
 		tokenfactorytypes.ModuleName,
 		strategiesmoduletypes.ModuleName,
 		blockspeedmoduletypes.ModuleName,
+		lsmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
 
@@ -198,6 +203,7 @@ var (
 		tokenfactorytypes.ModuleName,
 		reservemoduletypes.ModuleName,
 		blockspeedmoduletypes.ModuleName,
+		lsmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
 
@@ -242,6 +248,9 @@ var (
 		{Account: tokenfactorytypes.ModuleName, Permissions: []string{authtypes.Burner, authtypes.Minter}},
 		{Account: tokenfactorytypes.PoolFactoryLiquidity, Permissions: []string{authtypes.Burner, authtypes.Minter}},
 		{Account: tokenfactorytypes.PoolUnlocking, Permissions: []string{authtypes.Burner, authtypes.Minter}},
+
+		// LS
+		{Account: lsmoduletypes.ModuleName, Permissions: []string{authtypes.Burner, authtypes.Minter}},
 
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
@@ -406,6 +415,10 @@ var (
 			{
 				Name:   blockspeedmoduletypes.ModuleName,
 				Config: appconfig.WrapAny(&blocktimemodulev1.Module{}),
+			},
+			{
+				Name:   lsmoduletypes.ModuleName,
+				Config: appconfig.WrapAny(&lsmodulev1.Module{}),
 			},
 			// this line is used by starport scaffolding # stargate/app/moduleConfig
 		},

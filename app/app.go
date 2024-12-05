@@ -68,6 +68,8 @@ import (
 	strategiesmodulekeeper "github.com/kopi-money/kopi/x/strategies/keeper"
 
 	blockspeedmodulekeeper "github.com/kopi-money/kopi/x/blockspeed/keeper"
+	lsmodulekeeper "github.com/kopi-money/kopi/x/ls/keeper"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/kopi-money/kopi/docs"
@@ -139,6 +141,7 @@ type App struct {
 	StrategiesKeeper    strategiesmodulekeeper.Keeper
 	ReserveKeeper       reservemodulekeeper.Keeper
 	BlockspeedKeeper    blockspeedmodulekeeper.Keeper
+	LsKeeper            lsmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// simulation manager
@@ -283,6 +286,7 @@ func New(
 		&app.StrategiesKeeper,
 		&app.ReserveKeeper,
 		&app.BlockspeedKeeper,
+		&app.LsKeeper,
 		// this line is used by starport scaffolding # stargate/app/keeperDefinition
 	); err != nil {
 		panic(err)
@@ -355,6 +359,7 @@ func (app *App) registerCacheHandling() {
 		app.SwapKeeper,
 		app.StrategiesKeeper,
 		app.TokenfactoryKeeper,
+		app.LsKeeper,
 	})
 
 	app.SetBeginBlocker(func(ctx sdk.Context) (sdk.BeginBlock, error) {

@@ -2,9 +2,10 @@ package cache
 
 import (
 	"context"
-	storetypes "cosmossdk.io/store/types"
 	"fmt"
 	"sync"
+
+	storetypes "cosmossdk.io/store/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

@@ -1,0 +1,19 @@
+syntax = "proto3";
+package kopi.ls;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/ls/types";
+
+message Undelegation {
+  string address = 1;
+
+  bytes amount = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message UndelegationNextIndex {
+  uint64 next = 1;
+}

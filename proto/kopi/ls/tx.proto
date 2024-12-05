@@ -1,0 +1,52 @@
+syntax = "proto3";
+package kopi.ls;
+
+import "amino/amino.proto";
+import "cosmos/msg/v1/msg.proto";
+import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "kopi/ls/params.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/ls/types";
+
+// Msg defines the Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
+  rpc Delegate(MsgDelegate) returns (Void);
+  rpc Undelegate(MsgUndelegate) returns (Void);
+}
+
+message MsgDelegate {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string amount = 2;
+}
+
+message MsgUndelegate {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string amount = 2;
+}
+
+message Void {
+}
+
+// MsgUpdateParams is the Msg/UpdateParams request type.
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/ls/MsgUpdateParams";
+
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  Params params = 2 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}
+
+message MsgUpdateParamsResponse {}
