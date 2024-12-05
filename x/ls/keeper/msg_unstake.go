@@ -75,7 +75,7 @@ func (k Keeper) calculateUndelegationAmount(ctx context.Context, moduleAcc sdk.A
 // priority is first whether that validator is still in the top N or not, then biggest delegation to smallest. If
 // undelegating from one validator is not enough, undelegations from multiple validators are started.
 func (k Keeper) undelegate(ctx context.Context, userAcc, moduleAcc sdk.AccAddress, undelegationAmounLeftInt math.Int) error {
-	delegationAmounts, err := k.getDelegationAmounts(ctx, moduleAcc)
+	delegationAmounts, err := k.getDelegationAmounts(ctx, moduleAcc, false)
 	if err != nil {
 		return fmt.Errorf("error getting delegation amounts: %v", err)
 	}

@@ -83,16 +83,12 @@ func (k Keeper) calculateSAssetAmount(ctx context.Context, moduleAcc sdk.AccAddr
 // stake adds all spendable coins to the validator from the top N that has the least amount staked to it. If two
 // validator have the same amount staked to, the one higher in the list is preferred.
 func (k Keeper) delegate(ctx context.Context, moduleAcc sdk.AccAddress) error {
-	delegationAmounts, err := k.getDelegationAmounts(ctx, moduleAcc)
+	delegationAmounts, err := k.getDelegationAmounts(ctx, moduleAcc, true)
 	if err != nil {
 		return fmt.Errorf("error getting delegation amounts: %v", err)
 	}
 
 	sort.SliceStable(delegationAmounts, func(i, j int) bool {
-		if delegationAmounts[i].inTopN != delegationAmounts[j].inTopN {
-			return delegationAmounts[i].inTopN
-		}
-
 		if delegationAmounts[i].amount.Equal(delegationAmounts[j].amount) {
 			return i < j
 		}

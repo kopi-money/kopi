@@ -9,6 +9,29 @@ import (
 	"github.com/kopi-money/kopi/x/ls/types"
 )
 
+func (k Keeper) GetGenesisUndelegations(ctx context.Context) (undelegations []*types.GenesisUndelegation) {
+	iterator := k.undelegations.Iterator(ctx, nil)
+	for iterator.Valid() {
+		keyValue := iterator.GetNextKeyValue()
+		undelegations = append(undelegations, &types.GenesisUndelegation{
+			Index:   keyValue.Key(),
+			Address: keyValue.Value().Value().Address,
+			Amount:  keyValue.Value().Value().Amount,
+		})
+	}
+
+	return
+}
+
+func (k Keeper) SetUndelegations(ctx context.Context, undelegations []*types.GenesisUndelegation) {
+	for _, undelegation := range undelegations {
+		k.undelegations.Set(ctx, undelegation.Index, types.Undelegation{
+			Address: undelegation.Address,
+			Amount:  undelegation.Amount,
+		})
+	}
+}
+
 func (k Keeper) storeNewUndelegation(ctx context.Context, address string, amount math.Int) {
 	nextIndex, _ := k.undelegationsNextIndex.Get(ctx)
 	nextIndex++
@@ -30,6 +53,15 @@ func (k Keeper) updateUndelegation(ctx context.Context, index uint64, undelegati
 
 func (k Keeper) SetDelegationNextIndex(ctx context.Context, nextIndex uint64) {
 	k.undelegationsNextIndex.Set(ctx, nextIndex)
+}
+
+func (k Keeper) GetDelegationNextIndex(ctx context.Context) uint64 {
+	index, has := k.undelegationsNextIndex.Get(ctx)
+	if !has {
+		return 0
+	}
+
+	return index
 }
 
 // HandleUndelegations checks whether there are spendable coins. If yes, they are used to process waiting undelegations.

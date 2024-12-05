@@ -6,6 +6,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "kopi/ls/params.proto";
+import "kopi/ls/genesis.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/ls/types";
 
@@ -13,8 +14,21 @@ option go_package = "github.com/kopi-money/kopi/x/ls/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/kopi-money/kopi/ls/params";
+    option (google.api.http).get = "/kopi/ls/params";
   }
+
+  rpc Undelegations (QueryUndelegationsRequest) returns (QueryUndelegationsResponse) {
+    option (google.api.http).get = "/kopi/ls/undelegations";
+  }
+}
+
+message QueryUndelegationsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryUndelegationsResponse {
+  repeated GenesisUndelegation entries = 1;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.

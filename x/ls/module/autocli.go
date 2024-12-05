@@ -28,6 +28,26 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 					RpcMethod: "UpdateParams",
 					Skip:      true, // skipped because authority gated
 				},
+				{
+					RpcMethod: "Delegate",
+					Use:       "delegate [amount]",
+					Short:     "Delegate XKP and receive sXKP",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{
+						{
+							ProtoField: "amount",
+						},
+					},
+				},
+				{
+					RpcMethod: "Undelegate",
+					Use:       "undelegate [amount]",
+					Short:     "Start an undelegation by redeeming sXKP",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{
+						{
+							ProtoField: "amount",
+						},
+					},
+				},
 				// this line is used by ignite scaffolding # autocli/tx
 			},
 		},

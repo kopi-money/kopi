@@ -67,6 +67,7 @@ func NewKeeper(
 		storeService: storeService,
 		authority:    authority,
 		logger:       logger,
+		caches:       caches,
 
 		accountKeeper:      accountKeeper,
 		bankKeeper:         bankKeeper,

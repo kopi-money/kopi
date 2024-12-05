@@ -113,12 +113,12 @@ func NewItemCache[V any](sb *collections.SchemaBuilder, prefix []byte, name stri
 }
 
 func (ic *ItemCache[V]) Initialize(ctx context.Context) error {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	ic.currentHeight = sdkCtx.BlockHeight()
+
 	if ic.item != nil {
 		return nil
 	}
-
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	ic.currentHeight = sdkCtx.BlockHeight()
 
 	item, has := ic.loadFromStorage(sdkCtx)
 	if has {
@@ -171,7 +171,6 @@ func (ic *ItemCache[V]) loadFromStorage(goCtx context.Context) (Entry[V], bool) 
 	ctx = ctx.WithGasMeter(gasMeter)
 
 	if err != nil {
-		ctx.Logger().Error(fmt.Sprintf("%v: %v", ic.name, err.Error()))
 		return Entry[V]{}, false
 	}
 

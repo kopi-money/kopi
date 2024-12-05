@@ -217,12 +217,12 @@ func (mc *MapCache[K, V]) NumRunningTransactions() int {
 }
 
 func (mc *MapCache[K, V]) Initialize(ctx context.Context) error {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	mc.currentHeight = sdkCtx.BlockHeight()
+
 	if mc.initialized {
 		return nil
 	}
-
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	mc.currentHeight = sdkCtx.BlockHeight()
 
 	iterator, err := mc.collection.Iterate(ctx, nil)
 	if err != nil {

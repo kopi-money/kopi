@@ -7,6 +7,16 @@ import "kopi/ls/params.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/ls/types";
 
+message GenesisUndelegation {
+  uint64 index = 1;
+  string address = 2;
+
+  bytes amount = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
 // GenesisState defines the ls module's genesis state.
 message GenesisState {
   // params defines all the parameters of the module.
@@ -14,4 +24,7 @@ message GenesisState {
     (gogoproto.nullable) = false,
     (amino.dont_omitempty) = true
   ];
+
+  repeated GenesisUndelegation undelegations = 2;
+  uint64 undelegations_next_index = 3;
 }

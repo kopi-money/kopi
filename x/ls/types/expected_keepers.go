@@ -49,6 +49,7 @@ type StakingKeeper interface {
 	GetDelegatorDelegations(ctx context.Context, delegator sdk.AccAddress, maxRetrieve uint16) (delegations []stakingtypes.Delegation, err error)
 
 	GetValidator(ctx context.Context, addr sdk.ValAddress) (validator stakingtypes.Validator, err error)
+	GetDelegation(context.Context, sdk.AccAddress, sdk.ValAddress) (stakingtypes.Delegation, error)
 	Validator(context.Context, sdk.ValAddress) (stakingtypes.ValidatorI, error)
 	ValidatorAddressCodec() address.Codec
 	ValidateUnbondAmount(context.Context, sdk.AccAddress, sdk.ValAddress, math.Int) (math.LegacyDec, error)

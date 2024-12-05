@@ -146,12 +146,12 @@ func (nmc *NestedMapCache[K1, K2, V]) NumRunningTransactions() int {
 }
 
 func (nmc *NestedMapCache[K1, K2, V]) Initialize(ctx context.Context) error {
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+	nmc.currentHeight = sdkCtx.BlockHeight()
+
 	if nmc.initialized {
 		return nil
 	}
-
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	nmc.currentHeight = sdkCtx.BlockHeight()
 
 	iterator, err := nmc.collection.Iterate(ctx, nil)
 	if err != nil {

@@ -17,6 +17,18 @@ type ValidatorAmount struct {
 	inTopN    bool
 }
 
+type ValidatorAmounts []ValidatorAmount
+
+func (va ValidatorAmounts) contains(validator string) bool {
+	for _, val := range va {
+		if val.validator == validator {
+			return true
+		}
+	}
+
+	return false
+}
+
 // RestakeRewards withdraws rewards from all validators and then stakes it with the one validator in the top N that
 // currently has the lowest delegations.
 func (k Keeper) RestakeRewards(ctx context.Context) error {
@@ -30,7 +42,7 @@ func (k Keeper) RestakeRewards(ctx context.Context) error {
 		return nil
 	}
 
-	delegationAmounts, err := k.getDelegationAmounts(ctx, moduleAcc.GetAddress())
+	delegationAmounts, err := k.getDelegationAmounts(ctx, moduleAcc.GetAddress(), false)
 	if err != nil {
 		return fmt.Errorf("error getting delegation amounts: %v", err)
 	}
@@ -111,8 +123,8 @@ func (k Keeper) getDelegations(ctx context.Context, accAddr sdk.AccAddress) ([]s
 
 // getDelegationAmounts returns a list of delegations including validator address, whether it is in the top N and the
 // delegated amount.
-func (k Keeper) getDelegationAmounts(ctx context.Context, accAddr sdk.AccAddress) ([]ValidatorAmount, error) {
-	var amounts []ValidatorAmount
+func (k Keeper) getDelegationAmounts(ctx context.Context, accAddr sdk.AccAddress, addEmpty bool) ([]ValidatorAmount, error) {
+	var amounts ValidatorAmounts
 	topValidators, err := k.getTopValidators(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get top validators: %w", err)
@@ -135,6 +147,21 @@ func (k Keeper) getDelegationAmounts(ctx context.Context, accAddr sdk.AccAddress
 		return nil, err
 	}
 
+	if addEmpty {
+		var empty []ValidatorAmount
+		for _, topValidator := range topValidators {
+			if !amounts.contains(topValidator.GetOperator()) {
+				empty = append(empty, ValidatorAmount{
+					validator: topValidator.GetOperator(),
+					amount:    math.LegacyZeroDec(),
+					inTopN:    true,
+				})
+			}
+		}
+
+		amounts = append(amounts, empty...)
+	}
+
 	return amounts, nil
 }
 
@@ -142,15 +169,32 @@ func (k Keeper) getDelegationAmounts(ctx context.Context, accAddr sdk.AccAddress
 func (k Keeper) getDelegationSum(ctx context.Context, accAddr sdk.AccAddress) (math.LegacyDec, error) {
 	sum := math.LegacyZeroDec()
 
+	var (
+		validatorAddress sdk.ValAddress
+		validator        stakingtypes.ValidatorI
+		innerErr         error
+	)
 	if err := k.stakingKeeper.IterateDelegations(
 		ctx, accAddr,
 		func(_ int64, del stakingtypes.DelegationI) (stop bool) {
-			validator, _ := k.stakingKeeper.Validator(ctx, sdk.ValAddress(del.GetValidatorAddr()))
+			validatorAddress, innerErr = sdk.ValAddressFromBech32(del.GetValidatorAddr())
+			if innerErr != nil {
+				return true
+			}
+			validator, innerErr = k.stakingKeeper.Validator(ctx, validatorAddress)
+			if innerErr != nil {
+				return true
+			}
+
 			sum = sum.Add(validator.TokensFromShares(del.GetShares()))
 			return false
 		},
 	); err != nil {
 		return math.LegacyDec{}, err
+	}
+
+	if innerErr != nil {
+		return math.LegacyDec{}, innerErr
 	}
 
 	return sum, nil
