@@ -56,14 +56,6 @@ func (k Keeper) CheckBurn(ctx context.Context, kCoin string, maxBurnAmount math.
 		return nil
 	}
 
-	// Liquidity of the kCoin is removed if present
-	liq := k.DexKeeper.GetLiquidityByAddress(ctx, kCoin, dextypes.PoolReserve)
-	if liq.GT(math.ZeroInt()) {
-		if err = k.DexKeeper.RemoveAllLiquidityForModule(ctx, kCoin, dextypes.PoolReserve); err != nil {
-			return fmt.Errorf("could not remove all liquidity for module: %w", err)
-		}
-	}
-
 	mintCoins := sdk.NewCoins(sdk.NewCoin(kCoin, mintAmountBase))
 	if err = k.BankKeeper.MintCoins(ctx, types.ModuleName, mintCoins); err != nil {
 		return fmt.Errorf("could not mint coins: %w", err)
