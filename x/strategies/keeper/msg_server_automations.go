@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"time"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -43,19 +44,21 @@ func (k Keeper) addAutomation(ctx context.Context, msg types.AutomationMessage, 
 	intervalLength, _ := strconv.Atoi(msg.GetIntervalLength())
 	validityType, _ := strconv.Atoi(msg.GetValidityType())
 	validitValue, _ := strconv.Atoi(msg.GetValidityValue())
+	now := time.Now()
 
 	k.SetAutomation(ctx, types.Automation{
-		Address:        creator,
-		Title:          msg.GetTitle(),
-		Active:         true,
-		AddedAt:        height,
-		PeriodStart:    height,
-		IntervalType:   int64(intervalType),
-		IntervalLength: int64(intervalLength),
-		ValidityType:   int64(validityType),
-		ValidityValue:  int64(validitValue),
-		Conditions:     conditions,
-		Actions:        actions,
+		Address:              creator,
+		Title:                msg.GetTitle(),
+		Active:               true,
+		AddedAt:              height,
+		PeriodStart:          height,
+		PeriodStartTimestamp: &now,
+		IntervalType:         int64(intervalType),
+		IntervalLength:       int64(intervalLength),
+		ValidityType:         int64(validityType),
+		ValidityValue:        int64(validitValue),
+		Conditions:           conditions,
+		Actions:              actions,
 	})
 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
@@ -290,6 +293,9 @@ func (k Keeper) setAutomationActiveStatus(ctx context.Context, address string, i
 }
 
 func resetStatistics(ctx context.Context, automation *types.Automation) {
+	now := time.Now()
+
+	automation.PeriodStartTimestamp = &now
 	automation.PeriodStart = sdk.UnwrapSDKContext(ctx).BlockHeight()
 	automation.PeriodTimesChecked = 0
 	automation.PeriodTimesExecuted = 0

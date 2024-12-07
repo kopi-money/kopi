@@ -2,10 +2,10 @@ package keeper
 
 import (
 	"fmt"
+	"time"
 
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/constants"
-
 	"github.com/kopi-money/kopi/x/strategies/types"
 )
 
@@ -68,11 +68,17 @@ func isTimeValidity(automation types.Automation) bool {
 	}
 }
 
-func checkTimeValidity(automation *types.Automation, blockHeight, blocksPerYear int64) bool {
-	lengthInSeconds, _ := convertIntervalLength(automation.ValidityType, automation.ValidityValue)
-	lengthInBlocks := convertSecondsToBlocks(lengthInSeconds, blocksPerYear)
-	validUntil := automation.PeriodStart + lengthInBlocks
-	return validUntil > blockHeight
+func checkTimeValidity(automation *types.Automation, blockHeight, blocksPerYear int64, blockTime time.Time) bool {
+	validityLengthInSeconds, _ := convertIntervalLength(automation.ValidityType, automation.ValidityValue)
+
+	if automation.PeriodStartTimestamp != nil {
+		runtimeInSeconds := blockTime.Sub(*automation.PeriodStartTimestamp).Seconds()
+		return int64(runtimeInSeconds) < validityLengthInSeconds
+	} else {
+		validityLengthInBlocks := convertSecondsToBlocks(validityLengthInSeconds, blocksPerYear)
+		validUntil := automation.PeriodStart + validityLengthInBlocks
+		return validUntil > blockHeight
+	}
 }
 
 func checkValidity(automation types.Automation) (bool, *types.InactiveReason, error) {

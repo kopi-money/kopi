@@ -122,13 +122,13 @@ func (k Keeper) AutomationInterval(ctx context.Context, req *types.QueryAutomati
 	secondsPerBlock := k.BlockspeedKeeper.GetSecondsPerBlock(ctx)
 	blockHeight := sdk.UnwrapSDKContext(ctx).BlockHeight()
 
-	intervalInSeconds, runtimeInSeconds, expectedChecks, runtimeInBlocks, err := k.getIntervalCheckData(secondsPerBlock, automation, blockHeight)
+	intervalInSeconds, runtimeInSeconds, expectedChecks, err := k.getIntervalCheckData(ctx, secondsPerBlock, automation, blockHeight)
 	if err != nil {
 		return nil, fmt.Errorf("could not get interval check data: %w", err)
 	}
 
 	return &types.QueryAutomationIntervalResponse{
-		RuntimeInBlocks:   strconv.Itoa(int(runtimeInBlocks)),
+		RuntimeInBlocks:   strconv.Itoa(int(blockHeight - automation.PeriodStart)),
 		RuntimeInSeconds:  runtimeInSeconds.String(),
 		IntervalInSeconds: intervalInSeconds.String(),
 		PeriodTimeChecks:  strconv.Itoa(int(automation.PeriodTimesChecked)),

@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"cosmossdk.io/core/store"
 	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	mmkeeper "github.com/kopi-money/kopi/x/mm/keeper"
 
 	"cosmossdk.io/core/appmodule"
+	"cosmossdk.io/core/store"
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/client"

@@ -112,7 +112,7 @@ func (k Keeper) HandleAutomations(ctx context.Context) error {
 			continue
 		}
 
-		isBelowCheckRate, err = k.checkAutomationBelowCheckRate(secondsPerBlock, automation, blockHeight)
+		isBelowCheckRate, err = k.checkAutomationBelowCheckRate(ctx, secondsPerBlock, automation, blockHeight)
 		if err != nil {
 			k.Logger().Error(err.Error())
 			continue
@@ -146,8 +146,8 @@ func (k Keeper) HandleAutomations(ctx context.Context) error {
 
 // checkAutomationBelowCheckRate calculates the rate with which the automation has been executed in relation to how many times
 // it should have been executed given the time it has been active.
-func (k Keeper) checkAutomationBelowCheckRate(secondsPerBlock math.LegacyDec, automation types.Automation, blockHeight int64) (bool, error) {
-	_, _, expectedChecks, _, err := k.getIntervalCheckData(secondsPerBlock, automation, blockHeight)
+func (k Keeper) checkAutomationBelowCheckRate(ctx context.Context, secondsPerBlock math.LegacyDec, automation types.Automation, blockHeight int64) (bool, error) {
+	_, _, expectedChecks, err := k.getIntervalCheckData(ctx, secondsPerBlock, automation, blockHeight)
 	if err != nil {
 		return false, err
 	}
@@ -155,17 +155,24 @@ func (k Keeper) checkAutomationBelowCheckRate(secondsPerBlock math.LegacyDec, au
 	return math.LegacyNewDec(automation.PeriodTimesChecked).LT(expectedChecks), nil
 }
 
-func (k Keeper) getIntervalCheckData(secondsPerBlock math.LegacyDec, automation types.Automation, blockHeight int64) (math.LegacyDec, math.LegacyDec, math.LegacyDec, int64, error) {
+func (k Keeper) getIntervalCheckData(ctx context.Context, secondsPerBlock math.LegacyDec, automation types.Automation, blockHeight int64) (math.LegacyDec, math.LegacyDec, math.LegacyDec, error) {
 	intervalInSeconds, err := convertIntervalLengthDec(automation.IntervalType, automation.IntervalLength)
 	if err != nil {
-		return math.LegacyDec{}, math.LegacyDec{}, math.LegacyDec{}, 0, fmt.Errorf("could not convert interval length: %w", err)
+		return math.LegacyDec{}, math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("could not convert interval length: %w", err)
 	}
 
-	runtimeInBlocks := blockHeight - automation.PeriodStart
-	runtimeInSeconds := convertBlocksToSeconds(secondsPerBlock, runtimeInBlocks)
+	var runtimeInSeconds math.LegacyDec
+	if automation.PeriodStartTimestamp != nil {
+		now := sdk.UnwrapSDKContext(ctx).BlockTime()
+		runtimeInSeconds = math.LegacyNewDec(int64(now.Sub(*automation.PeriodStartTimestamp).Seconds()))
+	} else {
+		runtimeInBlocks := blockHeight - automation.PeriodStart
+		runtimeInSeconds = convertBlocksToSeconds(secondsPerBlock, runtimeInBlocks)
+	}
+
 	expectedChecks := runtimeInSeconds.Quo(intervalInSeconds)
 
-	return intervalInSeconds, runtimeInSeconds, expectedChecks, runtimeInBlocks, nil
+	return intervalInSeconds, runtimeInSeconds, expectedChecks, nil
 }
 
 func convertBlocksToSeconds(secondsPerBlock math.LegacyDec, numBlocks int64) math.LegacyDec {
@@ -178,7 +185,8 @@ func (k Keeper) handleTimeValidity(ctx context.Context, automation types.Automat
 		return true
 	}
 
-	automation.Active = checkTimeValidity(&automation, blockHeight, blocksPerYear)
+	blockTime := sdk.UnwrapSDKContext(ctx).BlockTime()
+	automation.Active = checkTimeValidity(&automation, blockHeight, blocksPerYear, blockTime)
 
 	if !automation.Active {
 		sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
