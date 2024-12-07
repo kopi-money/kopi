@@ -315,6 +315,7 @@ func New(
 		return nil, fmt.Errorf("failed to create AnteHandler: %s", err)
 	}
 	app.SetAnteHandler(anteHandler)
+	app.setupUpgradeHandlers(appOpts)
 
 	// A custom InitChainer can be set if extra pre-init-genesis logic is required.
 	// By default, when using app wiring enabled module, this is not required.
@@ -346,8 +347,6 @@ func New(
 			return nil, fmt.Errorf("failed initialize pinned codes: %w", err)
 		}
 	}
-
-	app.setupUpgradeHandlers(appOpts)
 
 	return app, nil
 }
