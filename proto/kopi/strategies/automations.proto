@@ -1,6 +1,7 @@
 syntax = "proto3";
 package kopi.strategies;
 
+import "google/protobuf/timestamp.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/strategies/types";
@@ -75,6 +76,12 @@ message Automation {
   bytes inactive_reason = 21 [
     (gogoproto.customtype) = "InactiveReason",
     (gogoproto.nullable) = true
+  ];
+
+  google.protobuf.Timestamp period_start_timestamp = 22 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = true,
+    (gogoproto.moretags) = "yaml:\"period_start_timestamp\""
   ];
 }
 
