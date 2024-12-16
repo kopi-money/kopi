@@ -23,12 +23,8 @@ import (
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 
 	"github.com/kopi-money/kopi/app"
 )
@@ -134,21 +130,15 @@ func newApp(
 ) servertypes.Application {
 	baseappOptions := server.DefaultBaseappOptions(appOpts)
 
-	var wasmOpts []wasmkeeper.Option
-	if cast.ToBool(appOpts.Get("telemetry.enabled")) {
-		wasmOpts = append(wasmOpts, wasmkeeper.WithVMCacheMetrics(prometheus.DefaultRegisterer))
-	}
-
-	app, err := app.New(
+	baseApp, err := app.New(
 		logger, db, traceStore, true,
 		appOpts,
-		wasmOpts,
 		baseappOptions...,
 	)
 	if err != nil {
 		panic(err)
 	}
-	return app
+	return baseApp
 }
 
 // appExport creates a new app (optionally at a given height) and exports state.
@@ -182,19 +172,18 @@ func appExport(
 	// overwrite the FlagInvCheckPeriod
 	viperAppOpts.Set(server.FlagInvCheckPeriod, 1)
 	appOpts = viperAppOpts
-	var emptyWasmOpts []wasmkeeper.Option
 
 	if height != -1 {
-		bApp, err = app.New(logger, db, traceStore, false, appOpts, emptyWasmOpts)
+		bApp, err = app.New(logger, db, traceStore, false, appOpts)
 		if err != nil {
 			return servertypes.ExportedApp{}, err
 		}
 
-		if err := bApp.LoadHeight(height); err != nil {
+		if err = bApp.LoadHeight(height); err != nil {
 			return servertypes.ExportedApp{}, err
 		}
 	} else {
-		bApp, err = app.New(logger, db, traceStore, true, appOpts, emptyWasmOpts)
+		bApp, err = app.New(logger, db, traceStore, true, appOpts)
 		if err != nil {
 			return servertypes.ExportedApp{}, err
 		}

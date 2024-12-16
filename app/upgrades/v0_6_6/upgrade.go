@@ -10,18 +10,21 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 )
 
-func CreateUpgradeHandler(mm *module.Manager, configurator module.Configurator, k wasmkeeper.Keeper) upgradetypes.UpgradeHandler {
+func CreateUpgradeHandler(mm *module.Manager, configurator module.Configurator, wasmK wasmkeeper.Keeper) upgradetypes.UpgradeHandler {
 	return func(ctx context.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
+		vm["capability"] = 1
+
 		vm, err := mm.RunMigrations(ctx, configurator, vm)
 		if err != nil {
 			return vm, err
 		}
 
 		// Set CosmWasm params
-		wasmParams := wasmtypes.DefaultParams()
+		wasmParams := wasmK.GetParams(ctx)
 		wasmParams.CodeUploadAccess = wasmtypes.AllowNobody
 		wasmParams.InstantiateDefaultPermission = wasmtypes.AccessTypeAnyOfAddresses
-		if err := k.SetParams(ctx, wasmParams); err != nil {
+
+		if err = wasmK.SetParams(ctx, wasmParams); err != nil {
 			return vm, fmt.Errorf("unable to set CosmWasm params")
 		}
 
