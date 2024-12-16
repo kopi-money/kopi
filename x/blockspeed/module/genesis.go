@@ -36,10 +36,10 @@ func InitGenesis(ctx context.Context, k keeper.Keeper, genState types.GenesisSta
 
 // ExportGenesis returns the module's exported genesis.
 func ExportGenesis(ctx context.Context, k keeper.Keeper) *types.GenesisState {
+	bs := k.GetBlockspeed(ctx)
+
 	genesis := types.DefaultGenesis()
 	genesis.Params = k.GetParams(ctx)
-
-	bs := k.GetBlockspeed(ctx)
 	genesis.Blockspeed = &bs
 
 	// this line is used by starport scaffolding # genesis/module/export
