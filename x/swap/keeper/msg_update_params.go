@@ -25,10 +25,6 @@ func (k msgServer) UpdateBurnThreshold(ctx context.Context, req *types.MsgUpdate
 		params := k.GetParams(innerCtx)
 		params.BurnThreshold = burnThreshold
 
-		if err = params.Validate(); err != nil {
-			return err
-		}
-
 		if err = k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
@@ -52,10 +48,6 @@ func (k msgServer) UpdateMintThreshold(ctx context.Context, req *types.MsgUpdate
 		params := k.GetParams(innerCtx)
 		params.MintThreshold = mintThreshold
 
-		if err = params.Validate(); err != nil {
-			return err
-		}
-
 		if err = k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
@@ -78,10 +70,6 @@ func (k msgServer) UpdateStakingShare(ctx context.Context, req *types.MsgUpdateS
 
 		params := k.GetParams(innerCtx)
 		params.StakingShare = stakingShare
-
-		if err = params.Validate(); err != nil {
-			return err
-		}
 
 		if err = k.SetParams(innerCtx, params); err != nil {
 			return err
