@@ -11,7 +11,17 @@ message Params {
   option (amino.name) = "kopi/x/reserve/Params";
   option (gogoproto.equal) = true;
 
-  bytes kcoin_burn_share = 7 [
+  bytes kcoin_burn_share = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+
+  bytes sell_threshold = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+
+  bytes buy_threshold = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];

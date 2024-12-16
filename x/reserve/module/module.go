@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-
 	"github.com/kopi-money/kopi/cache"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 
@@ -164,6 +163,14 @@ func (am AppModule) EndBlock(ctx context.Context) error {
 	return cache.Transact(ctx, func(innerCtx context.Context) error {
 		if err := am.keeper.BeginBlockCheckReserve(innerCtx); err != nil {
 			return fmt.Errorf("error checking reserve at beginning of block: %w", err)
+		}
+
+		if err := am.keeper.BuyKCoins(innerCtx); err != nil {
+			return fmt.Errorf("error buying k coins: %w", err)
+		}
+
+		if err := am.keeper.SellKCoins(innerCtx); err != nil {
+			return fmt.Errorf("error selling k coins: %w", err)
 		}
 
 		return nil

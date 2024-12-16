@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+	dextypes "github.com/kopi-money/kopi/x/dex/types"
 
 	"cosmossdk.io/math"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
@@ -38,10 +39,17 @@ type DenomKeeper interface {
 	GetCAssetByBaseName(ctx context.Context, baseDenom string) (*denomtypes.CAsset, error)
 	IsKCoin(ctx context.Context, denom string) bool
 	IsValidDenom(ctx context.Context, denom string) bool
+	KCoins(ctx context.Context) []string
+	MaxBurnAmount(ctx context.Context, kCoin string) math.Int
+	MaxMintAmount(ctx context.Context, kCoin string) math.Int
 }
 
 type DexKeeper interface {
 	AddLiquidity(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int) (math.Int, error)
+	CalculateParity(ctx context.Context, kCoin string) (*math.LegacyDec, string, error)
+	ExecuteSell(ctx dextypes.TradeContext) (dextypes.TradeResult, error)
+	GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int
+	RemoveLiquidityForAddress(ctx context.Context, accAddr sdk.AccAddress, denom string, amount math.Int) error
 }
 
 type MMKeeper interface {

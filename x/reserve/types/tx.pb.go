@@ -31,6 +31,110 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type MsgUpdateBuyThreshold struct {
+	Authority    string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	BuyThreshold string `protobuf:"bytes,2,opt,name=buy_threshold,json=buyThreshold,proto3" json:"buy_threshold,omitempty"`
+}
+
+func (m *MsgUpdateBuyThreshold) Reset()         { *m = MsgUpdateBuyThreshold{} }
+func (m *MsgUpdateBuyThreshold) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateBuyThreshold) ProtoMessage()    {}
+func (*MsgUpdateBuyThreshold) Descriptor() ([]byte, []int) {
+	return fileDescriptor_aa34e20cd214e9c7, []int{0}
+}
+func (m *MsgUpdateBuyThreshold) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateBuyThreshold) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateBuyThreshold.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateBuyThreshold) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateBuyThreshold.Merge(m, src)
+}
+func (m *MsgUpdateBuyThreshold) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateBuyThreshold) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateBuyThreshold.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateBuyThreshold proto.InternalMessageInfo
+
+func (m *MsgUpdateBuyThreshold) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgUpdateBuyThreshold) GetBuyThreshold() string {
+	if m != nil {
+		return m.BuyThreshold
+	}
+	return ""
+}
+
+type MsgUpdateSellThreshold struct {
+	Authority     string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	SellThreshold string `protobuf:"bytes,2,opt,name=sell_threshold,json=sellThreshold,proto3" json:"sell_threshold,omitempty"`
+}
+
+func (m *MsgUpdateSellThreshold) Reset()         { *m = MsgUpdateSellThreshold{} }
+func (m *MsgUpdateSellThreshold) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateSellThreshold) ProtoMessage()    {}
+func (*MsgUpdateSellThreshold) Descriptor() ([]byte, []int) {
+	return fileDescriptor_aa34e20cd214e9c7, []int{1}
+}
+func (m *MsgUpdateSellThreshold) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateSellThreshold) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateSellThreshold.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateSellThreshold) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateSellThreshold.Merge(m, src)
+}
+func (m *MsgUpdateSellThreshold) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateSellThreshold) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateSellThreshold.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateSellThreshold proto.InternalMessageInfo
+
+func (m *MsgUpdateSellThreshold) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgUpdateSellThreshold) GetSellThreshold() string {
+	if m != nil {
+		return m.SellThreshold
+	}
+	return ""
+}
+
 type MsgUpdateKCoinBurnShare struct {
 	Authority      string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	KcoinBurnShare string `protobuf:"bytes,2,opt,name=kcoin_burn_share,json=kcoinBurnShare,proto3" json:"kcoin_burn_share,omitempty"`
@@ -40,7 +144,7 @@ func (m *MsgUpdateKCoinBurnShare) Reset()         { *m = MsgUpdateKCoinBurnShare
 func (m *MsgUpdateKCoinBurnShare) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateKCoinBurnShare) ProtoMessage()    {}
 func (*MsgUpdateKCoinBurnShare) Descriptor() ([]byte, []int) {
-	return fileDescriptor_aa34e20cd214e9c7, []int{0}
+	return fileDescriptor_aa34e20cd214e9c7, []int{2}
 }
 func (m *MsgUpdateKCoinBurnShare) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -90,7 +194,7 @@ func (m *Void) Reset()         { *m = Void{} }
 func (m *Void) String() string { return proto.CompactTextString(m) }
 func (*Void) ProtoMessage()    {}
 func (*Void) Descriptor() ([]byte, []int) {
-	return fileDescriptor_aa34e20cd214e9c7, []int{1}
+	return fileDescriptor_aa34e20cd214e9c7, []int{3}
 }
 func (m *Void) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -120,6 +224,8 @@ func (m *Void) XXX_DiscardUnknown() {
 var xxx_messageInfo_Void proto.InternalMessageInfo
 
 func init() {
+	proto.RegisterType((*MsgUpdateBuyThreshold)(nil), "kopi.reserve.MsgUpdateBuyThreshold")
+	proto.RegisterType((*MsgUpdateSellThreshold)(nil), "kopi.reserve.MsgUpdateSellThreshold")
 	proto.RegisterType((*MsgUpdateKCoinBurnShare)(nil), "kopi.reserve.MsgUpdateKCoinBurnShare")
 	proto.RegisterType((*Void)(nil), "kopi.reserve.Void")
 }
@@ -127,29 +233,36 @@ func init() {
 func init() { proto.RegisterFile("kopi/reserve/tx.proto", fileDescriptor_aa34e20cd214e9c7) }
 
 var fileDescriptor_aa34e20cd214e9c7 = []byte{
-	// 340 bytes of a gzipped FileDescriptorProto
+	// 456 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0xcd, 0xce, 0x2f, 0xc8,
 	0xd4, 0x2f, 0x4a, 0x2d, 0x4e, 0x2d, 0x2a, 0x4b, 0xd5, 0x2f, 0xa9, 0xd0, 0x2b, 0x28, 0xca, 0x2f,
 	0xc9, 0x17, 0xe2, 0x01, 0x09, 0xeb, 0x41, 0x85, 0xa5, 0x04, 0x13, 0x73, 0x33, 0xf3, 0xf2, 0xf5,
 	0xc1, 0x24, 0x44, 0x81, 0x94, 0x78, 0x72, 0x7e, 0x71, 0x6e, 0x7e, 0xb1, 0x7e, 0x6e, 0x71, 0xba,
 	0x7e, 0x99, 0x21, 0x88, 0x82, 0x4a, 0x48, 0x42, 0x24, 0xe2, 0xc1, 0x3c, 0x7d, 0x08, 0x07, 0x2a,
 	0x25, 0x92, 0x9e, 0x9f, 0x9e, 0x0f, 0x11, 0x07, 0xb1, 0x60, 0x1a, 0x50, 0x5c, 0x50, 0x90, 0x58,
-	0x94, 0x98, 0x0b, 0xd5, 0xa0, 0xb4, 0x8d, 0x91, 0x4b, 0xdc, 0xb7, 0x38, 0x3d, 0xb4, 0x20, 0x25,
-	0xb1, 0x24, 0xd5, 0xdb, 0x39, 0x3f, 0x33, 0xcf, 0xa9, 0xb4, 0x28, 0x2f, 0x38, 0x23, 0xb1, 0x28,
-	0x55, 0xc8, 0x8c, 0x8b, 0x33, 0xb1, 0xb4, 0x24, 0x23, 0xbf, 0x28, 0xb3, 0xa4, 0x52, 0x82, 0x51,
-	0x81, 0x51, 0x83, 0xd3, 0x49, 0xe2, 0xd2, 0x16, 0x5d, 0x11, 0xa8, 0x8d, 0x8e, 0x29, 0x29, 0x45,
-	0xa9, 0xc5, 0xc5, 0xc1, 0x25, 0x45, 0x99, 0x79, 0xe9, 0x41, 0x08, 0xa5, 0x42, 0x1a, 0x5c, 0x02,
-	0xd9, 0xc9, 0xf9, 0x99, 0x79, 0xf1, 0x49, 0xa5, 0x45, 0x79, 0xf1, 0xc5, 0x20, 0xb3, 0x24, 0x98,
-	0x40, 0xda, 0x83, 0xf8, 0xc0, 0xe2, 0x70, 0x1b, 0xac, 0x2c, 0x9b, 0x9e, 0x6f, 0xd0, 0x42, 0xe8,
-	0xec, 0x7a, 0xbe, 0x41, 0x4b, 0x0d, 0xec, 0xd6, 0x0a, 0xb8, 0x6b, 0x71, 0x38, 0x4e, 0x89, 0x8d,
-	0x8b, 0x25, 0x2c, 0x3f, 0x33, 0xc5, 0x28, 0x9e, 0x8b, 0xd9, 0xb7, 0x38, 0x5d, 0x28, 0x90, 0x4b,
-	0x04, 0xab, 0x1f, 0x54, 0xf5, 0x90, 0x83, 0x59, 0x0f, 0x87, 0x69, 0x52, 0x42, 0xa8, 0xca, 0x40,
-	0x26, 0x4b, 0xb1, 0x36, 0x3c, 0xdf, 0xa0, 0xc5, 0xe8, 0xe4, 0x72, 0xe2, 0x91, 0x1c, 0xe3, 0x85,
-	0x47, 0x72, 0x8c, 0x0f, 0x1e, 0xc9, 0x31, 0x4e, 0x78, 0x2c, 0xc7, 0x70, 0xe1, 0xb1, 0x1c, 0xc3,
-	0x8d, 0xc7, 0x72, 0x0c, 0x51, 0x5a, 0xe9, 0x99, 0x25, 0x19, 0xa5, 0x49, 0x7a, 0xc9, 0xf9, 0xb9,
-	0xfa, 0x20, 0xed, 0xba, 0xb9, 0xf9, 0x79, 0xa9, 0x95, 0xfa, 0x68, 0x1e, 0x28, 0xa9, 0x2c, 0x48,
-	0x2d, 0x4e, 0x62, 0x03, 0x07, 0xb7, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0x4f, 0x42, 0xe0, 0x43,
-	0x0d, 0x02, 0x00, 0x00,
+	0x94, 0x98, 0x0b, 0xd5, 0xa0, 0xb4, 0x96, 0x91, 0x4b, 0xd4, 0xb7, 0x38, 0x3d, 0xb4, 0x20, 0x25,
+	0xb1, 0x24, 0xd5, 0xa9, 0xb4, 0x32, 0x24, 0xa3, 0x28, 0xb5, 0x38, 0x23, 0x3f, 0x27, 0x45, 0xc8,
+	0x8c, 0x8b, 0x33, 0xb1, 0xb4, 0x24, 0x23, 0xbf, 0x28, 0xb3, 0xa4, 0x52, 0x82, 0x51, 0x81, 0x51,
+	0x83, 0xd3, 0x49, 0xe2, 0xd2, 0x16, 0x5d, 0x11, 0xa8, 0x7d, 0x8e, 0x29, 0x29, 0x45, 0xa9, 0xc5,
+	0xc5, 0xc1, 0x25, 0x45, 0x99, 0x79, 0xe9, 0x41, 0x08, 0xa5, 0x42, 0xca, 0x5c, 0xbc, 0x49, 0xa5,
+	0x95, 0xf1, 0x25, 0x30, 0x83, 0x24, 0x98, 0x40, 0x7a, 0x83, 0x78, 0x92, 0x90, 0x0c, 0xb7, 0x32,
+	0x6f, 0x7a, 0xbe, 0x41, 0x0b, 0xa1, 0xa9, 0xeb, 0xf9, 0x06, 0x2d, 0x15, 0xb0, 0x23, 0x2b, 0xe0,
+	0xce, 0xc4, 0xea, 0x2a, 0xa5, 0x8d, 0x8c, 0x5c, 0x62, 0x70, 0x99, 0xe0, 0xd4, 0x9c, 0x1c, 0xca,
+	0x1d, 0xac, 0xca, 0xc5, 0x57, 0x9c, 0x9a, 0x93, 0x83, 0xe1, 0x62, 0xde, 0x62, 0x64, 0xe3, 0xad,
+	0x2c, 0x30, 0x9d, 0xac, 0x8a, 0xcb, 0xc9, 0x28, 0x0e, 0x53, 0xda, 0xc6, 0xc8, 0x25, 0x0e, 0x97,
+	0xf2, 0x76, 0xce, 0xcf, 0xcc, 0x73, 0x2a, 0x2d, 0xca, 0x0b, 0xce, 0x48, 0x2c, 0x4a, 0x25, 0xdb,
+	0xd1, 0x1a, 0x5c, 0x02, 0xd9, 0xc9, 0xf9, 0x99, 0x79, 0xf1, 0x49, 0xa5, 0x45, 0x79, 0xf1, 0xc5,
+	0x20, 0xb3, 0xa0, 0xce, 0xe6, 0x03, 0x8b, 0xc3, 0x6d, 0xb0, 0xb2, 0xc4, 0x74, 0xb7, 0x1a, 0x2e,
+	0x77, 0xa3, 0x3a, 0x4e, 0x89, 0x8d, 0x8b, 0x25, 0x2c, 0x3f, 0x33, 0xc5, 0xe8, 0x3f, 0x23, 0x17,
+	0xb3, 0x6f, 0x71, 0xba, 0x50, 0x20, 0x97, 0x08, 0x56, 0x4f, 0xa8, 0xea, 0x21, 0xa7, 0x65, 0x3d,
+	0x1c, 0xc6, 0x49, 0x09, 0xa1, 0x2a, 0x03, 0x19, 0x2d, 0xe4, 0xcb, 0x25, 0x84, 0x25, 0xed, 0x29,
+	0xe3, 0x30, 0x10, 0x59, 0x11, 0x56, 0xe3, 0xfc, 0xb9, 0x84, 0xb1, 0x25, 0x0d, 0x15, 0x1c, 0xe6,
+	0xa1, 0xa8, 0xc2, 0x66, 0xa0, 0x14, 0x6b, 0xc3, 0xf3, 0x0d, 0x5a, 0x8c, 0x4e, 0x2e, 0x27, 0x1e,
+	0xc9, 0x31, 0x5e, 0x78, 0x24, 0xc7, 0xf8, 0xe0, 0x91, 0x1c, 0xe3, 0x84, 0xc7, 0x72, 0x0c, 0x17,
+	0x1e, 0xcb, 0x31, 0xdc, 0x78, 0x2c, 0xc7, 0x10, 0xa5, 0x95, 0x9e, 0x59, 0x92, 0x51, 0x9a, 0xa4,
+	0x97, 0x9c, 0x9f, 0xab, 0x0f, 0xd2, 0xae, 0x9b, 0x9b, 0x9f, 0x97, 0x5a, 0xa9, 0x8f, 0x16, 0xc2,
+	0x25, 0x95, 0x05, 0xa9, 0xc5, 0x49, 0x6c, 0xe0, 0x3c, 0x67, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff,
+	0xad, 0x3b, 0xbc, 0xd6, 0x12, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -165,6 +278,8 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
 	UpdateKCoinBurnShare(ctx context.Context, in *MsgUpdateKCoinBurnShare, opts ...grpc.CallOption) (*Void, error)
+	UpdateBuyThreshold(ctx context.Context, in *MsgUpdateBuyThreshold, opts ...grpc.CallOption) (*Void, error)
+	UpdateSellThreshold(ctx context.Context, in *MsgUpdateSellThreshold, opts ...grpc.CallOption) (*Void, error)
 }
 
 type msgClient struct {
@@ -184,9 +299,29 @@ func (c *msgClient) UpdateKCoinBurnShare(ctx context.Context, in *MsgUpdateKCoin
 	return out, nil
 }
 
+func (c *msgClient) UpdateBuyThreshold(ctx context.Context, in *MsgUpdateBuyThreshold, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, "/kopi.reserve.Msg/UpdateBuyThreshold", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateSellThreshold(ctx context.Context, in *MsgUpdateSellThreshold, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, "/kopi.reserve.Msg/UpdateSellThreshold", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	UpdateKCoinBurnShare(context.Context, *MsgUpdateKCoinBurnShare) (*Void, error)
+	UpdateBuyThreshold(context.Context, *MsgUpdateBuyThreshold) (*Void, error)
+	UpdateSellThreshold(context.Context, *MsgUpdateSellThreshold) (*Void, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -195,6 +330,12 @@ type UnimplementedMsgServer struct {
 
 func (*UnimplementedMsgServer) UpdateKCoinBurnShare(ctx context.Context, req *MsgUpdateKCoinBurnShare) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateKCoinBurnShare not implemented")
+}
+func (*UnimplementedMsgServer) UpdateBuyThreshold(ctx context.Context, req *MsgUpdateBuyThreshold) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateBuyThreshold not implemented")
+}
+func (*UnimplementedMsgServer) UpdateSellThreshold(ctx context.Context, req *MsgUpdateSellThreshold) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateSellThreshold not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -219,6 +360,42 @@ func _Msg_UpdateKCoinBurnShare_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateBuyThreshold_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateBuyThreshold)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateBuyThreshold(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kopi.reserve.Msg/UpdateBuyThreshold",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateBuyThreshold(ctx, req.(*MsgUpdateBuyThreshold))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateSellThreshold_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateSellThreshold)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateSellThreshold(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kopi.reserve.Msg/UpdateSellThreshold",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateSellThreshold(ctx, req.(*MsgUpdateSellThreshold))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kopi.reserve.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -227,9 +404,91 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			MethodName: "UpdateKCoinBurnShare",
 			Handler:    _Msg_UpdateKCoinBurnShare_Handler,
 		},
+		{
+			MethodName: "UpdateBuyThreshold",
+			Handler:    _Msg_UpdateBuyThreshold_Handler,
+		},
+		{
+			MethodName: "UpdateSellThreshold",
+			Handler:    _Msg_UpdateSellThreshold_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "kopi/reserve/tx.proto",
+}
+
+func (m *MsgUpdateBuyThreshold) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateBuyThreshold) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateBuyThreshold) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.BuyThreshold) > 0 {
+		i -= len(m.BuyThreshold)
+		copy(dAtA[i:], m.BuyThreshold)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.BuyThreshold)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateSellThreshold) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateSellThreshold) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateSellThreshold) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.SellThreshold) > 0 {
+		i -= len(m.SellThreshold)
+		copy(dAtA[i:], m.SellThreshold)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.SellThreshold)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *MsgUpdateKCoinBurnShare) Marshal() (dAtA []byte, err error) {
@@ -303,6 +562,40 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *MsgUpdateBuyThreshold) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.BuyThreshold)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUpdateSellThreshold) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.SellThreshold)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
 func (m *MsgUpdateKCoinBurnShare) Size() (n int) {
 	if m == nil {
 		return 0
@@ -334,6 +627,234 @@ func sovTx(x uint64) (n int) {
 }
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *MsgUpdateBuyThreshold) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateBuyThreshold: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateBuyThreshold: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BuyThreshold", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.BuyThreshold = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateSellThreshold) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateSellThreshold: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateSellThreshold: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SellThreshold", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SellThreshold = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *MsgUpdateKCoinBurnShare) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)

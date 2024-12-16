@@ -13,7 +13,7 @@ option go_package = "github.com/kopi-money/kopi/x/reserve/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/kopi-money/kopi/reserve/params";
+    option (google.api.http).get = "/kopi/reserve/params";
   }
 }
 

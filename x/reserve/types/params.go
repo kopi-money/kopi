@@ -2,7 +2,7 @@ package types
 
 import (
 	"fmt"
-
+	
 	"cosmossdk.io/math"
 )
 
@@ -21,12 +21,32 @@ func NewParams() Params {
 }
 
 func (p Params) Validate() error {
-	if kCoinBurnShare.IsNegative() {
+	if p.KcoinBurnShare.IsNil() {
+		return fmt.Errorf("kcoinburn share must not be nil")
+	}
+
+	if p.KcoinBurnShare.IsNegative() {
 		return fmt.Errorf("kcoin burn share must not be below 0")
 	}
 
-	if kCoinBurnShare.GT(math.LegacyOneDec()) {
+	if p.KcoinBurnShare.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("kcoin burn share must not be larger than 1")
+	}
+
+	if p.SellThreshold.IsNil() {
+		return fmt.Errorf("sell threshold must not be nil")
+	}
+
+	if p.SellThreshold.LT(math.LegacyOneDec()) {
+		return fmt.Errorf("sell threshold must not be less than 1")
+	}
+
+	if p.BuyThreshold.IsNil() {
+		return fmt.Errorf("buy threshold must not be nil")
+	}
+
+	if p.BuyThreshold.GT(math.LegacyOneDec()) {
+		return fmt.Errorf("buy threshold must not be larger than 1")
 	}
 
 	return nil

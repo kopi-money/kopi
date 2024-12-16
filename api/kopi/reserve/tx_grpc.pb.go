@@ -20,6 +20,8 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	Msg_UpdateKCoinBurnShare_FullMethodName = "/kopi.reserve.Msg/UpdateKCoinBurnShare"
+	Msg_UpdateBuyThreshold_FullMethodName   = "/kopi.reserve.Msg/UpdateBuyThreshold"
+	Msg_UpdateSellThreshold_FullMethodName  = "/kopi.reserve.Msg/UpdateSellThreshold"
 )
 
 // MsgClient is the client API for Msg service.
@@ -27,6 +29,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MsgClient interface {
 	UpdateKCoinBurnShare(ctx context.Context, in *MsgUpdateKCoinBurnShare, opts ...grpc.CallOption) (*Void, error)
+	UpdateBuyThreshold(ctx context.Context, in *MsgUpdateBuyThreshold, opts ...grpc.CallOption) (*Void, error)
+	UpdateSellThreshold(ctx context.Context, in *MsgUpdateSellThreshold, opts ...grpc.CallOption) (*Void, error)
 }
 
 type msgClient struct {
@@ -46,11 +50,31 @@ func (c *msgClient) UpdateKCoinBurnShare(ctx context.Context, in *MsgUpdateKCoin
 	return out, nil
 }
 
+func (c *msgClient) UpdateBuyThreshold(ctx context.Context, in *MsgUpdateBuyThreshold, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateBuyThreshold_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateSellThreshold(ctx context.Context, in *MsgUpdateSellThreshold, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateSellThreshold_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
 type MsgServer interface {
 	UpdateKCoinBurnShare(context.Context, *MsgUpdateKCoinBurnShare) (*Void, error)
+	UpdateBuyThreshold(context.Context, *MsgUpdateBuyThreshold) (*Void, error)
+	UpdateSellThreshold(context.Context, *MsgUpdateSellThreshold) (*Void, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -60,6 +84,12 @@ type UnimplementedMsgServer struct {
 
 func (UnimplementedMsgServer) UpdateKCoinBurnShare(context.Context, *MsgUpdateKCoinBurnShare) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateKCoinBurnShare not implemented")
+}
+func (UnimplementedMsgServer) UpdateBuyThreshold(context.Context, *MsgUpdateBuyThreshold) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateBuyThreshold not implemented")
+}
+func (UnimplementedMsgServer) UpdateSellThreshold(context.Context, *MsgUpdateSellThreshold) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateSellThreshold not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -92,6 +122,42 @@ func _Msg_UpdateKCoinBurnShare_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateBuyThreshold_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateBuyThreshold)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateBuyThreshold(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateBuyThreshold_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateBuyThreshold(ctx, req.(*MsgUpdateBuyThreshold))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateSellThreshold_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateSellThreshold)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateSellThreshold(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateSellThreshold_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateSellThreshold(ctx, req.(*MsgUpdateSellThreshold))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -102,6 +168,14 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateKCoinBurnShare",
 			Handler:    _Msg_UpdateKCoinBurnShare_Handler,
+		},
+		{
+			MethodName: "UpdateBuyThreshold",
+			Handler:    _Msg_UpdateBuyThreshold_Handler,
+		},
+		{
+			MethodName: "UpdateSellThreshold",
+			Handler:    _Msg_UpdateSellThreshold_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

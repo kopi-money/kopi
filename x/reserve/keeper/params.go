@@ -34,3 +34,21 @@ func (k Keeper) getKCoinBurnShare(ctx context.Context) math.LegacyDec {
 
 	return kCoinBurnShare
 }
+
+func (k Keeper) sellThreshold(ctx context.Context) math.LegacyDec {
+	sellThreshold := k.GetParams(ctx).SellThreshold
+	if sellThreshold.IsNil() {
+		sellThreshold = math.LegacyOneDec()
+	}
+
+	return sellThreshold
+}
+
+func (k Keeper) buyThreshold(ctx context.Context) math.LegacyDec {
+	buyThreshold := k.GetParams(ctx).BuyThreshold
+	if buyThreshold.IsNil() {
+		buyThreshold = math.LegacyNewDecWithPrec(9999, 4) // 0.9999
+	}
+
+	return buyThreshold
+}
