@@ -157,7 +157,7 @@ func (am AppModule) BeginBlock(_ context.Context) error {
 // The end block implementation is optional.
 func (am AppModule) EndBlock(ctx context.Context) error {
 	return cache.Transact(ctx, func(innerCtx context.Context) error {
-		am.keeper.HandleUnlockings(innerCtx, sdk.UnwrapSDKContext(innerCtx).BlockHeight())
+		am.keeper.HandleUnlockings(innerCtx, sdk.UnwrapSDKContext(innerCtx).BlockTime())
 		return nil
 	})
 }

@@ -11,17 +11,19 @@ message Params {
   option (amino.name) = "kopi/x/tokenfactory/Params";
   option (gogoproto.equal) = true;
 
-  bytes creation_fee = 1 [
+  int64 minimum_unlock_in_seconds = 1;
+
+  bytes creation_fee = 2 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false
   ];
 
-  bytes reserve_fee = 2 [
+  bytes reserve_fee = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
 
-  bytes minimum_pool_size = 3 [
+  bytes minimum_pool_size = 4 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false
   ];

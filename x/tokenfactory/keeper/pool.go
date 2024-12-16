@@ -18,11 +18,12 @@ func (k Keeper) GetGenesisLiquidityPools(ctx context.Context) (pools []types.Gen
 		pools = append(pools, types.GenesisLiquidityPool{
 			FactoryDenom:       keyValue.Key(),
 			KCoin:              pool.KCoin,
-			UnlockBlocks:       pool.UnlockBlocks,
+			UnlockInSeconds:    pool.UnlockInSeconds,
 			PoolFee:            pool.PoolFee,
 			FactoryDenomAmount: pool.FactoryDenomAmount,
 			KCoinAmount:        pool.KCoinAmount,
 			Shares:             k.getGenesisLiquidityShares(ctx, keyValue.Key()),
+			Unlockings:         k.getPoolUnlockings(ctx, keyValue.Key()),
 		})
 	}
 
@@ -46,7 +47,7 @@ func (k Keeper) getGenesisLiquidityShares(ctx context.Context, factoryDenom stri
 func (k Keeper) SetGenesisLiquidityPool(ctx context.Context, pool types.GenesisLiquidityPool) {
 	k.liquidityPools.Set(ctx, pool.FactoryDenom, types.LiquidityPool{
 		KCoin:              pool.KCoin,
-		UnlockBlocks:       pool.UnlockBlocks,
+		UnlockInSeconds:    pool.UnlockInSeconds,
 		PoolFee:            pool.PoolFee,
 		FactoryDenomAmount: pool.FactoryDenomAmount,
 		KCoinAmount:        pool.KCoinAmount,
@@ -55,6 +56,10 @@ func (k Keeper) SetGenesisLiquidityPool(ctx context.Context, pool types.GenesisL
 	for _, share := range pool.Shares {
 		s := types.ProviderShare{Share: share.Share}
 		k.liquidityProviderShares.Set(ctx, pool.FactoryDenom, share.Address, s)
+	}
+
+	for _, unlocking := range pool.Unlockings {
+		k.liquidityUnlockings.Set(ctx, unlocking.Index, *unlocking)
 	}
 }
 

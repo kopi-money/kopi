@@ -10,7 +10,7 @@ import (
 func (k msgServer) UpdateIconHash(ctx context.Context, msg *types.MsgUpdateIconHash) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesntExists
+		return nil, types.ErrPoolDoesNotExist
 	}
 
 	if factoryDenom.Admin != msg.Creator {

@@ -12,7 +12,7 @@ import (
 func (k msgServer) CreatePool(ctx context.Context, msg *types.MsgCreatePool) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesntExists
+		return nil, types.ErrDenomDoesNotExists
 	}
 
 	if factoryDenom.Admin != msg.Creator {
@@ -55,12 +55,16 @@ func (k msgServer) CreatePool(ctx context.Context, msg *types.MsgCreatePool) (*t
 		return nil, types.ErrPoolFeeToLarge
 	}
 
+	if int64(msg.UnlockInSeconds) < k.GetParams(ctx).MinimumUnlockInSeconds {
+		return nil, types.ErrUnlockTooShort
+	}
+
 	pool = types.LiquidityPool{
 		FactoryDenomAmount: amountFactory,
 		KCoin:              msg.KCoin,
 		KCoinAmount:        kCoinAmount,
 		PoolFee:            poolFee,
-		UnlockBlocks:       msg.UnlockBlocks,
+		UnlockInSeconds:    msg.UnlockInSeconds,
 	}
 
 	k.liquidityPools.Set(ctx, factoryDenom.FullName, pool)
@@ -84,7 +88,7 @@ func (k msgServer) CreatePool(ctx context.Context, msg *types.MsgCreatePool) (*t
 func (k Keeper) getLiquidityForAddress(ctx context.Context, fullName, amount string) (types.FactoryDenom, types.LiquidityPool, math.Int, math.Int, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, fullName)
 	if !has {
-		return types.FactoryDenom{}, types.LiquidityPool{}, math.Int{}, math.Int{}, types.ErrDenomDoesntExists
+		return types.FactoryDenom{}, types.LiquidityPool{}, math.Int{}, math.Int{}, types.ErrDenomDoesNotExists
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, factoryDenom.FullName)
@@ -161,6 +165,7 @@ func (k msgServer) UnlockLiquidity(ctx context.Context, msg *types.MsgUnlockLiqu
 		return nil, fmt.Errorf("could not update liquidity share: %w", err)
 	}
 
+	now := sdk.UnwrapSDKContext(ctx).BlockTime()
 	k.SetLiquidityUnlocking(ctx, types.LiquidityUnlocking{
 		Index:              0,
 		Address:            msg.Creator,
@@ -168,7 +173,7 @@ func (k msgServer) UnlockLiquidity(ctx context.Context, msg *types.MsgUnlockLiqu
 		FactoryDenomAmount: amountFactory,
 		KCoin:              pool.KCoin,
 		KCoinAmount:        amountKCoin,
-		CreatedAt:          sdk.UnwrapSDKContext(ctx).BlockHeight(),
+		CreatedAt:          &now,
 	})
 
 	return &types.Void{}, nil
@@ -177,7 +182,7 @@ func (k msgServer) UnlockLiquidity(ctx context.Context, msg *types.MsgUnlockLiqu
 func (k msgServer) UpdateLiquidityPoolSettings(ctx context.Context, msg *types.MsgUpdateLiquidityPoolSettings) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesntExists
+		return nil, types.ErrDenomDoesNotExists
 	}
 
 	if factoryDenom.Admin != msg.Creator {
@@ -203,7 +208,11 @@ func (k msgServer) UpdateLiquidityPoolSettings(ctx context.Context, msg *types.M
 		return nil, types.ErrPoolFeeToLarge
 	}
 
-	pool.UnlockBlocks = msg.UnlockBlocks
+	if pool.UnlockInSeconds > msg.UnlockInSeconds {
+		return nil, types.ErrShorterUnlockPeriod
+	}
+
+	pool.UnlockInSeconds = msg.UnlockInSeconds
 
 	k.SetLiquidityPool(ctx, factoryDenom.FullName, pool)
 	return &types.Void{}, nil
@@ -212,7 +221,7 @@ func (k msgServer) UpdateLiquidityPoolSettings(ctx context.Context, msg *types.M
 func (k msgServer) DissolvePool(ctx context.Context, msg *types.MsgDissolvePool) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesntExists
+		return nil, types.ErrDenomDoesNotExists
 	}
 
 	if factoryDenom.Admin != msg.Creator {

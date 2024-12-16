@@ -10,7 +10,7 @@ import (
 func (k msgServer) ChangeAdmin(ctx context.Context, msg *types.MsgChangeAdmin) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesntExists
+		return nil, types.ErrDenomDoesNotExists
 	}
 
 	if factoryDenom.Admin != msg.Creator {

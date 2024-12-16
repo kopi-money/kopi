@@ -16,12 +16,25 @@ func (k Keeper) Denoms(ctx context.Context, req *types.QueryDenomsRequest) (*typ
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	factoryDenoms, pageRes, err := query.CollectionPaginate(
+	factoryDenomData, pageRes, err := query.CollectionPaginate(
 		ctx,
 		k.factoryDenoms,
 		req.Pagination,
-		func(key string, value types.FactoryDenom) (*types.FactoryDenom, error) {
-			return &value, nil
+		func(key string, value types.FactoryDenom) (*types.FactoryDenomData, error) {
+			supply := k.BankKeeper.GetSupply(ctx, value.FullName)
+			_, hasPool := k.liquidityPools.Get(ctx, value.FullName)
+
+			return &types.FactoryDenomData{
+				Admin:       value.Admin,
+				DisplayName: value.DisplayName,
+				FullName:    value.FullName,
+				IconHash:    value.IconHash,
+				Symbol:      value.Symbol,
+				Exponent:    value.Exponent,
+				Supply:      supply.Amount.Int64(),
+				HasPool:     hasPool,
+				Mintable:    value.Mintable,
+			}, nil
 		},
 	)
 
@@ -30,7 +43,7 @@ func (k Keeper) Denoms(ctx context.Context, req *types.QueryDenomsRequest) (*typ
 	}
 
 	return &types.QueryDenomsResponse{
-		Denoms:     factoryDenoms,
+		Denoms:     factoryDenomData,
 		Pagination: pageRes,
 	}, nil
 }

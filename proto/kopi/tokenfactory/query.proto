@@ -20,14 +20,40 @@ service Query {
   rpc Denoms (QueryDenomsRequest) returns (QueryDenomsResponse) {
     option (google.api.http).get = "/kopi/tokenfactory/denoms";
   }
+
+  rpc GetPool (QueryPoolRequest) returns (QueryPoolResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/denoms/pool";
+  }
+}
+
+message QueryPoolRequest {
+  string full_name = 1;
+}
+
+message QueryPoolResponse {
+  string kcoin_denom = 1;
+  string kcoin_amount = 2;
+  string factory_amount = 3;
 }
 
 message QueryDenomsRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
+message FactoryDenomData {
+  string admin = 1;
+  string display_name = 2;
+  string full_name = 3;
+  string icon_hash = 4;
+  string symbol = 5;
+  uint64 exponent = 6;
+  int64 supply = 7;
+  bool has_pool = 8;
+  bool mintable = 9;
+}
+
 message QueryDenomsResponse {
-  repeated FactoryDenom denoms = 1;
+  repeated FactoryDenomData denoms = 1;
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

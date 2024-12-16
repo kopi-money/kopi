@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"strconv"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,7 +11,7 @@ import (
 func (k msgServer) Buyback(ctx context.Context, msg *types.MsgBuyback) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesntExists
+		return nil, types.ErrDenomDoesNotExists
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, factoryDenom.FullName)
@@ -34,7 +33,8 @@ func (k msgServer) Buyback(ctx context.Context, msg *types.MsgBuyback) (*types.V
 		return nil, err
 	}
 
-	coins := sdk.NewCoins(sdk.NewCoin(factoryDenom.FullName, math.NewInt(res.AmountReceivedNet)))
+	amountReceivedNet, _ := math.NewIntFromString(res.AmountReceivedNet)
+	coins := sdk.NewCoins(sdk.NewCoin(factoryDenom.FullName, amountReceivedNet))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.ModuleName, coins); err != nil {
 		return nil, err
 	}
@@ -47,8 +47,8 @@ func (k msgServer) Buyback(ctx context.Context, msg *types.MsgBuyback) (*types.V
 		sdk.NewEvent(
 			"factory_denom_buyback",
 			sdk.NewAttribute("factor_denom_full_name", factoryDenom.FullName),
-			sdk.NewAttribute("buyback_amount", strconv.Itoa(int(res.AmountGivenGross))),
-			sdk.NewAttribute("amount_burned", strconv.Itoa(int(res.AmountReceivedNet))),
+			sdk.NewAttribute("buyback_amount", res.AmountGivenGross),
+			sdk.NewAttribute("amount_burned", res.AmountReceivedNet),
 		),
 	})
 

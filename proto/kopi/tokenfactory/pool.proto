@@ -2,12 +2,13 @@ syntax = "proto3";
 package kopi.tokenfactory;
 
 import "gogoproto/gogo.proto";
+import "kopi/tokenfactory/unlocking.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
 
 message LiquidityPool {
   string k_coin = 1;
-  uint64 unlock_blocks = 2;
+  uint64 unlock_in_seconds = 2;
 
   bytes pool_fee = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
@@ -28,7 +29,7 @@ message LiquidityPool {
 message GenesisLiquidityPool {
   string factory_denom = 1;
   string k_coin = 2;
-  uint64 unlock_blocks = 3;
+  uint64 unlock_in_seconds = 3;
 
   bytes pool_fee = 4 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
@@ -46,6 +47,7 @@ message GenesisLiquidityPool {
   ];
 
   repeated GenesisProviderShare shares = 7;
+  repeated LiquidityUnlocking unlockings = 8;
 }
 
 message ProviderShare {

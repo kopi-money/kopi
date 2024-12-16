@@ -1,6 +1,7 @@
 syntax = "proto3";
 package kopi.tokenfactory;
 
+import "google/protobuf/timestamp.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
@@ -10,7 +11,12 @@ message LiquidityUnlocking {
   string factory_denom_hash = 2;
   string k_coin = 3;
   string address = 4;
-  int64 created_at = 5;
+
+  google.protobuf.Timestamp created_at = 5 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = true,
+    (gogoproto.moretags) = "yaml:\"created_at\""
+  ];
 
   bytes factory_denom_amount = 6 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",

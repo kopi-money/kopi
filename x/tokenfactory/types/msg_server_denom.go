@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"github.com/kopi-money/kopi/constants"
 	"regexp"
 	"strings"
 
@@ -15,6 +16,7 @@ var hashRegex = regexp.MustCompile(`^[A-F0-9]{64}$`)
 var (
 	_ sdk.Msg = &MsgCreateDenom{}
 	_ sdk.Msg = &MsgChangeAdmin{}
+	_ sdk.Msg = &MsgUpdateDescription{}
 )
 
 func (msg *MsgCreateDenom) ValidateBasic() error {
@@ -22,7 +24,7 @@ func (msg *MsgCreateDenom) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid creator address")
 	}
 
-	if len(msg.Name) > 32 {
+	if len(msg.Name) > constants.MaxDenomNameLength {
 		return fmt.Errorf("name must not have more than 32 characters")
 	}
 
@@ -36,6 +38,10 @@ func (msg *MsgCreateDenom) ValidateBasic() error {
 
 	if len(msg.Symbol) > 6 {
 		return fmt.Errorf("symbol must not contain more than 6 characters")
+	}
+
+	if len(msg.Description) > constants.MaxDescriptionLength {
+		return fmt.Errorf("description must not contain more than 256 characters")
 	}
 
 	return nil
@@ -68,6 +74,22 @@ func (msg *MsgUpdateIconHash) ValidateBasic() error {
 
 	if !validateHash(msg.IconHash) {
 		return fmt.Errorf("invalid icon hash")
+	}
+
+	return nil
+}
+
+func (msg *MsgUpdateDescription) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
+		return errorsmod.Wrap(err, "invalid creator address")
+	}
+
+	if err := denomtypes.ValidateDenomName(msg.FullFactoryDenomName); err != nil {
+		return err
+	}
+
+	if len(msg.Description) > constants.MaxDescriptionLength {
+		return fmt.Errorf("description must not contain more than 256 characters")
 	}
 
 	return nil

@@ -10,7 +10,8 @@ message FactoryDenom {
   string display_name = 2;
   string full_name = 3;
   string icon_hash = 4;
-  uint64 exponent = 5;
-  string symbol = 6;
-  bool mintable = 7;
+  string description = 5;
+  uint64 exponent = 6;
+  string symbol = 7;
+  bool mintable = 8;
 }

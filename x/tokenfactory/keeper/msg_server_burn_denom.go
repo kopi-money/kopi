@@ -11,7 +11,7 @@ import (
 func (k msgServer) BurnDenom(ctx context.Context, msg *types.MsgBurnDenom) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesntExists
+		return nil, types.ErrDenomDoesNotExists
 	}
 
 	amount, ok := math.NewIntFromString(msg.Amount)

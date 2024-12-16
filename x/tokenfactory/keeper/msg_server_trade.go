@@ -32,7 +32,7 @@ func (k Keeper) Sell(ctx context.Context, tradeData TradeData) (*types.MsgTradeR
 
 	factoryDenom, has := k.GetDenomByFullName(ctx, tradeData.factoryDenom)
 	if !has {
-		return nil, types.ErrDenomDoesntExists
+		return nil, types.ErrPoolDoesNotExist
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, factoryDenom.FullName)
@@ -113,14 +113,26 @@ func (k Keeper) Sell(ctx context.Context, tradeData TradeData) (*types.MsgTradeR
 		feeData = feesReceiving
 	}
 
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
+		sdk.NewEvent("factory_trade",
+			sdk.Attribute{Key: "denom_from", Value: tradeData.denomGiving},
+			sdk.Attribute{Key: "denom_to", Value: tradeData.denomReceiving},
+			sdk.Attribute{Key: "amount_given", Value: amountToGiveGross.String()},
+			sdk.Attribute{Key: "amount_received", Value: amountToReceiveNet.String()},
+			sdk.Attribute{Key: "fee_pool", Value: feeData.feePool.String()},
+			sdk.Attribute{Key: "fee_reserve", Value: feeData.feeReserve.String()},
+			sdk.Attribute{Key: "address", Value: tradeData.creator},
+		),
+	)
+
 	return &types.MsgTradeResponse{
-		AmountGivenGross:    amountToGiveGross.Int64(),
-		AmountGivenNet:      amountToGiveGross.Sub(feesGiving.Fee()).Int64(),
-		AmountReceivedGross: amountToReceiveNet.Add(feesReceiving.Fee()).Int64(),
-		AmountReceivedNet:   amountToReceiveNet.Int64(),
-		Fee:                 feeData.Fee().Int64(),
-		FeePool:             feeData.feePool.Int64(),
-		FeeReserve:          feeData.feeReserve.Int64(),
+		AmountGivenGross:    amountToGiveGross.String(),
+		AmountGivenNet:      amountToGiveGross.Sub(feesGiving.Fee()).String(),
+		AmountReceivedGross: amountToReceiveNet.Add(feesReceiving.Fee()).String(),
+		AmountReceivedNet:   amountToReceiveNet.String(),
+		Fee:                 feeData.Fee().String(),
+		FeePool:             feeData.feePool.String(),
+		FeeReserve:          feeData.feeReserve.String(),
 	}, nil
 }
 
@@ -141,7 +153,7 @@ func (k Keeper) Buy(ctx context.Context, tradeData TradeData) (*types.MsgTradeRe
 
 	factoryDenom, has := k.GetDenomByFullName(ctx, tradeData.factoryDenom)
 	if !has {
-		return nil, types.ErrDenomDoesntExists
+		return nil, types.ErrPoolDoesNotExist
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, factoryDenom.FullName)
@@ -224,14 +236,26 @@ func (k Keeper) Buy(ctx context.Context, tradeData TradeData) (*types.MsgTradeRe
 		feeData = feesReceiving
 	}
 
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
+		sdk.NewEvent("factory_trade",
+			sdk.Attribute{Key: "denom_from", Value: tradeData.denomGiving},
+			sdk.Attribute{Key: "denom_to", Value: tradeData.denomReceiving},
+			sdk.Attribute{Key: "amount_given", Value: amountToGiveGross.String()},
+			sdk.Attribute{Key: "amount_received", Value: amountToReceiveNet.String()},
+			sdk.Attribute{Key: "fee_pool", Value: feeData.feePool.String()},
+			sdk.Attribute{Key: "fee_reserve", Value: feeData.feeReserve.String()},
+			sdk.Attribute{Key: "address", Value: tradeData.creator},
+		),
+	)
+
 	return &types.MsgTradeResponse{
-		AmountGivenGross:    amountToGiveGross.Int64(),
-		AmountGivenNet:      amountToGiveGross.Sub(feesGiving.Fee()).Int64(),
-		AmountReceivedGross: amountToReceiveNet.Add(feesReceiving.Fee()).Int64(),
-		AmountReceivedNet:   amountToReceiveNet.Int64(),
-		Fee:                 feeData.Fee().Int64(),
-		FeePool:             feeData.feePool.Int64(),
-		FeeReserve:          feeData.feeReserve.Int64(),
+		AmountGivenGross:    amountToGiveGross.String(),
+		AmountGivenNet:      amountToGiveGross.Sub(feesGiving.Fee()).String(),
+		AmountReceivedGross: amountToReceiveNet.Add(feesReceiving.Fee()).String(),
+		AmountReceivedNet:   amountToReceiveNet.String(),
+		Fee:                 feeData.Fee().String(),
+		FeePool:             feeData.feePool.String(),
+		FeeReserve:          feeData.feeReserve.String(),
 	}, nil
 }
 

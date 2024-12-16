@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/cache"
@@ -37,15 +38,16 @@ func (k Keeper) GetUnlockings(ctx context.Context, factoryDenomHash, address str
 	return
 }
 
-func (k Keeper) HandleUnlockings(ctx context.Context, height int64) {
+func (k Keeper) HandleUnlockings(ctx context.Context, now time.Time) {
 	iterator := k.LiquidityUnlockingsIterator(ctx)
 	poolUnlockings := make(map[string]uint64)
 
 	for iterator.Valid() {
 		unlocking := iterator.GetNext()
-		unlockBlocks := k.getPoolUnlocking(ctx, unlocking.FactoryDenomHash, &poolUnlockings)
+		unlockSeconds := k.getPoolUnlocking(ctx, unlocking.FactoryDenomHash, &poolUnlockings)
 
-		if height >= unlocking.CreatedAt+int64(unlockBlocks) {
+		unlocksAt := unlocking.CreatedAt.Add(time.Duration(unlockSeconds) * time.Second)
+		if now.Before(unlocksAt) {
 			if err := k.HandleUnlocking(ctx, &unlocking); err != nil {
 				k.Logger().Error(fmt.Sprintf("could not handle unlocking: %v", err))
 			}
@@ -53,12 +55,25 @@ func (k Keeper) HandleUnlockings(ctx context.Context, height int64) {
 	}
 }
 
+func (k Keeper) getPoolUnlockings(ctx context.Context, factoryDenomHash string) (unlockings []*types.LiquidityUnlocking) {
+	iterator := k.liquidityUnlockings.Iterator(ctx, nil)
+	for iterator.Valid() {
+		unlocking := iterator.GetNext()
+
+		if unlocking.FactoryDenomHash == factoryDenomHash {
+			unlockings = append(unlockings, &unlocking)
+		}
+	}
+
+	return unlockings
+}
+
 func (k Keeper) getPoolUnlocking(ctx context.Context, factoryDenomHash string, poolUnlockings *map[string]uint64) uint64 {
 	unlockBlocks, has := (*poolUnlockings)[factoryDenomHash]
 	if !has {
 		pool, _ := k.liquidityPools.Get(ctx, factoryDenomHash)
-		(*poolUnlockings)[factoryDenomHash] = pool.UnlockBlocks
-		unlockBlocks = pool.UnlockBlocks
+		(*poolUnlockings)[factoryDenomHash] = pool.UnlockInSeconds
+		unlockBlocks = pool.UnlockInSeconds
 	}
 
 	return unlockBlocks
