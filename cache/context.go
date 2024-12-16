@@ -19,72 +19,25 @@ type ValueContext interface {
 	Value(key any) any
 }
 
-type Context struct {
-	context.Context
-
-	txKey *TXKey
+func NewCacheContext(baseContext context.Context, blockHeight int64, finalizing bool) context.Context {
+	return context.WithValue(baseContext, "cache-tx-key", TransactionHandler.createKey(blockHeight, finalizing))
 }
 
-func (c Context) Base() context.Context {
-	return c.Context
-}
-
-func (c Context) getTXKey() *TXKey {
-	return c.txKey
-}
-
-func NewCacheContext(baseContext context.Context, blockHeight int64, finalizing bool) Context {
-	return Context{
-		Context: baseContext,
-		txKey:   TransactionHandler.createKey(blockHeight, finalizing),
-	}
-}
-
-func getTXKey(goCtx context.Context) *TXKey {
-	cacheCtx, ok := goCtx.(CacheContext)
+func getTXKey(ctx context.Context) *TXKey {
+	txKey, ok := ctx.Value("cache-tx-key").(*TXKey)
 	if ok {
-		return cacheCtx.getTXKey()
-	}
-
-	baseCtx, ok := goCtx.(sdk.Context)
-	if ok {
-		cacheCtx, ok = baseCtx.Context().(CacheContext)
-		if ok {
-			return cacheCtx.getTXKey()
-		}
-	}
-
-	valueCtx, ok := goCtx.(ValueContext)
-	if ok {
-		innerCtx := valueCtx.Value(sdk.SdkContextKey)
-		if innerCtx != nil {
-			baseCtx, ok = innerCtx.(sdk.Context)
-			if ok {
-				cacheCtx, ok = baseCtx.Context().(CacheContext)
-				if ok {
-					return cacheCtx.getTXKey()
-				}
-			}
-		}
+		return txKey
 	}
 
 	return nil
 }
 
-func getCurrentHeight(goCtx context.Context) int64 {
-	baseCtx, ok := goCtx.(sdk.Context)
-	if ok {
-		return baseCtx.BlockHeight()
-	}
-
-	valueCtx, ok := goCtx.(ValueContext)
-	if ok {
-		innerCtx := valueCtx.Value(sdk.SdkContextKey)
-		if innerCtx != nil {
-			baseCtx, ok = innerCtx.(sdk.Context)
-			if ok {
-				return baseCtx.BlockHeight()
-			}
+func getCurrentHeight(ctx context.Context) int64 {
+	innerCtx := ctx.Value(sdk.SdkContextKey)
+	if innerCtx != nil {
+		baseCtx, ok := innerCtx.(sdk.Context)
+		if ok {
+			return baseCtx.BlockHeight()
 		}
 	}
 
