@@ -25,10 +25,6 @@ func (k msgServer) UpdateProtocolShare(ctx context.Context, req *types.MsgUpdate
 		params := k.GetParams(innerCtx)
 		params.ProtocolShare = protocolShare
 
-		if err = params.Validate(); err != nil {
-			return err
-		}
-
 		if err = k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
@@ -59,10 +55,6 @@ func (k msgServer) UpdateRedemptionFees(ctx context.Context, req *types.MsgUpdat
 		params.MinRedemptionFee = minRedemptionFee
 		params.MaxRedemptionFee = maxRedemptionFee
 
-		if err = params.Validate(); err != nil {
-			return err
-		}
-
 		if err = k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
@@ -86,10 +78,6 @@ func (k msgServer) UpdateCollateralDiscount(ctx context.Context, req *types.MsgU
 
 		params := k.GetParams(innerCtx)
 		params.CollateralDiscount = collateralDiscount
-
-		if err = params.Validate(); err != nil {
-			return err
-		}
 
 		if err = k.SetParams(innerCtx, params); err != nil {
 			return err
@@ -126,10 +114,6 @@ func (k msgServer) UpdateInterestRateParameters(ctx context.Context, req *types.
 		params.MinInterestRate = minInterestRate
 		params.A = a
 		params.B = b
-
-		if err = params.Validate(); err != nil {
-			return err
-		}
 
 		if err = k.SetParams(innerCtx, params); err != nil {
 			return err
