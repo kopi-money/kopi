@@ -2,7 +2,7 @@ package types
 
 import (
 	"fmt"
-	
+
 	"cosmossdk.io/math"
 )
 
