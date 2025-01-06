@@ -37,3 +37,12 @@ func (k Keeper) getMinimumPoolSize(ctx context.Context) math.Int {
 
 	return minimumPoolSize
 }
+
+func (k Keeper) getCreationFee(ctx context.Context) math.Int {
+	creationFee := k.GetParams(ctx).CreationFee
+	if creationFee.IsNil() {
+		return types.CreationFee
+	}
+
+	return creationFee
+}

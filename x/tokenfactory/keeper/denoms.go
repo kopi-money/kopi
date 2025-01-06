@@ -83,7 +83,7 @@ func (k Keeper) CreateDenom(ctx context.Context, address, displayName, symbol, d
 	}
 
 	if err := k.processCreationFee(ctx, address); err != nil {
-		return types.FactoryDenom{}, err
+		return types.FactoryDenom{}, fmt.Errorf("processing fee: %v", err)
 	}
 
 	factoryDenom := types.FactoryDenom{
@@ -102,7 +102,7 @@ func (k Keeper) CreateDenom(ctx context.Context, address, displayName, symbol, d
 }
 
 func (k Keeper) processCreationFee(ctx context.Context, address string) error {
-	feeAmount := k.GetParams(ctx).CreationFee
+	feeAmount := k.getCreationFee(ctx)
 	if feeAmount.IsNil() {
 		return fmt.Errorf("feeAmount is nil")
 	}

@@ -12,7 +12,7 @@ import (
 func (k msgServer) CreateDenom(ctx context.Context, msg *types.MsgCreateDenom) (*types.MsgCreateDenomResponse, error) {
 	factoryDenom, err := k.Keeper.CreateDenom(ctx, msg.Creator, msg.Name, msg.Symbol, msg.Description, msg.IconHash, msg.Exponent)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("create denom: %v", err)
 	}
 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{

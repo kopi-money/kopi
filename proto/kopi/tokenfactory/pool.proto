@@ -9,27 +9,7 @@ option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
 message LiquidityPool {
   string k_coin = 1;
   uint64 unlock_in_seconds = 2;
-
-  bytes pool_fee = 3 [
-    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable)   = false
-  ];
-
-  bytes factory_denom_amount = 4 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-
-  bytes k_coin_amount = 5 [
-    (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable) = false
-  ];
-}
-
-message GenesisLiquidityPool {
-  string factory_denom = 1;
-  string k_coin = 2;
-  uint64 unlock_in_seconds = 3;
+  int64 created_at = 3;
 
   bytes pool_fee = 4 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
@@ -45,9 +25,31 @@ message GenesisLiquidityPool {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+}
 
-  repeated GenesisProviderShare shares = 7;
-  repeated LiquidityUnlocking unlockings = 8;
+message GenesisLiquidityPool {
+  string factory_denom = 1;
+  string k_coin = 2;
+  uint64 unlock_in_seconds = 3;
+  int64 created_at = 4;
+
+  bytes pool_fee = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+
+  bytes factory_denom_amount = 6 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  bytes k_coin_amount = 7 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  repeated GenesisProviderShare shares = 8;
+  repeated LiquidityUnlocking unlockings = 9;
 }
 
 message ProviderShare {

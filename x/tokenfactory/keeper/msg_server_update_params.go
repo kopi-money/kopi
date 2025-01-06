@@ -23,10 +23,10 @@ func (k msgServer) UpdateFeeAmount(ctx context.Context, req *types.MsgUpdateFeeA
 			return fmt.Errorf("invalid amount: %v", req.FeeAmount)
 		}
 
-		params := k.GetParams(ctx)
+		params := k.GetParams(innerCtx)
 		params.CreationFee = feeAmount
 
-		if err := k.SetParams(ctx, params); err != nil {
+		if err := k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
 
@@ -42,10 +42,10 @@ func (k msgServer) UpdateMinimumUnlock(ctx context.Context, req *types.MsgUpdate
 			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		params := k.GetParams(ctx)
+		params := k.GetParams(innerCtx)
 		params.MinimumUnlockInSeconds = req.MinimumUnlock
 
-		if err := k.SetParams(ctx, params); err != nil {
+		if err := k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
 
@@ -66,10 +66,10 @@ func (k msgServer) UpdateReserveFee(ctx context.Context, req *types.MsgUpdateRes
 			return fmt.Errorf("invalid reserve fee: %w", err)
 		}
 
-		params := k.GetParams(ctx)
+		params := k.GetParams(innerCtx)
 		params.ReserveFee = reserveFee
 
-		if err = k.SetParams(ctx, params); err != nil {
+		if err = k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
 
@@ -90,10 +90,10 @@ func (k msgServer) UpdateMinimumPoolSize(ctx context.Context, req *types.MsgUpda
 			return fmt.Errorf("invalid amount: %v", req.MinimumPoolSize)
 		}
 
-		params := k.GetParams(ctx)
+		params := k.GetParams(innerCtx)
 		params.MinimumPoolSize = minimumPoolSize
 
-		if err := k.SetParams(ctx, params); err != nil {
+		if err := k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
 

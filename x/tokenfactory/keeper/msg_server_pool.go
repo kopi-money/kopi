@@ -65,6 +65,7 @@ func (k msgServer) CreatePool(ctx context.Context, msg *types.MsgCreatePool) (*t
 		KCoinAmount:        kCoinAmount,
 		PoolFee:            poolFee,
 		UnlockInSeconds:    msg.UnlockInSeconds,
+		CreatedAt:          sdk.UnwrapSDKContext(ctx).BlockHeight(),
 	}
 
 	k.liquidityPools.Set(ctx, factoryDenom.FullName, pool)

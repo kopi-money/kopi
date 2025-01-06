@@ -47,7 +47,7 @@ func (k Keeper) HandleUnlockings(ctx context.Context, now time.Time) {
 		unlockSeconds := k.getPoolUnlocking(ctx, unlocking.FactoryDenomHash, &poolUnlockings)
 
 		unlocksAt := unlocking.CreatedAt.Add(time.Duration(unlockSeconds) * time.Second)
-		if now.Before(unlocksAt) {
+		if now.After(unlocksAt) {
 			if err := k.HandleUnlocking(ctx, &unlocking); err != nil {
 				k.Logger().Error(fmt.Sprintf("could not handle unlocking: %v", err))
 			}

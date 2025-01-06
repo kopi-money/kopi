@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/constants"
@@ -30,7 +31,7 @@ func TestCreatePool1(t *testing.T) {
 	pool, has := k.GetLiquidityPool(ctx, factoryDenomHash)
 	require.True(t, has)
 	require.Equal(t, math.LegacyNewDecWithPrec(1, 1), pool.PoolFee)
-	require.Equal(t, uint64(10), pool.UnlockBlocks)
+	require.Equal(t, uint64(10), pool.UnlockInSeconds)
 }
 
 func TestAddLiquidity1(t *testing.T) {
@@ -128,16 +129,18 @@ func TestUnlocking2(t *testing.T) {
 	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", constants.KUSD, "100", "0.1", 10))
 	require.NoError(t, keepertest.UnlockLiquidity(ctx, msgServer, keepertest.Alice, factoryDenomHash, "100"))
 
+	now := sdk.UnwrapSDKContext(ctx).BlockTime()
 	_ = cache.Transact(ctx, func(innerCtx context.Context) error {
-		k.HandleUnlockings(innerCtx, 0)
+		k.HandleUnlockings(innerCtx, now)
 		return nil
 	})
 
 	unlockings := k.GetUnlockings(ctx, factoryDenomHash, keepertest.Alice)
 	require.Equal(t, 1, len(unlockings))
 
+	now = now.Add(time.Second * 11)
 	_ = cache.Transact(ctx, func(innerCtx context.Context) error {
-		k.HandleUnlockings(innerCtx, 10)
+		k.HandleUnlockings(innerCtx, now)
 		return nil
 	})
 
@@ -166,14 +169,14 @@ func TestUpdateSettingsTest1(t *testing.T) {
 	pool, has := k.GetLiquidityPool(ctx, factoryDenomHash)
 	require.True(t, has)
 	require.Equal(t, math.LegacyNewDecWithPrec(1, 1), pool.PoolFee)
-	require.Equal(t, uint64(10), pool.UnlockBlocks)
+	require.Equal(t, uint64(10), pool.UnlockInSeconds)
 
 	require.NoError(t, keepertest.UpdateLiquidityPoolSettings(ctx, msgServer, keepertest.Alice, factoryDenomHash, "0.2", 100))
 
 	pool, has = k.GetLiquidityPool(ctx, factoryDenomHash)
 	require.True(t, has)
 	require.Equal(t, math.LegacyNewDecWithPrec(2, 1), pool.PoolFee)
-	require.Equal(t, uint64(100), pool.UnlockBlocks)
+	require.Equal(t, uint64(100), pool.UnlockInSeconds)
 }
 
 func TestDissolvePool1(t *testing.T) {

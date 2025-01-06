@@ -28,6 +28,7 @@ func (k Keeper) Denoms(ctx context.Context, req *types.QueryDenomsRequest) (*typ
 				Admin:       value.Admin,
 				DisplayName: value.DisplayName,
 				FullName:    value.FullName,
+				Description: value.Description,
 				IconHash:    value.IconHash,
 				Symbol:      value.Symbol,
 				Exponent:    value.Exponent,

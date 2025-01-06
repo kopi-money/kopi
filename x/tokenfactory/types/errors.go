@@ -35,4 +35,5 @@ var (
 	ErrSymbolAlreadyExists = sdkerrors.Register(ModuleName, 1124, "there already is a denom with the given symbol")
 	ErrUnlockTooShort      = sdkerrors.Register(ModuleName, 1125, "unlock period too short")
 	ErrShorterUnlockPeriod = sdkerrors.Register(ModuleName, 1126, "new unlock period must not be shorter than old unlock period")
+	ErrCannotBuyAmount     = sdkerrors.Register(ModuleName, 1127, "cannot buy more than what is in pool")
 )

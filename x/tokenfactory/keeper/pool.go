@@ -19,6 +19,7 @@ func (k Keeper) GetGenesisLiquidityPools(ctx context.Context) (pools []types.Gen
 			FactoryDenom:       keyValue.Key(),
 			KCoin:              pool.KCoin,
 			UnlockInSeconds:    pool.UnlockInSeconds,
+			CreatedAt:          pool.CreatedAt,
 			PoolFee:            pool.PoolFee,
 			FactoryDenomAmount: pool.FactoryDenomAmount,
 			KCoinAmount:        pool.KCoinAmount,
@@ -48,6 +49,7 @@ func (k Keeper) SetGenesisLiquidityPool(ctx context.Context, pool types.GenesisL
 	k.liquidityPools.Set(ctx, pool.FactoryDenom, types.LiquidityPool{
 		KCoin:              pool.KCoin,
 		UnlockInSeconds:    pool.UnlockInSeconds,
+		CreatedAt:          pool.CreatedAt,
 		PoolFee:            pool.PoolFee,
 		FactoryDenomAmount: pool.FactoryDenomAmount,
 		KCoinAmount:        pool.KCoinAmount,
@@ -84,6 +86,7 @@ func (k Keeper) LiquidityShareIterator(ctx context.Context, denom string) cache.
 func (k Keeper) updateLiquidityShare(ctx context.Context, factoryDenom types.FactoryDenom, pool types.LiquidityPool, addedAmount math.Int, addedAddress string) error {
 	var (
 		iterator      = k.liquidityProviderShares.Iterator(ctx, nil, factoryDenom.FullName)
+		sum           = addedAmount.ToLegacyDec()
 		keyValue      cache.KeyValue[string, cache.Entry[types.ProviderShare]]
 		address       string
 		providerShare types.ProviderShare
@@ -91,7 +94,6 @@ func (k Keeper) updateLiquidityShare(ctx context.Context, factoryDenom types.Fac
 
 	providers := make(map[string]math.LegacyDec)
 	providers[addedAddress] = addedAmount.ToLegacyDec()
-	sum := addedAmount.ToLegacyDec()
 
 	for iterator.Valid() {
 		keyValue = iterator.GetNextKeyValue()
@@ -131,4 +133,20 @@ func (k Keeper) getLiquidityShare(ctx context.Context, factoryDenom, address str
 	}
 
 	return share.Share
+}
+
+func (k Keeper) getLiquidity(ctx context.Context, factoryDenom, address string) (math.Int, math.Int, error) {
+	pool, has := k.liquidityPools.Get(ctx, factoryDenom)
+	if !has {
+		return math.Int{}, math.Int{}, types.ErrPoolDoesNotExist
+	}
+
+	share, has := k.liquidityProviderShares.Get(ctx, factoryDenom, address)
+	if !has {
+		return math.ZeroInt(), math.ZeroInt(), nil
+	}
+
+	amountKCoin := pool.KCoinAmount.ToLegacyDec().Mul(share.Share).TruncateInt()
+	amountFactory := pool.FactoryDenomAmount.ToLegacyDec().Mul(share.Share).TruncateInt()
+	return amountKCoin, amountFactory, nil
 }

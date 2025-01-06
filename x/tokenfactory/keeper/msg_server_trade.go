@@ -32,7 +32,7 @@ func (k Keeper) Sell(ctx context.Context, tradeData TradeData) (*types.MsgTradeR
 
 	factoryDenom, has := k.GetDenomByFullName(ctx, tradeData.factoryDenom)
 	if !has {
-		return nil, types.ErrPoolDoesNotExist
+		return nil, types.ErrDenomDoesNotExists
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, factoryDenom.FullName)
@@ -58,7 +58,7 @@ func (k Keeper) Sell(ctx context.Context, tradeData TradeData) (*types.MsgTradeR
 
 		priceTradeAmount := k.calculateMaxAmount(ctx, pool, tradeData.denomGiving, maxPrice, pool.PoolFee, constant_product.CalculateMaximumGiving)
 		if priceTradeAmount.LT(amountToGiveGross) {
-			if priceTradeAmount.LT(math.ZeroInt()) || !tradeData.allowIncomplete {
+			if priceTradeAmount.IsNegative() || !tradeData.allowIncomplete {
 				return nil, types.ErrMarketPriceTooHigh
 			}
 
@@ -90,7 +90,7 @@ func (k Keeper) Sell(ctx context.Context, tradeData TradeData) (*types.MsgTradeR
 		return nil, fmt.Errorf("could not send coins from account to liquidity pool: %w", err)
 	}
 
-	amountToReceiveGross := k.constantProductSell(pool, tradeData.denomGiving, amountToGiveNet)
+	amountToReceiveGross := constantProductSell(pool, tradeData.denomGiving, amountToGiveNet)
 	feesReceiving, err := k.applyFees(ctx, &pool, acc, amountToReceiveGross, tradeData.denomReceiving)
 	if err != nil {
 		return nil, err
@@ -203,7 +203,11 @@ func (k Keeper) Buy(ctx context.Context, tradeData TradeData) (*types.MsgTradeRe
 		return nil, types.ErrTradeAmountTooSmall
 	}
 
-	amountToGiveNet := k.constantProductBuy(pool, tradeData.denomGiving, amountToReceiveGross)
+	amountToGiveNet, err := constantProductBuy(pool, tradeData.denomGiving, amountToReceiveGross)
+	if err != nil {
+		return nil, err
+	}
+
 	feesReceiving, err := k.applyFees(ctx, &pool, acc, amountToReceiveGross, tradeData.denomReceiving)
 	if err != nil {
 		return nil, err
@@ -281,44 +285,55 @@ func (fd FeeData) Fee() math.Int {
 	return fd.feePool.Add(fd.feeReserve)
 }
 
-func (k Keeper) applyFees(ctx context.Context, pool *types.LiquidityPool, acc sdk.AccAddress, amount math.Int, kCoin string) (FeeData, error) {
+func (k Keeper) calculateFees(ctx context.Context, pool types.LiquidityPool, tradeAmount math.Int, kCoin string) FeeData {
 	if !k.DenomKeeper.IsKCoin(ctx, kCoin) {
 		return FeeData{
 			feePool:    math.ZeroInt(),
 			feeReserve: math.ZeroInt(),
-		}, nil
+		}
 	}
 
-	reserveFeeAmount, err := k.applyReserveFee(ctx, acc, amount, kCoin)
-	if err != nil {
-		return FeeData{}, err
-	}
+	reserveFeeAmount := k.GetParams(ctx).ReserveFee.Mul(tradeAmount.ToLegacyDec()).TruncateInt()
+	poolFeeAmount := pool.PoolFee.Mul(tradeAmount.ToLegacyDec()).TruncateInt()
 
-	poolFeeAmount := applyPoolFee(pool, amount)
 	return FeeData{
 		feePool:    poolFeeAmount,
 		feeReserve: reserveFeeAmount,
-	}, nil
+	}
 }
 
-func applyPoolFee(pool *types.LiquidityPool, amountToReceive math.Int) math.Int {
-	poolFeeAmount := pool.PoolFee.Mul(amountToReceive.ToLegacyDec()).TruncateInt()
-	pool.KCoinAmount = pool.KCoinAmount.Add(poolFeeAmount)
-	return poolFeeAmount
-}
+func (k Keeper) applyFees(ctx context.Context, pool *types.LiquidityPool, acc sdk.AccAddress, tradeAmount math.Int, kCoin string) (FeeData, error) {
+	feeData := k.calculateFees(ctx, *pool, tradeAmount, kCoin)
+	applyPoolFee(pool, feeData.feePool)
 
-func (k Keeper) applyReserveFee(ctx context.Context, acc sdk.AccAddress, tradeAmount math.Int, kCoin string) (math.Int, error) {
-	if !k.DenomKeeper.IsKCoin(ctx, kCoin) {
-		return tradeAmount, nil
+	if err := k.applyReserveFee(ctx, acc, feeData.feeReserve, kCoin); err != nil {
+		return FeeData{}, err
 	}
 
-	reserveFee := k.GetParams(ctx).ReserveFee.Mul(tradeAmount.ToLegacyDec()).TruncateInt()
+	return feeData, nil
+}
+
+func applyPoolFee(pool *types.LiquidityPool, poolFeeAmount math.Int) {
+	if poolFeeAmount.IsPositive() {
+		pool.KCoinAmount = pool.KCoinAmount.Add(poolFeeAmount)
+	}
+}
+
+func (k Keeper) applyReserveFee(ctx context.Context, acc sdk.AccAddress, reserveFee math.Int, kCoin string) error {
+	if !k.DenomKeeper.IsKCoin(ctx, kCoin) {
+		return nil
+	}
+
+	if !reserveFee.IsPositive() {
+		return nil
+	}
+
 	coins := sdk.NewCoins(sdk.NewCoin(kCoin, reserveFee))
 	if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, dextypes.PoolReserve, coins); err != nil {
-		return math.Int{}, fmt.Errorf("could not send reserve fee to module: %w", err)
+		return fmt.Errorf("could not send reserve fee to module: %w", err)
 	}
 
-	return reserveFee, nil
+	return nil
 }
 
 func getNewFactoryAmount(pool types.LiquidityPool, denomFrom string, tradeAmountGross, amountToReceive math.Int) math.Int {
@@ -341,16 +356,20 @@ func getNewKCoinAmount(pool types.LiquidityPool, denomFrom string, tradeAmountGr
 	}
 }
 
-func (k Keeper) constantProductSell(pool types.LiquidityPool, denomGiving string, amount math.Int) math.Int {
+func constantProductSell(pool types.LiquidityPool, denomGiving string, amount math.Int) math.Int {
 	liqFrom, liqTo := getLiquidity(pool, denomGiving)
-	amountDec, _ := constant_product.ConstantProductTradeSell(liqFrom, liqTo, amount.ToLegacyDec(), math.LegacyZeroDec())
+	amountDec, _, _ := constant_product.ConstantProductTradeSell(liqFrom, liqTo, amount.ToLegacyDec(), math.LegacyZeroDec())
 	return amountDec.TruncateInt()
 }
 
-func (k Keeper) constantProductBuy(pool types.LiquidityPool, denomGiving string, amount math.Int) math.Int {
+func constantProductBuy(pool types.LiquidityPool, denomGiving string, amount math.Int) (math.Int, error) {
 	liqFrom, liqTo := getLiquidity(pool, denomGiving)
-	amountDec, _ := constant_product.ConstantProductTradeBuy(liqFrom, liqTo, amount.ToLegacyDec(), math.LegacyZeroDec())
-	return amountDec.TruncateInt()
+	amountDec, _, err := constant_product.ConstantProductTradeBuy(liqFrom, liqTo, amount.ToLegacyDec(), math.LegacyZeroDec())
+	if err != nil {
+		return math.Int{}, types.ErrCannotBuyAmount
+	}
+
+	return amountDec.TruncateInt(), nil
 }
 
 func (k Keeper) calculateMaxAmount(ctx context.Context, pool types.LiquidityPool, denomFrom string, maxPrice, poolFee math.LegacyDec, calculate constant_product.CalculateMaximumAmount) math.Int {

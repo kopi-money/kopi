@@ -24,16 +24,42 @@ service Query {
   rpc GetPool (QueryPoolRequest) returns (QueryPoolResponse) {
     option (google.api.http).get = "/kopi/tokenfactory/denoms/pool";
   }
+
+  rpc QuerySimulateSell (QuerySimulateTradeRequest) returns (QuerySimulateTradeResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/simulate/sell";
+  }
+  rpc QuerySimulateBuy (QuerySimulateTradeRequest) returns (QuerySimulateTradeResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/simulate/buy";
+  }
+}
+
+message QuerySimulateTradeRequest {
+  string denom_giving = 1;
+  string denom_receiving = 2;
+  string address = 3;
+  string amount = 4;
+}
+
+message QuerySimulateTradeResponse {
+  string amount_given = 1;
+  string amount_received = 2;
+  string fee = 3;
+  string price = 4;
 }
 
 message QueryPoolRequest {
   string full_name = 1;
+  string address = 2;
 }
 
 message QueryPoolResponse {
   string kcoin_denom = 1;
   string kcoin_amount = 2;
   string factory_amount = 3;
+  string user_kcoin_amount = 4;
+  string user_factory_amount = 5;
+  string price = 6;
+  int64 created_at = 7;
 }
 
 message QueryDenomsRequest {
@@ -44,12 +70,13 @@ message FactoryDenomData {
   string admin = 1;
   string display_name = 2;
   string full_name = 3;
-  string icon_hash = 4;
-  string symbol = 5;
-  uint64 exponent = 6;
-  int64 supply = 7;
-  bool has_pool = 8;
-  bool mintable = 9;
+  string description = 4;
+  string icon_hash = 5;
+  string symbol = 6;
+  uint64 exponent = 7;
+  int64 supply = 8;
+  bool has_pool = 9;
+  bool mintable = 10;
 }
 
 message QueryDenomsResponse {

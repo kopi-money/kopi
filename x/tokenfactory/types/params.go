@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	CreationFee     = math.NewInt(100_000_000)
+	CreationFee     = math.NewInt(1_000_000)
 	ReserveFee      = math.LegacyNewDecWithPrec(1, 3)
 	PoolFee         = math.LegacyNewDecWithPrec(1, 3)
 	MinimumPoolSize = math.NewInt(1_000_000_000)
