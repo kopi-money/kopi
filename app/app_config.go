@@ -230,6 +230,9 @@ var (
 		{Account: dexmoduletypes.PoolOrders},
 		{Account: dexmoduletypes.PoolReserve, Permissions: []string{authtypes.Burner}},
 
+		// Reserve
+		{Account: reservemoduletypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
+
 		// Swap
 		{Account: swapmoduletypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
 

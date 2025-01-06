@@ -3,13 +3,14 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"github.com/kopi-money/kopi/x/reserve/types"
 
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/constants"
-	"github.com/kopi-money/kopi/x/dex/types"
+	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	mmtypes "github.com/kopi-money/kopi/x/mm/types"
 )
 
@@ -18,7 +19,7 @@ import (
 // parity. When not, those coins are not added to the dex. First, the base currency is handled, after that all other
 // currencies.
 func (k Keeper) BeginBlockCheckReserve(ctx context.Context) error {
-	address := k.AccountKeeper.GetModuleAccount(ctx, types.PoolReserve).GetAddress()
+	address := k.AccountKeeper.GetModuleAccount(ctx, dextypes.PoolReserve).GetAddress()
 	coins := k.BankKeeper.SpendableCoins(ctx, address)
 
 	if err := k.handleBaseLiquidity(ctx, address, coins.AmountOf(constants.BaseCurrency)); err != nil {
@@ -44,22 +45,22 @@ func (k Keeper) BeginBlockCheckReserve(ctx context.Context) error {
 }
 
 func (k Keeper) handleBaseLiquidity(ctx context.Context, address sdk.AccAddress, baseAmount math.Int) error {
-	acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
+	acc := k.AccountKeeper.GetModuleAccount(ctx, dextypes.PoolLiquidity)
 	baseLiquidity := k.BankKeeper.SpendableCoin(ctx, acc.GetAddress(), constants.BaseCurrency).Amount
+	minimumLiquidity := math.NewInt(constants.MinimumBaseLiquidity)
 
 	// Make sure the DEX always has at least 1000 XKP for liquidity
-	missingCoins := math.NewInt(1_000_000_000).Sub(baseAmount.Add(baseLiquidity))
-	if missingCoins.GT(math.ZeroInt()) {
-		newCoins := sdk.NewCoins(sdk.NewCoin(constants.BaseCurrency, missingCoins))
+	if baseLiquidity.LT(minimumLiquidity) {
+		newCoins := sdk.NewCoins(sdk.NewCoin(constants.BaseCurrency, minimumLiquidity))
 		if err := k.BankKeeper.MintCoins(ctx, types.ModuleName, newCoins); err != nil {
 			return fmt.Errorf("could not mint new coins: %w", err)
 		}
 
-		if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, types.PoolReserve, newCoins); err != nil {
+		if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, dextypes.PoolReserve, newCoins); err != nil {
 			return fmt.Errorf("could not send from module account to reserve: %w", err)
 		}
 
-		baseAmount = baseAmount.Add(missingCoins)
+		baseAmount = baseAmount.Add(minimumLiquidity)
 	}
 
 	if baseAmount.GT(math.ZeroInt()) {
@@ -88,7 +89,7 @@ func (k Keeper) checkReserveForDenom(ctx context.Context, address sdk.AccAddress
 		return fmt.Errorf("could not burn kcoin reserve: %w", err)
 	}
 
-	if coin.Amount.GT(math.ZeroInt()) {
+	if coin.Amount.IsPositive() {
 		if _, err = k.DexKeeper.AddLiquidity(ctx, address, coin.Denom, coin.Amount); err != nil {
 			return fmt.Errorf("could not add liquidity: %w", err)
 		}
@@ -106,11 +107,11 @@ func (k Keeper) burnKCoinReserve(ctx context.Context, coin sdk.Coin) (sdk.Coin, 
 		return coin, nil
 	}
 
-	kCoinBurnShare := k.GetParams(ctx).KcoinBurnShare
+	kCoinBurnShare := k.getKCoinBurnShare(ctx)
 	burnAmount := coin.Amount.ToLegacyDec().Mul(kCoinBurnShare).TruncateInt()
 
 	burnCoin := sdk.NewCoins(sdk.NewCoin(coin.Denom, burnAmount))
-	if err := k.BankKeeper.BurnCoins(ctx, types.PoolReserve, burnCoin); err != nil {
+	if err := k.BankKeeper.BurnCoins(ctx, dextypes.PoolReserve, burnCoin); err != nil {
 		return sdk.Coin{}, err
 	}
 
@@ -129,7 +130,7 @@ func (k Keeper) sendToMoneyMarket(ctx context.Context, coin sdk.Coin, cAsset *de
 	sendAmountInt := sendAmount.TruncateInt()
 	if sendAmountInt.GT(math.ZeroInt()) {
 		coins := sdk.NewCoins(sdk.NewCoin(coin.Denom, sendAmountInt))
-		_ = k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolReserve, mmtypes.PoolVault, coins)
+		_ = k.BankKeeper.SendCoinsFromModuleToModule(ctx, dextypes.PoolReserve, mmtypes.PoolVault, coins)
 	}
 
 	coin.Amount = coin.Amount.Sub(sendAmountInt)

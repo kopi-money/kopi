@@ -2,17 +2,21 @@ package types
 
 import (
 	"fmt"
-	
+
 	"cosmossdk.io/math"
 )
 
 var (
 	kCoinBurnShare = math.LegacyOneDec()
+	sellThreshold  = math.LegacyOneDec()
+	buyThreshold   = math.LegacyNewDecWithPrec(9999, 4)
 )
 
 func DefaultParams() Params {
 	return Params{
 		KcoinBurnShare: kCoinBurnShare,
+		SellThreshold:  sellThreshold,
+		BuyThreshold:   buyThreshold,
 	}
 }
 

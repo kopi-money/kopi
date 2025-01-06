@@ -13,7 +13,7 @@ import (
 func (k Keeper) SellKCoins(ctx context.Context) error {
 	for _, kCoin := range k.DenomKeeper.KCoins(ctx) {
 		if err := k.sellKCoin(ctx, kCoin); err != nil {
-			return fmt.Errorf("could not sell kcoin  %s: %w", kCoin, err)
+			return fmt.Errorf("sell kcoin %s: %w", kCoin, err)
 		}
 	}
 
@@ -23,32 +23,33 @@ func (k Keeper) SellKCoins(ctx context.Context) error {
 func (k Keeper) sellKCoin(ctx context.Context, kCoin string) error {
 	parity, referenceDenom, err := k.DexKeeper.CalculateParity(ctx, kCoin)
 	if err != nil {
-		return fmt.Errorf("could not calculate parity: %w", err)
+		return fmt.Errorf("calculate parity: %w", err)
 	}
 
 	if parity == nil {
 		return nil
 	}
 
-	if parity.LT(k.sellThreshold(ctx)) {
+	if !parity.GT(k.sellThreshold(ctx)) {
 		return nil
 	}
 
-	moduleAddr := k.AccountKeeper.GetModuleAccount(ctx, types.PoolReserve).GetAddress()
+	moduleAddrReserve := k.AccountKeeper.GetModuleAccount(ctx, types.PoolReserve).GetAddress()
+	reserveLiq := k.DexKeeper.GetLiquidityByAddress(ctx, kCoin, moduleAddrReserve.String())
+
 	tradeAmount := k.DenomKeeper.MaxBurnAmount(ctx, kCoin)
-	amountLiquidity := k.DexKeeper.GetLiquidityByAddress(ctx, kCoin, moduleAddr.String())
-	if amountLiquidity.LT(tradeAmount) {
+	if reserveLiq.LT(tradeAmount) {
 		return nil
 	}
 
-	if err = k.DexKeeper.RemoveLiquidityForAddress(ctx, moduleAddr, kCoin, tradeAmount); err != nil {
-		return fmt.Errorf("could not remove liquidity for %s: %w", kCoin, err)
+	if err = k.DexKeeper.RemoveLiquidityForAddress(ctx, moduleAddrReserve, kCoin, tradeAmount); err != nil {
+		return fmt.Errorf("remove %s liquidity: %w", kCoin, err)
 	}
 
 	tradeCtx := types.TradeContext{
 		Context:             ctx,
-		CoinSource:          moduleAddr.String(),
-		CoinTarget:          moduleAddr.String(),
+		CoinSource:          moduleAddrReserve.String(),
+		CoinTarget:          moduleAddrReserve.String(),
 		TradeAmount:         tradeAmount,
 		TradeDenomGiving:    kCoin,
 		TradeDenomReceiving: referenceDenom,
@@ -65,10 +66,14 @@ func (k Keeper) sellKCoin(ctx context.Context, kCoin string) error {
 			return nil
 		}
 
-		return fmt.Errorf("could not execute incomplete trade: %w", err)
+		return fmt.Errorf("incomplete trade: %w", err)
 	}
 
-	if err = k.readdLiquidity(ctx, moduleAddr, kCoin, referenceDenom); err != nil {
+	if err = tradeCtx.TradeBalances.Settle(ctx, k.BankKeeper); err != nil {
+		return fmt.Errorf("settling balance %s: %w", kCoin, err)
+	}
+
+	if err = k.readdLiquidity(ctx, moduleAddrReserve, kCoin, referenceDenom); err != nil {
 		return err
 	}
 
@@ -82,13 +87,13 @@ func (k Keeper) readdLiquidity(ctx context.Context, moduleAddr sdk.AccAddress, k
 
 	if balanceKCoin.IsPositive() {
 		if _, err := k.DexKeeper.AddLiquidity(ctx, moduleAddr, kCoin, balanceKCoin); err != nil {
-			return fmt.Errorf("could not add liquidity for %s: %w", kCoin, err)
+			return fmt.Errorf("add liquidity for %s: %w", kCoin, err)
 		}
 	}
 
 	if balanceReferenceDenom.IsPositive() {
 		if _, err := k.DexKeeper.AddLiquidity(ctx, moduleAddr, referenceDenom, balanceReferenceDenom); err != nil {
-			return fmt.Errorf("could not add liquidity for %s: %w", balanceReferenceDenom, err)
+			return fmt.Errorf("add liquidity for %s: %w", balanceReferenceDenom, err)
 		}
 	}
 

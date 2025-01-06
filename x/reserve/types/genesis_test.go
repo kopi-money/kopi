@@ -24,7 +24,7 @@ func TestGenesisState_Validate(t *testing.T) {
 
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
-			valid: true,
+			valid: false,
 		},
 		// this line is used by starport scaffolding # types/genesis/testcase
 	}

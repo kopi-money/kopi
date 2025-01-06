@@ -29,7 +29,7 @@ func (k Keeper) buyKCoin(ctx context.Context, kCoin string) error {
 		return nil
 	}
 
-	if parity.GT(k.buyThreshold(ctx)) {
+	if !parity.LT(k.buyThreshold(ctx)) {
 		return nil
 	}
 
@@ -56,7 +56,7 @@ func (k Keeper) buyKCoin(ctx context.Context, kCoin string) error {
 		TradeBalances:       dexkeeper.NewTradeBalances(),
 	}
 
-	if _, err = k.DexKeeper.ExecuteSell(tradeCtx); err != nil {
+	if _, err := k.DexKeeper.ExecuteSell(tradeCtx); err != nil {
 		if errors.Is(err, types.ErrTradeAmountTooSmall) {
 			return nil
 		}
@@ -65,6 +65,10 @@ func (k Keeper) buyKCoin(ctx context.Context, kCoin string) error {
 		}
 
 		return fmt.Errorf("could not execute incomplete trade: %w", err)
+	}
+
+	if err = tradeCtx.TradeBalances.Settle(ctx, k.BankKeeper); err != nil {
+		return fmt.Errorf("settling balance %s: %w", kCoin, err)
 	}
 
 	if err = k.readdLiquidity(ctx, moduleAddr, kCoin, referenceDenom); err != nil {
