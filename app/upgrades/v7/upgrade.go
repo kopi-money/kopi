@@ -33,13 +33,13 @@ func CreateUpgradeHandler(mm *module.Manager, configurator module.Configurator, 
 		// Correct USDC ratio
 		ratioUSDT, err := denomK.GetRatio(ctx, "ibc/D8A36AE90F20FE4843A8D249B1BCF0CCDDE35C4B605C8DED57BED20C639162D0")
 		if err != nil {
-			return vm, fmt.Errorf("usdt ratio: %w", err)
+			denomK.Logger().Info(fmt.Errorf("usdt ratio: %w", err).Error())
+		} else {
+			denomK.SetRatio(ctx, denomtypes.Ratio{
+				Denom: "ibc/8E27BA2D5493AF5636760E354E46004562C46AB7EC0CC4C1CA14E9E20E2545B5",
+				Ratio: ratioUSDT.Ratio,
+			})
 		}
-
-		denomK.SetRatio(ctx, denomtypes.Ratio{
-			Denom: "ibc/8E27BA2D5493AF5636760E354E46004562C46AB7EC0CC4C1CA14E9E20E2545B5",
-			Ratio: ratioUSDT.Ratio,
-		})
 
 		return vm, nil
 	}
