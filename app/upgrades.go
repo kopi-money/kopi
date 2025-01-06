@@ -2,7 +2,7 @@ package app
 
 import (
 	"fmt"
-	
+
 	storetypes "cosmossdk.io/store/types"
 	"cosmossdk.io/x/upgrade/types"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
@@ -17,7 +17,7 @@ import (
 	"github.com/kopi-money/kopi/app/upgrades/v0_6_3"
 	"github.com/kopi-money/kopi/app/upgrades/v0_6_4"
 	"github.com/kopi-money/kopi/app/upgrades/v0_6_5_1"
-	"github.com/kopi-money/kopi/app/upgrades/v0_7"
+	"github.com/kopi-money/kopi/app/upgrades/v7"
 )
 
 func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
@@ -43,9 +43,9 @@ func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
 			CreateUpgradeHandler: v0_6_5_1.CreateUpgradeHandler,
 		},
 		{
-			UpgradeName: v0_7.UpgradeName,
+			UpgradeName: v7.UpgradeName,
 			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
-				return v0_7.CreateUpgradeHandler(manager, configurator, app.DenominationsKeeper, app.WasmKeeper)
+				return v7.CreateUpgradeHandler(manager, configurator, app.DenominationsKeeper, app.WasmKeeper)
 			},
 			StoreUpgrades: storetypes.StoreUpgrades{
 				Added: []string{wasmtypes.ModuleName},
