@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -115,17 +116,28 @@ func (k Keeper) OrdersAddress(goCtx context.Context, req *types.QueryOrdersAddre
 func (k Keeper) toOrderResponse(ctx context.Context, order types.Order, referenceDenom string) (*types.OrderResponse, error) {
 	amountLeftUSD, err := k.GetValueIn(ctx, order.DenomGiving, referenceDenom, order.AmountLeft.ToLegacyDec())
 	if err != nil {
-		return nil, fmt.Errorf("could not get amount left in usd: %w", err)
+		return nil, fmt.Errorf("amount left in usd: %w", err)
 	}
 
 	amountReceivedUSD, err := k.GetValueIn(ctx, order.DenomReceiving, referenceDenom, order.AmountReceived.ToLegacyDec())
 	if err != nil {
-		return nil, fmt.Errorf("could not get amount received in usd: %w", err)
+		return nil, fmt.Errorf("amount received in usd: %w", err)
 	}
 
-	maxPriceUSD, err := k.GetValueIn(ctx, order.DenomGiving, referenceDenom, order.MaxPrice)
+	maxPriceUSD, err := k.GetValueIn(ctx, order.DenomReceiving, referenceDenom, order.MaxPrice)
 	if err != nil {
-		return nil, fmt.Errorf("could not get amount received in usd: %w", err)
+		return nil, fmt.Errorf("max price usd: %w", err)
+	}
+
+	currentPrice, err := k.CalculatePrice(ctx, order.DenomGiving, order.DenomReceiving)
+	if err != nil {
+		return nil, fmt.Errorf("calculate price: %w", err)
+	}
+	currentPrice = math.LegacyOneDec().Quo(currentPrice)
+
+	currentPriceUSD, err := k.GetValueIn(ctx, order.DenomReceiving, referenceDenom, currentPrice)
+	if err != nil {
+		return nil, fmt.Errorf("max price usd: %w", err)
 	}
 
 	return &types.OrderResponse{
@@ -139,11 +151,14 @@ func (k Keeper) toOrderResponse(ctx context.Context, order types.Order, referenc
 		AmountGiven:       order.AmountGiven.String(),
 		AmountReceived:    order.AmountReceived.String(),
 		AmountReceivedUsd: amountReceivedUSD.String(),
+		CurrentPrice:      currentPrice.String(),
+		CurrentPriceUsd:   currentPriceUSD.String(),
 		MaxPrice:          order.MaxPrice.String(),
 		MaxPriceUsd:       maxPriceUSD.String(),
 		NumBlocks:         order.NumBlocks,
 		BlockEnd:          uint64(order.AddedAt) + order.NumBlocks,
 		AllowIncomplete:   order.AllowIncomplete,
+		IsBuyOrder:        order.IsBuyOrder,
 	}, nil
 }
 

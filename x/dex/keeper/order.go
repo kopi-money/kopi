@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"cosmossdk.io/collections"
 
@@ -40,8 +41,17 @@ func (k Keeper) GetOrder(ctx context.Context, index uint64) (val types.Order, fo
 }
 
 // RemoveOrder removes a order from the store
-func (k Keeper) RemoveOrder(ctx context.Context, order types.Order) {
+func (k Keeper) RemoveOrder(ctx context.Context, order types.Order) error {
+	if !order.AmountLocked.IsNil() && order.AmountLocked.IsPositive() {
+		coins := sdk.NewCoins(sdk.NewCoin(order.DenomGiving, order.AmountLocked))
+		address, _ := sdk.AccAddressFromBech32(order.Creator)
+		if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolOrders, address, coins); err != nil {
+			return err
+		}
+	}
+
 	k.orders.Remove(ctx, order.Index)
+	return nil
 }
 
 func (k Keeper) CheckOrderPoolBalance(ctx context.Context, denom string) error {

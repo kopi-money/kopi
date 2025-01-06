@@ -23,13 +23,13 @@ func (e notEnoughBuyFundsError) Error() string {
 
 func (k Keeper) ExecuteSell(ctx types.TradeContext) (types.TradeResult, error) {
 	ctx.TradeType = types.TradeTypeSell
-	ctx.CalcMaximumTradableAmount = k.CalculateMaximumTradableAmount
+	ctx.CalcMaximumTradableAmount = k.CalculateMaximumSellableAmount
 	ctx.CalcTradableAmountGivenPrice = constant_product.CalculateMaximumGiving
 	ctx.CalcAmountToGive = func() math.Int {
 		return ctx.TradeAmount
 	}
 	ctx.IntermediateTradeAmount = types.IntermediateTradeAmountReceived
-	ctx.CalcMaximumTradeAmountByWallet = func() math.Int {
+	ctx.CalcMaximumTradeAmountByWallet = func() (math.Int, error) {
 		acc, _ := sdk.AccAddressFromBech32(ctx.CoinSource)
 		amount := k.BankKeeper.SpendableCoin(ctx, acc, ctx.TradeDenomGiving).Amount
 
@@ -37,7 +37,7 @@ func (k Keeper) ExecuteSell(ctx types.TradeContext) (types.TradeResult, error) {
 			ctx.MaximumAvailableAmount = k.BankKeeper.SpendableCoin(ctx, acc, ctx.TradeDenomGiving).Amount
 		}
 
-		return math.MinInt(amount, ctx.MaximumAvailableAmount)
+		return math.MinInt(amount, ctx.MaximumAvailableAmount), nil
 	}
 
 	result, err := k.executeTrade(&ctx)
@@ -50,24 +50,24 @@ func (k Keeper) ExecuteSell(ctx types.TradeContext) (types.TradeResult, error) {
 
 func (k Keeper) ExecuteBuy(ctx types.TradeContext) (types.TradeResult, error) {
 	ctx.TradeType = types.TradeTypeBuy
-	ctx.CalcMaximumTradableAmount = func(caches *types.OrdersCaches, _, denomTo string) *math.Int {
-		amount := caches.LiquidityPool.Get().AmountOf(denomTo)
-		return &amount
-	}
+	ctx.CalcMaximumTradableAmount = k.CalculateMaximumBuyableAmount
 	ctx.CalcTradableAmountGivenPrice = constant_product.CalculateMaximumReceiving
 	ctx.CalcAmountToGive = func() math.Int {
 		tradeResult, _ := k.SimulateBuy(ctx)
 		return tradeResult.AmountGiven
 	}
 
-	ctx.CalcMaximumTradeAmountByWallet = func() math.Int {
+	ctx.CalcMaximumTradeAmountByWallet = func() (math.Int, error) {
 		acc, _ := sdk.AccAddressFromBech32(ctx.CoinSource)
 		available := k.BankKeeper.SpendableCoin(ctx, acc, ctx.TradeDenomGiving).Amount
 
 		poolFrom, poolTo := k.GetFullLiquidityBaseOtherCache(ctx.GetOrdersCaches(), ctx.TradeDenomGiving, ctx.TradeDenomReceiving)
-		amountToReceive, _ := constant_product.ConstantProductTradeSell(poolFrom, poolTo, available.ToLegacyDec(), ctx.FullFee())
+		amountToReceive, _, err := constant_product.ConstantProductTradeSell(poolFrom, poolTo, available.ToLegacyDec(), ctx.FullFee())
+		if err != nil {
+			return math.Int{}, err
+		}
 
-		return amountToReceive.TruncateInt()
+		return amountToReceive.TruncateInt(), nil
 	}
 
 	ctx.IntermediateTradeAmount = types.IntermediateTradeAmountUsed
@@ -81,7 +81,6 @@ func (k Keeper) ExecuteBuy(ctx types.TradeContext) (types.TradeResult, error) {
 	if err != nil {
 		var sell notEnoughBuyFundsError
 		if errors.As(err, &sell) {
-			k.Logger().Info(fmt.Sprintf("switching to sell (%v)", sell.amount.String()))
 			return k.ExecuteSell(ctx.ToSell(sell.amount))
 		}
 
@@ -97,7 +96,7 @@ func (k Keeper) executeTrade(ctx *types.TradeContext) (types.TradeResults, error
 	}
 
 	if ctx.Fee.IsNil() {
-		ctx.Fee = k.getTradeFee(ctx, ctx.DiscountAddress, ctx.ExcludeFromDiscount)
+		ctx.Fee = k.getTradeFee(ctx, ctx.DiscountAddress, ctx.TradeDenomGiving, ctx.TradeDenomReceiving, ctx.ExcludeFromDiscount)
 	}
 
 	// The address executing the trade might not be the one eligible for a discount. For example, the protocol might
@@ -118,7 +117,8 @@ func (k Keeper) executeTrade(ctx *types.TradeContext) (types.TradeResults, error
 	// returned.
 	// When buying:
 	// Given how much funds are in the user's wallet, the user might not get the full desired amount.
-	maximumTradableAmount := ctx.CalcMaximumTradableAmount(ctx.OrdersCaches, ctx.TradeDenomGiving, ctx.TradeDenomReceiving)
+
+	maximumTradableAmount := ctx.CalcMaximumTradableAmount(*ctx)
 	if maximumTradableAmount != nil && maximumTradableAmount.LT(ctx.TradeAmount) {
 		if ctx.MinimumTradeAmount != nil && maximumTradableAmount.LT(*ctx.MinimumTradeAmount) {
 			if ctx.TradeType == types.TradeTypeSell {
@@ -141,7 +141,7 @@ func (k Keeper) executeTrade(ctx *types.TradeContext) (types.TradeResults, error
 
 	if ctx.MaxPrice != nil {
 		priceAmount := k.calculateAmountGivenPrice(ctx.OrdersCaches, ctx.TradeDenomGiving, ctx.TradeDenomReceiving, *ctx.MaxPrice, ctx.Fee, ctx.CalcTradableAmountGivenPrice).TruncateInt()
-		if priceAmount.LTE(math.ZeroInt()) {
+		if !priceAmount.IsPositive() {
 			return types.TradeResults{}, types.ErrNegativeTradeAmount
 		}
 
@@ -167,7 +167,12 @@ func (k Keeper) executeTrade(ctx *types.TradeContext) (types.TradeResults, error
 				return types.TradeResults{}, notEnoughBuyFundsError{amount: available}
 			}
 
-			ctx.TradeAmount = ctx.CalcMaximumTradeAmountByWallet()
+			var err error
+			ctx.TradeAmount, err = ctx.CalcMaximumTradeAmountByWallet()
+			if err != nil {
+				return types.TradeResults{}, fmt.Errorf("calculating maximum trade amount: %w", err)
+			}
+
 			if ctx.MinimumTradeAmount != nil && ctx.TradeAmount.LT(*ctx.MinimumTradeAmount) {
 				return types.TradeResults{}, types.ErrPriceTooLow
 			}
@@ -181,7 +186,7 @@ func (k Keeper) executeTrade(ctx *types.TradeContext) (types.TradeResults, error
 
 	// If the trade amount is too small, an error is returned. The reason for that is that small trade amounts are more
 	// affected by rounding issues.
-	if ctx.TradeAmount.LT(math.NewInt(1000)) {
+	if ctx.TradeAmount.LT(math.NewInt(constants.MinimumTradeSize)) {
 		return types.TradeResults{}, types.ErrTradeAmountTooSmall
 	}
 
@@ -193,12 +198,8 @@ func (k Keeper) executeTrade(ctx *types.TradeContext) (types.TradeResults, error
 	}
 
 	tradeAmount := ctx.IntermediateTradeAmount(amountUsed1, amountReceived1)
-
 	if ctx.IsOrder {
-		tradeAmount, err = k.handleOrderFee(ctx.OrdersCaches, ctx.TradeBalances, ctx.OrdersCaches.OrderFee.Get(), tradeAmount)
-		if err != nil {
-			return types.TradeResults{}, fmt.Errorf("could not handle order fee: %w", err)
-		}
+		tradeAmount = k.handleOrderFee(ctx.OrdersCaches, ctx.TradeBalances, ctx.OrdersCaches.OrderFee.Get(), tradeAmount, ctx.IsBuy())
 	}
 
 	// Second trade from the base currency to the target currency
@@ -218,7 +219,7 @@ func (k Keeper) executeTrade(ctx *types.TradeContext) (types.TradeResults, error
 			AmountReceived:     amountReceived1,
 		},
 		Step2: types.TradeResult{
-			AmountIntermediate: amountReceived2,
+			AmountIntermediate: amountReceived1,
 			AmountGiven:        amountUsed2,
 			AmountReceived:     amountReceived2,
 		},
@@ -253,7 +254,10 @@ func (k Keeper) ExecuteTradeStep(ctx types.TradeStepContext) (math.Int, math.Int
 	poolFrom1 := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.StepDenomGiving)
 	poolTo1 := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.StepDenomReceiving)
 	fullBase, fullOther, fullFrom, fullTo := k.GetLiquidities(ctx)
-	amountToGiveGross, feeGiving, amountToReceiveGross, feeReceiving := k.calculateTradeAmounts(ctx, fullFrom, fullTo, ctx.TradeAmount.ToLegacyDec(), ctx.StepFee())
+	amountToGiveGross, feeGiving, amountToReceiveGross, feeReceiving, err := k.calculateTradeAmounts(ctx, fullFrom, fullTo, ctx.TradeAmount.ToLegacyDec(), ctx.StepFee())
+	if err != nil {
+		return math.Int{}, math.Int{}, math.Int{}, fmt.Errorf("could not calculate trade amounts: %w", err)
+	}
 
 	liquidityProviders, amountToReceiveLeft, err := k.determineLiquidityProviders(ctx, amountToReceiveGross.Add(feeReceiving), ctx.StepDenomReceiving)
 	if err != nil {
@@ -313,21 +317,29 @@ func (k Keeper) ExecuteTradeStep(ctx types.TradeStepContext) (math.Int, math.Int
 	return amountToGiveGross, payoutAmount, feePaid, nil
 }
 
-func (k Keeper) calculateTradeAmounts(ctx types.TradeStepContext, poolFrom, poolTo, tradeAmount, fee math.LegacyDec) (math.Int, math.Int, math.Int, math.Int) {
-	amountToGive, feeGiving := ctx.CalcAmountToGive(poolFrom, poolTo, tradeAmount, fee)
-	if amountToGive.IsZero() {
-		return math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt()
+func (k Keeper) calculateTradeAmounts(ctx types.TradeStepContext, poolFrom, poolTo, tradeAmount, fee math.LegacyDec) (math.Int, math.Int, math.Int, math.Int, error) {
+	amountToGive, feeGiving, err := ctx.CalcAmountToGive(poolFrom, poolTo, tradeAmount, fee)
+	if err != nil {
+		return math.Int{}, math.Int{}, math.Int{}, math.Int{}, err
 	}
 
-	amountToReceive, feeReceiving := ctx.CalcAmountToReceive(poolFrom, poolTo, tradeAmount, fee)
+	if amountToGive.IsZero() {
+		return math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), nil
+	}
+
+	amountToReceive, feeReceiving, err := ctx.CalcAmountToReceive(poolFrom, poolTo, tradeAmount, fee)
+	if err != nil {
+		return math.Int{}, math.Int{}, math.Int{}, math.Int{}, err
+	}
+
 	if amountToReceive.IsZero() {
-		return math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt()
+		return math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), nil
 	}
 
 	return amountToGive.Ceil().TruncateInt(),
 		feeGiving.Ceil().TruncateInt(),
 		amountToReceive.TruncateInt(),
-		feeReceiving.TruncateInt()
+		feeReceiving.TruncateInt(), nil
 }
 
 func (k Keeper) GetLiquidities(ctx types.TradeStepContext) (math.LegacyDec, math.LegacyDec, math.LegacyDec, math.LegacyDec) {
@@ -355,15 +367,24 @@ func (k Keeper) getLiquidities(ordersCaches *types.OrdersCaches, denomGiving, de
 	return fullBase, fullOther, fullFrom, fullTo
 }
 
-func (k Keeper) handleOrderFee(ordersCaches *types.OrdersCaches, tradeBalances types.TradeBalances, orderFee math.LegacyDec, amount math.Int) (math.Int, error) {
-	feeAmount := amount.ToLegacyDec().Mul(orderFee).RoundInt()
+func (k Keeper) handleOrderFee(ordersCaches *types.OrdersCaches, tradeBalances types.TradeBalances, orderFee math.LegacyDec, amount math.Int, isBuy bool) math.Int {
+	var feeAmount math.Int
+
+	if isBuy {
+		feeAmount = amount.ToLegacyDec().Quo(math.LegacyOneDec().Sub(orderFee)).Sub(amount.ToLegacyDec()).TruncateInt()
+		amount = amount.Add(feeAmount)
+	} else {
+		feeAmount = amount.ToLegacyDec().Mul(orderFee).TruncateInt()
+		amount = amount.Sub(feeAmount)
+	}
+
 	tradeBalances.AddTransfer(
 		ordersCaches.AccPoolTrade.Get().String(),
 		ordersCaches.AccPoolReserve.Get().String(),
 		constants.BaseCurrency, feeAmount,
 	)
 
-	return amount.Sub(feeAmount), nil
+	return amount
 }
 
 func (k Keeper) calculateAmountGivenPrice(ordersCaches *types.OrdersCaches, denomFrom, denomTo string, maxPrice, fee math.LegacyDec, calc constant_product.CalculateMaximumAmount) math.LegacyDec {
@@ -404,24 +425,24 @@ func (k Keeper) updateRatio(ctx context.Context, denom string, fullBase, fullOth
 // a trade, that part of the fee is removed.
 func (k Keeper) SimulateTradeForReserve(ctx types.TradeContext) (types.TradeSimulationResult, error) {
 	reserveShare := k.GetParams(ctx).ReserveShare
-	fee := k.getTradeFee(ctx, ctx.DiscountAddress, ctx.ExcludeFromDiscount)
+	fee := k.getTradeFee(ctx, ctx.DiscountAddress, ctx.TradeDenomGiving, ctx.TradeDenomReceiving, ctx.ExcludeFromDiscount)
 	fee = fee.Mul(math.LegacyOneDec().Sub(reserveShare))
 	return k.SimulateSellWithFee(ctx, fee)
 }
 
-// CalculateMaximumTradableAmount calculates the maximum tradable amount for a given trading pair while routing the
+// CalculateMaximumSellableAmount calculates the maximum sellable amount for a given trading pair while routing the
 // trade via the base currency. First, the tradable amount between the base currency and the "to" currency is
 // calculated. In the second step, the tradable amount from the "from" currency to the base currency is calculated. The
 // previously calculated maximum tradable amount is given to that function to cover cases where the size bottleneck is
 // in the second trading step.
-func (k Keeper) CalculateMaximumTradableAmount(ordersCaches *types.OrdersCaches, denomGiving, denomReceiving string) *math.Int {
+func (k Keeper) CalculateMaximumSellableAmount(ctx types.TradeContext) *math.Int {
 	var max1, max2 *math.LegacyDec
-	if denomReceiving != constants.BaseCurrency {
-		max2 = k.CalculateSingleGivableAmount(ordersCaches, constants.BaseCurrency, denomReceiving, nil)
+	if ctx.TradeDenomReceiving != constants.BaseCurrency {
+		max2 = k.CalculateSingleSellableAmount(ctx.OrdersCaches, constants.BaseCurrency, ctx.TradeDenomReceiving, nil)
 	}
 
-	if denomGiving != constants.BaseCurrency {
-		max1 = k.CalculateSingleGivableAmount(ordersCaches, denomGiving, constants.BaseCurrency, max2)
+	if ctx.TradeDenomGiving != constants.BaseCurrency {
+		max1 = k.CalculateSingleSellableAmount(ctx.OrdersCaches, ctx.TradeDenomGiving, constants.BaseCurrency, max2)
 	} else {
 		max1 = max2
 	}
@@ -434,10 +455,10 @@ func (k Keeper) CalculateMaximumTradableAmount(ordersCaches *types.OrdersCaches,
 	return &maximum
 }
 
-// CalculateSingleGivableAmount calculates the maximum trading amount for a given trading pair, i.e. how much of
+// CalculateSingleSellableAmount calculates the maximum trading amount for a given trading pair, i.e. how much of
 // denomFrom can be given at maximum. When there is no virtual liquidity, the tradable amount is infinity, thus the
 // return amount is nil.
-func (k Keeper) CalculateSingleGivableAmount(ordersCaches *types.OrdersCaches, denomGiving, denomReceiving string, maximumActual *math.LegacyDec) *math.LegacyDec {
+func (k Keeper) CalculateSingleSellableAmount(ordersCaches *types.OrdersCaches, denomGiving, denomReceiving string, maximumActual *math.LegacyDec) *math.LegacyDec {
 	actualFrom := ordersCaches.LiquidityPool.Get().AmountOf(denomGiving).ToLegacyDec()
 	actualTo := ordersCaches.LiquidityPool.Get().AmountOf(denomReceiving).ToLegacyDec()
 
@@ -452,16 +473,16 @@ func (k Keeper) CalculateSingleGivableAmount(ordersCaches *types.OrdersCaches, d
 		virtualFrom = pair.VirtualOther
 	}
 
-	return CalculateSingleMaximumGivableAmount(actualFrom, actualTo, virtualFrom, virtualTo, maximumActual)
+	return CalculateSingleMaximumSellableAmount(actualFrom, actualTo, virtualFrom, virtualTo, maximumActual)
 }
 
-func CalculateSingleMaximumGivableAmount(actualFrom, actualTo, virtualFrom, virtualTo math.LegacyDec, maximumActual *math.LegacyDec) *math.LegacyDec {
+func CalculateSingleMaximumSellableAmount(actualFrom, actualTo, virtualFrom, virtualTo math.LegacyDec, maximumActual *math.LegacyDec) *math.LegacyDec {
 	if maximumActual != nil && maximumActual.LT(actualTo) {
 		virtualTo = actualTo.Add(virtualTo).Sub(*maximumActual)
 		actualTo = *maximumActual
 	}
 
-	if virtualTo.IsZero() {
+	if virtualTo.IsNil() || virtualTo.IsZero() {
 		return nil
 	}
 
@@ -481,6 +502,48 @@ func calculateSingleMaximumTradableAmount(actualFrom, actualTo, virtualFrom, vir
 	X := actualFrom.Add(virtualFrom)
 	maximum := X.Mul(actualTo.Quo(virtualTo))
 	return &maximum
+}
+
+// CalculateMaximumBuyableAmount...
+func (k Keeper) CalculateMaximumBuyableAmount(ctx types.TradeContext) *math.Int {
+	var maximum math.LegacyDec
+	if ctx.TradeDenomGiving != constants.BaseCurrency {
+		maximum = ctx.OrdersCaches.LiquidityPool.Get().AmountOf(constants.BaseCurrency).ToLegacyDec()
+		if ctx.IsOrder {
+			maximum = maximum.Mul(math.LegacyOneDec().Sub(ctx.OrdersCaches.OrderFee.Get()))
+		}
+	}
+
+	if ctx.TradeDenomReceiving != constants.BaseCurrency {
+		poolSize := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomReceiving).ToLegacyDec()
+		if maximum.IsNil() {
+			maximum = poolSize
+		} else {
+			amountReceived, _, _ := k.CalculateSingleSell(ctx, constants.BaseCurrency, ctx.TradeDenomReceiving, maximum, math.LegacyZeroDec())
+			maximum = math.LegacyMinDec(poolSize, amountReceived)
+		}
+	}
+
+	maximumInt := maximum.TruncateInt()
+	return &maximumInt
+}
+
+func (k Keeper) CalculateSingleBuyableAmount(ordersCaches *types.OrdersCaches, denomGiving, denomReceiving string, maximumActual *math.LegacyDec) *math.LegacyDec {
+	actualFrom := ordersCaches.LiquidityPool.Get().AmountOf(denomGiving).ToLegacyDec()
+	actualTo := ordersCaches.LiquidityPool.Get().AmountOf(denomReceiving).ToLegacyDec()
+
+	var virtualFrom, virtualTo math.LegacyDec
+	if denomGiving == constants.BaseCurrency {
+		pair := ordersCaches.LiquidityPair.Get(denomReceiving)
+		virtualFrom = pair.VirtualBase
+		virtualTo = pair.VirtualOther
+	} else {
+		pair := ordersCaches.LiquidityPair.Get(denomGiving)
+		virtualTo = pair.VirtualBase
+		virtualFrom = pair.VirtualOther
+	}
+
+	return CalculateSingleMaximumSellableAmount(actualFrom, actualTo, virtualFrom, virtualTo, maximumActual)
 }
 
 func (k Keeper) checkTradePoolLiquidities(ordersCaches *types.OrdersCaches, denomFrom, denomTo string) error {
@@ -529,7 +592,7 @@ func manageFee(feeAmount math.Int, reserveFeeShare math.LegacyDec) (math.Int, ma
 }
 
 func (k Keeper) SimulateSell(ctx types.TradeContext) (types.TradeSimulationResult, error) {
-	fee := k.getTradeFee(ctx, ctx.DiscountAddress, ctx.ExcludeFromDiscount)
+	fee := k.getTradeFee(ctx, ctx.DiscountAddress, ctx.TradeDenomGiving, ctx.TradeDenomReceiving, ctx.ExcludeFromDiscount)
 	return k.SimulateSellWithFee(ctx, fee)
 }
 
@@ -575,8 +638,8 @@ func (k Keeper) CalculateSingleSell(ctx context.Context, denomGiving, denomRecei
 	return k.calculateSingleTrade(ctx, denomGiving, denomReceiving, offer, fee, constant_product.ConstantProductTradeSell)
 }
 
-func (k Keeper) CalculateSingleBuy(ctx context.Context, denomGiving, denomReceiving string, offer, fee math.LegacyDec) (math.LegacyDec, math.LegacyDec, error) {
-	return k.calculateSingleTrade(ctx, denomGiving, denomReceiving, offer, fee, constant_product.ConstantProductTradeBuy)
+func (k Keeper) CalculateSingleBuy(ctx context.Context, denomGiving, denomReceiving string, requested, fee math.LegacyDec) (math.LegacyDec, math.LegacyDec, error) {
+	return k.calculateSingleTrade(ctx, denomGiving, denomReceiving, requested, fee, constant_product.ConstantProductTradeBuy)
 }
 
 func (k Keeper) calculateSingleTrade(ctx context.Context, denomGiving, denomReceiving string, offer, fee math.LegacyDec, cpTrade constant_product.ConstantProductTrade) (math.LegacyDec, math.LegacyDec, error) {
@@ -602,12 +665,16 @@ func (k Keeper) calculateSingleTrade(ctx context.Context, denomGiving, denomRece
 		return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("no liquidity for: %v", denomReceiving)
 	}
 
-	amount, feeAmount := cpTrade(poolFrom, poolTo, offer, fee)
+	amount, feeAmount, err := cpTrade(poolFrom, poolTo, offer, fee)
+	if err != nil {
+		return math.LegacyDec{}, math.LegacyDec{}, err
+	}
+
 	return amount, feeAmount, nil
 }
 
 func (k Keeper) SimulateBuy(ctx types.TradeContext) (types.TradeSimulationResult, error) {
-	fee := k.getTradeFee(ctx, ctx.DiscountAddress, ctx.ExcludeFromDiscount)
+	fee := k.getTradeFee(ctx, ctx.DiscountAddress, ctx.TradeDenomGiving, ctx.TradeDenomReceiving, ctx.ExcludeFromDiscount)
 	return k.SimulateBuyWithFee(ctx, fee)
 }
 
@@ -667,7 +734,7 @@ func (k Keeper) validateTradeOptions(ctx *types.TradeContext) error {
 		return types.ErrZeroAmount
 	}
 
-	if ctx.TradeAmount.LT(math.ZeroInt()) {
+	if ctx.TradeAmount.IsNegative() {
 		return types.ErrNegativeAmount
 	}
 

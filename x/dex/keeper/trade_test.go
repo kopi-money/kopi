@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"testing"
 
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
@@ -28,7 +29,7 @@ func TestCalculateSingleMaximumTradableAmount1(t *testing.T) {
 	actualTo := math.LegacyNewDec(1000)
 	virtualTo := math.LegacyNewDec(0)
 
-	maximum := dexkeeper.CalculateSingleMaximumGivableAmount(actualFrom, actualTo, virtualFrom, virtualTo, nil)
+	maximum := dexkeeper.CalculateSingleMaximumSellableAmount(actualFrom, actualTo, virtualFrom, virtualTo, nil)
 	require.Nil(t, maximum)
 }
 
@@ -39,10 +40,10 @@ func TestCalculateSingleMaximumTradableAmount2(t *testing.T) {
 	actualTo := math.LegacyNewDec(500)
 	virtualTo := math.LegacyNewDec(500)
 
-	maximum := dexkeeper.CalculateSingleMaximumGivableAmount(actualFrom, actualTo, virtualFrom, virtualTo, nil)
+	maximum := dexkeeper.CalculateSingleMaximumSellableAmount(actualFrom, actualTo, virtualFrom, virtualTo, nil)
 	require.NotNil(t, maximum)
 
-	receive, _ := constant_product.ConstantProductTradeSell(actualFrom.Add(virtualFrom), actualTo.Add(virtualTo), *maximum, math.LegacyZeroDec())
+	receive, _, _ := constant_product.ConstantProductTradeSell(actualFrom.Add(virtualFrom), actualTo.Add(virtualTo), *maximum, math.LegacyZeroDec())
 	require.Equal(t, receive, actualTo)
 }
 
@@ -53,10 +54,10 @@ func TestCalculateSingleMaximumTradableAmount3(t *testing.T) {
 	actualTo := math.LegacyNewDec(100)
 	virtualTo := math.LegacyNewDec(900)
 
-	maximum := dexkeeper.CalculateSingleMaximumGivableAmount(actualFrom, actualTo, virtualFrom, virtualTo, nil)
+	maximum := dexkeeper.CalculateSingleMaximumSellableAmount(actualFrom, actualTo, virtualFrom, virtualTo, nil)
 	require.NotNil(t, maximum)
 
-	receive, _ := constant_product.ConstantProductTradeSell(actualFrom.Add(virtualFrom), actualTo.Add(virtualTo), *maximum, math.LegacyZeroDec())
+	receive, _, _ := constant_product.ConstantProductTradeSell(actualFrom.Add(virtualFrom), actualTo.Add(virtualTo), *maximum, math.LegacyZeroDec())
 
 	// Due to rounding we don't get exactly 100, but 99.999999999999999910
 	diff := actualTo.Sub(receive).Abs()
@@ -74,7 +75,7 @@ func TestCalculateSingleMaximumTradableAmount4(t *testing.T) {
 	fmt.Println(liqFrom.Quo(liqTo).String())
 
 	maximumGiving := constant_product.CalculateMaximumGiving(liqFrom, liqTo, maxPrice, fee)
-	receiving, _ := constant_product.ConstantProductTradeSell(liqFrom, liqTo, maximumGiving, fee)
+	receiving, _, _ := constant_product.ConstantProductTradeSell(liqFrom, liqTo, maximumGiving, fee)
 	price := maximumGiving.Quo(receiving)
 
 	require.True(t, maxPrice.Equal(price))
@@ -633,7 +634,7 @@ func TestSingleTrade8(t *testing.T) {
 	require.Equal(t, math.LegacyNewDec(115_000), pair.VirtualOther)
 
 	ordersCache := k.NewOrdersCaches(ctx)
-	maximum := k.CalculateSingleGivableAmount(ordersCache, constants.BaseCurrency, constants.KUSD, nil)
+	maximum := k.CalculateSingleSellableAmount(ordersCache, constants.BaseCurrency, constants.KUSD, nil)
 	require.NotNil(t, maximum)
 
 	receivedAmount, _, err := k.CalculateSingleSell(ctx, constants.BaseCurrency, constants.KUSD, *maximum, math.LegacyZeroDec())
@@ -799,8 +800,9 @@ func TestTrade1(t *testing.T) {
 		Amount:         keepertest.PowInt64String(1),
 	})
 
-	require.Nil(t, err)
-	require.Equal(t, int64(222111), res.AmountReceived)
+	require.NoError(t, err)
+	amountReceived, _ := strconv.Atoi(res.AmountReceived)
+	require.Equal(t, 222111, amountReceived)
 
 	addr, _ := sdk.AccAddressFromBech32(keepertest.Bob)
 
@@ -809,8 +811,8 @@ func TestTrade1(t *testing.T) {
 	require.Equal(t, "99999000000", coinBase.Amount.String())
 
 	coinKUSD := getCoin(coins, constants.KUSD)
-	expected := 100000000000 + res.AmountReceived
-	require.Equal(t, expected, coinKUSD.Amount.Int64())
+	expected := 100000000000 + amountReceived
+	require.Equal(t, int64(expected), coinKUSD.Amount.Int64())
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.NoError(t, tradePoolEmpty(ctx, k))
@@ -1120,7 +1122,10 @@ func TestTrade15(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, response)
 
-	price := float64(response.AmountGiven) / float64(response.AmountReceived)
+	amountReceived, _ := strconv.Atoi(response.AmountReceived)
+	amountGiven, _ := strconv.Atoi(response.AmountGiven)
+
+	price := float64(amountGiven) / float64(amountReceived)
 	require.Equal(t, 8.004482510205715, price)
 
 	require.True(t, liquidityBalanced(ctx, k))
@@ -1147,8 +1152,8 @@ func TestTrade17(t *testing.T) {
 
 	require.NoError(t, err)
 	// AmountReceived is not 1000 because of fee
-	require.Equal(t, int64(925), response.AmountReceived)
-	require.Equal(t, int64(4000), response.AmountGiven)
+	require.Equal(t, "925", response.AmountReceived)
+	require.Equal(t, "4000", response.AmountGiven)
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.NoError(t, tradePoolEmpty(ctx, k))
@@ -1175,8 +1180,8 @@ func TestTrade18(t *testing.T) {
 
 	require.NoError(t, err)
 	// AmountReceived is not 1000 because of fee
-	require.Equal(t, int64(2449), response.AmountReceived)
-	require.Equal(t, int64(10000), response.AmountGiven)
+	require.Equal(t, "2449", response.AmountReceived)
+	require.Equal(t, "10000", response.AmountGiven)
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.NoError(t, tradePoolEmpty(ctx, k))
@@ -1237,7 +1242,9 @@ func testSmallDenomTrade(t *testing.T, amount int64) int64 {
 	})
 
 	require.NoError(t, err)
-	return response.GetAmountReceived()
+
+	amountReceived, _ := strconv.Atoi(response.AmountReceived)
+	return int64(amountReceived)
 }
 
 func getCoin(coins []sdk.Coin, denom string) sdk.Coin {
@@ -1306,7 +1313,7 @@ func TestTrade25(t *testing.T) {
 	}
 
 	ordersCache := k.NewOrdersCaches(ctx)
-	maximum2 := k.CalculateSingleGivableAmount(ordersCache, constants.KUSD, constants.BaseCurrency, nil)
+	maximum2 := k.CalculateSingleSellableAmount(ordersCache, constants.KUSD, constants.BaseCurrency, nil)
 	require.NotNil(t, maximum2)
 	require.Equal(t, (*maximum1).TruncateInt(), (*maximum2).TruncateInt())
 
@@ -1339,11 +1346,17 @@ func TestTrade26(t *testing.T) {
 
 	ordersCache := k.NewOrdersCaches(ctx)
 	var maximum1 *math.LegacyDec
-	maximum1 = k.CalculateSingleGivableAmount(ordersCache, constants.BaseCurrency, constants.KUSD, nil)
-	maximum1 = k.CalculateSingleGivableAmount(ordersCache, "uwusdc", constants.BaseCurrency, maximum1)
+	maximum1 = k.CalculateSingleSellableAmount(ordersCache, constants.BaseCurrency, constants.KUSD, nil)
+	maximum1 = k.CalculateSingleSellableAmount(ordersCache, "uwusdc", constants.BaseCurrency, maximum1)
+
+	fmt.Println("---")
 
 	var maximum2 *math.Int
-	maximum2 = k.CalculateMaximumTradableAmount(ordersCache, "uwusdc", constants.KUSD)
+	maximum2 = k.CalculateMaximumSellableAmount(types.TradeContext{
+		TradeDenomGiving:    "uwusdc",
+		TradeDenomReceiving: constants.KUSD,
+		OrdersCaches:        k.NewOrdersCaches(ctx),
+	})
 
 	require.NotNil(t, maximum2)
 	require.Equal(t, maximum1.TruncateInt().Int64(), maximum2.Int64())
@@ -1392,13 +1405,17 @@ func TestTrade30(t *testing.T) {
 	})
 
 	require.NoError(t, err)
-	require.True(t, res.AmountReceived > 0)
+
+	amountReceived, _ := strconv.Atoi(res.AmountReceived)
+	amountGiven, _ := strconv.Atoi(res.AmountGiven)
+
+	require.True(t, amountReceived > 0)
 
 	maxPriceF, _ := maxPrice.Float64()
 
 	var paidPrice float64
-	if res.AmountReceived > 0 {
-		paidPrice = float64(res.AmountGiven) / float64(res.AmountReceived)
+	if amountReceived > 0 {
+		paidPrice = float64(amountGiven) / float64(amountReceived)
 	}
 
 	require.LessOrEqual(t, paidPrice, maxPriceF)
@@ -1417,7 +1434,11 @@ func TestTrade31(t *testing.T) {
 
 	ordersCache := k.NewOrdersCaches(ctx)
 
-	maximumTradableAmount := k.CalculateMaximumTradableAmount(ordersCache, constants.KUSD, constants.BaseCurrency)
+	maximumTradableAmount := k.CalculateMaximumSellableAmount(types.TradeContext{
+		TradeDenomGiving:    constants.KUSD,
+		TradeDenomReceiving: constants.BaseCurrency,
+		OrdersCaches:        ordersCache,
+	})
 
 	tradeCtx := types.TradeContext{
 		Context:             ctx,
@@ -1723,7 +1744,10 @@ func TestTrade39(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	price := float64(res.AmountGiven) / float64(res.AmountReceived)
+	amountReceived, _ := strconv.Atoi(res.AmountReceived)
+	amountGiven, _ := strconv.Atoi(res.AmountGiven)
+
+	price := float64(amountGiven) / float64(amountReceived)
 
 	_, err = keepertest.Sell(ctx, msg, &types.MsgSell{
 		Creator:        keepertest.Bob,
@@ -1750,7 +1774,10 @@ func TestTrade40(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	price := float64(res.AmountGiven) / float64(res.AmountReceived)
+	amountReceived, _ := strconv.Atoi(res.AmountReceived)
+	amountGiven, _ := strconv.Atoi(res.AmountGiven)
+
+	price := float64(amountGiven) / float64(amountReceived)
 
 	_, err = keepertest.Buy(ctx, msg, &types.MsgBuy{
 		Creator:        keepertest.Bob,
@@ -1784,7 +1811,7 @@ func TestTrade41(t *testing.T) {
 		Amount:         "100000",
 	})
 	require.NoError(t, err)
-	require.Equal(t, amount, res.AmountGiven)
+	require.Equal(t, "10000", res.AmountGiven)
 }
 
 func TestTrade42(t *testing.T) {
@@ -1899,6 +1926,58 @@ func TestTrade43(t *testing.T) {
 		MinimumTradeAmount: "1000000000000000",
 	})
 	require.NoError(t, err)
+}
+
+func TestTrade44(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	acc1, _ := sdk.AccAddressFromBech32(keepertest.Alice)
+	acc2, _ := sdk.AccAddressFromBech32(keepertest.Dave)
+	accLiq := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
+
+	amount := int64(1_000_000)
+	coins := sdk.NewCoins(
+		sdk.NewCoin(constants.BaseCurrency, math.NewInt(amount)),
+		sdk.NewCoin(constants.KUSD, math.NewInt(amount)),
+		sdk.NewCoin("uwusdc", math.NewInt(amount)),
+	)
+
+	_ = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc1, types.PoolReserve, coins)
+	_ = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolReserve, acc2, coins)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Dave, constants.BaseCurrency, amount))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Dave, constants.KUSD, amount))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Dave, "uwusdc", amount))
+
+	require.NoError(t, keepertest.RemoveLiquidity(ctx, msg, keepertest.Dave, constants.KUSD, amount))
+
+	ratioKUSD, _ := k.DenomKeeper.GetRatio(ctx, constants.KUSD)
+	ratioUSDC, _ := k.DenomKeeper.GetRatio(ctx, "uwusdc")
+
+	require.True(t, ratioKUSD.Ratio.Equal(ratioUSDC.Ratio))
+
+	res, err := keepertest.Sell(ctx, msg, &types.MsgSell{
+		Creator:            keepertest.Dave,
+		DenomGiving:        constants.KUSD,
+		DenomReceiving:     "uwusdc",
+		Amount:             strconv.Itoa(int(amount)),
+		MinimumTradeAmount: "0",
+	})
+	require.NoError(t, err)
+
+	amountGiven, _ := strconv.Atoi(res.AmountGiven)
+	amountReceived, _ := strconv.Atoi(res.AmountReceived)
+
+	require.Equal(t, 1_000_000, amountGiven)
+	require.Equal(t, 199_905, amountReceived)
+
+	require.Equal(t, int64(1_000_000), k.GetLiquidityByAddress(ctx, constants.KUSD, keepertest.Dave).Int64())
+	require.Equal(t, int64(800_071), k.GetLiquidityByAddress(ctx, "uwusdc", keepertest.Dave).Int64())
+
+	require.Equal(t, int64(1_000_000), k.BankKeeper.SpendableCoin(ctx, accLiq.GetAddress(), constants.KUSD).Amount.Int64())
+	require.Equal(t, int64(800_071), k.BankKeeper.SpendableCoin(ctx, accLiq.GetAddress(), "uwusdc").Amount.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
 }
 
 func liquidityBalanced(ctx context.Context, k dexkeeper.Keeper) bool {

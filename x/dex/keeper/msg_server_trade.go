@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"github.com/kopi-money/kopi/constants"
 	"strconv"
 	"strings"
 
@@ -64,7 +65,7 @@ func (k msgServer) trade(ctx context.Context, creator, denomGiving, denomReceivi
 		TradeDenomReceiving:    denomReceiving,
 		ProtocolTrade:          false,
 		TradeBalances:          NewTradeBalances(),
-		Fee:                    k.getTradeFee(ctx, creator, false),
+		Fee:                    k.getTradeFee(ctx, creator, denomGiving, denomReceiving, false),
 	}
 
 	tradeResult, err := tradeFunc(tradeCtx)
@@ -94,11 +95,15 @@ func (k msgServer) trade(ctx context.Context, creator, denomGiving, denomReceivi
 	}, nil
 }
 
-func (k Keeper) getTradeFee(ctx context.Context, discountAddress string, excludeFromDiscount bool) math.LegacyDec {
+func (k Keeper) getTradeFee(ctx context.Context, discountAddress, denomGiving, denomReceiving string, excludeFromDiscount bool) math.LegacyDec {
 	fee := k.GetParams(ctx).TradeFee
 	discount := k.getTradeDiscount(ctx, discountAddress, excludeFromDiscount)
 	discount = math.LegacyOneDec().Sub(discount)
 	fee = fee.Mul(discount)
+
+	if denomGiving != constants.BaseCurrency && denomReceiving != constants.BaseCurrency {
+		fee = fee.Quo(math.LegacyNewDec(2))
+	}
 
 	return fee
 }

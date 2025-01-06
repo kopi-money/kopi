@@ -20,7 +20,7 @@ func TestLiquidityPairs1(t *testing.T) {
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 8))
 
 	ratios := k.DenomKeeper.GetAllRatios(ctx)
-	require.Equal(t, 10, len(ratios))
+	require.Equal(t, 11, len(ratios))
 
 	r, err := k.DenomKeeper.GetRatio(ctx, constants.KUSD)
 	require.NoError(t, err)

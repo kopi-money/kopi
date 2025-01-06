@@ -31,6 +31,19 @@ func (k Keeper) GetTradeFee(ctx context.Context) math.LegacyDec {
 	return k.GetParams(ctx).TradeFee
 }
 
+func (k Keeper) GetOrderFee(ctx context.Context) math.LegacyDec {
+	return k.GetParams(ctx).OrderFee
+}
+
+func (k Keeper) GetJoinedFee(ctx context.Context) math.LegacyDec {
+	factor := math.LegacyOneDec()
+	factor = factor.Mul(math.LegacyOneDec().Sub(k.GetTradeFee(ctx)))
+	factor = factor.Mul(math.LegacyOneDec().Sub(k.GetOrderFee(ctx)))
+	factor = math.LegacyOneDec().Sub(factor)
+
+	return factor
+}
+
 func (k Keeper) GetReserveFeeShare(ctx context.Context) math.LegacyDec {
 	return k.GetParams(ctx).ReserveShare
 }

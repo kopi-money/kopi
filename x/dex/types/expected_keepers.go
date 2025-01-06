@@ -42,16 +42,18 @@ type ParamSubspace interface {
 type DenomKeeper interface {
 	ConvertToExponent(ctx context.Context, denom string, amount math.LegacyDec, targetExponent uint64) (math.LegacyDec, error)
 	Denoms(ctx context.Context) []string
+	GetAllRatios(ctx context.Context) []denomtypes.Ratio
 	GetAuthority() string
 	GetCAssetByBaseName(ctx context.Context, baseDenom string) (*denomtypes.CAsset, error)
 	GetRatio(ctx context.Context, denom string) (denomtypes.Ratio, error)
-	GetAllRatios(ctx context.Context) []denomtypes.Ratio
+	IsKCoin(ctx context.Context, denom string) bool
 	IsNativeDenom(ctx context.Context, denom string) bool
 	IsValidDenom(ctx context.Context, denom string) bool
-	IsKCoin(ctx context.Context, denom string) bool
+	KCoins(ctx context.Context) (kCoins []string)
+	MaxBurnAmount(ctx context.Context, denom string) math.Int
+	MaxMintAmount(ctx context.Context, denom string) math.Int
 	MinLiquidity(ctx context.Context, denom string) math.Int
 	MinOrderSize(ctx context.Context, denom string) math.Int
 	ReferenceDenoms(ctx context.Context, kCoin string) []string
 	SetRatio(ctx context.Context, ratio denomtypes.Ratio)
-	KCoins(ctx context.Context) (kCoins []string)
 }

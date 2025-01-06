@@ -65,8 +65,8 @@ func TestOrders2(t *testing.T) {
 
 	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
 		Creator:        keepertest.Bob,
-		DenomReceiving: constants.BaseCurrency,
 		DenomGiving:    constants.KUSD,
+		DenomReceiving: constants.BaseCurrency,
 		Amount:         "1000",
 		MaxPrice:       "0.5",
 		Blocks:         1000,
@@ -91,6 +91,23 @@ func executeOrders(ctx context.Context, k dexkeeper.Keeper) error {
 	})
 }
 
+func executeOrder(ctx context.Context, k dexkeeper.Keeper, order *types.Order) (types.TradeResult, bool, error) {
+	var (
+		tradeResult   types.TradeResult
+		fullyExecuted bool
+	)
+
+	err := cache.TransactWithNewMultiStore(ctx, func(innerCtx context.Context) error {
+		fee := k.GetJoinedFee(ctx)
+		var innerErr error
+
+		tradeResult, fullyExecuted, innerErr = k.ExecuteOrder(innerCtx, k.NewOrdersCaches(ctx), fee, order)
+		return innerErr
+	})
+
+	return tradeResult, fullyExecuted, err
+}
+
 func TestOrders3(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
@@ -102,7 +119,7 @@ func TestOrders3(t *testing.T) {
 		DenomGiving:    constants.KUSD,
 		DenomReceiving: constants.BaseCurrency,
 		Amount:         "1000",
-		MaxPrice:       "100",
+		MaxPrice:       "0.1",
 		Blocks:         1000,
 	}))
 
@@ -161,7 +178,7 @@ func TestOrders5(t *testing.T) {
 		DenomGiving:    constants.BaseCurrency,
 		DenomReceiving: constants.KUSD,
 		Amount:         "100000",
-		MaxPrice:       "11",
+		MaxPrice:       "0.1",
 		Blocks:         1000,
 	}))
 
@@ -186,7 +203,7 @@ func TestOrders7(t *testing.T) {
 		DenomGiving:    constants.KUSD,
 		DenomReceiving: constants.BaseCurrency,
 		Amount:         "1000",
-		MaxPrice:       "10",
+		MaxPrice:       "0.1",
 		Blocks:         1000,
 	}))
 
@@ -301,7 +318,7 @@ func TestOrders11(t *testing.T) {
 		DenomGiving:    constants.BaseCurrency,
 		DenomReceiving: constants.KUSD,
 		Amount:         "1000",
-		MaxPrice:       "1000",
+		MaxPrice:       "0.0001",
 		Blocks:         100,
 	}))
 
@@ -636,7 +653,7 @@ func TestOrders22(t *testing.T) {
 		DenomReceiving:  constants.KUSD,
 		Amount:          "1000",
 		TradeAmount:     "1000",
-		MaxPrice:        "11111",
+		MaxPrice:        "0.0001",
 		Blocks:          10000,
 		Interval:        1,
 		AllowIncomplete: true,
@@ -651,7 +668,7 @@ func TestOrders22(t *testing.T) {
 
 	liqOther = k.LiquidityIterator(ctx, constants.KUSD).GetAll()
 	require.Equal(t, 1, len(liqOther))
-	require.Equal(t, int64(9_758), liqOther[0].Amount.Int64())
+	require.Equal(t, int64(9_759), liqOther[0].Amount.Int64())
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.NoError(t, checkCache(ctx, k))
@@ -715,84 +732,323 @@ func TestOrders24(t *testing.T) {
 	require.NoError(t, checkCache(ctx, k))
 }
 
-//func TestOrders19(t *testing.T) {
-//	orders1 := testOrdersFromData(t, false)
-//	orders2 := testOrdersFromData(t, true)
-//	require.True(t, compareOrderLists(orders1, orders2))
-//}
+func TestOrders25(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
-//func testOrdersFromData(t *testing.T, useLM bool) []types.Order {
-//	k, msg, ctx := keepertest.SetupDexMsgServer(t)
-//
-//	liquidity, err := testdata.LoadLiquidity()
-//	require.NoError(t, err)
-//	orders, err := testdata.LoadOrders()
-//	require.NoError(t, err)
-//
-//	fmt.Println(len(liquidity), len(orders))
-//
-//	funds := make(map[string]Funds)
-//	gatherFundsFromLiquidity(t, funds, liquidity)
-//	gatherFundsFromOrders(t, funds, orders)
-//
-//	for address, addressFunds := range funds {
-//		for denom, amount := range addressFunds {
-//			keepertest.AddFunds(t, ctx, k.BankKeeper, denom, address, amount)
-//		}
-//	}
-//
-//	for _, order := range orders {
-//		_, err = msg.AddOrder(ctx, &types.MsgAddOrder{
-//			Creator:         order.Creator,
-//			DenomGiving:       order.DenomGiving,
-//			DenomReceiving:         order.DenomReceiving,
-//			Amount:          order.AmountLeft,
-//			TradeAmount:     order.TradeAmount,
-//			MaxPrice:        order.MaxPrice,
-//			Blocks:          100,
-//			Interval:        1,
-//			AllowIncomplete: order.AllowIncomplete,
-//		})
-//
-//		require.NoError(t, err)
-//	}
-//
-//	for _, liq := range liquidity {
-//		_, err = msg.AddLiquidity(ctx, &types.MsgAddLiquidity{
-//			Creator: liq.Address,
-//			Denom:   liq.Denom,
-//			Amount:  liq.Amount,
-//		})
-//		require.NoError(t, err)
-//	}
-//
-//	require.NoError(t, k.ExecuteOrders(ctx, ctx.EventManager(), 0))
-//	return k.GetAllOrders(ctx)
-//}
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 10_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 10_000))
 
-func compareOrderLists(orders1, orders2 []types.Order) bool {
-	if len(orders1) != len(orders2) {
-		return false
-	}
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "ukusd", keepertest.Dave, 10_000)
 
-	for index := range len(orders1) {
-		o1 := orders1[index]
-		o2 := orders2[index]
+	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
+		Creator:        keepertest.Dave,
+		DenomGiving:    constants.KUSD,
+		DenomReceiving: constants.BaseCurrency,
+		Amount:         "1000",
+		MaxPrice:       "4",
+		IsBuyOrder:     true,
+	}))
 
-		if o1.Index != o2.Index {
-			return false
-		}
+	order, has := k.GetOrder(ctx, 1)
+	require.True(t, has)
 
-		if o1.Creator != o2.Creator {
-			return false
-		}
+	require.Equal(t, order.AmountLocked.Int64(), int64(4025))
+	require.NoError(t, executeOrders(ctx, k))
 
-		if !o1.AmountLeft.Equal(o2.AmountLeft) {
-			return false
-		}
-	}
+	_, has = k.GetOrder(ctx, 1)
+	require.False(t, has)
+}
 
-	return true
+func TestOrders26(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 10_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 10_000))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "ukusd", keepertest.Dave, 10_000)
+
+	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
+		Creator:        keepertest.Dave,
+		DenomGiving:    constants.KUSD,
+		DenomReceiving: constants.BaseCurrency,
+		Amount:         "5000",
+		MaxPrice:       "0.5",
+		IsBuyOrder:     true,
+	}))
+
+	order, has := k.GetOrder(ctx, 1)
+	require.True(t, has)
+
+	require.Equal(t, order.AmountLocked.Int64(), int64(2_516))
+	require.NoError(t, executeOrders(ctx, k))
+
+	_, has = k.GetOrder(ctx, 1)
+	require.False(t, has)
+}
+
+func TestOrders27(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 10_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 10_000))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "ukusd", keepertest.Dave, 10_000)
+
+	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
+		Creator:        keepertest.Dave,
+		DenomGiving:    constants.KUSD,
+		DenomReceiving: constants.BaseCurrency,
+		Amount:         "10000",
+		MaxPrice:       "0.5",
+		IsBuyOrder:     true,
+	}))
+
+	require.NoError(t, executeOrders(ctx, k))
+}
+
+func TestOrders28(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 10_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 10_000))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "ukusd", keepertest.Dave, 200_000)
+
+	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
+		Creator:        keepertest.Dave,
+		DenomGiving:    constants.KUSD,
+		DenomReceiving: constants.BaseCurrency,
+		Amount:         "200000",
+		MaxPrice:       "0.5",
+		IsBuyOrder:     true,
+	}))
+
+	order, has := k.GetOrder(ctx, 1)
+	require.True(t, has)
+	require.Equal(t, int64(100604), order.AmountLocked.Int64())
+
+	require.NoError(t, executeOrders(ctx, k))
+
+	order, has = k.GetOrder(ctx, 1)
+	require.True(t, has)
+	require.Equal(t, int64(97_260), order.AmountLocked.Int64())
+	require.Equal(t, int64(200_000), order.AmountRequested.Int64())
+	require.Equal(t, int64(9_950), order.AmountReceived.Int64())
+	require.Equal(t, int64(3_344), order.AmountGiven.Int64())
+}
+
+func TestOrders31(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_000_000))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Dave, 20_000)
+
+	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
+		Creator:        keepertest.Dave,
+		DenomGiving:    constants.BaseCurrency,
+		DenomReceiving: constants.KUSD,
+		Amount:         "10000",
+		MaxPrice:       "0.2",
+	}))
+
+	order, has := k.GetOrder(ctx, 1)
+	require.True(t, has)
+	require.Equal(t, int64(10_000), order.AmountLocked.Int64())
+
+	tradeResult, fullyExecuted, err := executeOrder(ctx, k, &order)
+	require.NoError(t, err)
+
+	require.True(t, fullyExecuted)
+	require.Equal(t, int64(10_000), tradeResult.AmountGiven.Int64())
+	require.Equal(t, int64(2_473), tradeResult.AmountReceived.Int64())
+
+	require.True(t, math.LegacyOneDec().Quo(tradeResult.PricePaid()).LT(math.LegacyNewDec(5)))
+}
+
+func TestOrders32(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_000_000))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Dave, 20_000)
+
+	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
+		Creator:        keepertest.Dave,
+		DenomGiving:    constants.KUSD,
+		DenomReceiving: constants.BaseCurrency,
+		Amount:         "10000",
+		MaxPrice:       "3.5",
+	}))
+
+	order, has := k.GetOrder(ctx, 1)
+	require.True(t, has)
+	require.Equal(t, int64(10_000), order.AmountLocked.Int64())
+
+	tradeResult, fullyExecuted, err := executeOrder(ctx, k, &order)
+	require.NoError(t, err)
+
+	require.True(t, fullyExecuted)
+	require.Equal(t, int64(10_000), tradeResult.AmountGiven.Int64())
+	require.Equal(t, int64(39_288), tradeResult.AmountReceived.Int64())
+
+	require.True(t, math.LegacyOneDec().Quo(tradeResult.PricePaid()).GT(math.LegacyNewDecWithPrec(35, 1)))
+}
+
+func TestOrders33(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_000_000))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Dave, 20_000)
+
+	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
+		Creator:        keepertest.Dave,
+		DenomGiving:    constants.KUSD,
+		DenomReceiving: constants.BaseCurrency,
+		Amount:         "40000",
+		MaxPrice:       "0.3",
+		IsBuyOrder:     true,
+	}))
+
+	order, has := k.GetOrder(ctx, 1)
+	require.True(t, has)
+	require.Equal(t, int64(12_073), order.AmountLocked.Int64())
+
+	tradeResult, fullyExecuted, err := executeOrder(ctx, k, &order)
+	require.NoError(t, err)
+	require.False(t, tradeResult.AmountGiven.IsNil())
+	require.False(t, tradeResult.AmountReceived.IsNil())
+
+	require.True(t, fullyExecuted)
+	require.Equal(t, int64(10_183), tradeResult.AmountGiven.Int64())
+	require.Equal(t, int64(40_000), tradeResult.AmountReceived.Int64())
+
+	require.True(t, tradeResult.PricePaid().LT(math.LegacyNewDecWithPrec(3, 1)))
+}
+
+func TestOrders34(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_000_000))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Dave, 60_000)
+
+	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
+		Creator:        keepertest.Dave,
+		DenomGiving:    constants.BaseCurrency,
+		DenomReceiving: constants.KUSD,
+		Amount:         "10000",
+		MaxPrice:       "5",
+		IsBuyOrder:     true,
+	}))
+
+	order, has := k.GetOrder(ctx, 1)
+	require.True(t, has)
+	require.Equal(t, int64(50_302), order.AmountLocked.Int64())
+
+	tradeResult, fullyExecuted, err := executeOrder(ctx, k, &order)
+	require.NoError(t, err)
+	require.False(t, tradeResult.AmountGiven.IsNil())
+	require.False(t, tradeResult.AmountReceived.IsNil())
+
+	require.True(t, fullyExecuted)
+	require.Equal(t, int64(40_729), tradeResult.AmountGiven.Int64())
+	require.Equal(t, int64(10_000), tradeResult.AmountReceived.Int64())
+
+	require.True(t, tradeResult.PricePaid().LT(math.LegacyNewDec(5)))
+}
+
+func TestOrders35(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_000_000))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Dave, 60_000)
+
+	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
+		Creator:        keepertest.Dave,
+		DenomGiving:    constants.BaseCurrency,
+		DenomReceiving: constants.KUSD,
+		Amount:         "10000",
+		MaxPrice:       "5",
+		IsBuyOrder:     true,
+	}))
+
+	order, has := k.GetOrder(ctx, 1)
+	require.True(t, has)
+	require.Equal(t, int64(50_302), order.AmountLocked.Int64())
+
+	accOrders := k.AccountKeeper.GetModuleAccount(ctx, types.PoolOrders)
+	balance := k.BankKeeper.SpendableCoins(ctx, accOrders.GetAddress())
+	require.Equal(t, int64(50_302), balance.AmountOf(constants.BaseCurrency).Int64())
+
+	require.NoError(t, executeOrders(ctx, k))
+
+	balance = k.BankKeeper.SpendableCoins(ctx, accOrders.GetAddress())
+	require.Equal(t, int64(0), balance.AmountOf(constants.BaseCurrency).Int64())
+}
+
+func TestOrders36(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_000_000))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Dave, 60_000)
+
+	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
+		Creator:        keepertest.Dave,
+		DenomGiving:    constants.BaseCurrency,
+		DenomReceiving: constants.KUSD,
+		Amount:         "10000",
+		MaxPrice:       "1",
+		IsBuyOrder:     true,
+	}))
+
+	order, has := k.GetOrder(ctx, 1)
+	require.True(t, has)
+	require.Equal(t, int64(10_061), order.AmountLocked.Int64())
+
+	tradeResult, fullyExecuted, err := executeOrder(ctx, k, &order)
+	require.NoError(t, err)
+
+	require.False(t, fullyExecuted)
+	require.True(t, tradeResult.AmountGiven.IsNil())
+	require.True(t, tradeResult.AmountReceived.IsNil())
+}
+
+func TestOrders37(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_000_000))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Dave, 20_000)
+
+	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
+		Creator:        keepertest.Dave,
+		DenomGiving:    constants.KUSD,
+		DenomReceiving: constants.BaseCurrency,
+		Amount:         "10000",
+		MaxPrice:       "5",
+	}))
+
+	order, has := k.GetOrder(ctx, 1)
+	require.True(t, has)
+	require.Equal(t, int64(10_000), order.AmountLocked.Int64())
+
+	tradeResult, fullyExecuted, err := executeOrder(ctx, k, &order)
+	require.NoError(t, err)
+
+	require.False(t, fullyExecuted)
+	require.True(t, tradeResult.AmountGiven.IsNil())
+	require.True(t, tradeResult.AmountReceived.IsNil())
 }
 
 func randomAmount(max int) int {

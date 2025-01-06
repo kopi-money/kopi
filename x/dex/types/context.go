@@ -39,11 +39,11 @@ type TradeContext struct {
 	CoinTarget      string
 	DiscountAddress string
 
-	CalcMaximumTradableAmount      func(*OrdersCaches, string, string) *math.Int
+	CalcMaximumTradableAmount      func(TradeContext) *math.Int
 	CalcTradableAmountGivenPrice   constant_product.CalculateMaximumAmount
 	CalcAmountToGive               func() math.Int
 	IntermediateTradeAmount        IntermediateTradeAmount
-	CalcMaximumTradeAmountByWallet func() math.Int
+	CalcMaximumTradeAmountByWallet func() (math.Int, error)
 
 	TradeBalances TradeBalances
 	OrdersCaches  *OrdersCaches
@@ -137,6 +137,10 @@ type TradeResult struct {
 	FeeOther           math.Int
 }
 
+func (tr TradeResult) PricePaid() math.LegacyDec {
+	return tr.AmountGiven.ToLegacyDec().Quo(tr.AmountReceived.ToLegacyDec())
+}
+
 type Sender interface {
 	SendCoins(ctx context.Context, address sdk.AccAddress, accAddress sdk.AccAddress, coins sdk.Coins) error
 }
@@ -147,8 +151,8 @@ type TradeBalances interface {
 	Settle(context.Context, Sender) error
 }
 
-func plain(_, _, amount, _ math.LegacyDec) (math.LegacyDec, math.LegacyDec) {
-	return amount, math.LegacyZeroDec()
+func plain(_, _, amount, _ math.LegacyDec) (math.LegacyDec, math.LegacyDec, error) {
+	return amount, math.LegacyZeroDec(), nil
 }
 
 type TradeStepContext struct {
@@ -167,7 +171,7 @@ type TradeStepContext struct {
 
 // When selling: givingDenom > XKP
 // When buying: XKP > receivingDenom
-func (tc TradeContext) TradeStep1(reserveFeeShare math.LegacyDec, tradeType TradeType) TradeStepContext {
+func (tc *TradeContext) TradeStep1(reserveFeeShare math.LegacyDec, tradeType TradeType) TradeStepContext {
 	var (
 		calcAmountToGive    constant_product.ConstantProductTrade
 		calcAmountToReceive constant_product.ConstantProductTrade
@@ -206,7 +210,7 @@ func (tc TradeContext) TradeStep1(reserveFeeShare math.LegacyDec, tradeType Trad
 
 	tc.TradeType = tradeType
 	return TradeStepContext{
-		TradeContext:        tc,
+		TradeContext:        *tc,
 		StepDenomGiving:     denomGiving,
 		StepDenomReceiving:  denomReceiving,
 		TradeAmount:         tc.TradeAmount,
@@ -218,7 +222,7 @@ func (tc TradeContext) TradeStep1(reserveFeeShare math.LegacyDec, tradeType Trad
 
 // When selling: XKP > receivingDenom
 // When buying: givingDenom > XKP
-func (tc TradeContext) TradeStep2(reserveFeeShare math.LegacyDec, amount math.Int, tradeType TradeType) TradeStepContext {
+func (tc *TradeContext) TradeStep2(reserveFeeShare math.LegacyDec, amount math.Int, tradeType TradeType) TradeStepContext {
 	var (
 		calcAmountToGive    constant_product.ConstantProductTrade
 		calcAmountToReceive constant_product.ConstantProductTrade
@@ -254,7 +258,7 @@ func (tc TradeContext) TradeStep2(reserveFeeShare math.LegacyDec, amount math.In
 
 	tc.TradeType = tradeType
 	return TradeStepContext{
-		TradeContext:        tc,
+		TradeContext:        *tc,
 		StepDenomGiving:     denomGiving,
 		StepDenomReceiving:  denomReceiving,
 		TradeAmount:         amount,
@@ -262,6 +266,10 @@ func (tc TradeContext) TradeStep2(reserveFeeShare math.LegacyDec, amount math.In
 		CalcAmountToGive:    calcAmountToGive,
 		CalcAmountToReceive: calcAmountToReceive,
 	}
+}
+
+func (tc *TradeContext) IsBuy() bool {
+	return tc.TradeType == TradeTypeBuy
 }
 
 type TradeCalculation interface {
