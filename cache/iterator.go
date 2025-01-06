@@ -107,8 +107,21 @@ func (c CollectionIterator[K, V]) GetAll() (list []V) {
 }
 
 // Probably not the most elegant way to do this...
-func (c CollectionIterator[K, V]) GetAllFromCache() []KeyValue[K, Entry[V]] {
-	panic("implement me")
+func (c CollectionIterator[K, V]) GetAllFromCache() (entries []KeyValue[K, Entry[V]]) {
+	for c.iterator.Valid() {
+		kv, _ := c.iterator.KeyValue()
+		c.iterator.Next()
+
+		entries = append(entries, KeyValue[K, Entry[V]]{
+			key: kv.Key,
+			value: Entry[V]{
+				value: &kv.Value,
+				cost:  0,
+			},
+		})
+	}
+
+	return
 }
 
 func (c CollectionIterator[K, V]) Valid() bool {

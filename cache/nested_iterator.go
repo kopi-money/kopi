@@ -25,8 +25,9 @@ func (ni NestedIterator[K1, K2, V]) GetNext() V {
 }
 
 func (ni NestedIterator[K1, K2, V]) GetNextKeyValue() KeyValue[K2, Entry[V]] {
-	ni.iterator.Next()
 	kv, _ := ni.iterator.KeyValue()
+	ni.iterator.Next()
+
 	return KeyValue[K2, Entry[V]]{
 		key: kv.Key.K2(),
 		value: Entry[V]{
