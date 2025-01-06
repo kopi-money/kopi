@@ -176,7 +176,7 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 // The begin block implementation is optional.
 func (am AppModule) BeginBlock(ctx context.Context) error {
 	if err := am.keeper.Initialize(ctx); err != nil {
-		return fmt.Errorf("could not initialize dex module: %w", err)
+		return fmt.Errorf("initialize dex module: %w", err)
 	}
 
 	return nil
@@ -187,13 +187,12 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 func (am AppModule) EndBlock(ctx context.Context) error {
 	if err := cache.TransactWithNewMultiStore(ctx, func(innerCtx context.Context) error {
 		if err := am.keeper.HandleArbitrageDenoms(innerCtx); err != nil {
-			return fmt.Errorf("error doing arbitrage trades: %w", err)
+			return fmt.Errorf("arbitrage trades: %w", err)
 		}
 
 		return nil
 	}); err != nil {
-		//return fmt.Errorf("error handling arbitrage denoms: %w", err)
-		am.keeper.Logger().Error(fmt.Sprintf("error handling arbitrage denoms: %v", err.Error()))
+		am.keeper.Logger().Error(err.Error())
 	}
 
 	if err := am.keeper.HandleAutomations(ctx); err != nil {

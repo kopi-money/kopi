@@ -68,7 +68,7 @@ func shiftDenomOrder(ctx context.Context, arbitrageDenoms []*denomtypes.Arbitrag
 func (k Keeper) handleArbitrageDenom(ctx context.Context, arbitrageDenom *denomtypes.ArbitrageDenom) error {
 	parity, _, err := k.DexKeeper.CalculateParity(ctx, arbitrageDenom.KCoin)
 	if err != nil {
-		return fmt.Errorf("could not calculate parity: %w", err)
+		return fmt.Errorf("calculate parity: %w", err)
 	}
 
 	address := k.AccountKeeper.GetModuleAccount(ctx, types.PoolArbitrage).GetAddress()
@@ -78,7 +78,8 @@ func (k Keeper) handleArbitrageDenom(ctx context.Context, arbitrageDenom *denomt
 	// The kCoin is bought when its parity has fallen below the given threshold.
 	if parity.LT(arbitrageDenom.BuyThreshold) {
 		amountCAsset := balance.AmountOf(arbitrageDenom.CAsset)
-		if amountCAsset.GT(math.ZeroInt()) {
+		if amountCAsset.IsPositive() {
+			zeroInt := math.ZeroInt()
 			tradeCtx := dextypes.TradeContext{
 				Context:             ctx,
 				CoinSource:          address.String(),
@@ -87,6 +88,7 @@ func (k Keeper) handleArbitrageDenom(ctx context.Context, arbitrageDenom *denomt
 				TradeDenomGiving:    arbitrageDenom.CAsset,
 				TradeDenomReceiving: arbitrageDenom.KCoin,
 				TradeBalances:       tradeBalances,
+				MinimumTradeAmount:  &zeroInt,
 			}
 
 			var tradeResult dextypes.TradeResult
@@ -115,7 +117,7 @@ func (k Keeper) handleArbitrageDenom(ctx context.Context, arbitrageDenom *denomt
 		amount := k.getArbitrageDenom(ctx, arbitrageDenom.DexDenom).KCoinAmount
 		amount = math.MinInt(amount, arbitrageDenom.SellTradeAmount)
 
-		if amount.GT(math.ZeroInt()) {
+		if amount.IsPositive() {
 			tradeCtx := dextypes.TradeContext{
 				Context:                ctx,
 				CoinSource:             address.String(),

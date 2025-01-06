@@ -2,14 +2,12 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	"encoding/json"
 	"fmt"
-	"strconv"
-	"time"
-
-	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/strategies/types"
+	"strconv"
 )
 
 func (k msgServer) AutomationsAdd(ctx context.Context, msg *types.MsgAutomationsAdd) (*types.Void, error) {
@@ -44,7 +42,7 @@ func (k Keeper) addAutomation(ctx context.Context, msg types.AutomationMessage, 
 	intervalLength, _ := strconv.Atoi(msg.GetIntervalLength())
 	validityType, _ := strconv.Atoi(msg.GetValidityType())
 	validitValue, _ := strconv.Atoi(msg.GetValidityValue())
-	now := time.Now()
+	now := sdk.UnwrapSDKContext(ctx).BlockTime()
 
 	k.SetAutomation(ctx, types.Automation{
 		Address:              creator,
@@ -293,7 +291,7 @@ func (k Keeper) setAutomationActiveStatus(ctx context.Context, address string, i
 }
 
 func resetStatistics(ctx context.Context, automation *types.Automation) {
-	now := time.Now()
+	now := sdk.UnwrapSDKContext(ctx).BlockTime()
 
 	automation.PeriodStartTimestamp = &now
 	automation.PeriodStart = sdk.UnwrapSDKContext(ctx).BlockHeight()

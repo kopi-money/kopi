@@ -90,7 +90,7 @@ func TestHandle2(t *testing.T) {
 	}))
 
 	balance = k.BankKeeper.SpendableCoins(ctx, moduleAcc.GetAddress()).AmountOf(constants.KUSD)
-	require.True(t, balance.GT(math.ZeroInt()))
+	require.True(t, balance.IsPositive())
 
 	parity2, _, err := k.DexKeeper.CalculateParity(ctx, constants.KUSD)
 	require.NoError(t, err)
