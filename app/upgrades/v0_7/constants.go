@@ -1,6 +1,6 @@
-package v0_6_6
+package v0_7
 
 const (
 	// UpgradeName defines the on-chain upgrade name.
-	UpgradeName = "v0.6.6"
+	UpgradeName = "v0.7"
 )

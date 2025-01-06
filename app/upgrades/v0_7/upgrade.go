@@ -1,4 +1,4 @@
-package v0_6_6
+package v0_7
 
 import (
 	"context"
@@ -8,9 +8,11 @@ import (
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 )
 
-func CreateUpgradeHandler(mm *module.Manager, configurator module.Configurator, wasmK wasmkeeper.Keeper) upgradetypes.UpgradeHandler {
+func CreateUpgradeHandler(mm *module.Manager, configurator module.Configurator, denomK denomkeeper.Keeper, wasmK wasmkeeper.Keeper) upgradetypes.UpgradeHandler {
 	return func(ctx context.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		vm["capability"] = 1
 
@@ -27,6 +29,17 @@ func CreateUpgradeHandler(mm *module.Manager, configurator module.Configurator, 
 		if err = wasmK.SetParams(ctx, wasmParams); err != nil {
 			return vm, fmt.Errorf("unable to set CosmWasm params")
 		}
+
+		// Correct USDC ratio
+		ratioUSDT, err := denomK.GetRatio(ctx, "ibc/D8A36AE90F20FE4843A8D249B1BCF0CCDDE35C4B605C8DED57BED20C639162D0")
+		if err != nil {
+			return vm, fmt.Errorf("usdt ratio: %w", err)
+		}
+
+		denomK.SetRatio(ctx, denomtypes.Ratio{
+			Denom: "ibc/8E27BA2D5493AF5636760E354E46004562C46AB7EC0CC4C1CA14E9E20E2545B5",
+			Ratio: ratioUSDT.Ratio,
+		})
 
 		return vm, nil
 	}
