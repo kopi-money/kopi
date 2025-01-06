@@ -19,6 +19,8 @@ var (
 	fd_Order_creator            protoreflect.FieldDescriptor
 	fd_Order_denom_giving       protoreflect.FieldDescriptor
 	fd_Order_denom_receiving    protoreflect.FieldDescriptor
+	fd_Order_amount_locked      protoreflect.FieldDescriptor
+	fd_Order_amount_requested   protoreflect.FieldDescriptor
 	fd_Order_amount_given       protoreflect.FieldDescriptor
 	fd_Order_amount_received    protoreflect.FieldDescriptor
 	fd_Order_amount_left        protoreflect.FieldDescriptor
@@ -28,6 +30,7 @@ var (
 	fd_Order_num_blocks         protoreflect.FieldDescriptor
 	fd_Order_execution_interval protoreflect.FieldDescriptor
 	fd_Order_allow_incomplete   protoreflect.FieldDescriptor
+	fd_Order_is_buy_order       protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -37,6 +40,8 @@ func init() {
 	fd_Order_creator = md_Order.Fields().ByName("creator")
 	fd_Order_denom_giving = md_Order.Fields().ByName("denom_giving")
 	fd_Order_denom_receiving = md_Order.Fields().ByName("denom_receiving")
+	fd_Order_amount_locked = md_Order.Fields().ByName("amount_locked")
+	fd_Order_amount_requested = md_Order.Fields().ByName("amount_requested")
 	fd_Order_amount_given = md_Order.Fields().ByName("amount_given")
 	fd_Order_amount_received = md_Order.Fields().ByName("amount_received")
 	fd_Order_amount_left = md_Order.Fields().ByName("amount_left")
@@ -46,6 +51,7 @@ func init() {
 	fd_Order_num_blocks = md_Order.Fields().ByName("num_blocks")
 	fd_Order_execution_interval = md_Order.Fields().ByName("execution_interval")
 	fd_Order_allow_incomplete = md_Order.Fields().ByName("allow_incomplete")
+	fd_Order_is_buy_order = md_Order.Fields().ByName("is_buy_order")
 }
 
 var _ protoreflect.Message = (*fastReflection_Order)(nil)
@@ -137,6 +143,18 @@ func (x *fastReflection_Order) Range(f func(protoreflect.FieldDescriptor, protor
 			return
 		}
 	}
+	if len(x.AmountLocked) != 0 {
+		value := protoreflect.ValueOfBytes(x.AmountLocked)
+		if !f(fd_Order_amount_locked, value) {
+			return
+		}
+	}
+	if len(x.AmountRequested) != 0 {
+		value := protoreflect.ValueOfBytes(x.AmountRequested)
+		if !f(fd_Order_amount_requested, value) {
+			return
+		}
+	}
 	if len(x.AmountGiven) != 0 {
 		value := protoreflect.ValueOfBytes(x.AmountGiven)
 		if !f(fd_Order_amount_given, value) {
@@ -191,6 +209,12 @@ func (x *fastReflection_Order) Range(f func(protoreflect.FieldDescriptor, protor
 			return
 		}
 	}
+	if x.IsBuyOrder != false {
+		value := protoreflect.ValueOfBool(x.IsBuyOrder)
+		if !f(fd_Order_is_buy_order, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -214,6 +238,10 @@ func (x *fastReflection_Order) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.DenomGiving != ""
 	case "kopi.dex.Order.denom_receiving":
 		return x.DenomReceiving != ""
+	case "kopi.dex.Order.amount_locked":
+		return len(x.AmountLocked) != 0
+	case "kopi.dex.Order.amount_requested":
+		return len(x.AmountRequested) != 0
 	case "kopi.dex.Order.amount_given":
 		return len(x.AmountGiven) != 0
 	case "kopi.dex.Order.amount_received":
@@ -232,6 +260,8 @@ func (x *fastReflection_Order) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.ExecutionInterval != uint64(0)
 	case "kopi.dex.Order.allow_incomplete":
 		return x.AllowIncomplete != false
+	case "kopi.dex.Order.is_buy_order":
+		return x.IsBuyOrder != false
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.Order"))
@@ -256,6 +286,10 @@ func (x *fastReflection_Order) Clear(fd protoreflect.FieldDescriptor) {
 		x.DenomGiving = ""
 	case "kopi.dex.Order.denom_receiving":
 		x.DenomReceiving = ""
+	case "kopi.dex.Order.amount_locked":
+		x.AmountLocked = nil
+	case "kopi.dex.Order.amount_requested":
+		x.AmountRequested = nil
 	case "kopi.dex.Order.amount_given":
 		x.AmountGiven = nil
 	case "kopi.dex.Order.amount_received":
@@ -274,6 +308,8 @@ func (x *fastReflection_Order) Clear(fd protoreflect.FieldDescriptor) {
 		x.ExecutionInterval = uint64(0)
 	case "kopi.dex.Order.allow_incomplete":
 		x.AllowIncomplete = false
+	case "kopi.dex.Order.is_buy_order":
+		x.IsBuyOrder = false
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.Order"))
@@ -302,6 +338,12 @@ func (x *fastReflection_Order) Get(descriptor protoreflect.FieldDescriptor) prot
 	case "kopi.dex.Order.denom_receiving":
 		value := x.DenomReceiving
 		return protoreflect.ValueOfString(value)
+	case "kopi.dex.Order.amount_locked":
+		value := x.AmountLocked
+		return protoreflect.ValueOfBytes(value)
+	case "kopi.dex.Order.amount_requested":
+		value := x.AmountRequested
+		return protoreflect.ValueOfBytes(value)
 	case "kopi.dex.Order.amount_given":
 		value := x.AmountGiven
 		return protoreflect.ValueOfBytes(value)
@@ -328,6 +370,9 @@ func (x *fastReflection_Order) Get(descriptor protoreflect.FieldDescriptor) prot
 		return protoreflect.ValueOfUint64(value)
 	case "kopi.dex.Order.allow_incomplete":
 		value := x.AllowIncomplete
+		return protoreflect.ValueOfBool(value)
+	case "kopi.dex.Order.is_buy_order":
+		value := x.IsBuyOrder
 		return protoreflect.ValueOfBool(value)
 	default:
 		if descriptor.IsExtension() {
@@ -357,6 +402,10 @@ func (x *fastReflection_Order) Set(fd protoreflect.FieldDescriptor, value protor
 		x.DenomGiving = value.Interface().(string)
 	case "kopi.dex.Order.denom_receiving":
 		x.DenomReceiving = value.Interface().(string)
+	case "kopi.dex.Order.amount_locked":
+		x.AmountLocked = value.Bytes()
+	case "kopi.dex.Order.amount_requested":
+		x.AmountRequested = value.Bytes()
 	case "kopi.dex.Order.amount_given":
 		x.AmountGiven = value.Bytes()
 	case "kopi.dex.Order.amount_received":
@@ -375,6 +424,8 @@ func (x *fastReflection_Order) Set(fd protoreflect.FieldDescriptor, value protor
 		x.ExecutionInterval = value.Uint()
 	case "kopi.dex.Order.allow_incomplete":
 		x.AllowIncomplete = value.Bool()
+	case "kopi.dex.Order.is_buy_order":
+		x.IsBuyOrder = value.Bool()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.Order"))
@@ -403,6 +454,10 @@ func (x *fastReflection_Order) Mutable(fd protoreflect.FieldDescriptor) protoref
 		panic(fmt.Errorf("field denom_giving of message kopi.dex.Order is not mutable"))
 	case "kopi.dex.Order.denom_receiving":
 		panic(fmt.Errorf("field denom_receiving of message kopi.dex.Order is not mutable"))
+	case "kopi.dex.Order.amount_locked":
+		panic(fmt.Errorf("field amount_locked of message kopi.dex.Order is not mutable"))
+	case "kopi.dex.Order.amount_requested":
+		panic(fmt.Errorf("field amount_requested of message kopi.dex.Order is not mutable"))
 	case "kopi.dex.Order.amount_given":
 		panic(fmt.Errorf("field amount_given of message kopi.dex.Order is not mutable"))
 	case "kopi.dex.Order.amount_received":
@@ -421,6 +476,8 @@ func (x *fastReflection_Order) Mutable(fd protoreflect.FieldDescriptor) protoref
 		panic(fmt.Errorf("field execution_interval of message kopi.dex.Order is not mutable"))
 	case "kopi.dex.Order.allow_incomplete":
 		panic(fmt.Errorf("field allow_incomplete of message kopi.dex.Order is not mutable"))
+	case "kopi.dex.Order.is_buy_order":
+		panic(fmt.Errorf("field is_buy_order of message kopi.dex.Order is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.Order"))
@@ -442,6 +499,10 @@ func (x *fastReflection_Order) NewField(fd protoreflect.FieldDescriptor) protore
 		return protoreflect.ValueOfString("")
 	case "kopi.dex.Order.denom_receiving":
 		return protoreflect.ValueOfString("")
+	case "kopi.dex.Order.amount_locked":
+		return protoreflect.ValueOfBytes(nil)
+	case "kopi.dex.Order.amount_requested":
+		return protoreflect.ValueOfBytes(nil)
 	case "kopi.dex.Order.amount_given":
 		return protoreflect.ValueOfBytes(nil)
 	case "kopi.dex.Order.amount_received":
@@ -459,6 +520,8 @@ func (x *fastReflection_Order) NewField(fd protoreflect.FieldDescriptor) protore
 	case "kopi.dex.Order.execution_interval":
 		return protoreflect.ValueOfUint64(uint64(0))
 	case "kopi.dex.Order.allow_incomplete":
+		return protoreflect.ValueOfBool(false)
+	case "kopi.dex.Order.is_buy_order":
 		return protoreflect.ValueOfBool(false)
 	default:
 		if fd.IsExtension() {
@@ -544,6 +607,14 @@ func (x *fastReflection_Order) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		l = len(x.AmountLocked)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.AmountRequested)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		l = len(x.AmountGiven)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
@@ -576,6 +647,9 @@ func (x *fastReflection_Order) ProtoMethods() *protoiface.Methods {
 		if x.AllowIncomplete {
 			n += 2
 		}
+		if x.IsBuyOrder {
+			n += 3
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -605,6 +679,18 @@ func (x *fastReflection_Order) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
+		if x.IsBuyOrder {
+			i--
+			if x.IsBuyOrder {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x1
+			i--
+			dAtA[i] = 0x80
+		}
 		if x.AllowIncomplete {
 			i--
 			if x.AllowIncomplete {
@@ -613,55 +699,69 @@ func (x *fastReflection_Order) ProtoMethods() *protoiface.Methods {
 				dAtA[i] = 0
 			}
 			i--
-			dAtA[i] = 0x68
+			dAtA[i] = 0x78
 		}
 		if x.ExecutionInterval != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.ExecutionInterval))
 			i--
-			dAtA[i] = 0x60
+			dAtA[i] = 0x70
 		}
 		if x.NumBlocks != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.NumBlocks))
 			i--
-			dAtA[i] = 0x58
+			dAtA[i] = 0x68
 		}
 		if x.AddedAt != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.AddedAt))
 			i--
-			dAtA[i] = 0x50
+			dAtA[i] = 0x60
 		}
 		if len(x.MaxPrice) > 0 {
 			i -= len(x.MaxPrice)
 			copy(dAtA[i:], x.MaxPrice)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MaxPrice)))
 			i--
-			dAtA[i] = 0x4a
+			dAtA[i] = 0x5a
 		}
 		if len(x.TradeAmount) > 0 {
 			i -= len(x.TradeAmount)
 			copy(dAtA[i:], x.TradeAmount)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TradeAmount)))
 			i--
-			dAtA[i] = 0x42
+			dAtA[i] = 0x52
 		}
 		if len(x.AmountLeft) > 0 {
 			i -= len(x.AmountLeft)
 			copy(dAtA[i:], x.AmountLeft)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountLeft)))
 			i--
-			dAtA[i] = 0x3a
+			dAtA[i] = 0x4a
 		}
 		if len(x.AmountReceived) > 0 {
 			i -= len(x.AmountReceived)
 			copy(dAtA[i:], x.AmountReceived)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountReceived)))
 			i--
-			dAtA[i] = 0x32
+			dAtA[i] = 0x42
 		}
 		if len(x.AmountGiven) > 0 {
 			i -= len(x.AmountGiven)
 			copy(dAtA[i:], x.AmountGiven)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountGiven)))
+			i--
+			dAtA[i] = 0x3a
+		}
+		if len(x.AmountRequested) > 0 {
+			i -= len(x.AmountRequested)
+			copy(dAtA[i:], x.AmountRequested)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountRequested)))
+			i--
+			dAtA[i] = 0x32
+		}
+		if len(x.AmountLocked) > 0 {
+			i -= len(x.AmountLocked)
+			copy(dAtA[i:], x.AmountLocked)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountLocked)))
 			i--
 			dAtA[i] = 0x2a
 		}
@@ -857,6 +957,74 @@ func (x *fastReflection_Order) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 5:
 				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountLocked", wireType)
+				}
+				var byteLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					byteLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if byteLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + byteLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AmountLocked = append(x.AmountLocked[:0], dAtA[iNdEx:postIndex]...)
+				if x.AmountLocked == nil {
+					x.AmountLocked = []byte{}
+				}
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountRequested", wireType)
+				}
+				var byteLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					byteLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if byteLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + byteLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AmountRequested = append(x.AmountRequested[:0], dAtA[iNdEx:postIndex]...)
+				if x.AmountRequested == nil {
+					x.AmountRequested = []byte{}
+				}
+				iNdEx = postIndex
+			case 7:
+				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountGiven", wireType)
 				}
 				var byteLen int
@@ -889,7 +1057,7 @@ func (x *fastReflection_Order) ProtoMethods() *protoiface.Methods {
 					x.AmountGiven = []byte{}
 				}
 				iNdEx = postIndex
-			case 6:
+			case 8:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountReceived", wireType)
 				}
@@ -923,7 +1091,7 @@ func (x *fastReflection_Order) ProtoMethods() *protoiface.Methods {
 					x.AmountReceived = []byte{}
 				}
 				iNdEx = postIndex
-			case 7:
+			case 9:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountLeft", wireType)
 				}
@@ -957,7 +1125,7 @@ func (x *fastReflection_Order) ProtoMethods() *protoiface.Methods {
 					x.AmountLeft = []byte{}
 				}
 				iNdEx = postIndex
-			case 8:
+			case 10:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TradeAmount", wireType)
 				}
@@ -991,7 +1159,7 @@ func (x *fastReflection_Order) ProtoMethods() *protoiface.Methods {
 					x.TradeAmount = []byte{}
 				}
 				iNdEx = postIndex
-			case 9:
+			case 11:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaxPrice", wireType)
 				}
@@ -1025,7 +1193,7 @@ func (x *fastReflection_Order) ProtoMethods() *protoiface.Methods {
 					x.MaxPrice = []byte{}
 				}
 				iNdEx = postIndex
-			case 10:
+			case 12:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AddedAt", wireType)
 				}
@@ -1044,7 +1212,7 @@ func (x *fastReflection_Order) ProtoMethods() *protoiface.Methods {
 						break
 					}
 				}
-			case 11:
+			case 13:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field NumBlocks", wireType)
 				}
@@ -1063,7 +1231,7 @@ func (x *fastReflection_Order) ProtoMethods() *protoiface.Methods {
 						break
 					}
 				}
-			case 12:
+			case 14:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ExecutionInterval", wireType)
 				}
@@ -1082,7 +1250,7 @@ func (x *fastReflection_Order) ProtoMethods() *protoiface.Methods {
 						break
 					}
 				}
-			case 13:
+			case 15:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AllowIncomplete", wireType)
 				}
@@ -1102,6 +1270,26 @@ func (x *fastReflection_Order) ProtoMethods() *protoiface.Methods {
 					}
 				}
 				x.AllowIncomplete = bool(v != 0)
+			case 16:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field IsBuyOrder", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.IsBuyOrder = bool(v != 0)
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -1159,15 +1347,18 @@ type Order struct {
 	Creator           string `protobuf:"bytes,2,opt,name=creator,proto3" json:"creator,omitempty"`
 	DenomGiving       string `protobuf:"bytes,3,opt,name=denom_giving,json=denomGiving,proto3" json:"denom_giving,omitempty"`
 	DenomReceiving    string `protobuf:"bytes,4,opt,name=denom_receiving,json=denomReceiving,proto3" json:"denom_receiving,omitempty"`
-	AmountGiven       []byte `protobuf:"bytes,5,opt,name=amount_given,json=amountGiven,proto3" json:"amount_given,omitempty"`
-	AmountReceived    []byte `protobuf:"bytes,6,opt,name=amount_received,json=amountReceived,proto3" json:"amount_received,omitempty"`
-	AmountLeft        []byte `protobuf:"bytes,7,opt,name=amount_left,json=amountLeft,proto3" json:"amount_left,omitempty"`
-	TradeAmount       []byte `protobuf:"bytes,8,opt,name=trade_amount,json=tradeAmount,proto3" json:"trade_amount,omitempty"`
-	MaxPrice          []byte `protobuf:"bytes,9,opt,name=max_price,json=maxPrice,proto3" json:"max_price,omitempty"`
-	AddedAt           int64  `protobuf:"varint,10,opt,name=added_at,json=addedAt,proto3" json:"added_at,omitempty"`
-	NumBlocks         uint64 `protobuf:"varint,11,opt,name=num_blocks,json=numBlocks,proto3" json:"num_blocks,omitempty"`
-	ExecutionInterval uint64 `protobuf:"varint,12,opt,name=execution_interval,json=executionInterval,proto3" json:"execution_interval,omitempty"`
-	AllowIncomplete   bool   `protobuf:"varint,13,opt,name=allow_incomplete,json=allowIncomplete,proto3" json:"allow_incomplete,omitempty"`
+	AmountLocked      []byte `protobuf:"bytes,5,opt,name=amount_locked,json=amountLocked,proto3" json:"amount_locked,omitempty"`
+	AmountRequested   []byte `protobuf:"bytes,6,opt,name=amount_requested,json=amountRequested,proto3" json:"amount_requested,omitempty"`
+	AmountGiven       []byte `protobuf:"bytes,7,opt,name=amount_given,json=amountGiven,proto3" json:"amount_given,omitempty"`
+	AmountReceived    []byte `protobuf:"bytes,8,opt,name=amount_received,json=amountReceived,proto3" json:"amount_received,omitempty"`
+	AmountLeft        []byte `protobuf:"bytes,9,opt,name=amount_left,json=amountLeft,proto3" json:"amount_left,omitempty"`
+	TradeAmount       []byte `protobuf:"bytes,10,opt,name=trade_amount,json=tradeAmount,proto3" json:"trade_amount,omitempty"`
+	MaxPrice          []byte `protobuf:"bytes,11,opt,name=max_price,json=maxPrice,proto3" json:"max_price,omitempty"`
+	AddedAt           int64  `protobuf:"varint,12,opt,name=added_at,json=addedAt,proto3" json:"added_at,omitempty"`
+	NumBlocks         uint64 `protobuf:"varint,13,opt,name=num_blocks,json=numBlocks,proto3" json:"num_blocks,omitempty"`
+	ExecutionInterval uint64 `protobuf:"varint,14,opt,name=execution_interval,json=executionInterval,proto3" json:"execution_interval,omitempty"`
+	AllowIncomplete   bool   `protobuf:"varint,15,opt,name=allow_incomplete,json=allowIncomplete,proto3" json:"allow_incomplete,omitempty"`
+	IsBuyOrder        bool   `protobuf:"varint,16,opt,name=is_buy_order,json=isBuyOrder,proto3" json:"is_buy_order,omitempty"`
 }
 
 func (x *Order) Reset() {
@@ -1216,6 +1407,20 @@ func (x *Order) GetDenomReceiving() string {
 		return x.DenomReceiving
 	}
 	return ""
+}
+
+func (x *Order) GetAmountLocked() []byte {
+	if x != nil {
+		return x.AmountLocked
+	}
+	return nil
+}
+
+func (x *Order) GetAmountRequested() []byte {
+	if x != nil {
+		return x.AmountRequested
+	}
+	return nil
 }
 
 func (x *Order) GetAmountGiven() []byte {
@@ -1281,13 +1486,20 @@ func (x *Order) GetAllowIncomplete() bool {
 	return false
 }
 
+func (x *Order) GetIsBuyOrder() bool {
+	if x != nil {
+		return x.IsBuyOrder
+	}
+	return false
+}
+
 var File_kopi_dex_order_proto protoreflect.FileDescriptor
 
 var file_kopi_dex_order_proto_rawDesc = []byte{
 	0x0a, 0x14, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0x2f, 0x6f, 0x72, 0x64, 0x65, 0x72,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x08, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78,
 	0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xe5, 0x04, 0x0a, 0x05, 0x4f, 0x72, 0x64, 0x65, 0x72,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x95, 0x06, 0x0a, 0x05, 0x4f, 0x72, 0x64, 0x65, 0x72,
 	0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52,
 	0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f,
 	0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x63, 0x72, 0x65, 0x61, 0x74, 0x6f, 0x72,
@@ -1295,37 +1507,48 @@ var file_kopi_dex_order_proto_rawDesc = []byte{
 	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x47, 0x69, 0x76,
 	0x69, 0x6e, 0x67, 0x12, 0x27, 0x0a, 0x0f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x72, 0x65, 0x63,
 	0x65, 0x69, 0x76, 0x69, 0x6e, 0x67, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x64, 0x65,
-	0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x69, 0x6e, 0x67, 0x12, 0x40, 0x0a, 0x0c,
-	0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x67, 0x69, 0x76, 0x65, 0x6e, 0x18, 0x05, 0x20, 0x01,
-	0x28, 0x0c, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e,
-	0x74, 0x52, 0x0b, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x47, 0x69, 0x76, 0x65, 0x6e, 0x12, 0x46,
-	0x0a, 0x0f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65,
-	0x64, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
-	0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
-	0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0e, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65,
-	0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x12, 0x3e, 0x0a, 0x0b, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
-	0x5f, 0x6c, 0x65, 0x66, 0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x1d, 0xc8, 0xde, 0x1f,
-	0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
-	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0a, 0x61, 0x6d, 0x6f, 0x75,
-	0x6e, 0x74, 0x4c, 0x65, 0x66, 0x74, 0x12, 0x40, 0x0a, 0x0c, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f,
-	0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x08, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x1d, 0xc8, 0xde,
-	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
-	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0b, 0x74, 0x72, 0x61,
-	0x64, 0x65, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x40, 0x0a, 0x09, 0x6d, 0x61, 0x78, 0x5f,
-	0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x09, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f,
-	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
-	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
-	0x52, 0x08, 0x6d, 0x61, 0x78, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x64,
-	0x64, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x03, 0x52, 0x07, 0x61, 0x64,
-	0x64, 0x65, 0x64, 0x41, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x6e, 0x75, 0x6d, 0x5f, 0x62, 0x6c, 0x6f,
-	0x63, 0x6b, 0x73, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x04, 0x52, 0x09, 0x6e, 0x75, 0x6d, 0x42, 0x6c,
-	0x6f, 0x63, 0x6b, 0x73, 0x12, 0x2d, 0x0a, 0x12, 0x65, 0x78, 0x65, 0x63, 0x75, 0x74, 0x69, 0x6f,
-	0x6e, 0x5f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x04,
-	0x52, 0x11, 0x65, 0x78, 0x65, 0x63, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e, 0x74, 0x65, 0x72,
-	0x76, 0x61, 0x6c, 0x12, 0x29, 0x0a, 0x10, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x63,
-	0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0f, 0x61,
-	0x6c, 0x6c, 0x6f, 0x77, 0x49, 0x6e, 0x63, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x42, 0x76,
+	0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x69, 0x6e, 0x67, 0x12, 0x42, 0x0a, 0x0d,
+	0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x6c, 0x6f, 0x63, 0x6b, 0x65, 0x64, 0x18, 0x05, 0x20,
+	0x01, 0x28, 0x0c, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49,
+	0x6e, 0x74, 0x52, 0x0c, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x4c, 0x6f, 0x63, 0x6b, 0x65, 0x64,
+	0x12, 0x48, 0x0a, 0x10, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x72, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x65, 0x64, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0f, 0x61, 0x6d, 0x6f, 0x75, 0x6e,
+	0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x65, 0x64, 0x12, 0x40, 0x0a, 0x0c, 0x61, 0x6d,
+	0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x67, 0x69, 0x76, 0x65, 0x6e, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0c,
+	0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0x52,
+	0x0b, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x47, 0x69, 0x76, 0x65, 0x6e, 0x12, 0x46, 0x0a, 0x0f,
+	0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x18,
+	0x08, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
+	0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0e, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x63, 0x65,
+	0x69, 0x76, 0x65, 0x64, 0x12, 0x3e, 0x0a, 0x0b, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x6c,
+	0x65, 0x66, 0x74, 0x18, 0x09, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda,
+	0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
+	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0a, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
+	0x4c, 0x65, 0x66, 0x74, 0x12, 0x40, 0x0a, 0x0c, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x61, 0x6d,
+	0x6f, 0x75, 0x6e, 0x74, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0b, 0x74, 0x72, 0x61, 0x64, 0x65,
+	0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x40, 0x0a, 0x09, 0x6d, 0x61, 0x78, 0x5f, 0x70, 0x72,
+	0x69, 0x63, 0x65, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda,
+	0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
+	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x08,
+	0x6d, 0x61, 0x78, 0x50, 0x72, 0x69, 0x63, 0x65, 0x12, 0x19, 0x0a, 0x08, 0x61, 0x64, 0x64, 0x65,
+	0x64, 0x5f, 0x61, 0x74, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x03, 0x52, 0x07, 0x61, 0x64, 0x64, 0x65,
+	0x64, 0x41, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x6e, 0x75, 0x6d, 0x5f, 0x62, 0x6c, 0x6f, 0x63, 0x6b,
+	0x73, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x04, 0x52, 0x09, 0x6e, 0x75, 0x6d, 0x42, 0x6c, 0x6f, 0x63,
+	0x6b, 0x73, 0x12, 0x2d, 0x0a, 0x12, 0x65, 0x78, 0x65, 0x63, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x5f,
+	0x69, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61, 0x6c, 0x18, 0x0e, 0x20, 0x01, 0x28, 0x04, 0x52, 0x11,
+	0x65, 0x78, 0x65, 0x63, 0x75, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x76, 0x61,
+	0x6c, 0x12, 0x29, 0x0a, 0x10, 0x61, 0x6c, 0x6c, 0x6f, 0x77, 0x5f, 0x69, 0x6e, 0x63, 0x6f, 0x6d,
+	0x70, 0x6c, 0x65, 0x74, 0x65, 0x18, 0x0f, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0f, 0x61, 0x6c, 0x6c,
+	0x6f, 0x77, 0x49, 0x6e, 0x63, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x12, 0x20, 0x0a, 0x0c,
+	0x69, 0x73, 0x5f, 0x62, 0x75, 0x79, 0x5f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x18, 0x10, 0x20, 0x01,
+	0x28, 0x08, 0x52, 0x0a, 0x69, 0x73, 0x42, 0x75, 0x79, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x42, 0x76,
 	0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x42, 0x0a,
 	0x4f, 0x72, 0x64, 0x65, 0x72, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x19, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b,

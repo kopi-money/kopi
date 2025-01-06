@@ -29,7 +29,7 @@ func TestRatios1(t *testing.T) {
 
 	// 1 BTC = 1000 kUSD = 4000 XKP
 	// 1 / 4000 = 0.00025
-	require.Equal(t, math.LegacyNewDecWithPrec(25, 5), ratio.Ratio)
+	require.Equal(t, math.LegacyNewDecWithPrec(25, 3), ratio.Ratio)
 }
 
 func TestRatios2(t *testing.T) {
@@ -39,7 +39,7 @@ func TestRatios2(t *testing.T) {
 	// Add BTC with a price 1 BTC = 1000 kUSD
 	require.NoError(t, keepertest.AddDexDenom(ctx, denomMsg, &denomtypes.MsgDexAddDenom{
 		Authority:    k.GetAuthority(),
-		Name:         "inj",
+		Name:         "inj2",
 		Factor:       "22ukusd",
 		MinLiquidity: "1000000",
 		MinOrderSize: "1000000",

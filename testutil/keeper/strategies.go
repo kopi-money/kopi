@@ -28,9 +28,13 @@ import (
 
 type DummyBlockspeedKeeper struct{}
 
-func (d DummyBlockspeedKeeper) GetSecondsPerBlock(ctx context.Context) math.LegacyDec {
+func (d DummyBlockspeedKeeper) GetSecondsPerBlock(_ context.Context) math.LegacyDec {
 	//TODO implement me
-	panic("implement me")
+	return math.LegacyOneDec()
+}
+
+func (d DummyBlockspeedKeeper) GetBlocksPerSecond(_ context.Context) math.LegacyDec {
+	return math.LegacyOneDec()
 }
 
 func (d DummyBlockspeedKeeper) BlocksPerYear(_ context.Context) (math.LegacyDec, error) {

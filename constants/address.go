@@ -1,3 +1,5 @@
 package constants
 
-const Bech32PrefixAccAddr = "kopi"
+const (
+	Bech32PrefixAccAddr = "kopi"
+)

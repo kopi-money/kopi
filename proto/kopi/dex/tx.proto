@@ -167,6 +167,7 @@ message MsgAddOrder {
   uint64 blocks = 7;
   uint64 interval = 8;
   bool allow_incomplete = 9;
+  bool is_buy_order = 10;
 }
 
 message MsgRemoveOrder {

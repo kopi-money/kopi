@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	reservetypes "github.com/kopi-money/kopi/x/reserve/types"
 	"strconv"
 	"testing"
 
@@ -43,13 +44,14 @@ func DexKeeper(t *testing.T) (dexkeeper.Keeper, context.Context, *Keys) {
 		dextypes.PoolLiquidity:                 nil,
 		dextypes.PoolTrade:                     nil,
 		dextypes.PoolOrders:                    nil,
-		dextypes.PoolReserve:                   {authtypes.Minter, authtypes.Burner},
+		dextypes.PoolReserve:                   nil,
 		denomtypes.ModuleName:                  nil,
 		minttypes.ModuleName:                   nil,
 		mmtypes.PoolCollateral:                 nil,
 		mmtypes.PoolVault:                      nil,
 		mmtypes.PoolRedemption:                 nil,
 		mmtypes.ModuleName:                     {authtypes.Minter},
+		reservetypes.ModuleName:                {authtypes.Minter, authtypes.Burner},
 		swaptypes.ModuleName:                   {authtypes.Minter, authtypes.Burner},
 		strategiestypes.PoolArbitrage:          {authtypes.Minter, authtypes.Burner},
 		strategiestypes.PoolAutomationFunds:    nil,

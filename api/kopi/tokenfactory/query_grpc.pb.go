@@ -19,9 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName  = "/kopi.tokenfactory.Query/Params"
-	Query_Denoms_FullMethodName  = "/kopi.tokenfactory.Query/Denoms"
-	Query_GetPool_FullMethodName = "/kopi.tokenfactory.Query/GetPool"
+	Query_Params_FullMethodName            = "/kopi.tokenfactory.Query/Params"
+	Query_Denoms_FullMethodName            = "/kopi.tokenfactory.Query/Denoms"
+	Query_GetPool_FullMethodName           = "/kopi.tokenfactory.Query/GetPool"
+	Query_QuerySimulateSell_FullMethodName = "/kopi.tokenfactory.Query/QuerySimulateSell"
+	Query_QuerySimulateBuy_FullMethodName  = "/kopi.tokenfactory.Query/QuerySimulateBuy"
 )
 
 // QueryClient is the client API for Query service.
@@ -32,6 +34,8 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	Denoms(ctx context.Context, in *QueryDenomsRequest, opts ...grpc.CallOption) (*QueryDenomsResponse, error)
 	GetPool(ctx context.Context, in *QueryPoolRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error)
+	QuerySimulateSell(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error)
+	QuerySimulateBuy(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error)
 }
 
 type queryClient struct {
@@ -69,6 +73,24 @@ func (c *queryClient) GetPool(ctx context.Context, in *QueryPoolRequest, opts ..
 	return out, nil
 }
 
+func (c *queryClient) QuerySimulateSell(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error) {
+	out := new(QuerySimulateTradeResponse)
+	err := c.cc.Invoke(ctx, Query_QuerySimulateSell_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) QuerySimulateBuy(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error) {
+	out := new(QuerySimulateTradeResponse)
+	err := c.cc.Invoke(ctx, Query_QuerySimulateBuy_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -77,6 +99,8 @@ type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	Denoms(context.Context, *QueryDenomsRequest) (*QueryDenomsResponse, error)
 	GetPool(context.Context, *QueryPoolRequest) (*QueryPoolResponse, error)
+	QuerySimulateSell(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error)
+	QuerySimulateBuy(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -92,6 +116,12 @@ func (UnimplementedQueryServer) Denoms(context.Context, *QueryDenomsRequest) (*Q
 }
 func (UnimplementedQueryServer) GetPool(context.Context, *QueryPoolRequest) (*QueryPoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPool not implemented")
+}
+func (UnimplementedQueryServer) QuerySimulateSell(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QuerySimulateSell not implemented")
+}
+func (UnimplementedQueryServer) QuerySimulateBuy(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QuerySimulateBuy not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -160,6 +190,42 @@ func _Query_GetPool_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_QuerySimulateSell_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuerySimulateTradeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).QuerySimulateSell(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_QuerySimulateSell_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).QuerySimulateSell(ctx, req.(*QuerySimulateTradeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_QuerySimulateBuy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuerySimulateTradeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).QuerySimulateBuy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_QuerySimulateBuy_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).QuerySimulateBuy(ctx, req.(*QuerySimulateTradeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -178,6 +244,14 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetPool",
 			Handler:    _Query_GetPool_Handler,
+		},
+		{
+			MethodName: "QuerySimulateSell",
+			Handler:    _Query_QuerySimulateSell_Handler,
+		},
+		{
+			MethodName: "QuerySimulateBuy",
+			Handler:    _Query_QuerySimulateBuy_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

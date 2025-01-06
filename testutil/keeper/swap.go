@@ -37,6 +37,7 @@ func SwapKeeper(t *testing.T) (swapkeeper.Keeper, dexkeeper.Keeper, reservekeepe
 		log.NewNopLogger(),
 		dexKeeper.AccountKeeper,
 		dexKeeper.BankKeeper,
+		DummyBlockspeedKeeper{},
 		dexKeeper.DenomKeeper.(swaptypes.DenomKeeper),
 		dexKeeper,
 		authority.String(),

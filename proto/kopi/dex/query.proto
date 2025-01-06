@@ -344,11 +344,14 @@ message OrderResponse {
   string amount_received = 8;
   string amount_received_usd = 9;
   string trade_amount = 10;
-  string max_price = 11;
-  string max_price_usd = 12;
-  uint64 num_blocks = 13;
-  uint64 block_end = 14;
-  bool allow_incomplete = 15;
+  string current_price = 11;
+  string current_price_usd = 12;
+  string max_price = 13;
+  string max_price_usd = 14;
+  uint64 num_blocks = 15;
+  uint64 block_end = 16;
+  bool allow_incomplete = 17;
+  bool is_buy_order = 18;
 }
 
 message QueryOrdersResponse {

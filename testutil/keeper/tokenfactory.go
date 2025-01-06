@@ -100,7 +100,7 @@ func BurnFactoryDenom(ctx context.Context, msgServer types.MsgServer, creator, f
 	})
 }
 
-func CreatePool(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash, factoryDenomAmount, kCoin, kCoinAmount, poolFee string, unlockBlocks uint64) error {
+func CreatePool(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash, factoryDenomAmount, kCoin, kCoinAmount, poolFee string, unlockSeconds uint64) error {
 	return cache.Transact(ctx, func(innerCtx context.Context) error {
 		_, err := msgServer.CreatePool(innerCtx, &types.MsgCreatePool{
 			Creator:              creator,
@@ -109,7 +109,7 @@ func CreatePool(ctx context.Context, msgServer types.MsgServer, creator, factory
 			KCoin:                kCoin,
 			KCoinAmount:          kCoinAmount,
 			PoolFee:              poolFee,
-			UnlockBlocks:         unlockBlocks,
+			UnlockInSeconds:      unlockSeconds,
 		})
 		return err
 	})
@@ -125,13 +125,13 @@ func DissolvePool(ctx context.Context, msgServer types.MsgServer, creator, facto
 	})
 }
 
-func UpdateLiquidityPoolSettings(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash, poolFee string, unlockBlocks uint64) error {
+func UpdateLiquidityPoolSettings(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash, poolFee string, unlockSeconds uint64) error {
 	return cache.Transact(ctx, func(innerCtx context.Context) error {
 		_, err := msgServer.UpdateLiquidityPoolSettings(innerCtx, &types.MsgUpdateLiquidityPoolSettings{
 			Creator:              creator,
 			FullFactoryDenomName: factoryDenomHash,
 			PoolFee:              poolFee,
-			UnlockBlocks:         unlockBlocks,
+			UnlockInSeconds:      unlockSeconds,
 		})
 		return err
 	})
