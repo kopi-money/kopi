@@ -7,16 +7,16 @@ import (
 )
 
 var (
-	kCoinBurnShare = math.LegacyOneDec()
-	sellThreshold  = math.LegacyOneDec()
-	buyThreshold   = math.LegacyNewDecWithPrec(9999, 4)
+	KCoinBurnShare = math.LegacyOneDec()
+	SellThreshold  = math.LegacyOneDec()
+	BuyThreshold   = math.LegacyNewDecWithPrec(9999, 4)
 )
 
 func DefaultParams() Params {
 	return Params{
-		KcoinBurnShare: kCoinBurnShare,
-		SellThreshold:  sellThreshold,
-		BuyThreshold:   buyThreshold,
+		KcoinBurnShare: KCoinBurnShare,
+		SellThreshold:  SellThreshold,
+		BuyThreshold:   BuyThreshold,
 	}
 }
 

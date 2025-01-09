@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/kopi-money/kopi/cache"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
+	reservekeeper "github.com/kopi-money/kopi/x/reserve/keeper"
+	reservetypes "github.com/kopi-money/kopi/x/reserve/types"
 
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
@@ -14,7 +16,7 @@ import (
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 )
 
-func CreateUpgradeHandler(mm *module.Manager, configurator module.Configurator, denomK denomkeeper.Keeper, dexK dexkeeper.Keeper, wasmK wasmkeeper.Keeper) upgradetypes.UpgradeHandler {
+func CreateUpgradeHandler(mm *module.Manager, configurator module.Configurator, denomK denomkeeper.Keeper, dexK dexkeeper.Keeper, reserveK reservekeeper.Keeper, wasmK wasmkeeper.Keeper) upgradetypes.UpgradeHandler {
 	return func(ctx context.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		vm["capability"] = 1
 
@@ -47,8 +49,20 @@ func CreateUpgradeHandler(mm *module.Manager, configurator module.Configurator, 
 			})
 		}
 
+		// Migrate orders from V1 to V2
 		if err = cache.Transact(ctx, func(innerCtx context.Context) error {
 			return dexK.UpgradeOrdersV2(innerCtx)
+		}); err != nil {
+			denomK.Logger().Info(fmt.Errorf("deleting orders v1: %w", err).Error())
+		}
+
+		// Set Reserve parameters
+		if err = cache.Transact(ctx, func(innerCtx context.Context) error {
+			return reserveK.SetParams(ctx, reservetypes.Params{
+				KcoinBurnShare: reservetypes.KCoinBurnShare,
+				SellThreshold:  reservetypes.SellThreshold,
+				BuyThreshold:   reservetypes.BuyThreshold,
+			})
 		}); err != nil {
 			denomK.Logger().Info(fmt.Errorf("deleting orders v1: %w", err).Error())
 		}
