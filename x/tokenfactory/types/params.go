@@ -24,6 +24,18 @@ func DefaultParams() Params {
 
 // Validate validates the set of params
 func (p Params) Validate() error {
+	if p.CreationFee.IsNil() {
+		p.CreationFee = CreationFee
+	}
+
+	if p.ReserveFee.IsNil() {
+		p.ReserveFee = ReserveFee
+	}
+
+	if p.MinimumPoolSize.IsNil() {
+		p.MinimumPoolSize = MinimumPoolSize
+	}
+
 	if err := validateBiggerZero(p.CreationFee); err != nil {
 		return fmt.Errorf("invalid creation fee: %w", err)
 	}
