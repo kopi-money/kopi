@@ -141,7 +141,7 @@ func (k Keeper) UpgradeOrdersV2(ctx context.Context) error {
 	for iterator.Valid() {
 		legacyOrder, err = iterator.Value()
 		if err != nil {
-			return fmt.Errorf("getting order: %w", err)
+			k.Logger().Error(fmt.Errorf("getting order: %w", err).Error())
 		}
 
 		k.ordersLegacy.Remove(ctx, legacyOrder.Index)
