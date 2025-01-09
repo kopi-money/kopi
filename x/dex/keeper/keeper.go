@@ -106,9 +106,9 @@ func NewKeeper(
 			caches,
 		),
 
-		legacyOrders: cache.NewMapCache(
+		ordersLegacy: cache.NewMapCache(
 			sb,
-			PrefixOrders,
+			PrefixOrdersLegacy,
 			"orders_list",
 			collections.Uint64Key,
 			codec.CollValue[types.LegacyOrder](cdc),
