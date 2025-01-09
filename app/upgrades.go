@@ -50,7 +50,7 @@ func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
 		{
 			UpgradeName: v7.UpgradeName,
 			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
-				return v7.CreateUpgradeHandler(manager, configurator, app.DenominationsKeeper, app.DexKeeper, app.WasmKeeper)
+				return v7.CreateUpgradeHandler(manager, configurator, app.DenominationsKeeper, app.DexKeeper, app.ReserveKeeper, app.WasmKeeper)
 			},
 			StoreUpgrades: storetypes.StoreUpgrades{
 				Added: []string{wasmtypes.ModuleName},
