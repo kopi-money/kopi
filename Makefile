@@ -92,3 +92,11 @@ install: go.sum
 
 build:
 	go build $(BUILD_FLAGS) -o bin/kopid ./cmd/kopid
+
+build-docker:
+	mkdir -p bin
+	docker build --platform linux/amd64 --no-cache --tag kopi-money/kopi ./
+	docker create --platform linux/amd64 --name temp kopi-money/kopi:latest
+	docker cp temp:/go/bin/kopid bin/
+	docker cp temp:/lib/libwasmvm.so bin/
+	docker rm temp
