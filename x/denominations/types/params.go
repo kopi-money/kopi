@@ -85,15 +85,15 @@ func validateArbitrageDenoms(p Params) error {
 		}
 
 		if _, has := seen[arbitrageDenom.DexDenom]; has {
-			return fmt.Errorf("duplicate arbitrage denom")
+			return fmt.Errorf("duplicate arbitrage denom: %v", arbitrageDenom.DexDenom)
 		}
 
 		if _, has := seen[arbitrageDenom.KCoin]; has {
-			return fmt.Errorf("duplicate arbitrage kCoin reference")
+			return fmt.Errorf("duplicate arbitrage kCoin reference: %v", arbitrageDenom.KCoin)
 		}
 
 		if _, has := seen[arbitrageDenom.CAsset]; has {
-			return fmt.Errorf("duplicate arbitrage cAsset reference")
+			return fmt.Errorf("duplicate arbitrage cAsset reference: %v", arbitrageDenom.CAsset)
 		}
 
 		seen[arbitrageDenom.DexDenom] = struct{}{}
@@ -264,11 +264,11 @@ func validateCAssets(p Params) error {
 		}
 
 		if err := validateCAsset(p, cAsset); err != nil {
-			return fmt.Errorf("error validating cAssets %v: %w", cAsset.DexDenom, err)
+			return fmt.Errorf("error validating cAsset denom %v: %w", cAsset.DexDenom, err)
 		}
 
 		if _, has := seen[cAsset.DexDenom]; has {
-			return fmt.Errorf("duplicate cAsset denom")
+			return fmt.Errorf("duplicate cAsset denom: %v", cAsset.DexDenom)
 		}
 
 		seen[cAsset.DexDenom] = struct{}{}
@@ -326,7 +326,7 @@ func validateCollateralDenoms(p Params) error {
 		}
 
 		if _, has := seen[collateralDenom.DexDenom]; has {
-			return fmt.Errorf("duplicate collateral denom")
+			return fmt.Errorf("duplicate collateral denom: %v", collateralDenom.DexDenom)
 		}
 		seen[collateralDenom.DexDenom] = struct{}{}
 	}

@@ -5,6 +5,43 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/dex/types";
 
+message LegacyOrder {
+  uint64 index = 1;
+  string creator = 2;
+  string denom_giving = 3;
+  string denom_receiving = 4;
+
+  bytes amount_given = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  bytes amount_received = 6 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  bytes amount_left = 7 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  bytes trade_amount = 8 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  bytes max_price = 9 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+
+  int64 added_at = 10;
+  uint64 num_blocks = 11;
+  uint64 execution_interval = 12;
+  bool allow_incomplete = 13;
+}
+
 message Order {
   uint64 index = 1;
   string creator = 2;

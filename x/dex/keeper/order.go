@@ -130,3 +130,42 @@ func (k Keeper) GetAllOrdersByAddress(ctx context.Context, address string) (list
 
 	return
 }
+
+func (k Keeper) UpgradeOrdersV2(ctx context.Context) error {
+	iterator, err := k.ordersLegacy.CollectionIterator(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("creating collection iterator: %w", err)
+	}
+
+	var legacyOrder types.LegacyOrder
+	for iterator.Valid() {
+		legacyOrder, err = iterator.Value()
+		if err != nil {
+			return fmt.Errorf("getting order: %w", err)
+		}
+
+		k.ordersLegacy.Remove(ctx, legacyOrder.Index)
+		k.orders.Set(ctx, legacyOrder.Index, types.Order{
+			Index:             legacyOrder.Index,
+			Creator:           legacyOrder.Creator,
+			DenomGiving:       legacyOrder.DenomGiving,
+			DenomReceiving:    legacyOrder.DenomReceiving,
+			AmountLocked:      legacyOrder.AmountLeft,
+			AmountRequested:   legacyOrder.AmountGiven,
+			AmountGiven:       legacyOrder.AmountGiven,
+			AmountReceived:    legacyOrder.AmountReceived,
+			AmountLeft:        legacyOrder.AmountLeft,
+			TradeAmount:       legacyOrder.TradeAmount,
+			MaxPrice:          legacyOrder.MaxPrice,
+			AddedAt:           legacyOrder.AddedAt,
+			NumBlocks:         legacyOrder.NumBlocks,
+			ExecutionInterval: legacyOrder.ExecutionInterval,
+			AllowIncomplete:   legacyOrder.AllowIncomplete,
+			IsBuyOrder:        false,
+		})
+
+		iterator.Next()
+	}
+
+	return nil
+}

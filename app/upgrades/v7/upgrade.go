@@ -3,6 +3,7 @@ package v7
 import (
 	"context"
 	"fmt"
+	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
@@ -12,7 +13,7 @@ import (
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 )
 
-func CreateUpgradeHandler(mm *module.Manager, configurator module.Configurator, denomK denomkeeper.Keeper, wasmK wasmkeeper.Keeper) upgradetypes.UpgradeHandler {
+func CreateUpgradeHandler(mm *module.Manager, configurator module.Configurator, denomK denomkeeper.Keeper, dexK dexkeeper.Keeper, wasmK wasmkeeper.Keeper) upgradetypes.UpgradeHandler {
 	return func(ctx context.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 		vm["capability"] = 1
 
@@ -39,6 +40,10 @@ func CreateUpgradeHandler(mm *module.Manager, configurator module.Configurator, 
 				Denom: "ibc/8E27BA2D5493AF5636760E354E46004562C46AB7EC0CC4C1CA14E9E20E2545B5",
 				Ratio: ratioUSDT.Ratio,
 			})
+		}
+
+		if err = dexK.UpgradeOrdersV2(ctx); err != nil {
+			denomK.Logger().Info(fmt.Errorf("deleting orders v1: %w", err).Error())
 		}
 
 		return vm, nil
