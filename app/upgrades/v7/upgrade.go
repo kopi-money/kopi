@@ -3,6 +3,7 @@ package v7
 import (
 	"context"
 	"fmt"
+	"github.com/kopi-money/kopi/cache"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 
 	upgradetypes "cosmossdk.io/x/upgrade/types"
@@ -36,13 +37,19 @@ func CreateUpgradeHandler(mm *module.Manager, configurator module.Configurator, 
 		if err != nil {
 			denomK.Logger().Info(fmt.Errorf("usdt ratio: %w", err).Error())
 		} else {
-			denomK.SetRatio(ctx, denomtypes.Ratio{
-				Denom: "ibc/8E27BA2D5493AF5636760E354E46004562C46AB7EC0CC4C1CA14E9E20E2545B5",
-				Ratio: ratioUSDT.Ratio,
+			_ = cache.Transact(ctx, func(innerCtx context.Context) error {
+				denomK.SetRatio(innerCtx, denomtypes.Ratio{
+					Denom: "ibc/8E27BA2D5493AF5636760E354E46004562C46AB7EC0CC4C1CA14E9E20E2545B5",
+					Ratio: ratioUSDT.Ratio,
+				})
+
+				return nil
 			})
 		}
 
-		if err = dexK.UpgradeOrdersV2(ctx); err != nil {
+		if err = cache.Transact(ctx, func(innerCtx context.Context) error {
+			return dexK.UpgradeOrdersV2(innerCtx)
+		}); err != nil {
 			denomK.Logger().Info(fmt.Errorf("deleting orders v1: %w", err).Error())
 		}
 
