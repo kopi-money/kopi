@@ -58,7 +58,7 @@ func CreateUpgradeHandler(mm *module.Manager, configurator module.Configurator, 
 
 		// Set Reserve parameters
 		if err = cache.Transact(ctx, func(innerCtx context.Context) error {
-			return reserveK.SetParams(ctx, reservetypes.Params{
+			return reserveK.SetParams(innerCtx, reservetypes.Params{
 				KcoinBurnShare: reservetypes.KCoinBurnShare,
 				SellThreshold:  reservetypes.SellThreshold,
 				BuyThreshold:   reservetypes.BuyThreshold,
