@@ -5,13 +5,7 @@ ARG BUILDPLATFORM="linux/amd64"
 ARG BASE_IMAGE="golang:${GO_VERSION}-alpine"
 ARG WASMVM_VERSION="v2.2.1"
 
-FROM --platform=${BUILDPLATFORM} ${BASE_IMAGE} as base
-
-###############################################################################
-# Builder
-###############################################################################
-
-FROM base as builder-stage-1
+FROM --platform=${BUILDPLATFORM} ${BASE_IMAGE}
 
 ARG GIT_COMMIT
 ARG GIT_VERSION
@@ -46,11 +40,11 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 
 # Cosmwasm - Download correct libwasmvm version and verify checksum
 RUN set -eux &&\
-    WASMVM_DOWNLOADS="https://github.com/CosmWasm/wasmvm/releases/download/v2.2.1"; \
+    WASMVM_DOWNLOADS="https://github.com/CosmWasm/wasmvm/releases/download/v2.1.4"; \
     wget ${WASMVM_DOWNLOADS}/checksums.txt -O /tmp/checksums.txt; \
     WASMVM_URL="${WASMVM_DOWNLOADS}/libwasmvm_muslc.x86_64.a"; \
     wget ${WASMVM_URL} -O /lib/libwasmvm_muslc.x86_64.a; \
-    CHECKSUM=`sha256sum /lib/libwasmvm_muslc.a | cut -d" " -f1`; \
+    CHECKSUM=`sha256sum /lib/libwasmvm_muslc.x86_64.a | cut -d" " -f1`; \
     grep ${CHECKSUM} /tmp/checksums.txt; \
     rm /tmp/checksums.txt
 
