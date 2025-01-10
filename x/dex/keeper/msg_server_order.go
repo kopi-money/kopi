@@ -45,7 +45,7 @@ func (k Keeper) AddOrder(ctx context.Context, creator, denomGiving, denomReceivi
 
 	var lockAmount math.Int
 	if isBuyOrder {
-		lockAmount = k.calculateLockAmount(ctx, amount.ToLegacyDec(), *maxPrice, isBuyOrder)
+		lockAmount = k.calculateBuyLockAmount(ctx, amount.ToLegacyDec(), *maxPrice)
 	} else {
 		lockAmount = amount
 	}
@@ -92,14 +92,8 @@ func (k Keeper) AddOrder(ctx context.Context, creator, denomGiving, denomReceivi
 	return &order, nil
 }
 
-func (k Keeper) calculateLockAmount(ctx context.Context, amountRequested, maxPrice math.LegacyDec, isBuyOrder bool) math.Int {
-	var amountRequired math.LegacyDec
-	if isBuyOrder {
-		amountRequired = amountRequested.Mul(maxPrice)
-	} else {
-		amountRequired = amountRequested.Quo(maxPrice)
-	}
-
+func (k Keeper) calculateBuyLockAmount(ctx context.Context, amountRequested, maxPrice math.LegacyDec) math.Int {
+	amountRequired := amountRequested.Mul(maxPrice)
 	amountRequired = amountRequired.Quo(math.LegacyOneDec().Sub(k.GetOrderFee(ctx)))
 	amountRequired = amountRequired.Quo(math.LegacyOneDec().Sub(k.GetTradeFee(ctx)))
 

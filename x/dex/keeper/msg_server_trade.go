@@ -3,10 +3,10 @@ package keeper
 import (
 	"context"
 	"fmt"
-	"github.com/kopi-money/kopi/constants"
 	"strconv"
 	"strings"
 
+	"github.com/kopi-money/kopi/constants"
 	"github.com/kopi-money/kopi/x/dex/types"
 
 	"cosmossdk.io/math"
