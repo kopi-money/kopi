@@ -70,3 +70,32 @@ func CreateUpgradeHandler(mm *module.Manager, configurator module.Configurator, 
 		return vm, nil
 	}
 }
+
+func CreateUpgradeHandler_rc3(mm *module.Manager, configurator module.Configurator, denomK denomkeeper.Keeper, dexK dexkeeper.Keeper, reserveK reservekeeper.Keeper, wasmK wasmkeeper.Keeper) upgradetypes.UpgradeHandler {
+	return func(ctx context.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
+		vm, err := mm.RunMigrations(ctx, configurator, vm)
+		if err != nil {
+			return vm, err
+		}
+
+		// Migrate orders from V1 to V2
+		if err = cache.Transact(ctx, func(innerCtx context.Context) error {
+			return dexK.UpgradeOrdersV2(innerCtx)
+		}); err != nil {
+			denomK.Logger().Info(fmt.Errorf("deleting orders v1: %w", err).Error())
+		}
+
+		// Set Reserve parameters
+		if err = cache.Transact(ctx, func(innerCtx context.Context) error {
+			return reserveK.SetParams(innerCtx, reservetypes.Params{
+				KcoinBurnShare: reservetypes.KCoinBurnShare,
+				SellThreshold:  reservetypes.SellThreshold,
+				BuyThreshold:   reservetypes.BuyThreshold,
+			})
+		}); err != nil {
+			denomK.Logger().Info(fmt.Errorf("deleting orders v1: %w", err).Error())
+		}
+
+		return vm, nil
+	}
+}
