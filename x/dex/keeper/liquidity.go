@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"sort"
 	"strconv"
 
@@ -212,8 +213,52 @@ func (k Keeper) GetDenomValue(ctx context.Context, denom string) (math.LegacyDec
 	return liq.Mul(price), nil
 }
 
-func compareLiquidity(l1, l2 types.Liquidity) bool {
-	return l1.Index == l2.Index &&
-		l1.Amount.Equal(l2.Amount) &&
-		l1.Address == l2.Address
+func (k Keeper) PrepareAdditionalLiquidity(ctx *types.TradeContext) {
+	if ctx.HasOneStep() {
+		return
+	}
+
+	liqFrom := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomGiving)
+	liqTo := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomReceiving)
+	liqBase := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(constants.BaseCurrency)
+
+	var (
+		maxValue     = liqBase.ToLegacyDec()
+		ratioFrom    denomtypes.Ratio
+		ratioTo      denomtypes.Ratio
+		liqValueFrom math.LegacyDec
+		liqValueTo   math.LegacyDec
+	)
+
+	if ctx.TradeDenomGiving != constants.BaseCurrency {
+		ratioFrom, _ = k.DenomKeeper.GetRatio(ctx, ctx.TradeDenomGiving)
+		liqValueFrom = liqFrom.ToLegacyDec().Quo(ratioFrom.Ratio)
+		maxValue = math.LegacyMaxDec(liqValueFrom, maxValue)
+	}
+
+	if ctx.TradeDenomReceiving != constants.BaseCurrency {
+		ratioTo, _ = k.DenomKeeper.GetRatio(ctx, ctx.TradeDenomReceiving)
+		liqValueTo = liqTo.ToLegacyDec().Quo(ratioTo.Ratio)
+		maxValue = math.LegacyMaxDec(liqValueTo, maxValue)
+	}
+
+	ctx.SetAdditionalLiquidity(constants.BaseCurrency, maxValue.Sub(liqBase.ToLegacyDec()))
+
+	if ctx.TradeDenomGiving != constants.BaseCurrency {
+		if liqValueFrom.LT(maxValue) {
+			missing := maxValue.Sub(liqValueFrom).Mul(ratioFrom.Ratio)
+			ctx.SetAdditionalLiquidity(ctx.TradeDenomGiving, missing)
+		} else {
+			ctx.SetAdditionalLiquidity(ctx.TradeDenomGiving, math.LegacyZeroDec())
+		}
+	}
+
+	if ctx.TradeDenomReceiving != constants.BaseCurrency {
+		if liqValueTo.LT(maxValue) {
+			missing := maxValue.Sub(liqValueTo).Mul(ratioTo.Ratio)
+			ctx.SetAdditionalLiquidity(ctx.TradeDenomReceiving, missing)
+		} else {
+			ctx.SetAdditionalLiquidity(ctx.TradeDenomReceiving, math.LegacyZeroDec())
+		}
+	}
 }

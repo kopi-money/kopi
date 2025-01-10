@@ -132,32 +132,12 @@ func (k Keeper) ExecuteOrder(ctx context.Context, ordersCaches *types.OrdersCach
 		maxPrice = math.LegacyOneDec().Quo(maxPrice)
 	}
 
-	calculateMaximumAmount := getCalcMaximumAmountFunction(order.IsBuyOrder)
-	priceAmount := k.calculateAmountGivenPrice(ordersCaches, order.DenomGiving, order.DenomReceiving, maxPrice, fee, calculateMaximumAmount).TruncateInt()
-	if priceAmount.IsNegative() {
-		if !has || previousMaxPrice.LT(maxPrice) {
-			ordersCaches.PriceAmounts[denomPair] = maxPrice
-		}
-
-		return types.TradeResult{}, false, nil
-	}
-
-	tradeAmount := math.MinInt(order.AmountLeft, priceAmount)
-	if !tradeAmount.IsPositive() {
-		return types.TradeResult{}, false, nil
-	}
-
-	if order.TradeAmount.IsPositive() {
-		tradeAmount = math.MinInt(tradeAmount, order.TradeAmount)
-	}
-
 	address := sdk.MustAccAddressFromBech32(order.Creator)
 	orderTradeBalances := NewTradeBalances()
 	tradeCtx := types.TradeContext{
 		Context:                ctx,
 		CoinSource:             ordersCaches.AccPoolOrders.Get().String(),
 		CoinTarget:             address.String(),
-		TradeAmount:            tradeAmount,
 		MaximumAvailableAmount: order.AmountLocked,
 		TradeDenomGiving:       order.DenomGiving,
 		TradeDenomReceiving:    order.DenomReceiving,
@@ -166,6 +146,25 @@ func (k Keeper) ExecuteOrder(ctx context.Context, ordersCaches *types.OrdersCach
 		OrdersCaches:           ordersCaches,
 		IsOrder:                true,
 		Fee:                    fee,
+	}
+
+	tradeCtx.CalcTradableAmountGivenPrice = getCalcMaximumAmountFunction(order.IsBuyOrder)
+	priceAmount := k.calculateAmountGivenPrice(&tradeCtx).TruncateInt()
+	if priceAmount.IsNegative() {
+		if !has || previousMaxPrice.LT(maxPrice) {
+			ordersCaches.PriceAmounts[denomPair] = maxPrice
+		}
+
+		return types.TradeResult{}, false, nil
+	}
+
+	tradeCtx.TradeAmount = math.MinInt(order.AmountLeft, priceAmount)
+	if !tradeCtx.TradeAmount.IsPositive() {
+		return types.TradeResult{}, false, nil
+	}
+
+	if order.TradeAmount.IsPositive() {
+		tradeCtx.TradeAmount = math.MinInt(tradeCtx.TradeAmount, order.TradeAmount)
 	}
 
 	tradeResult, err := k.getTradeFunction(order.IsBuyOrder)(tradeCtx)
@@ -177,7 +176,7 @@ func (k Keeper) ExecuteOrder(ctx context.Context, ordersCaches *types.OrdersCach
 			return types.TradeResult{}, false, nil
 		}
 
-		msg := fmt.Sprintf("execute trade (%v%v > %v)", tradeAmount.String(), order.DenomGiving, order.DenomReceiving)
+		msg := fmt.Sprintf("execute trade (%v%v > %v)", tradeCtx.TradeAmount.String(), order.DenomGiving, order.DenomReceiving)
 		return types.TradeResult{}, false, fmt.Errorf("%v: %w", msg, err)
 	}
 

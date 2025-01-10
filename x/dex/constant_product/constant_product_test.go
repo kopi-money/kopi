@@ -53,14 +53,28 @@ func TestConstantProduct3(t *testing.T) {
 	require.Equal(t, amountGivenNet1, amountGivenNet2)
 }
 
-func TestCalculateMaximumReceiving(t *testing.T) {
+func TestCalculateMaximumReceiving1(t *testing.T) {
 	poolFrom := math.LegacyNewDec(100)
 	poolTo := math.LegacyNewDec(100)
 	maxPrice := math.LegacyNewDecWithPrec(11, 1)
 
-	maxAmount := constant_product.CalculateMaximumReceiving(poolFrom, poolTo, maxPrice, math.LegacyZeroDec())
+	maxAmount := constant_product.CalculateMaximumReceiving(poolFrom, poolTo, maxPrice)
 
 	amountToGive, _, err := constant_product.ConstantProductTradeBuy(poolFrom, poolTo, maxAmount, math.LegacyZeroDec())
 	require.NoError(t, err)
 	require.Equal(t, int64(10), amountToGive.RoundInt64())
+}
+
+func TestCalculateMaximumReceiving2(t *testing.T) {
+	poolFrom := math.LegacyNewDec(1_000_000_000)
+	poolTo := math.LegacyNewDec(1_000_000_000)
+	maxPrice := math.LegacyNewDecWithPrec(101, 2)
+
+	maxAmount := constant_product.CalculateMaximumReceiving(poolFrom, poolTo, maxPrice)
+
+	amountToGive, _, err := constant_product.ConstantProductTradeBuy(poolFrom, poolTo, maxAmount, math.LegacyZeroDec())
+	require.NoError(t, err)
+	require.Equal(t, int64(10_000_000), amountToGive.RoundInt64())
+
+	require.True(t, maxPrice.GTE(amountToGive.Quo(maxAmount)))
 }

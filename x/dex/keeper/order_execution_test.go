@@ -21,8 +21,8 @@ import (
 func TestOrders1(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, keepertest.Pow(2)))
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, keepertest.Pow(2)))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 2_000000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 2_000000))
 
 	require.Error(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
 		Creator:        keepertest.Bob,
@@ -55,8 +55,8 @@ func TestOrders1(t *testing.T) {
 func TestOrders2(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, keepertest.Pow(2)))
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, keepertest.Pow(2)))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 2_000000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 2_000000))
 
 	addr := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
 	poolBalance := k.BankKeeper.SpendableCoins(ctx, addr.GetAddress())
@@ -111,8 +111,8 @@ func executeOrder(ctx context.Context, k dexkeeper.Keeper, order *types.Order) (
 func TestOrders3(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, keepertest.Pow(2)))
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, keepertest.Pow(2)))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 2_000000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 2_000000))
 
 	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
 		Creator:        keepertest.Bob,
@@ -136,8 +136,8 @@ func TestOrders3(t *testing.T) {
 func TestOrders4(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, keepertest.Pow(2)))
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, keepertest.Pow(2)))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 2_000000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 2_000000))
 
 	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
 		Creator:        keepertest.Bob,
@@ -161,8 +161,8 @@ func TestOrders4(t *testing.T) {
 func TestOrders5(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, keepertest.Pow(2)))
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, keepertest.Pow(2)))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 2_000000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 2_000000))
 
 	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
 		Creator:        keepertest.Bob,
@@ -195,8 +195,8 @@ func TestOrders5(t *testing.T) {
 func TestOrders7(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, keepertest.Pow(2)))
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, keepertest.Pow(2)))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 2_000000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 2_000000))
 
 	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
 		Creator:        keepertest.Bob,
@@ -220,7 +220,7 @@ func TestOrders7(t *testing.T) {
 func TestOrders8(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, keepertest.Pow(2)))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 2_000000))
 	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
 		Creator:        keepertest.Bob,
 		DenomGiving:    constants.BaseCurrency,
@@ -270,9 +270,9 @@ func TestOrders9(t *testing.T) {
 func TestOrders10(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
-	err := keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, keepertest.Pow(2))
+	err := keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 2_000000)
 	require.NoError(t, err)
-	err = keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, keepertest.Pow(2))
+	err = keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 2_000000)
 	require.NoError(t, err)
 
 	address, err := sdk.AccAddressFromBech32(keepertest.Bob)
@@ -302,9 +302,9 @@ func TestOrders10(t *testing.T) {
 func TestOrders11(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
-	err := keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, keepertest.Pow(2))
+	err := keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 2_000000)
 	require.NoError(t, err)
-	err = keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, keepertest.Pow(2))
+	err = keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 2_000000)
 	require.NoError(t, err)
 
 	address, err := sdk.AccAddressFromBech32(keepertest.Bob)
@@ -385,8 +385,8 @@ func TestOrders12(t *testing.T) {
 func TestOrders13(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, keepertest.Pow(2)))
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, keepertest.Pow(2)))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 2_000000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 2_000000))
 
 	acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolOrders)
 	kopi1 := getCoins(k.BankKeeper.SpendableCoins(ctx, acc.GetAddress()), constants.BaseCurrency)

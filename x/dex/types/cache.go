@@ -14,7 +14,7 @@ type LoadPoolBalance func() *CoinMap
 type LoadLiquidityPair func(denom string) LiquidityPair
 type LoadLiquidity func(denom string) []Liquidity
 
-func NewOrderCaches(lat, lar, lal, lao LoadAccAddress, ltf, lrfs, lof, lpf LoadFee, lpbl LoadPoolBalance, llp LoadLiquidityPair, ll LoadLiquidity) *OrdersCaches {
+func NewOrderCaches(lat, lar, lal, lao LoadAccAddress, ltf, lrfs, lof, lpf LoadFee, lpbl LoadPoolBalance, ll LoadLiquidity) *OrdersCaches {
 	return &OrdersCaches{
 		AccPoolTrade:     newItemCache(lat),
 		AccPoolReserve:   newItemCache(lar),
@@ -25,7 +25,6 @@ func NewOrderCaches(lat, lar, lal, lao LoadAccAddress, ltf, lrfs, lof, lpf LoadF
 		OrderFee:         newItemCache(lof),
 		ProviderFee:      newItemCache(lpf),
 		LiquidityPool:    newItemCache(lpbl),
-		LiquidityPair:    newOrderCache(llp),
 		LiquidityMap:     newLiquidityMap(ll),
 
 		PriceAmounts:          make(map[Pair]math.LegacyDec),
@@ -85,6 +84,15 @@ func (cm *CoinMap) Add(denom string, addAmount math.Int) {
 	}
 }
 
+func (cm *CoinMap) Coins() sdk.Coins {
+	var coinList []sdk.Coin
+	for denom, amount := range cm.cm {
+		coinList = append(coinList, sdk.NewCoin(denom, amount))
+	}
+
+	return sdk.NewCoins(coinList...)
+}
+
 type OrdersCaches struct {
 	AccPoolReserve        *ItemCache[sdk.AccAddress]
 	AccPoolTrade          *ItemCache[sdk.AccAddress]
@@ -97,6 +105,7 @@ type OrdersCaches struct {
 	LiquidityPool         *ItemCache[*CoinMap]
 	ReimbursementPool     *ItemCache[*CoinMap]
 	LiquidityPair         *MapCache[LiquidityPair]
+	AdditionalLiquidity   *MapCache[math.LegacyDec]
 	PriceAmounts          map[Pair]math.LegacyDec
 	PriceMaxAmounts       map[string]math.LegacyDec
 	LiquidityMap          *LiquidityMap
@@ -142,7 +151,7 @@ type MapCache[T any] struct {
 	m      map[string]T
 }
 
-func newOrderCache[T any](loader func(string) T) *MapCache[T] {
+func NewMapCache[T any](loader func(string) T) *MapCache[T] {
 	return &MapCache[T]{
 		loader: loader,
 		m:      make(map[string]T),
@@ -173,7 +182,7 @@ func (mc *MapCache[T]) GetHas(denom string) (T, bool) {
 	return value, has
 }
 
-func (mc *MapCache[T]) clear() {
+func (mc *MapCache[T]) Clear() {
 	mc.m = make(map[string]T)
 }
 

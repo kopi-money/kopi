@@ -12,9 +12,9 @@ import (
 func TestPrice1(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
-	err := keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, keepertest.Pow(2))
+	err := keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 2_000000)
 	require.Nil(t, err)
-	err = keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, keepertest.Pow(2))
+	err = keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 2_000000)
 	require.Nil(t, err)
 
 	price1, err := k.CalculatePrice(ctx, constants.BaseCurrency, constants.KUSD)

@@ -130,9 +130,7 @@ func (tb *TradeBalances) Merge(other *TradeBalances) {
 }
 
 func (tb *TradeBalances) AddTransfer(from, to, denom string, amount math.Int) {
-	//fmt.Println(fmt.Sprintf("%v%v: %v > %v", amount.String(), denom, from, to))
-
-	if amount.GT(math.ZeroInt()) {
+	if amount.IsPositive() {
 		tb.senders.add(from, denom, amount)
 		tb.receivers.add(to, denom, amount)
 	}

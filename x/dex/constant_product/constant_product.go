@@ -45,20 +45,18 @@ func ConstantProductTradeBuy(poolFrom, poolTo, result, fee math.LegacyDec) (math
 	}
 
 	constantProduct := poolFrom.Mul(poolTo)
-	//amountToGive := poolFrom.Sub(constantProduct.Quo(poolTo.Add(result)))
-	amountToGive := constantProduct.Quo(poolTo.Sub(result)).Sub(poolFrom)
-	feeAmount := amountToGive.Mul(fee)
-	return amountToGive.Add(feeAmount), feeAmount, nil
+	amountToGiveNet := constantProduct.Quo(poolTo.Sub(result)).Sub(poolFrom)
+	amountToGiveGross := amountToGiveNet.Quo(math.LegacyOneDec().Sub(fee))
+	feeAmount := amountToGiveGross.Sub(amountToGiveNet)
+	return amountToGiveGross, feeAmount, nil
 }
 
-type CalculateMaximumAmount func(math.LegacyDec, math.LegacyDec, math.LegacyDec, math.LegacyDec) math.LegacyDec
+type CalculateMaximumAmount func(math.LegacyDec, math.LegacyDec, math.LegacyDec) math.LegacyDec
 
-func CalculateMaximumGiving(poolFrom, poolTo, maxPrice, fee math.LegacyDec) math.LegacyDec {
-	maxPrice = maxPrice.Mul(math.LegacyOneDec().Sub(fee))
+func CalculateMaximumGiving(poolFrom, poolTo, maxPrice math.LegacyDec) math.LegacyDec {
 	return poolTo.Mul(maxPrice).Sub(poolFrom)
 }
 
-func CalculateMaximumReceiving(poolFrom, poolTo, maxPrice, fee math.LegacyDec) math.LegacyDec {
-	maxPrice = maxPrice.Mul(math.LegacyOneDec().Sub(fee))
-	return maxPrice.Mul(poolTo).Sub(poolFrom).Quo(maxPrice)
+func CalculateMaximumReceiving(poolFrom, poolTo, maxPrice math.LegacyDec) math.LegacyDec {
+	return poolTo.Sub(poolFrom.Quo(maxPrice))
 }

@@ -93,9 +93,9 @@ func SetupMMMsgServer(t *testing.T) (mmkeeper.Keeper, dextypes.MsgServer, mmtype
 	dexMsg := dexkeeper.NewMsgServerImpl(dexK)
 	mmMsg := mmkeeper.NewMsgServerImpl(mmK)
 
-	err := AddLiquidity(ctx, dexMsg, Alice, constants.BaseCurrency, Pow(2))
+	err := AddLiquidity(ctx, dexMsg, Alice, constants.BaseCurrency, 2_000000)
 	require.Nil(t, err)
-	err = AddLiquidity(ctx, dexMsg, Alice, "ukusd", Pow(2))
+	err = AddLiquidity(ctx, dexMsg, Alice, "ukusd", 2_000000)
 	require.Nil(t, err)
 
 	return mmK, dexMsg, mmMsg, ctx

@@ -27,6 +27,7 @@ type TradeContext struct {
 	MaxPrice               *math.LegacyDec
 	MinimumTradeAmount     *math.Int
 	MaximumAvailableAmount math.Int
+	additionalLiquidity    map[string]math.LegacyDec
 
 	TradeDenomGiving    string
 	TradeDenomReceiving string
@@ -56,11 +57,19 @@ func (tc *TradeContext) GetOrdersCaches() *OrdersCaches {
 }
 
 func (tc *TradeContext) FullFee() math.LegacyDec {
-	if tc.TradeDenomGiving == constants.BaseCurrency || tc.TradeDenomReceiving == constants.BaseCurrency {
+	if tc.HasOneStep() {
 		return tc.StepFee()
 	}
 
 	return tc.Fee
+}
+
+func (tc *TradeContext) HasOneStep() bool {
+	return tc.TradeDenomGiving == constants.BaseCurrency || tc.TradeDenomReceiving == constants.BaseCurrency
+}
+
+func (tc *TradeContext) HasTwoSteps() bool {
+	return !tc.HasOneStep()
 }
 
 func (tc *TradeContext) StepFee() math.LegacyDec {
@@ -82,6 +91,19 @@ func (tc *TradeContext) ToSell(amount math.Int) TradeContext {
 		TradeBalances:          tc.TradeBalances,
 		Fee:                    tc.Fee,
 	}
+}
+
+func (tc *TradeContext) SetAdditionalLiquidity(denom string, value math.LegacyDec) {
+	if tc.additionalLiquidity == nil {
+		tc.additionalLiquidity = make(map[string]math.LegacyDec)
+	}
+
+	tc.additionalLiquidity[denom] = value
+}
+
+func (tc *TradeContext) GetAdditionalLiquidity(denom string) math.LegacyDec {
+	addLiq, _ := tc.additionalLiquidity[denom]
+	return addLiq
 }
 
 type IntermediateTradeAmount func(math.Int, math.Int) math.Int

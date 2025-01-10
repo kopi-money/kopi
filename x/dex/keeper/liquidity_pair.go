@@ -18,6 +18,15 @@ func (k Keeper) GetLiquidityPair(ctx context.Context, denom string) (types.Liqui
 	return k.CreateLiquidityPair(ctx, ratio), nil
 }
 
+func (k Keeper) GetLiquidityPairWithLiquidity(ctx context.Context, denom string, liqBase, liqOther math.Int) (types.LiquidityPair, error) {
+	ratio, err := k.DenomKeeper.GetRatio(ctx, denom)
+	if err != nil {
+		return types.LiquidityPair{}, err
+	}
+
+	return k.CreateLiquidityPairWithLiquidity(ctx, ratio, liqBase, liqOther), nil
+}
+
 func (k Keeper) GetAllLiquidityPair(ctx context.Context) (list []types.LiquidityPair) {
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
 		pair, _ := k.GetLiquidityPair(ctx, denom)
@@ -37,6 +46,10 @@ func (k Keeper) calcVirtualAmountOther(ctx context.Context, ratio math.LegacyDec
 }
 
 func (k Keeper) calcVirtualAmountBase(ctx context.Context, ratio math.LegacyDec, denom string) math.LegacyDec {
+	if !ratio.IsPositive() {
+		panic("ratio must be positive")
+	}
+
 	liqBase := k.GetLiquiditySum(ctx, constants.BaseCurrency)
 	liqOther := k.GetLiquiditySum(ctx, denom)
 	liqBaseDec := liqBase.ToLegacyDec()
@@ -49,10 +62,15 @@ func (k Keeper) CreateLiquidityPair(ctx context.Context, ratio denomtypes.Ratio)
 	liqBase := k.GetLiquiditySum(ctx, constants.BaseCurrency)
 	liqOther := k.GetLiquiditySum(ctx, ratio.Denom)
 
+	return k.CreateLiquidityPairWithLiquidity(ctx, ratio, liqBase, liqOther)
+}
+
+func (k Keeper) CreateLiquidityPairWithLiquidity(ctx context.Context, ratio denomtypes.Ratio, liqBase, liqOther math.Int) (pair types.LiquidityPair) {
 	liqBaseDec := liqBase.ToLegacyDec()
 	liqOtherDec := liqOther.ToLegacyDec()
 
 	pair.Denom = ratio.Denom
+
 	if liqBaseDec.Mul(ratio.Ratio).GT(liqOtherDec) {
 		pair.VirtualBase = math.LegacyZeroDec()
 		pair.VirtualOther = k.calcVirtualAmountOther(ctx, ratio.Ratio, ratio.Denom)
@@ -78,6 +96,33 @@ func (k Keeper) GetFullLiquidity(ordersCaches *types.OrdersCaches, denom, other 
 	}
 
 	return sumLiquidity(actual, virtual)
+}
+
+func (k Keeper) GetCrossLiquidity(ctx *types.TradeContext) (math.LegacyDec, math.LegacyDec) {
+	if ctx.TradeDenomGiving == constants.BaseCurrency || ctx.TradeDenomReceiving == constants.BaseCurrency {
+		liqFrom := k.GetFullLiquidity(ctx.OrdersCaches, ctx.TradeDenomGiving, ctx.TradeDenomReceiving)
+		liqTo := k.GetFullLiquidity(ctx.OrdersCaches, ctx.TradeDenomReceiving, ctx.TradeDenomGiving)
+		return liqFrom, liqTo
+	}
+
+	fromRatio, _ := k.DenomKeeper.GetRatio(ctx, ctx.TradeDenomGiving)
+	fromLiquidity := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomGiving).ToLegacyDec()
+	fromLiquidityValueBase := fromLiquidity.Quo(fromRatio.Ratio)
+
+	toRatio, _ := k.DenomKeeper.GetRatio(ctx, ctx.TradeDenomReceiving)
+	toLiquidity := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomReceiving).ToLegacyDec()
+	toLiquidityValueBase := toLiquidity.Quo(toRatio.Ratio)
+
+	switch {
+	case fromLiquidityValueBase.LT(toLiquidityValueBase):
+		missing := toLiquidityValueBase.Sub(fromLiquidityValueBase)
+		fromLiquidity = fromLiquidity.Add(missing.Mul(fromRatio.Ratio))
+	case toLiquidityValueBase.LT(fromLiquidityValueBase):
+		missing := fromLiquidityValueBase.Sub(toLiquidityValueBase)
+		toLiquidity = toLiquidity.Add(missing.Mul(toRatio.Ratio))
+	}
+
+	return fromLiquidity, toLiquidity
 }
 
 func (k Keeper) GetFullLiquidityBaseOther(ctx context.Context, denomFrom, denomTo string) (math.LegacyDec, math.LegacyDec) {

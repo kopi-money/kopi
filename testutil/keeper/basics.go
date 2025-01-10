@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	"math"
-	"strconv"
 	"sync"
 	"testing"
 
@@ -42,27 +40,6 @@ func initSDKConfig() {
 		config.SetBech32PrefixForConsensusNode(consNodeAddressPrefix, consNodePubKeyPrefix)
 		config.Seal()
 	})
-}
-
-func Pow(amount int64) int64 {
-	fac := int64(math.Pow(10, float64(constants.DecimalPlaces)))
-	return amount * fac
-}
-
-func IntString(amount int64) string {
-	return strconv.Itoa(int(amount))
-}
-
-func PowInt64String(amount int64) string {
-	return IntString(PowInt64(amount))
-}
-
-func PowInt64(amount int64) int64 {
-	return sdkmath.NewInt(Pow(amount)).Int64()
-}
-
-func PowDec(amount int64) sdkmath.LegacyDec {
-	return sdkmath.LegacyNewDec(Pow(amount))
 }
 
 func addFunds(ctx context.Context, k TestBankKeeper, t *testing.T) {

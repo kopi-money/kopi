@@ -2,14 +2,14 @@ package keeper
 
 import (
 	"context"
-
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/kopi-money/kopi/constants"
 	"github.com/kopi-money/kopi/x/dex/types"
 )
 
 func (k Keeper) NewOrdersCaches(ctx context.Context) *types.OrdersCaches {
-	return types.NewOrderCaches(
+	oc := types.NewOrderCaches(
 		func() sdk.AccAddress {
 			acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolTrade)
 			return acc.GetAddress()
@@ -43,12 +43,18 @@ func (k Keeper) NewOrdersCaches(ctx context.Context) *types.OrdersCaches {
 			coins := k.BankKeeper.SpendableCoins(ctx, acc.GetAddress())
 			return types.NewCoinMap(coins)
 		},
-		func(denom string) types.LiquidityPair {
-			pair, _ := k.GetLiquidityPair(ctx, denom)
-			return pair
-		},
 		func(denom string) []types.Liquidity {
 			return k.LiquidityIterator(ctx, denom).GetAll()
 		},
 	)
+
+	oc.LiquidityPair = types.NewMapCache(func(denom string) types.LiquidityPair {
+		liqBase := oc.LiquidityPool.Get().AmountOf(constants.BaseCurrency)
+		liqOther := oc.LiquidityPool.Get().AmountOf(denom)
+		pair, _ := k.GetLiquidityPairWithLiquidity(ctx, denom, liqBase, liqOther)
+
+		return pair
+	})
+
+	return oc
 }

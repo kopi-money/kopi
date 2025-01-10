@@ -77,11 +77,3 @@ func (k Keeper) getTradeDiscount(ctx context.Context, address string, excludeFro
 
 	return discount
 }
-
-func compareTradeAmounts(r1, r2 types.WalletTradeAmount) bool {
-	if r1.Address != r2.Address {
-		return false
-	}
-
-	return r1.Amount.Equal(r2.Amount)
-}

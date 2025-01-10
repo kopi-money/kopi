@@ -355,3 +355,18 @@ func createDefaultKCoins() []*denomtypes.KCoin {
 		},
 	}
 }
+
+type SetRatioKeeper interface {
+	SetRatio(context.Context, denomtypes.Ratio)
+}
+
+func SetRatio(ctx context.Context, k SetRatioKeeper, denom string, ratio math.LegacyDec) {
+	_ = cache.Transact(ctx, func(innerCtx context.Context) error {
+		k.SetRatio(innerCtx, denomtypes.Ratio{
+			Denom: denom,
+			Ratio: ratio,
+		})
+
+		return nil
+	})
+}
