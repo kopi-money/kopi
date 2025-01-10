@@ -89,6 +89,7 @@ type DenomKeeper interface {
 	IsCAsset(context.Context, string) bool
 	IsCollateralDenom(context.Context, string) bool
 	IsValidDenom(context.Context, string) bool
+	SetRatio(context.Context, denomtypes.Ratio)
 }
 
 type MMKeeper interface {

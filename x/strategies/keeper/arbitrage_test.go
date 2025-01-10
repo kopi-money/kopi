@@ -50,31 +50,44 @@ func TestHandle2(t *testing.T) {
 	moduleAcc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolArbitrage)
 	liqPool := k.AccountKeeper.GetModuleAccount(ctx, dextypes.PoolLiquidity)
 
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 4_000_000_000_000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Alice, 1_000_000_000_000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "uwusdc", keepertest.Alice, 1_000_000_000_000)
+
 	dexKeeper := k.DexKeeper.(keepertest.LiquidityI)
-	keepertest.TestAddLiquidity(ctx, dexKeeper, t, keepertest.Alice, constants.BaseCurrency, 1000000)
-	keepertest.TestAddLiquidity(ctx, dexKeeper, t, keepertest.Alice, constants.KUSD, 1000000)
-	keepertest.TestAddLiquidity(ctx, dexKeeper, t, keepertest.Alice, "uwusdc", 1000000)
+	keepertest.TestAddLiquidity(ctx, dexKeeper, t, keepertest.Alice, constants.BaseCurrency, 4_000_000_000_000)
+	keepertest.TestAddLiquidity(ctx, dexKeeper, t, keepertest.Alice, constants.KUSD, 1_000_000_000_000)
+	keepertest.TestAddLiquidity(ctx, dexKeeper, t, keepertest.Alice, "uwusdc", 1_000_000_000_000)
 
 	balance := k.BankKeeper.SpendableCoins(ctx, liqPool.GetAddress()).AmountOf(constants.KUSD)
-	require.Equal(t, int64(1000000), balance.Int64())
+	require.Equal(t, int64(1_000_000_000_000), balance.Int64())
 	balance = k.BankKeeper.SpendableCoins(ctx, liqPool.GetAddress()).AmountOf("uwusdc")
-	require.Equal(t, int64(1000000), balance.Int64())
+	require.Equal(t, int64(1_000_000_000_000), balance.Int64())
 
-	_, err := keepertest.Sell(ctx, dexMsgServer, &dextypes.MsgSell{
+	r, _ := math.LegacyNewDecFromStr("0.25")
+	keepertest.SetRatio(ctx, k.DenomKeeper, constants.KUSD, r)
+	keepertest.SetRatio(ctx, k.DenomKeeper, "uwusdc", r)
+	keepertest.SetRatio(ctx, k.DenomKeeper, "ucwusdc", r)
+
+	parity0, _, err := k.DexKeeper.CalculateParity(ctx, constants.KUSD)
+	require.NoError(t, err)
+	require.True(t, parity0.Equal(math.LegacyOneDec()))
+
+	_, err = keepertest.Sell(ctx, dexMsgServer, &dextypes.MsgSell{
 		Creator:        keepertest.Alice,
 		DenomGiving:    constants.KUSD,
 		DenomReceiving: "uwusdc",
-		Amount:         "100000",
+		Amount:         "10_000",
 	})
 	require.NoError(t, err)
 
 	balance = k.BankKeeper.SpendableCoins(ctx, liqPool.GetAddress()).AmountOf(constants.KUSD)
-	require.Equal(t, int64(1100000), balance.Int64())
+	require.Equal(t, int64(1_000_000_010_000), balance.Int64())
 
 	require.NoError(t, keepertest.AddArbitrageDeposit(ctx, msg, &types.MsgArbitrageDeposit{
 		Creator: keepertest.Alice,
 		Denom:   "uwusdc",
-		Amount:  "10000",
+		Amount:  "100_000",
 	}))
 
 	parity1, _, err := k.DexKeeper.CalculateParity(ctx, constants.KUSD)
@@ -83,7 +96,7 @@ func TestHandle2(t *testing.T) {
 	require.True(t, parity1.LT(math.LegacyOneDec()))
 
 	balance = k.BankKeeper.SpendableCoins(ctx, moduleAcc.GetAddress()).AmountOf("ucwusdc")
-	require.Equal(t, int64(10000), balance.Int64())
+	require.Equal(t, int64(100_000), balance.Int64())
 
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		return k.HandleArbitrageDenoms(innerCtx)
