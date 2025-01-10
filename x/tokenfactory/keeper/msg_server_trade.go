@@ -375,7 +375,9 @@ func constantProductBuy(pool types.LiquidityPool, denomGiving string, amount mat
 func (k Keeper) calculateMaxAmount(ctx context.Context, pool types.LiquidityPool, denomFrom string, maxPrice, poolFee math.LegacyDec, calculate constant_product.CalculateMaximumAmount) math.Int {
 	liqFrom, liqTo := getLiquidity(pool, denomFrom)
 	tradeFee := k.getTradeFee(ctx, poolFee)
-	return calculate(liqFrom, liqTo, maxPrice, tradeFee).TruncateInt()
+	maxPrice = maxPrice.Mul(math.LegacyOneDec().Sub(tradeFee))
+
+	return calculate(liqFrom, liqTo, maxPrice).TruncateInt()
 }
 
 func getLiquidity(pool types.LiquidityPool, denomFrom string) (math.LegacyDec, math.LegacyDec) {
