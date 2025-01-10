@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	BurnThreshold = math.LegacyNewDecWithPrec(999, 3) // 0.999
+	BurnThreshold = math.LegacyNewDecWithPrec(9999, 4) // 0.9999
 	MintThreshold = math.LegacyOneDec()
 	StakingShare  = math.LegacyNewDecWithPrec(1, 1) // 0.1
 )

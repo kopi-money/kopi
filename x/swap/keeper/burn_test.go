@@ -136,10 +136,10 @@ func addReserveFundsToDex(ctx context.Context, acc swaptypes.AccountKeeper, dex 
 }
 
 func TestBurn3(t *testing.T) {
-	supply1 := burnScenario(t, 1000)
-	supply2 := burnScenario(t, 1000000)
+	supply1 := burnScenario(t, 1_000)
+	supply2 := burnScenario(t, 10_000)
 
-	require.Greater(t, supply2, supply1)
+	require.Less(t, supply1, supply2)
 }
 
 func burnScenario(t *testing.T, sellAmount int64) int64 {
@@ -148,10 +148,12 @@ func burnScenario(t *testing.T, sellAmount int64) int64 {
 	addr, err := sdk.AccAddressFromBech32(keepertest.Alice)
 	require.NoError(t, err)
 
-	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.BaseCurrency, 100000)
-	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.KUSD, 100000)
-	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, "uwusdc", 100000)
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.BaseCurrency, 100_000)
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.KUSD, 100_000)
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, "uwusdc", 100_000)
 	addReserveFundsToDex(ctx, k.AccountKeeper, k.DexKeeper, k.BankKeeper, t, constants.KUSD, 10)
+
+	zeroInt := math.ZeroInt()
 
 	tradeCtx := dextypes.TradeContext{
 		Context:             ctx,
@@ -163,6 +165,7 @@ func burnScenario(t *testing.T, sellAmount int64) int64 {
 		MaxPrice:            nil,
 		TradeBalances:       dexkeeper.NewTradeBalances(),
 		Fee:                 math.LegacyZeroDec(),
+		MinimumTradeAmount:  &zeroInt,
 	}
 
 	var tradeResult dextypes.TradeResult
@@ -172,11 +175,11 @@ func burnScenario(t *testing.T, sellAmount int64) int64 {
 		return err
 	}))
 
-	require.True(t, tradeResult.AmountGiven.GT(math.ZeroInt()))
+	require.True(t, tradeResult.AmountGiven.IsPositive())
 
-	price1, err := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
+	parity1, _, err := k.DexKeeper.CalculateParity(ctx, constants.KUSD)
 	require.NoError(t, err)
-	require.True(t, price1.GT(math.LegacyOneDec()))
+	require.True(t, parity1.LT(math.LegacyOneDec()))
 
 	maxBurnAmount := k.DenomKeeper.MaxBurnAmount(ctx, constants.KUSD)
 
