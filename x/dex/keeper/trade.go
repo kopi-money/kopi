@@ -150,7 +150,7 @@ func (k Keeper) executeTrade(ctx *types.TradeContext) (types.TradeResults, error
 		}
 
 		if priceAmount.LT(ctx.TradeAmount) {
-			if ctx.MinimumTradeAmount == nil || ctx.MinimumTradeAmount.IsNil() || ctx.MinimumTradeAmount.GT(priceAmount) {
+			if ctx.MinimumTradeAmount != nil && !ctx.MinimumTradeAmount.IsNil() && ctx.MinimumTradeAmount.GT(priceAmount) {
 				return types.TradeResults{}, types.ErrPriceTooLow
 			}
 
