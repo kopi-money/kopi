@@ -146,6 +146,7 @@ func (k Keeper) toOrderResponse(ctx context.Context, order types.Order, feeFac m
 	if order.IsBuyOrder {
 		currentPrice = currentPrice.Mul(feeFac)
 	} else {
+		currentPrice = math.LegacyOneDec().Quo(currentPrice)
 		currentPrice = currentPrice.Quo(feeFac)
 	}
 
