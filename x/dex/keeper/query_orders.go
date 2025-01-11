@@ -28,7 +28,10 @@ func (k Keeper) Order(ctx context.Context, req *types.QueryOrderRequest) (*types
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
 
-	orderResponse, err := k.toOrderResponse(ctx, order, referenceDenom)
+	feeFac := k.GetJoinedFee(ctx)
+	feeFac = feeFac.Add(math.LegacyOneDec())
+
+	orderResponse, err := k.toOrderResponse(ctx, order, feeFac, referenceDenom)
 	if err != nil {
 		return nil, err
 	}
@@ -48,12 +51,15 @@ func (k Keeper) Orders(ctx context.Context, req *types.QueryOrdersRequest) (*typ
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
 
+	feeFac := k.GetJoinedFee(ctx)
+	feeFac = feeFac.Add(math.LegacyOneDec())
+
 	orders, pageRes, err := query.CollectionPaginate(
 		ctx,
 		k.orders,
 		req.Pagination,
 		func(_ uint64, order types.Order) (*types.OrderResponse, error) {
-			return k.toOrderResponse(ctx, order, referenceDenom)
+			return k.toOrderResponse(ctx, order, feeFac, referenceDenom)
 		},
 	)
 
@@ -83,6 +89,9 @@ func (k Keeper) OrdersAddress(goCtx context.Context, req *types.QueryOrdersAddre
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
 
+	feeFac := k.GetJoinedFee(ctx)
+	feeFac = feeFac.Add(math.LegacyOneDec())
+
 	orders, pageRes, err := query.CollectionFilteredPaginate(
 		ctx,
 		k.orders,
@@ -103,7 +112,7 @@ func (k Keeper) OrdersAddress(goCtx context.Context, req *types.QueryOrdersAddre
 			return true, nil
 		},
 		func(_ uint64, order types.Order) (*types.OrderResponse, error) {
-			return k.toOrderResponse(ctx, order, referenceDenom)
+			return k.toOrderResponse(ctx, order, feeFac, referenceDenom)
 		},
 	)
 
@@ -113,7 +122,7 @@ func (k Keeper) OrdersAddress(goCtx context.Context, req *types.QueryOrdersAddre
 	}, nil
 }
 
-func (k Keeper) toOrderResponse(ctx context.Context, order types.Order, referenceDenom string) (*types.OrderResponse, error) {
+func (k Keeper) toOrderResponse(ctx context.Context, order types.Order, feeFac math.LegacyDec, referenceDenom string) (*types.OrderResponse, error) {
 	amountLeftUSD, err := k.GetValueIn(ctx, order.DenomGiving, referenceDenom, order.AmountLeft.ToLegacyDec())
 	if err != nil {
 		return nil, fmt.Errorf("amount left in usd: %w", err)
@@ -133,7 +142,12 @@ func (k Keeper) toOrderResponse(ctx context.Context, order types.Order, referenc
 	if err != nil {
 		return nil, fmt.Errorf("calculate price: %w", err)
 	}
-	currentPrice = math.LegacyOneDec().Quo(currentPrice)
+
+	if order.IsBuyOrder {
+		currentPrice = currentPrice.Mul(feeFac)
+	} else {
+		currentPrice = currentPrice.Quo(feeFac)
+	}
 
 	currentPriceUSD, err := k.GetValueIn(ctx, order.DenomReceiving, referenceDenom, currentPrice)
 	if err != nil {
@@ -172,6 +186,9 @@ func (k Keeper) OrdersByPair(ctx context.Context, req *types.OrdersByPairRequest
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
 
+	feeFac := k.GetJoinedFee(ctx)
+	feeFac = feeFac.Add(math.LegacyOneDec())
+
 	var asks, bids []*types.OrderResponse
 
 	iterator := k.OrderIterator(ctx)
@@ -180,7 +197,7 @@ func (k Keeper) OrdersByPair(ctx context.Context, req *types.OrdersByPairRequest
 
 		if order.DenomGiving == req.DenomGiving && order.DenomReceiving == req.DenomReceiving {
 			var orderResponse *types.OrderResponse
-			orderResponse, err = k.toOrderResponse(ctx, order, referenceDenom)
+			orderResponse, err = k.toOrderResponse(ctx, order, feeFac, referenceDenom)
 			if err != nil {
 				return nil, err
 			}
@@ -190,7 +207,7 @@ func (k Keeper) OrdersByPair(ctx context.Context, req *types.OrdersByPairRequest
 
 		if order.DenomGiving == req.DenomReceiving && order.DenomReceiving == req.DenomGiving {
 			var orderResponse *types.OrderResponse
-			orderResponse, err = k.toOrderResponse(ctx, order, referenceDenom)
+			orderResponse, err = k.toOrderResponse(ctx, order, feeFac, referenceDenom)
 			if err != nil {
 				return nil, err
 			}
