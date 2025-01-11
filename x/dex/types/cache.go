@@ -27,7 +27,8 @@ func NewOrderCaches(lat, lar, lal, lao LoadAccAddress, ltf, lrfs, lof, lpf LoadF
 		LiquidityPool:    newItemCache(lpbl),
 		LiquidityMap:     newLiquidityMap(ll),
 
-		PriceAmounts:          make(map[Pair]math.LegacyDec),
+		PriceAmountsSell:      make(map[Pair]math.LegacyDec),
+		PriceAmountsBuy:       make(map[Pair]math.LegacyDec),
 		PriceMaxAmounts:       make(map[string]math.LegacyDec),
 		MaximumTradableAmount: make(map[string]*math.LegacyDec),
 	}
@@ -106,7 +107,8 @@ type OrdersCaches struct {
 	ReimbursementPool     *ItemCache[*CoinMap]
 	LiquidityPair         *MapCache[LiquidityPair]
 	AdditionalLiquidity   *MapCache[math.LegacyDec]
-	PriceAmounts          map[Pair]math.LegacyDec
+	PriceAmountsSell      map[Pair]math.LegacyDec
+	PriceAmountsBuy       map[Pair]math.LegacyDec
 	PriceMaxAmounts       map[string]math.LegacyDec
 	LiquidityMap          *LiquidityMap
 	MaximumTradableAmount map[string]*math.LegacyDec
@@ -114,7 +116,32 @@ type OrdersCaches struct {
 }
 
 func (oc *OrdersCaches) Clear() {
-	oc.PriceAmounts = make(map[Pair]math.LegacyDec)
+	oc.PriceAmountsSell = make(map[Pair]math.LegacyDec)
+	oc.PriceAmountsBuy = make(map[Pair]math.LegacyDec)
+}
+
+func (oc *OrdersCaches) BetterThanPreviousPrice(pair Pair, price math.LegacyDec, isBuy bool) bool {
+	if isBuy {
+		previous, has := oc.PriceAmountsBuy[pair]
+		return !has || price.GT(previous)
+	} else {
+		previous, has := oc.PriceAmountsSell[pair]
+		return !has || price.LT(previous)
+	}
+}
+
+func (oc *OrdersCaches) SetPreviousPrice(pair Pair, price math.LegacyDec, isBuy bool) {
+	if isBuy {
+		previous, has := oc.PriceAmountsBuy[pair]
+		if !has || previous.GT(price) {
+			oc.PriceAmountsBuy[pair] = price
+		}
+	} else {
+		previous, has := oc.PriceAmountsSell[pair]
+		if !has || previous.LT(price) {
+			oc.PriceAmountsSell[pair] = price
+		}
+	}
 }
 
 type ItemCache[T any] struct {

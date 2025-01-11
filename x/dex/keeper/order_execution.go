@@ -116,9 +116,10 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 }
 
 func (k Keeper) ExecuteOrder(ctx context.Context, ordersCaches *types.OrdersCaches, fee math.LegacyDec, order *types.Order) (types.TradeResult, bool, error) {
+	// When the price of this order is "worse" than the ones of previously checked, we can skip all other checks. If the
+	// order with the "better" price could not be executed, the one with the "worse" price cannot be executed as well.
 	denomPair := types.Pair{DenomFrom: order.DenomGiving, DenomTo: order.DenomReceiving}
-	previousMaxPrice, has := ordersCaches.PriceAmounts[denomPair]
-	if has && order.MaxPrice.LT(previousMaxPrice) {
+	if !ordersCaches.BetterThanPreviousPrice(denomPair, order.MaxPrice, order.IsBuyOrder) {
 		return types.TradeResult{}, false, nil
 	}
 
@@ -151,10 +152,7 @@ func (k Keeper) ExecuteOrder(ctx context.Context, ordersCaches *types.OrdersCach
 	tradeCtx.CalcTradableAmountGivenPrice = getCalcMaximumAmountFunction(order.IsBuyOrder)
 	priceAmount := k.calculateAmountGivenPrice(&tradeCtx).TruncateInt()
 	if priceAmount.IsNegative() {
-		if !has || previousMaxPrice.LT(maxPrice) {
-			ordersCaches.PriceAmounts[denomPair] = maxPrice
-		}
-
+		ordersCaches.SetPreviousPrice(denomPair, maxPrice, order.IsBuyOrder)
 		return types.TradeResult{}, false, nil
 	}
 

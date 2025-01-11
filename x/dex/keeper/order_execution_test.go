@@ -831,10 +831,10 @@ func TestOrders28(t *testing.T) {
 
 	order, has = k.GetOrder(ctx, 1)
 	require.True(t, has)
-	require.Equal(t, int64(97_260), order.AmountLocked.Int64())
+	require.Equal(t, int64(97_292), order.AmountLocked.Int64())
 	require.Equal(t, int64(200_000), order.AmountRequested.Int64())
-	require.Equal(t, int64(9_950), order.AmountReceived.Int64())
-	require.Equal(t, int64(3_344), order.AmountGiven.Int64())
+	require.Equal(t, int64(9_880), order.AmountReceived.Int64())
+	require.Equal(t, int64(3_312), order.AmountGiven.Int64())
 }
 
 func TestOrders31(t *testing.T) {
@@ -1049,6 +1049,60 @@ func TestOrders37(t *testing.T) {
 	require.False(t, fullyExecuted)
 	require.True(t, tradeResult.AmountGiven.IsNil())
 	require.True(t, tradeResult.AmountReceived.IsNil())
+}
+
+func TestOrders38(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_000_000))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Dave, 2_000_000)
+
+	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
+		Creator:        keepertest.Dave,
+		DenomGiving:    constants.KUSD,
+		DenomReceiving: "uwusdc",
+		Amount:         "10000",
+		MaxPrice:       "1.01",
+	}))
+
+	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
+		Creator:        keepertest.Dave,
+		DenomGiving:    constants.KUSD,
+		DenomReceiving: "uwusdc",
+		Amount:         "10000",
+		MaxPrice:       "1.02",
+	}))
+
+	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
+		Creator:        keepertest.Dave,
+		DenomGiving:    constants.KUSD,
+		DenomReceiving: "uwusdc",
+		Amount:         "10000",
+		MaxPrice:       "0.99",
+		IsBuyOrder:     true,
+	}))
+
+	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
+		Creator:        keepertest.Dave,
+		DenomGiving:    constants.KUSD,
+		DenomReceiving: "uwusdc",
+		Amount:         "10000",
+		MaxPrice:       "0.98",
+		IsBuyOrder:     true,
+	}))
+
+	o1, _ := k.GetOrder(ctx, 1)
+	require.Equal(t, "1.010000000000000000", o1.MaxPrice.String())
+	o2, _ := k.GetOrder(ctx, 2)
+	require.Equal(t, "1.020000000000000000", o2.MaxPrice.String())
+	o3, _ := k.GetOrder(ctx, 3)
+	require.Equal(t, "0.990000000000000000", o3.MaxPrice.String())
+	o4, _ := k.GetOrder(ctx, 4)
+	require.Equal(t, "0.980000000000000000", o4.MaxPrice.String())
+
+	require.NoError(t, executeOrders(ctx, k))
 }
 
 func randomAmount(max int) int {
