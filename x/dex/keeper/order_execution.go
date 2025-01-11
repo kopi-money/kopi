@@ -236,8 +236,8 @@ func (k Keeper) getTradeFunction(isBuyOrder bool) func(ctx types.TradeContext) (
 
 func getCalcMaximumAmountFunction(isBuyOrder bool) constant_product.CalculateMaximumAmount {
 	if isBuyOrder {
-		return constant_product.CalculateMaximumReceiving
-	} else {
 		return constant_product.CalculateMaximumGiving
+	} else {
+		return constant_product.CalculateMaximumReceiving
 	}
 }
