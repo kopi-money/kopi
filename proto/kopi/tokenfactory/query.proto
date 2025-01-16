@@ -73,8 +73,8 @@ message FactoryDenomData {
   string description = 4;
   string icon_hash = 5;
   string symbol = 6;
-  uint64 exponent = 7;
-  int64 supply = 8;
+  string exponent = 7;
+  string supply = 8;
   bool has_pool = 9;
   bool mintable = 10;
 }
