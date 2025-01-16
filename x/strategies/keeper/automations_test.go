@@ -49,9 +49,6 @@ func TestAutomation1(t *testing.T) {
 	rawActions, err := json.Marshal(actions)
 	require.NoError(t, err)
 
-	fmt.Println(string(rawConditions))
-	fmt.Println(string(rawActions))
-
 	require.NoError(t, keepertest.AddAutomationMsg(ctx, msg, &types.MsgAutomationsAdd{
 		Creator:        keepertest.Alice,
 		Title:          "title",
