@@ -93,7 +93,8 @@ func (k Keeper) GetValueInUSD(ctx context.Context, denom string, amount math.Leg
 	}
 
 	value := amount.Quo(price) // C
-	return k.DenomKeeper.ConvertToExponent(ctx, denom, value, 6)
+	return value, nil
+	//return k.DenomKeeper.ConvertToExponent(ctx, denom, value, 6)
 }
 
 func (k Keeper) GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.LegacyDec) (math.LegacyDec, error) {

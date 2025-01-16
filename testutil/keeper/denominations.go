@@ -185,7 +185,7 @@ func DenomKeeper(t *testing.T) (denomkeeper.Keeper, context.Context, *Keys) {
 			Ratio: math.LegacyNewDecWithPrec(25, 2),
 		})
 
-		injRatio, err := math.LegacyNewDecFromStr("11310893732.791635615102371449")
+		injRatio, err := math.LegacyNewDecFromStr("10000000000")
 		require.NoError(t, err)
 		denomKeeper.SetRatio(innerContext, denomtypes.Ratio{
 			Denom: "inj",
