@@ -58,7 +58,11 @@ func (k Keeper) CheckBurn(ctx context.Context, kCoin string, maxBurnAmount math.
 		return fmt.Errorf("ratio (%v) is not positive", referenceDenom)
 	}
 
-	mintAmountBase := k.calcBaseMintAmount(ctx, referenceRatio.Ratio, kCoin)
+	mintAmountBase, err := k.calcBaseMintAmount(ctx, referenceRatio.Ratio, kCoin)
+	if err != nil {
+		return fmt.Errorf("mint amount base: %w", err)
+	}
+
 	mintAmountBase = math.MinInt(mintAmountBase, maxBurnAmountBase.TruncateInt())
 	if mintAmountBase.LTE(math.ZeroInt()) {
 		return nil
@@ -77,15 +81,18 @@ func (k Keeper) CheckBurn(ctx context.Context, kCoin string, maxBurnAmount math.
 	return nil
 }
 
-func (k Keeper) calcBaseMintAmount(ctx context.Context, referenceRatio math.LegacyDec, kCoin string) math.Int {
+func (k Keeper) calcBaseMintAmount(ctx context.Context, referenceRatio math.LegacyDec, kCoin string) (math.Int, error) {
 	liqBase := k.DexKeeper.GetFullLiquidityBase(ctx, kCoin)
 	liqKCoin := k.DexKeeper.GetFullLiquidityOther(ctx, kCoin)
 	constantProductRoot, _ := liqBase.Mul(liqKCoin).Quo(referenceRatio).ApproxSqrt() // C
 	mintAmount := constantProductRoot.Sub(liqBase)
 
-	mintAmount = mintAmount.Mul(k.BlockspeedKeeper.GetBlocksPerSecond(ctx))
+	blocksPerSecond, err := k.BlockspeedKeeper.GetBlocksPerSecond(ctx)
+	if err != nil {
+		return math.Int{}, err
+	}
 
-	return mintAmount.TruncateInt()
+	return mintAmount.Mul(blocksPerSecond).TruncateInt(), nil
 }
 
 // This function mints new XKP, buys the kCoin and then burns the tokens it has bought.

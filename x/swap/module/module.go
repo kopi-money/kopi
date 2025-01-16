@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	blockspeedkeeper "github.com/kopi-money/kopi/x/blockspeed/keeper"
 
 	"github.com/kopi-money/kopi/cache"
 	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
@@ -40,8 +41,9 @@ var (
 	_ appmodule.HasBeginBlocker = (*AppModule)(nil)
 	_ appmodule.HasEndBlocker   = (*AppModule)(nil)
 
-	_ types.DenomKeeper = (*denomkeeper.Keeper)(nil)
-	_ types.DexKeeper   = (*dexkeeper.Keeper)(nil)
+	_ types.BlockspeedKeeper = (*blockspeedkeeper.Keeper)(nil)
+	_ types.DenomKeeper      = (*denomkeeper.Keeper)(nil)
+	_ types.DexKeeper        = (*dexkeeper.Keeper)(nil)
 )
 
 // ----------------------------------------------------------------------------

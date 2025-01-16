@@ -33,7 +33,7 @@ type BankKeeper interface {
 }
 
 type BlockspeedKeeper interface {
-	GetBlocksPerSecond(context.Context) math.LegacyDec
+	GetBlocksPerSecond(context.Context) (math.LegacyDec, error)
 }
 
 type DexKeeper interface {
