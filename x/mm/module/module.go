@@ -172,13 +172,9 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 // EndBlock contains the logic that is automatically triggered at the end of each block.
 // The end block implementation is optional.
 func (am AppModule) EndBlock(ctx context.Context) error {
-	return cache.Transact(ctx, func(innerCtx context.Context) error {
+	if err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		if err := am.keeper.ApplyInterest(innerCtx); err != nil {
 			return fmt.Errorf("ApplyInterest: %w", err)
-		}
-
-		if err := am.keeper.HandleLiquidations(innerCtx); err != nil {
-			return fmt.Errorf("HandleLiquidations: %w", err)
 		}
 
 		if err := am.keeper.HandleRedemptions(innerCtx); err != nil {
@@ -186,7 +182,15 @@ func (am AppModule) EndBlock(ctx context.Context) error {
 		}
 
 		return nil
-	})
+	}); err != nil {
+		return err
+	}
+
+	if err := am.keeper.HandleLiquidations(ctx); err != nil {
+		return fmt.Errorf("HandleLiquidations: %w", err)
+	}
+
+	return nil
 }
 
 // IsOnePerModuleType implements the depinject.OnePerModuleType interface.

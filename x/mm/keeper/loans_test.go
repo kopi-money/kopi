@@ -663,10 +663,7 @@ func TestLoans17(t *testing.T) {
 		return nil
 	}))
 
-	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		return k.HandleLiquidations(innerCtx)
-	}))
-
+	require.NoError(t, k.HandleLiquidations(ctx))
 	require.Equal(t, 0, k.GetLoansNum(ctx))
 }
 

@@ -62,9 +62,7 @@ func TestLiquidate1(t *testing.T) {
 
 	loanValue1 := k.GetLoanValue(ctx, constants.KUSD, keepertest.Bob)
 
-	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		return k.HandleLiquidations(innerCtx)
-	}))
+	require.NoError(t, k.HandleLiquidations(ctx))
 
 	loanValue2 := k.GetLoanValue(ctx, constants.KUSD, keepertest.Bob)
 	require.Less(t, loanValue2.TruncateInt().Int64(), loanValue1.TruncateInt().Int64())
@@ -97,12 +95,10 @@ func TestLiquidate2(t *testing.T) {
 	loanValue1 := k.GetLoanValue(ctx, constants.KUSD, keepertest.Bob)
 
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		if err = k.ApplyInterest(innerCtx); err != nil {
-			return err
-		}
-
-		return k.HandleLiquidations(innerCtx)
+		return k.ApplyInterest(innerCtx)
 	}))
+
+	require.NoError(t, k.HandleLiquidations(ctx))
 
 	loanValue2 := k.GetLoanValue(ctx, constants.KUSD, keepertest.Bob)
 	require.True(t, loanValue2.LT(loanValue1))
@@ -144,12 +140,10 @@ func TestLiquidate3(t *testing.T) {
 	vaultSize1 := k.BankKeeper.SpendableCoins(ctx, vaultAcc.GetAddress()).AmountOf(constants.KUSD)
 
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		if err = k.ApplyInterest(innerCtx); err != nil {
-			return err
-		}
-
-		return k.HandleLiquidations(innerCtx)
+		return k.ApplyInterest(innerCtx)
 	}))
+
+	require.NoError(t, k.HandleLiquidations(ctx))
 
 	balance2 := k.BankKeeper.SpendableCoins(ctx, userAcc)
 	balanceDiff := balance2.AmountOf(constants.KUSD).Sub(balance1.AmountOf(constants.KUSD))
@@ -201,12 +195,10 @@ func TestLiquidate4(t *testing.T) {
 	require.NoError(t, checkCollateralSum(ctx, k))
 
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		if err = k.ApplyInterest(innerCtx); err != nil {
-			return err
-		}
-
-		return k.HandleLiquidations(innerCtx)
+		return k.ApplyInterest(innerCtx)
 	}))
+
+	require.NoError(t, k.HandleLiquidations(ctx))
 
 	collateralUser2, found2 := k.LoadCollateral(ctx, constants.KUSD, keepertest.Bob)
 	require.True(t, found2)

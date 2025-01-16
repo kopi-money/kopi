@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"github.com/kopi-money/kopi/cache"
 	"sort"
 	"strconv"
 
@@ -16,9 +17,6 @@ import (
 )
 
 func (k Keeper) HandleLiquidations(ctx context.Context) error {
-	tradeBalances := dexkeeper.NewTradeBalances()
-	ordersCaches := k.DexKeeper.NewOrdersCaches(ctx)
-
 	collateralDenomValues, err := k.getCollateralDenomsByValue(ctx)
 	if err != nil {
 		return fmt.Errorf("could not get collateral denoms by value: %w", err)
@@ -29,13 +27,9 @@ func (k Keeper) HandleLiquidations(ctx context.Context) error {
 	}
 
 	for _, borrower := range k.getBorrowers(ctx) {
-		if err = k.handleBorrowerLiquidation(ctx, tradeBalances, ordersCaches, collateralDenomValues, borrower); err != nil {
+		if err = k.handleBorrowerLiquidation(ctx, collateralDenomValues, borrower); err != nil {
 			return fmt.Errorf("could not handle liquidations for %v: %w", borrower, err)
 		}
-	}
-
-	if err = tradeBalances.Settle(ctx, k.BankKeeper); err != nil {
-		return fmt.Errorf("could not settle trade balances: %w", err)
 	}
 
 	return nil
@@ -74,7 +68,7 @@ func (k Keeper) getCollateralDenomsByValue(ctx context.Context) ([]string, error
 // handleBorrowerLiquidation compares with loan amount with the maximum allowed amount given the deposited collateral. A
 // loan is only liquidated when the excess borrowed amount is bigger than a predetermined amount such as to prevent
 // micro trades.
-func (k Keeper) handleBorrowerLiquidation(ctx context.Context, tradeBalances dextypes.TradeBalances, ordersCaches *dextypes.OrdersCaches, collateralDenoms []string, borrower string) error {
+func (k Keeper) handleBorrowerLiquidation(ctx context.Context, collateralDenoms []string, borrower string) error {
 	collateralBaseValue, err := k.calculateCollateralBaseValue(ctx, borrower)
 	if err != nil {
 		return fmt.Errorf("could not calculate collateral base value: %w", err)
@@ -100,7 +94,10 @@ func (k Keeper) handleBorrowerLiquidation(ctx context.Context, tradeBalances dex
 
 	for _, loan := range loans {
 		if loanUnderMinimumThreshold(loan.cAsset, loan.value) {
-			k.updateLoan(ctx, loan.cAsset.BaseDexDenom, borrower, loan.value.Neg())
+			_ = cache.Transact(ctx, func(innerCtx context.Context) error {
+				k.updateLoan(innerCtx, loan.cAsset.BaseDexDenom, borrower, loan.value.Neg())
+				return nil
+			})
 
 			sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 				sdk.NewEvent("loan_repaid",
@@ -122,8 +119,20 @@ func (k Keeper) handleBorrowerLiquidation(ctx context.Context, tradeBalances dex
 			continue
 		}
 
-		if err = k.liquidateCollateral(ctx, tradeBalances, ordersCaches, collateralDenoms, loan.cAsset, loan.Loan, borrower, &excessAmountBase); err != nil {
-			return fmt.Errorf("could not liquidate collateral: %w", err)
+		if err = cache.TransactWithNewMultiStore(ctx, func(innerCtx context.Context) error {
+			tradeBalances := dexkeeper.NewTradeBalances()
+			ordersCaches := k.DexKeeper.NewOrdersCaches(innerCtx)
+			if err = k.liquidateCollateral(innerCtx, tradeBalances, ordersCaches, collateralDenoms, loan.cAsset, loan.Loan, borrower, &excessAmountBase); err != nil {
+				return fmt.Errorf("liquidate collateral: %w", err)
+			}
+
+			if err = tradeBalances.Settle(ctx, k.BankKeeper); err != nil {
+				return fmt.Errorf("settle trade balances: %w", err)
+			}
+
+			return nil
+		}); err != nil {
+			k.Logger().Error(fmt.Sprintf("could not liquidate collateral (%v): %v", loan.Index, err))
 		}
 	}
 
