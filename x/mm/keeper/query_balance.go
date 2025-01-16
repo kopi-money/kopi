@@ -80,7 +80,7 @@ func getOrderValueByDenom(orders []dextypes.Order, denom string) math.Int {
 
 	for _, order := range orders {
 		if order.DenomGiving == denom {
-			sum = sum.Add(order.AmountLeft)
+			sum = sum.Add(order.AmountLocked)
 		}
 	}
 
