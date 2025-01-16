@@ -3077,14 +3077,14 @@ func (x *fastReflection_FactoryDenomData) Range(f func(protoreflect.FieldDescrip
 			return
 		}
 	}
-	if x.Exponent != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.Exponent)
+	if x.Exponent != "" {
+		value := protoreflect.ValueOfString(x.Exponent)
 		if !f(fd_FactoryDenomData_exponent, value) {
 			return
 		}
 	}
-	if x.Supply != int64(0) {
-		value := protoreflect.ValueOfInt64(x.Supply)
+	if x.Supply != "" {
+		value := protoreflect.ValueOfString(x.Supply)
 		if !f(fd_FactoryDenomData_supply, value) {
 			return
 		}
@@ -3129,9 +3129,9 @@ func (x *fastReflection_FactoryDenomData) Has(fd protoreflect.FieldDescriptor) b
 	case "kopi.tokenfactory.FactoryDenomData.symbol":
 		return x.Symbol != ""
 	case "kopi.tokenfactory.FactoryDenomData.exponent":
-		return x.Exponent != uint64(0)
+		return x.Exponent != ""
 	case "kopi.tokenfactory.FactoryDenomData.supply":
-		return x.Supply != int64(0)
+		return x.Supply != ""
 	case "kopi.tokenfactory.FactoryDenomData.has_pool":
 		return x.HasPool != false
 	case "kopi.tokenfactory.FactoryDenomData.mintable":
@@ -3165,9 +3165,9 @@ func (x *fastReflection_FactoryDenomData) Clear(fd protoreflect.FieldDescriptor)
 	case "kopi.tokenfactory.FactoryDenomData.symbol":
 		x.Symbol = ""
 	case "kopi.tokenfactory.FactoryDenomData.exponent":
-		x.Exponent = uint64(0)
+		x.Exponent = ""
 	case "kopi.tokenfactory.FactoryDenomData.supply":
-		x.Supply = int64(0)
+		x.Supply = ""
 	case "kopi.tokenfactory.FactoryDenomData.has_pool":
 		x.HasPool = false
 	case "kopi.tokenfactory.FactoryDenomData.mintable":
@@ -3208,10 +3208,10 @@ func (x *fastReflection_FactoryDenomData) Get(descriptor protoreflect.FieldDescr
 		return protoreflect.ValueOfString(value)
 	case "kopi.tokenfactory.FactoryDenomData.exponent":
 		value := x.Exponent
-		return protoreflect.ValueOfUint64(value)
+		return protoreflect.ValueOfString(value)
 	case "kopi.tokenfactory.FactoryDenomData.supply":
 		value := x.Supply
-		return protoreflect.ValueOfInt64(value)
+		return protoreflect.ValueOfString(value)
 	case "kopi.tokenfactory.FactoryDenomData.has_pool":
 		value := x.HasPool
 		return protoreflect.ValueOfBool(value)
@@ -3251,9 +3251,9 @@ func (x *fastReflection_FactoryDenomData) Set(fd protoreflect.FieldDescriptor, v
 	case "kopi.tokenfactory.FactoryDenomData.symbol":
 		x.Symbol = value.Interface().(string)
 	case "kopi.tokenfactory.FactoryDenomData.exponent":
-		x.Exponent = value.Uint()
+		x.Exponent = value.Interface().(string)
 	case "kopi.tokenfactory.FactoryDenomData.supply":
-		x.Supply = value.Int()
+		x.Supply = value.Interface().(string)
 	case "kopi.tokenfactory.FactoryDenomData.has_pool":
 		x.HasPool = value.Bool()
 	case "kopi.tokenfactory.FactoryDenomData.mintable":
@@ -3324,9 +3324,9 @@ func (x *fastReflection_FactoryDenomData) NewField(fd protoreflect.FieldDescript
 	case "kopi.tokenfactory.FactoryDenomData.symbol":
 		return protoreflect.ValueOfString("")
 	case "kopi.tokenfactory.FactoryDenomData.exponent":
-		return protoreflect.ValueOfUint64(uint64(0))
+		return protoreflect.ValueOfString("")
 	case "kopi.tokenfactory.FactoryDenomData.supply":
-		return protoreflect.ValueOfInt64(int64(0))
+		return protoreflect.ValueOfString("")
 	case "kopi.tokenfactory.FactoryDenomData.has_pool":
 		return protoreflect.ValueOfBool(false)
 	case "kopi.tokenfactory.FactoryDenomData.mintable":
@@ -3424,11 +3424,13 @@ func (x *fastReflection_FactoryDenomData) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.Exponent != 0 {
-			n += 1 + runtime.Sov(uint64(x.Exponent))
+		l = len(x.Exponent)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.Supply != 0 {
-			n += 1 + runtime.Sov(uint64(x.Supply))
+		l = len(x.Supply)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if x.HasPool {
 			n += 2
@@ -3485,15 +3487,19 @@ func (x *fastReflection_FactoryDenomData) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x48
 		}
-		if x.Supply != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Supply))
+		if len(x.Supply) > 0 {
+			i -= len(x.Supply)
+			copy(dAtA[i:], x.Supply)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Supply)))
 			i--
-			dAtA[i] = 0x40
+			dAtA[i] = 0x42
 		}
-		if x.Exponent != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Exponent))
+		if len(x.Exponent) > 0 {
+			i -= len(x.Exponent)
+			copy(dAtA[i:], x.Exponent)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Exponent)))
 			i--
-			dAtA[i] = 0x38
+			dAtA[i] = 0x3a
 		}
 		if len(x.Symbol) > 0 {
 			i -= len(x.Symbol)
@@ -3779,10 +3785,10 @@ func (x *fastReflection_FactoryDenomData) ProtoMethods() *protoiface.Methods {
 				x.Symbol = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 7:
-				if wireType != 0 {
+				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Exponent", wireType)
 				}
-				x.Exponent = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -3792,16 +3798,29 @@ func (x *fastReflection_FactoryDenomData) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.Exponent |= uint64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Exponent = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			case 8:
-				if wireType != 0 {
+				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Supply", wireType)
 				}
-				x.Supply = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -3811,11 +3830,24 @@ func (x *fastReflection_FactoryDenomData) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.Supply |= int64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Supply = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			case 9:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field HasPool", wireType)
@@ -5558,8 +5590,8 @@ type FactoryDenomData struct {
 	Description string `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	IconHash    string `protobuf:"bytes,5,opt,name=icon_hash,json=iconHash,proto3" json:"icon_hash,omitempty"`
 	Symbol      string `protobuf:"bytes,6,opt,name=symbol,proto3" json:"symbol,omitempty"`
-	Exponent    uint64 `protobuf:"varint,7,opt,name=exponent,proto3" json:"exponent,omitempty"`
-	Supply      int64  `protobuf:"varint,8,opt,name=supply,proto3" json:"supply,omitempty"`
+	Exponent    string `protobuf:"bytes,7,opt,name=exponent,proto3" json:"exponent,omitempty"`
+	Supply      string `protobuf:"bytes,8,opt,name=supply,proto3" json:"supply,omitempty"`
 	HasPool     bool   `protobuf:"varint,9,opt,name=has_pool,json=hasPool,proto3" json:"has_pool,omitempty"`
 	Mintable    bool   `protobuf:"varint,10,opt,name=mintable,proto3" json:"mintable,omitempty"`
 }
@@ -5626,18 +5658,18 @@ func (x *FactoryDenomData) GetSymbol() string {
 	return ""
 }
 
-func (x *FactoryDenomData) GetExponent() uint64 {
+func (x *FactoryDenomData) GetExponent() string {
 	if x != nil {
 		return x.Exponent
 	}
-	return 0
+	return ""
 }
 
-func (x *FactoryDenomData) GetSupply() int64 {
+func (x *FactoryDenomData) GetSupply() string {
 	if x != nil {
 		return x.Supply
 	}
-	return 0
+	return ""
 }
 
 func (x *FactoryDenomData) GetHasPool() bool {
@@ -5835,8 +5867,8 @@ var file_kopi_tokenfactory_query_proto_rawDesc = []byte{
 	0x08, 0x69, 0x63, 0x6f, 0x6e, 0x48, 0x61, 0x73, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x79, 0x6d,
 	0x62, 0x6f, 0x6c, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x79, 0x6d, 0x62, 0x6f,
 	0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x65, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x18, 0x07, 0x20,
-	0x01, 0x28, 0x04, 0x52, 0x08, 0x65, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x12, 0x16, 0x0a,
-	0x06, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x18, 0x08, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x73,
+	0x01, 0x28, 0x09, 0x52, 0x08, 0x65, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x12, 0x16, 0x0a,
+	0x06, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73,
 	0x75, 0x70, 0x70, 0x6c, 0x79, 0x12, 0x19, 0x0a, 0x08, 0x68, 0x61, 0x73, 0x5f, 0x70, 0x6f, 0x6f,
 	0x6c, 0x18, 0x09, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x68, 0x61, 0x73, 0x50, 0x6f, 0x6f, 0x6c,
 	0x12, 0x1a, 0x0a, 0x08, 0x6d, 0x69, 0x6e, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x18, 0x0a, 0x20, 0x01,

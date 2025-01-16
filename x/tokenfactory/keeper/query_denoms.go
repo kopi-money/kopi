@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/types/query"
 
@@ -31,8 +32,8 @@ func (k Keeper) Denoms(ctx context.Context, req *types.QueryDenomsRequest) (*typ
 				Description: value.Description,
 				IconHash:    value.IconHash,
 				Symbol:      value.Symbol,
-				Exponent:    value.Exponent,
-				Supply:      supply.Amount.Int64(),
+				Exponent:    strconv.Itoa(int(value.Exponent)),
+				Supply:      supply.Amount.String(),
 				HasPool:     hasPool,
 				Mintable:    value.Mintable,
 			}, nil
