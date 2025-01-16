@@ -1,6 +1,9 @@
 package keeper_test
 
 import (
+	"context"
+	"cosmossdk.io/math"
+	"github.com/kopi-money/kopi/cache"
 	"testing"
 
 	"github.com/kopi-money/kopi/constants"
@@ -12,14 +15,14 @@ import (
 func TestSimulateTrade1(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 10_000_000_000))
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 10_000_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 10_000_000000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 10_000_000000))
 
 	_, err := k.QuerySimulateBuy(ctx, &types.QuerySimulateTradeRequest{
 		DenomGiving:    constants.BaseCurrency,
 		DenomReceiving: constants.KUSD,
 		Address:        keepertest.Alice,
-		Amount:         "9999999999",
+		Amount:         "9999_999999",
 	})
 
 	require.NoError(t, err)
@@ -41,4 +44,70 @@ func TestSimulateTrade1(t *testing.T) {
 	})
 
 	require.Error(t, err)
+}
+
+func TestSimulateTrade2(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	amount, ok := math.NewIntFromString("10000000000000000000")
+	require.True(t, ok)
+	keepertest.AddFundsInt(ctx, t, k.BankKeeper, "inj", keepertest.Alice, amount)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 4_463686_945231)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Alice, 64_471_465592)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 4_463686_945231))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 64_471_465592))
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := msg.AddLiquidity(innerCtx, &types.MsgAddLiquidity{
+			Creator: keepertest.Alice,
+			Denom:   "inj",
+			Amount:  "10_000000_000000_000000",
+		})
+		return err
+	}))
+
+	buyAmount := "2000000000000000000"
+	res, err := k.QuerySimulateBuy(ctx, &types.QuerySimulateTradeRequest{
+		DenomGiving:    constants.KUSD,
+		DenomReceiving: "inj",
+		Address:        keepertest.Alice,
+		Amount:         buyAmount,
+	})
+
+	require.NoError(t, err)
+	require.Equal(t, buyAmount, res.AmountReceived)
+}
+
+func TestSimulateTrade3(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	amount, ok := math.NewIntFromString("10000000000000000000")
+	require.True(t, ok)
+	keepertest.AddFundsInt(ctx, t, k.BankKeeper, "inj", keepertest.Alice, amount)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 4_463686_945231)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Alice, 64_471_465592)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 4_463686_945231))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 64_471_465592))
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := msg.AddLiquidity(innerCtx, &types.MsgAddLiquidity{
+			Creator: keepertest.Alice,
+			Denom:   "inj",
+			Amount:  "10_000000_000000_000000",
+		})
+		return err
+	}))
+
+	sellAmount := "2000000000000000000"
+	res, err := k.QuerySimulateSell(ctx, &types.QuerySimulateTradeRequest{
+		DenomGiving:    "inj",
+		DenomReceiving: constants.KUSD,
+		Address:        keepertest.Alice,
+		Amount:         sellAmount,
+	})
+
+	require.NoError(t, err)
+	require.Equal(t, sellAmount, res.AmountGiven)
 }

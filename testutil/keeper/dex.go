@@ -130,11 +130,15 @@ func DexKeeper(t *testing.T) (dexkeeper.Keeper, context.Context, *Keys) {
 }
 
 func AddLiquidity(ctx context.Context, k dextypes.MsgServer, address, denom string, amount int64) error {
+	return AddLiquidityString(ctx, k, address, denom, strconv.Itoa(int(amount)))
+}
+
+func AddLiquidityString(ctx context.Context, k dextypes.MsgServer, address, denom, amount string) error {
 	return cache.Transact(ctx, func(innerCtx context.Context) error {
 		_, err := k.AddLiquidity(innerCtx, &dextypes.MsgAddLiquidity{
 			Creator: address,
 			Denom:   denom,
-			Amount:  strconv.Itoa(int(amount)),
+			Amount:  amount,
 		})
 		return err
 	})

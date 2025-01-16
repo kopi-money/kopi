@@ -35,13 +35,15 @@ func (k Keeper) querySimulateTrade(ctx context.Context, req *types.QuerySimulate
 		return nil, types.ErrZeroAmount
 	}
 
+	ordersCaches := k.NewOrdersCaches(ctx)
 	tradeCtx := types.TradeContext{
 		Context:             ctx,
 		TradeAmount:         amount,
 		TradeDenomGiving:    req.DenomGiving,
 		TradeDenomReceiving: req.DenomReceiving,
 		DiscountAddress:     req.Address,
-		OrdersCaches:        k.NewOrdersCaches(ctx),
+		OrdersCaches:        ordersCaches,
+		Fee:                 ordersCaches.TradeFee.Get(),
 	}
 
 	tradeResult, err := simulateFunc(tradeCtx)

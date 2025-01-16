@@ -7,12 +7,19 @@ import (
 	"strconv"
 
 	"github.com/kopi-money/kopi/constants"
-	"github.com/kopi-money/kopi/x/dex/constant_product"
 	"github.com/kopi-money/kopi/x/dex/types"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
+
+var skipErrors = []error{
+	types.ErrTradeAmountTooSmall,
+	types.ErrNotEnoughLiquidity,
+	types.ErrPriceTooLow,
+	types.ErrZeroTrade,
+	types.ErrNegativeTradeAmount,
+}
 
 func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManagerI, blockHeight int64) error {
 	ordersCaches := k.NewOrdersCaches(ctx)
@@ -139,6 +146,7 @@ func (k Keeper) ExecuteOrder(ctx context.Context, ordersCaches *types.OrdersCach
 		Context:                ctx,
 		CoinSource:             ordersCaches.AccPoolOrders.Get().String(),
 		CoinTarget:             address.String(),
+		TradeAmount:            order.AmountLeft,
 		MaximumAvailableAmount: order.AmountLocked,
 		TradeDenomGiving:       order.DenomGiving,
 		TradeDenomReceiving:    order.DenomReceiving,
@@ -149,31 +157,17 @@ func (k Keeper) ExecuteOrder(ctx context.Context, ordersCaches *types.OrdersCach
 		Fee:                    fee,
 	}
 
-	tradeCtx.CalcTradableAmountGivenPrice = getCalcMaximumAmountFunction(order.IsBuyOrder)
-	priceAmount := k.calculateAmountGivenPrice(&tradeCtx).TruncateInt()
-	if priceAmount.IsNegative() {
-		ordersCaches.SetPreviousPrice(denomPair, maxPrice, order.IsBuyOrder)
-		return types.TradeResult{}, false, nil
-	}
-
-	tradeCtx.TradeAmount = math.MinInt(order.AmountLeft, priceAmount)
-	if !tradeCtx.TradeAmount.IsPositive() {
-		return types.TradeResult{}, false, nil
-	}
-
 	if order.TradeAmount.IsPositive() {
 		tradeCtx.TradeAmount = math.MinInt(tradeCtx.TradeAmount, order.TradeAmount)
 	}
 
 	tradeResult, err := k.getTradeFunction(order.IsBuyOrder)(tradeCtx)
 	if err != nil {
-		if errors.Is(err, types.ErrTradeAmountTooSmall) {
-			return types.TradeResult{}, false, nil
+		if errors.Is(err, types.ErrNegativeTradeAmount) {
+			ordersCaches.SetPreviousPrice(denomPair, maxPrice, order.IsBuyOrder)
 		}
-		if errors.Is(err, types.ErrNotEnoughLiquidity) {
-			return types.TradeResult{}, false, nil
-		}
-		if errors.Is(err, types.ErrPriceTooLow) {
+
+		if isSkipError(err) {
 			return types.TradeResult{}, false, nil
 		}
 
@@ -235,10 +229,12 @@ func (k Keeper) getTradeFunction(isBuyOrder bool) func(ctx types.TradeContext) (
 	}
 }
 
-func getCalcMaximumAmountFunction(isBuyOrder bool) constant_product.CalculateMaximumAmount {
-	if isBuyOrder {
-		return constant_product.CalculateMaximumGiving
-	} else {
-		return constant_product.CalculateMaximumReceiving
+func isSkipError(err error) bool {
+	for _, skipError := range skipErrors {
+		if errors.Is(err, skipError) {
+			return true
+		}
 	}
+
+	return false
 }

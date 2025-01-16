@@ -34,4 +34,5 @@ var (
 	ErrZeroPrice                  = sdkerrors.Register(ModuleName, 1123, "zero price")
 	ErrOrderSizeTooSmall          = sdkerrors.Register(ModuleName, 1124, "order size too small")
 	ErrMinimumTradeAmountTooLarge = sdkerrors.Register(ModuleName, 1125, "minimum trade amount must not be larger than the actual trade amount")
+	ErrZeroTrade                  = sdkerrors.Register(ModuleName, 1126, "zero trade")
 )

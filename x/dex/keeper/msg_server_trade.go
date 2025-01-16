@@ -52,6 +52,7 @@ func (k msgServer) trade(ctx context.Context, creator, denomGiving, denomReceivi
 	}
 
 	address, _ := sdk.AccAddressFromBech32(creator)
+	tradeFee := k.GetParams(ctx).TradeFee
 
 	tradeCtx := types.TradeContext{
 		Context:                ctx,
@@ -65,7 +66,7 @@ func (k msgServer) trade(ctx context.Context, creator, denomGiving, denomReceivi
 		TradeDenomReceiving:    denomReceiving,
 		ProtocolTrade:          false,
 		TradeBalances:          NewTradeBalances(),
-		Fee:                    k.getTradeFee(ctx, creator, denomGiving, denomReceiving, false),
+		Fee:                    k.getTradeFee(ctx, tradeFee, creator, denomGiving, denomReceiving, false),
 	}
 
 	tradeResult, err := tradeFunc(tradeCtx)
@@ -95,8 +96,7 @@ func (k msgServer) trade(ctx context.Context, creator, denomGiving, denomReceivi
 	}, nil
 }
 
-func (k Keeper) getTradeFee(ctx context.Context, discountAddress, denomGiving, denomReceiving string, excludeFromDiscount bool) math.LegacyDec {
-	fee := k.GetParams(ctx).TradeFee
+func (k Keeper) getTradeFee(ctx context.Context, fee math.LegacyDec, discountAddress, denomGiving, denomReceiving string, excludeFromDiscount bool) math.LegacyDec {
 	discount := k.getTradeDiscount(ctx, discountAddress, excludeFromDiscount)
 	discount = math.LegacyOneDec().Sub(discount)
 	fee = fee.Mul(discount)

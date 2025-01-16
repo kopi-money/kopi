@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/constants"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
@@ -159,17 +158,17 @@ func (k Keeper) GetFullLiquidityBaseOtherCache(ordersCache *types.OrdersCaches, 
 	var liq1, liq2 math.LegacyDec
 
 	if denomFrom == constants.BaseCurrency {
-		liq1 = k.GetFullLiquidityBaseCache(ordersCache, denomTo)
-		liq2 = k.GetFullLiquidityOtherCache(ordersCache, denomTo)
+		liq1 = GetFullLiquidityBaseCache(ordersCache, denomTo)
+		liq2 = GetFullLiquidityOtherCache(ordersCache, denomTo)
 	} else {
-		liq1 = k.GetFullLiquidityOtherCache(ordersCache, denomFrom)
-		liq2 = k.GetFullLiquidityBaseCache(ordersCache, denomFrom)
+		liq1 = GetFullLiquidityOtherCache(ordersCache, denomFrom)
+		liq2 = GetFullLiquidityBaseCache(ordersCache, denomFrom)
 	}
 
 	return liq1, liq2
 }
 
-func (k Keeper) GetFullLiquidityBaseCache(ordersCache *types.OrdersCaches, other string) math.LegacyDec {
+func GetFullLiquidityBaseCache(ordersCache *types.OrdersCaches, other string) math.LegacyDec {
 	if other == constants.BaseCurrency {
 		panic("other denom cannot be base currency")
 	}
@@ -179,7 +178,7 @@ func (k Keeper) GetFullLiquidityBaseCache(ordersCache *types.OrdersCaches, other
 	return sumLiquidity(liq1.ToLegacyDec(), pair.VirtualBase)
 }
 
-func (k Keeper) GetFullLiquidityOtherCache(ordersCache *types.OrdersCaches, other string) math.LegacyDec {
+func GetFullLiquidityOtherCache(ordersCache *types.OrdersCaches, other string) math.LegacyDec {
 	liq1 := ordersCache.LiquidityPool.Get().AmountOf(other)
 	pair := ordersCache.LiquidityPair.Get(other)
 	return sumLiquidity(liq1.ToLegacyDec(), pair.VirtualOther)

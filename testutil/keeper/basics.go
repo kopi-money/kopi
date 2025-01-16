@@ -66,7 +66,11 @@ type TestBankKeeper interface {
 }
 
 func AddFunds(ctx context.Context, t *testing.T, k TestBankKeeper, denom, address string, amount int64) {
-	coin := sdk.NewCoin(denom, sdkmath.LegacyNewDec(amount).RoundInt())
+	AddFundsInt(ctx, t, k, denom, address, sdkmath.LegacyNewDec(amount).RoundInt())
+}
+
+func AddFundsInt(ctx context.Context, t *testing.T, k TestBankKeeper, denom, address string, amount sdkmath.Int) {
+	coin := sdk.NewCoin(denom, amount)
 	coins := sdk.NewCoins(coin)
 	err := k.MintCoins(ctx, dextypes.PoolReserve, coins)
 	require.NoError(t, err)

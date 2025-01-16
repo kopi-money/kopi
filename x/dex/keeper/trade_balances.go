@@ -239,7 +239,7 @@ func (tb *TradeBalances) MergeTransfers() (Transfers, error) {
 		}
 
 		senders = senders.remove(deleteIndexes)
-		if receiver.amount.GT(math.ZeroInt()) {
+		if receiver.amount.IsPositive() {
 			return nil, fmt.Errorf("could not fullfill receiver request")
 		}
 	}

@@ -22,7 +22,11 @@ func (k Keeper) AddOrder(ctx context.Context, creator, denomGiving, denomReceivi
 		return nil, err
 	}
 
-	if amount.LT(k.DenomKeeper.MinOrderSize(ctx, denomGiving)) {
+	if isBuyOrder && amount.LT(k.DenomKeeper.MinOrderSize(ctx, denomReceiving)) {
+		return nil, types.ErrOrderSizeTooSmall
+	}
+
+	if !isBuyOrder && amount.LT(k.DenomKeeper.MinOrderSize(ctx, denomGiving)) {
 		return nil, types.ErrOrderSizeTooSmall
 	}
 

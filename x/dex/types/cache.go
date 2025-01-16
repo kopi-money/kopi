@@ -62,14 +62,27 @@ func (cm *CoinMap) AmountOf(denom string) math.Int {
 }
 
 func (cm *CoinMap) Sub(denom string, subAmount math.Int) {
+	cm.sub(denom, subAmount, false)
+}
+
+func (cm *CoinMap) SubIgnore(denom string, subAmount math.Int) {
+	cm.sub(denom, subAmount, true)
+}
+
+func (cm *CoinMap) sub(denom string, subAmount math.Int, ignoreNegative bool) {
 	amount, has := cm.cm[denom]
 	if has {
 		newAmount := amount.Sub(subAmount)
-		if newAmount.LT(math.ZeroInt()) {
+		if !ignoreNegative && newAmount.IsNegative() {
 			panic(fmt.Sprintf("negative coin amount for %v", denom))
 		}
 
-		cm.cm[denom] = newAmount
+		if newAmount.IsPositive() {
+			cm.cm[denom] = newAmount
+		} else {
+			delete(cm.cm, denom)
+		}
+
 		return
 	}
 

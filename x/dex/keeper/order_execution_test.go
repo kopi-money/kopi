@@ -831,10 +831,10 @@ func TestOrders28(t *testing.T) {
 
 	order, has = k.GetOrder(ctx, 1)
 	require.True(t, has)
-	require.Equal(t, int64(97_292), order.AmountLocked.Int64())
+	require.Equal(t, int64(97_260), order.AmountLocked.Int64())
 	require.Equal(t, int64(200_000), order.AmountRequested.Int64())
-	require.Equal(t, int64(9_880), order.AmountReceived.Int64())
-	require.Equal(t, int64(3_312), order.AmountGiven.Int64())
+	require.Equal(t, int64(9_950), order.AmountReceived.Int64())
+	require.Equal(t, int64(3_344), order.AmountGiven.Int64())
 }
 
 func TestOrders31(t *testing.T) {
