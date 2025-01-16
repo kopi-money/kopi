@@ -6,37 +6,23 @@ import (
 )
 
 type LiquidityProvider struct {
-	index          uint64
-	address        string
-	amountProvided math.LegacyDec
-	shareProvided  math.LegacyDec
+	index   uint64
+	address string
+	amount  math.Int
 }
 
 type LiquidityProviders []*LiquidityProvider
 
-func (lps *LiquidityProviders) sumProvided() math.LegacyDec {
-	sum := math.LegacyZeroDec()
-	for _, lp := range *lps {
-		sum = sum.Add(lp.amountProvided)
+func (lps LiquidityProviders) amountSum() math.Int {
+	sum := math.ZeroInt()
+	for _, lp := range lps {
+		sum = sum.Add(lp.amount)
 	}
 
 	return sum
 }
 
-func (lps *LiquidityProviders) provided() *LiquidityProviders {
-	sumProvided := lps.sumProvided()
-	for _, lp := range *lps {
-		if sumProvided.IsPositive() {
-			lp.shareProvided = lp.amountProvided.Quo(sumProvided)
-		} else {
-			lp.shareProvided = math.LegacyZeroDec()
-		}
-	}
-
-	return lps
-}
-
-func (k Keeper) determineLiquidityProviders(ctx types.TradeStepContext, amountToReceiveLeft math.Int, denomTo string) (*LiquidityProviders, math.Int, error) {
+func (k Keeper) determineLiquidityProviders(ctx types.TradeStepContext, amountToReceiveLeft math.Int, denomTo string) (LiquidityProviders, math.Int, error) {
 	var (
 		liquidityProviders LiquidityProviders
 		liquidityUsed      math.Int
@@ -47,7 +33,7 @@ func (k Keeper) determineLiquidityProviders(ctx types.TradeStepContext, amountTo
 	// Iterate over the existing liquidity entries for this currency
 	liquidityList := ctx.OrdersCaches.LiquidityMap.Get(denomTo)
 	for index, liq := range liquidityList {
-		if amountToReceiveLeft.LTE(math.ZeroInt()) {
+		if !amountToReceiveLeft.IsPositive() {
 			break
 		}
 
@@ -61,7 +47,7 @@ func (k Keeper) determineLiquidityProviders(ctx types.TradeStepContext, amountTo
 			amountToReceiveLeft = amountToReceiveLeft.Sub(liq.Amount)
 		}
 
-		lp := LiquidityProvider{index: liq.Index, address: liq.Address, amountProvided: liquidityUsed.ToLegacyDec()}
+		lp := LiquidityProvider{index: liq.Index, address: liq.Address, amount: liquidityUsed}
 		liquidityProviders = append(liquidityProviders, &lp)
 		sumUsed = sumUsed.Add(liquidityUsed)
 		liq.Amount = liq.Amount.Sub(liquidityUsed)
@@ -84,7 +70,7 @@ func (k Keeper) determineLiquidityProviders(ctx types.TradeStepContext, amountTo
 		denomTo, sumUsed,
 	)
 
-	return &liquidityProviders, amountToReceiveLeft, nil
+	return liquidityProviders, amountToReceiveLeft, nil
 }
 
 func removeIndexes(liquidityList []types.Liquidity, indexes []int) []types.Liquidity {
@@ -97,54 +83,62 @@ func removeIndexes(liquidityList []types.Liquidity, indexes []int) []types.Liqui
 	return liquidityList
 }
 
-func (k Keeper) distributeFeeForLiquidityProviders(ctx types.TradeStepContext, liquidityProviders *LiquidityProviders, feeForLiquidityProvidersLeft math.Int, denom string) error {
-	liquidityEntries := ctx.TradeContext.OrdersCaches.LiquidityMap.Get(denom)
-	providerFee := ctx.OrdersCaches.ProviderFee.Get()
+// distributeSellFee distributes the sell fee among the liquidity providers. For example, when a user has given 400 XKP
+// and received 100 kUSD, the user actually receives only 99 kUSD. The 1 kUSD will be given to liquidity providers.
+// However, it is not split evenly to prevent micro liquidity amount in the queue. Instead, it is given to few users.
+// Those users will in return get a smaller share of the given funds. The receive factor determines how much of the
+// given funds each provider will receive for each received
+func (k Keeper) distributeSellFee(ctx types.TradeStepContext, liquidityProviders LiquidityProviders, feeForLiquidityProviders math.Int, receiveFactor math.LegacyDec, feeDenom string) {
+	liquidityEntries := ctx.TradeContext.OrdersCaches.LiquidityMap.Get(feeDenom)
 
-	liquidityProviderIndex := 0
-	sendSum := math.ZeroInt()
+	feeForLiquidityProvidersLeft := feeForLiquidityProviders
+	for _, liquidityProvider := range liquidityProviders {
+		// Calculate how much of the given funds this LP is eligable for
+		eligable := liquidityProvider.amount.ToLegacyDec().Mul(receiveFactor)
 
-	for feeForLiquidityProvidersLeft.GT(math.ZeroInt()) {
-		liquidityProvider := (*liquidityProviders)[liquidityProviderIndex]
-		liquidityProviderIndex += 1
+		if feeForLiquidityProvidersLeft.IsPositive() {
+			sellFeeAmount := math.MinInt(feeForLiquidityProvidersLeft, liquidityProvider.amount)
+			feeForLiquidityProvidersLeft = feeForLiquidityProvidersLeft.Sub(sellFeeAmount)
 
-		amount := math.MinInt(feeForLiquidityProvidersLeft, liquidityProvider.amountProvided.TruncateInt())
-		sendSum = sendSum.Add(amount)
-		feeForLiquidityProvidersLeft = feeForLiquidityProvidersLeft.Sub(amount)
-		liquidityProvider.amountProvided = liquidityProvider.amountProvided.Mul(providerFee)
+			eligable = eligable.Sub(sellFeeAmount.ToLegacyDec().Mul(receiveFactor))
+			liquidityEntries, _ = k.addLiquidity(ctx.TradeContext.Context, feeDenom, liquidityProvider.address, sellFeeAmount, liquidityEntries)
+		}
 
-		liquidityEntries, _ = k.addLiquidity(ctx.TradeContext.Context, denom, liquidityProvider.address, amount, liquidityEntries)
+		liquidityProvider.amount = eligable.RoundInt()
 	}
 
-	ctx.OrdersCaches.LiquidityPool.Get().Add(denom, sendSum)
-	ctx.OrdersCaches.LiquidityMap.Set(denom, liquidityEntries)
+	ctx.OrdersCaches.LiquidityPool.Get().Add(feeDenom, feeForLiquidityProviders)
+	ctx.OrdersCaches.LiquidityMap.Set(feeDenom, liquidityEntries)
 
 	ctx.TradeContext.TradeBalances.AddTransfer(
 		ctx.OrdersCaches.AccPoolTrade.Get().String(),
 		ctx.OrdersCaches.AccPoolLiquidity.Get().String(),
-		denom, sendSum,
+		feeDenom, feeForLiquidityProviders,
 	)
-
-	return nil
 }
 
-func (k Keeper) distributeGivenFunds(ctx types.TradeStepContext, ordersCaches *types.OrdersCaches, liquidityProviders *LiquidityProviders, fundsToDistribute math.Int, denom string) error {
-	liquidityEntries := ordersCaches.LiquidityMap.Get(denom)
-	provided := liquidityProviders.provided()
+func (k Keeper) distributeGivenFunds(ctx types.TradeStepContext, ordersCaches *types.OrdersCaches, liquidityProviders LiquidityProviders, fundsToDistribute math.Int, denom string) error {
+	var (
+		liquidityEntries           = ordersCaches.LiquidityMap.Get(denom)
+		fundsToDistributeRemaining = fundsToDistribute
+		eligable                   math.Int
+	)
 
-	fundsToDistributeRemaining := fundsToDistribute
-	for index, liquidityProvider := range *provided {
-		var eligable math.Int
-		if index+1 == len(*provided) {
+	sum := liquidityProviders.amountSum().ToLegacyDec()
+	for index, liquidityProvider := range liquidityProviders {
+		if index+1 == len(liquidityProviders) {
 			// In case of the last liquidity provider, we use the remaining funds to make sure there are no leftovers
 			// (cause by potential rounding issues)
 			eligable = fundsToDistributeRemaining
 		} else {
-			eligable = liquidityProvider.shareProvided.Mul(fundsToDistribute.ToLegacyDec()).RoundInt()
+			share := liquidityProvider.amount.ToLegacyDec().Quo(sum)
+			eligable = share.Mul(fundsToDistribute.ToLegacyDec()).RoundInt()
 		}
 
-		liquidityEntries, _ = k.addLiquidity(ctx.TradeContext.Context, denom, liquidityProvider.address, eligable, liquidityEntries)
-		fundsToDistributeRemaining = fundsToDistributeRemaining.Sub(eligable)
+		if eligable.IsPositive() {
+			liquidityEntries, _ = k.addLiquidity(ctx.TradeContext.Context, denom, liquidityProvider.address, eligable, liquidityEntries)
+			fundsToDistributeRemaining = fundsToDistributeRemaining.Sub(eligable)
+		}
 	}
 
 	ordersCaches.LiquidityMap.Set(denom, liquidityEntries)
