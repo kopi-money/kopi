@@ -110,7 +110,7 @@ func (k Keeper) getLoanValue(loanSum types.LoanSum, loan types.Loan) math.Legacy
 		return math.LegacyZeroDec()
 	}
 
-	loanValue := loan.Weight.Quo(loanSum.WeightSum).Mul(loanSum.LoanSum)
+	loanValue := loan.Weight.Quo(loanSum.WeightSum).Mul(loanSum.LoanSum) // C
 	return loanValue
 }
 
@@ -242,7 +242,7 @@ func calculateLoanValue(loanSum types.LoanSum, weight math.LegacyDec) math.Legac
 		return math.LegacyZeroDec()
 	}
 
-	valueShare := weight.Quo(loanSum.WeightSum)
+	valueShare := weight.Quo(loanSum.WeightSum) // C
 	return loanSum.LoanSum.Mul(valueShare)
 }
 
@@ -251,7 +251,7 @@ func calculateLoanWeight(loanSum types.LoanSum, addedAmount math.LegacyDec) math
 
 	var valueShare math.LegacyDec
 	if newLoanSum.IsPositive() {
-		valueShare = addedAmount.Quo(newLoanSum)
+		valueShare = addedAmount.Quo(newLoanSum) // C
 	} else {
 		valueShare = math.LegacyZeroDec()
 	}
@@ -260,7 +260,7 @@ func calculateLoanWeight(loanSum types.LoanSum, addedAmount math.LegacyDec) math
 	if valueShare.Equal(math.LegacyOneDec()) || loanSum.WeightSum.IsZero() {
 		additionalWeight = addedAmount
 	} else {
-		additionalWeight = loanSum.WeightSum.Quo(math.LegacyOneDec().Sub(valueShare)).Sub(loanSum.WeightSum)
+		additionalWeight = loanSum.WeightSum.Quo(math.LegacyOneDec().Sub(valueShare)).Sub(loanSum.WeightSum) // C
 	}
 
 	return additionalWeight

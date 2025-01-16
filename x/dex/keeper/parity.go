@@ -32,7 +32,11 @@ func (k Keeper) CalculateParity(ctx context.Context, kCoin string) (*math.Legacy
 		return nil, referenceDenom, err
 	}
 
-	parity := referenceRatio.Ratio.Quo(kCoinRatio.Ratio)
+	if !kCoinRatio.Ratio.IsPositive() {
+		return nil, "", fmt.Errorf("ratio must be positive")
+	}
+
+	parity := referenceRatio.Ratio.Quo(kCoinRatio.Ratio) // C
 	return &parity, referenceDenom, nil
 }
 

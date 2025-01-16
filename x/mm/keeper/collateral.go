@@ -134,7 +134,11 @@ func (k Keeper) CalcWithdrawableCollateralAmount(ctx context.Context, address, d
 		return math.LegacyDec{}, fmt.Errorf("could not convert back to denom currency: %w", err)
 	}
 
-	excessAmount = excessAmount.Quo(collateralDenomLTV)
+	if !collateralDenomLTV.IsPositive() {
+		return math.LegacyDec{}, fmt.Errorf("collateral denom ltv is not positive")
+	}
+
+	excessAmount = excessAmount.Quo(collateralDenomLTV) // C
 	collateral := k.GetCollateralForDenomForAddressWithDefault(ctx, denom, address)
 	excessAmount = math.LegacyMinDec(collateral.ToLegacyDec(), excessAmount)
 

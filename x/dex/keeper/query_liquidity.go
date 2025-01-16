@@ -52,8 +52,18 @@ func (k Keeper) LiquiditySum(ctx context.Context, _ *types.QueryGetLiquiditySumR
 	valueUSD := math.LegacyZeroDec()
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
 		val := k.GetLiquiditySum(ctx, denom)
-		price, _ := k.CalculatePrice(ctx, denom, referenceDenom)
-		valueUSD = valueUSD.Add(val.ToLegacyDec().Quo(price))
+
+		var price math.LegacyDec
+		price, err = k.CalculatePrice(ctx, denom, referenceDenom)
+		if err != nil {
+			return nil, fmt.Errorf("calculate price: %w", err)
+		}
+
+		if !price.IsPositive() {
+			return nil, fmt.Errorf("price is not positive")
+		}
+
+		valueUSD = valueUSD.Add(val.ToLegacyDec().Quo(price)) // C
 	}
 
 	return &types.QueryGetLiquiditySumResponse{

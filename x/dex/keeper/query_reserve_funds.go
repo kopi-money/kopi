@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/x/dex/types"
@@ -26,13 +27,17 @@ func (k Keeper) ReserveFunds(ctx context.Context, _ *types.QueryReserveFundsRequ
 			return nil, err
 		}
 
+		if !priceUSD.IsPositive() {
+			return nil, fmt.Errorf("priceUSD must be positive")
+		}
+
 		funds = append(funds, &types.Denom{
 			Denom:     denom,
 			Amount:    amount.String(),
-			AmountUsd: amount.ToLegacyDec().Quo(priceUSD).String(),
+			AmountUsd: amount.ToLegacyDec().Quo(priceUSD).String(), // C
 		})
 
-		total = total.Add(amount.ToLegacyDec().Quo(priceUSD))
+		total = total.Add(amount.ToLegacyDec().Quo(priceUSD)) // C
 	}
 
 	funds = append(funds, &types.Denom{

@@ -38,23 +38,23 @@ func (d DummyBlockspeedKeeper) GetBlocksPerSecond(_ context.Context) math.Legacy
 }
 
 func (d DummyBlockspeedKeeper) BlocksPerYear(_ context.Context) (math.LegacyDec, error) {
-	return math.LegacyNewDec(constants.SecondsPerYear).Quo(math.LegacyNewDec(2)), nil
+	return math.LegacyNewDec(constants.SecondsPerYear).Quo(math.LegacyNewDec(2)), nil // C
 }
 
-type DummyDistrubtionKeeper struct {
+type DummyDistrubutionKeeper struct {
 }
 
-func (d DummyDistrubtionKeeper) CalculateDelegationRewards(ctx context.Context, val stakingtypes.ValidatorI, del stakingtypes.DelegationI, endingPeriod uint64) (rewards sdk.DecCoins, err error) {
+func (d DummyDistrubutionKeeper) CalculateDelegationRewards(_ context.Context, _ stakingtypes.ValidatorI, _ stakingtypes.DelegationI, _ uint64) (rewards sdk.DecCoins, err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (d DummyDistrubtionKeeper) IncrementValidatorPeriod(ctx context.Context, val stakingtypes.ValidatorI) (uint64, error) {
+func (d DummyDistrubutionKeeper) IncrementValidatorPeriod(_ context.Context, _ stakingtypes.ValidatorI) (uint64, error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (d DummyDistrubtionKeeper) WithdrawDelegationRewards(_ context.Context, _ sdk.AccAddress, _ sdk.ValAddress) (sdk.Coins, error) {
+func (d DummyDistrubutionKeeper) WithdrawDelegationRewards(_ context.Context, _ sdk.AccAddress, _ sdk.ValAddress) (sdk.Coins, error) {
 	panic("implement me")
 }
 
@@ -100,7 +100,7 @@ func StrategiesKeeper(t *testing.T) (keeper.Keeper, dexkeeper.Keeper, mmkeeper.K
 
 		mmKeeper.AccountKeeper,
 		mmKeeper.BankKeeper,
-		DummyDistrubtionKeeper{},
+		DummyDistrubutionKeeper{},
 		DummyStakingKeeper{},
 
 		DummyBlockspeedKeeper{},

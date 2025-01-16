@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
@@ -74,8 +75,12 @@ func (k Keeper) SetLiquidityPool(ctx context.Context, factoryDenomHash string, l
 }
 
 // getPoolRatio returns the ratio in the form of "One factory denom unit represents x kcoin denom units"
-func getPoolRatio(pool types.LiquidityPool) math.LegacyDec {
-	return pool.KCoinAmount.ToLegacyDec().Quo(pool.FactoryDenomAmount.ToLegacyDec())
+func getPoolRatio(pool types.LiquidityPool) (math.LegacyDec, error) {
+	if !pool.FactoryDenomAmount.IsPositive() {
+		return math.LegacyDec{}, fmt.Errorf("factory denom is not positive")
+	}
+
+	return pool.KCoinAmount.ToLegacyDec().Quo(pool.FactoryDenomAmount.ToLegacyDec()), nil // C
 }
 
 func (k Keeper) LiquidityShareIterator(ctx context.Context, denom string) cache.Iterator[string, types.ProviderShare] {
@@ -117,8 +122,12 @@ func (k Keeper) updateLiquidityShare(ctx context.Context, factoryDenom types.Fac
 		if providerAmount.IsZero() {
 			k.liquidityProviderShares.Remove(ctx, factoryDenom.FullName, providerAddress)
 		} else {
+			if !sum.IsPositive() {
+				return fmt.Errorf("sum is not positive")
+			}
+
 			k.liquidityProviderShares.Set(ctx, factoryDenom.FullName, providerAddress, types.ProviderShare{
-				Share: providerAmount.Quo(sum),
+				Share: providerAmount.Quo(sum), // C
 			})
 		}
 	}

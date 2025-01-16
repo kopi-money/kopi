@@ -24,7 +24,10 @@ func (k Keeper) ArbitrageSimulateDepositBase(ctx context.Context, req *types.Arb
 		return nil, err
 	}
 
-	cAssetAmount := k.MMKeeper.CalculateNewCAssetAmount(ctx, cAsset, amount)
+	cAssetAmount, err := k.MMKeeper.CalculateNewCAssetAmount(ctx, cAsset, amount)
+	if err != nil {
+		return nil, err
+	}
 
 	calculateValue := k.calculateArbitrageTokenValue(ctx, aAsset)
 	calculateValue = append(calculateValue, func() (math.LegacyDec, error) {

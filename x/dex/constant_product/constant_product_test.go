@@ -58,7 +58,7 @@ func TestCalculateMaximumReceiving1(t *testing.T) {
 	poolTo := math.LegacyNewDec(100)
 	maxPrice := math.LegacyNewDecWithPrec(11, 1)
 
-	maxAmount := constant_product.CalculateMaximumReceiving(poolFrom, poolTo, maxPrice)
+	maxAmount, _ := constant_product.CalculateMaximumReceiving(poolFrom, poolTo, maxPrice)
 
 	amountToGive, _, err := constant_product.ConstantProductTradeBuy(poolFrom, poolTo, maxAmount, math.LegacyZeroDec())
 	require.NoError(t, err)
@@ -70,11 +70,11 @@ func TestCalculateMaximumReceiving2(t *testing.T) {
 	poolTo := math.LegacyNewDec(1_000_000_000)
 	maxPrice := math.LegacyNewDecWithPrec(101, 2)
 
-	maxAmount := constant_product.CalculateMaximumReceiving(poolFrom, poolTo, maxPrice)
+	maxAmount, _ := constant_product.CalculateMaximumReceiving(poolFrom, poolTo, maxPrice)
 
 	amountToGive, _, err := constant_product.ConstantProductTradeBuy(poolFrom, poolTo, maxAmount, math.LegacyZeroDec())
 	require.NoError(t, err)
 	require.Equal(t, int64(10_000_000), amountToGive.RoundInt64())
 
-	require.True(t, maxPrice.GTE(amountToGive.Quo(maxAmount)))
+	require.True(t, maxPrice.GTE(amountToGive.Quo(maxAmount))) // C
 }

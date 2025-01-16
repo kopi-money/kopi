@@ -12,8 +12,8 @@ var _ types.QueryServer = Keeper{}
 func (k Keeper) Blockspeed(ctx context.Context, _ *types.QueryBlockspeedRequest) (*types.QueryBlockspeedResponse, error) {
 	blockspeed := k.GetBlockspeed(ctx)
 
-	secondsPerBlock := blockspeed.AverageTime.Quo(math.LegacyNewDec(1000))
-	blocksPerSecond := math.LegacyOneDec().Quo(secondsPerBlock)
+	secondsPerBlock := blockspeed.AverageTime.Quo(math.LegacyNewDec(1000)) // C
+	blocksPerSecond := math.LegacyOneDec().Quo(secondsPerBlock)            // C
 
 	return &types.QueryBlockspeedResponse{
 		BlocksPerSecond: blocksPerSecond.String(),

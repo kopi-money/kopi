@@ -28,7 +28,7 @@ func (k Keeper) GetCreditLineUsage(ctx context.Context, req *types.GetCreditLine
 
 	creditLineUsage := math.LegacyZeroDec()
 	if collateralUserSum.IsPositive() {
-		creditLineUsage = userLoanSum.Quo(collateralUserSum)
+		creditLineUsage = userLoanSum.Quo(collateralUserSum) // C
 	}
 
 	return &types.GetCreditLineUsageResponse{
@@ -42,7 +42,7 @@ func (k Keeper) CalculateCreditLineUsage(ctx context.Context, address string) (m
 		return math.LegacyDec{}, fmt.Errorf("could not get user loan sum: %w", err)
 	}
 
-	if collateralUserSum.IsZero() {
+	if !collateralUserSum.IsPositive() {
 		return math.LegacyZeroDec(), nil
 	}
 
@@ -51,5 +51,5 @@ func (k Keeper) CalculateCreditLineUsage(ctx context.Context, address string) (m
 		return math.LegacyDec{}, fmt.Errorf("could not get user loan sum: %w", err)
 	}
 
-	return userLoanSum.Quo(collateralUserSum), nil
+	return userLoanSum.Quo(collateralUserSum), nil // C
 }

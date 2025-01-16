@@ -54,7 +54,7 @@ func (k Keeper) calcVirtualAmountBase(ctx context.Context, ratio math.LegacyDec,
 	liqBaseDec := liqBase.ToLegacyDec()
 	liqOtherDec := liqOther.ToLegacyDec()
 
-	return liqOtherDec.Quo(ratio).Sub(liqBaseDec)
+	return liqOtherDec.Quo(ratio).Sub(liqBaseDec) // C
 }
 
 func (k Keeper) CreateLiquidityPair(ctx context.Context, ratio denomtypes.Ratio) (pair types.LiquidityPair) {
@@ -106,11 +106,11 @@ func (k Keeper) GetCrossLiquidity(ctx *types.TradeContext) (math.LegacyDec, math
 
 	fromRatio, _ := k.DenomKeeper.GetRatio(ctx, ctx.TradeDenomGiving)
 	fromLiquidity := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomGiving).ToLegacyDec()
-	fromLiquidityValueBase := fromLiquidity.Quo(fromRatio.Ratio)
+	fromLiquidityValueBase := fromLiquidity.Quo(fromRatio.Ratio) // C
 
 	toRatio, _ := k.DenomKeeper.GetRatio(ctx, ctx.TradeDenomReceiving)
 	toLiquidity := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomReceiving).ToLegacyDec()
-	toLiquidityValueBase := toLiquidity.Quo(toRatio.Ratio)
+	toLiquidityValueBase := toLiquidity.Quo(toRatio.Ratio) // C
 
 	switch {
 	case fromLiquidityValueBase.LT(toLiquidityValueBase):

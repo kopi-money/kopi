@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -47,20 +48,28 @@ func (k Keeper) calcAverageTime(ctx context.Context, averageTime math.LegacyDec,
 
 func (k Keeper) GetSecondsPerBlock(ctx context.Context) math.LegacyDec {
 	blockspeed := k.GetBlockspeed(ctx)
-	return blockspeed.AverageTime.Quo(math.LegacyNewDec(1000))
+	return blockspeed.AverageTime.Quo(math.LegacyNewDec(1000)) // C
 }
 
-func (k Keeper) GetBlocksPerSecond(ctx context.Context) math.LegacyDec {
-	return math.LegacyOneDec().Quo(k.GetSecondsPerBlock(ctx))
+func (k Keeper) GetBlocksPerSecond(ctx context.Context) (math.LegacyDec, error) {
+	secondPerBlock := k.GetSecondsPerBlock(ctx)
+	if !secondPerBlock.IsPositive() {
+		return math.LegacyDec{}, fmt.Errorf("seconds per block is not positive")
+	}
+
+	return math.LegacyOneDec().Quo(secondPerBlock), nil // C
 }
 
 func (k Keeper) BlocksPerYear(ctx context.Context) (math.LegacyDec, error) {
 	secondsPerYear := math.LegacyNewDec(constants.SecondsPerYear)
-	blockPerSecond := k.GetBlocksPerSecond(ctx)
+	blockPerSecond, err := k.GetBlocksPerSecond(ctx)
+	if err != nil {
+		return math.LegacyDec{}, err
+	}
 
 	if blockPerSecond.IsZero() {
 		return math.LegacyDec{}, types.ErrDivisionByZero
 	}
 
-	return secondsPerYear.Quo(blockPerSecond), nil
+	return secondsPerYear.Quo(blockPerSecond), nil // C
 }

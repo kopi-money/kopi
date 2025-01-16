@@ -56,7 +56,12 @@ func (k Keeper) Sell(ctx context.Context, tradeData TradeData) (*types.MsgTradeR
 			return nil, err
 		}
 
-		priceTradeAmount := k.calculateMaxAmount(ctx, pool, tradeData.denomGiving, maxPrice, pool.PoolFee, constant_product.CalculateMaximumGiving)
+		var priceTradeAmount math.Int
+		priceTradeAmount, err = k.calculateMaxAmount(ctx, pool, tradeData.denomGiving, maxPrice, pool.PoolFee, constant_product.CalculateMaximumGiving)
+		if err != nil {
+			return nil, err
+		}
+
 		if priceTradeAmount.LT(amountToGiveGross) {
 			if priceTradeAmount.IsNegative() || !tradeData.allowIncomplete {
 				return nil, types.ErrMarketPriceTooHigh
@@ -184,10 +189,20 @@ func (k Keeper) Buy(ctx context.Context, tradeData TradeData) (*types.MsgTradeRe
 			return nil, err
 		}
 
-		maxPrice = math.LegacyOneDec().Quo(maxPrice)
-		priceTradeAmount := k.calculateMaxAmount(ctx, pool, tradeData.denomGiving, maxPrice, pool.PoolFee, constant_product.CalculateMaximumReceiving)
+		if !maxPrice.IsPositive() {
+			return nil, fmt.Errorf("max price is not positive")
+		}
+
+		maxPrice = math.LegacyOneDec().Quo(maxPrice) // C
+
+		var priceTradeAmount math.Int
+		priceTradeAmount, err = k.calculateMaxAmount(ctx, pool, tradeData.denomGiving, maxPrice, pool.PoolFee, constant_product.CalculateMaximumReceiving)
+		if err != nil {
+			return nil, err
+		}
+
 		if priceTradeAmount.LT(amountToReceiveGross) {
-			if priceTradeAmount.LT(math.ZeroInt()) || !tradeData.allowIncomplete {
+			if priceTradeAmount.IsNegative() || !tradeData.allowIncomplete {
 				return nil, types.ErrMarketPriceTooHigh
 			}
 
@@ -372,12 +387,17 @@ func constantProductBuy(pool types.LiquidityPool, denomGiving string, amount mat
 	return amountDec.TruncateInt(), nil
 }
 
-func (k Keeper) calculateMaxAmount(ctx context.Context, pool types.LiquidityPool, denomFrom string, maxPrice, poolFee math.LegacyDec, calculate constant_product.CalculateMaximumAmount) math.Int {
+func (k Keeper) calculateMaxAmount(ctx context.Context, pool types.LiquidityPool, denomFrom string, maxPrice, poolFee math.LegacyDec, calculate constant_product.CalculateMaximumAmount) (math.Int, error) {
 	liqFrom, liqTo := getLiquidity(pool, denomFrom)
 	tradeFee := k.getTradeFee(ctx, poolFee)
 	maxPrice = maxPrice.Mul(math.LegacyOneDec().Sub(tradeFee))
 
-	return calculate(liqFrom, liqTo, maxPrice).TruncateInt()
+	priceTradeAmount, err := calculate(liqFrom, liqTo, maxPrice)
+	if err != nil {
+		return math.Int{}, err
+	}
+
+	return priceTradeAmount.TruncateInt(), nil
 }
 
 func getLiquidity(pool types.LiquidityPool, denomFrom string) (math.LegacyDec, math.LegacyDec) {

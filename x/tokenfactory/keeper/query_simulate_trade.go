@@ -37,17 +37,24 @@ func (k Keeper) QuerySimulateSell(ctx context.Context, req *types.QuerySimulateT
 	}
 
 	amountToReceive := constantProductSell(pool, req.DenomGiving, amountToSell)
+	if !amountToReceive.IsPositive() {
+		return nil, fmt.Errorf("amount to receive not positive")
+	}
 
 	if req.DenomReceiving == constants.KUSD {
 		feeData = k.calculateFees(ctx, pool, amountToReceive, req.DenomGiving)
 		amountToReceive = amountToReceive.Sub(feeData.Fee())
 	}
 
+	if !amountToSell.IsPositive() {
+		return nil, fmt.Errorf("amount to sell not positive")
+	}
+
 	var price math.LegacyDec
 	if req.DenomReceiving == constants.KUSD {
-		price = amountToSell.ToLegacyDec().Quo(amountToReceive.ToLegacyDec())
+		price = amountToSell.ToLegacyDec().Quo(amountToReceive.ToLegacyDec()) // C
 	} else {
-		price = amountToReceive.ToLegacyDec().Quo(amountToSell.ToLegacyDec())
+		price = amountToReceive.ToLegacyDec().Quo(amountToSell.ToLegacyDec()) // C
 	}
 
 	return &types.QuerySimulateTradeResponse{
@@ -89,16 +96,24 @@ func (k Keeper) QuerySimulateBuy(ctx context.Context, req *types.QuerySimulateTr
 		return nil, err
 	}
 
+	if !amountToReceive.IsPositive() {
+		return nil, fmt.Errorf("amount to receive not positive")
+	}
+
 	if req.DenomReceiving == constants.KUSD {
 		feeData = k.calculateFees(ctx, pool, amountToGive, req.DenomGiving)
 		amountToGive = amountToGive.Add(feeData.Fee())
 	}
 
+	if !amountToGive.IsPositive() {
+		return nil, fmt.Errorf("amount to sell not positive")
+	}
+
 	var price math.LegacyDec
 	if req.DenomReceiving == constants.KUSD {
-		price = amountToGive.ToLegacyDec().Quo(amountToReceive.ToLegacyDec())
+		price = amountToGive.ToLegacyDec().Quo(amountToReceive.ToLegacyDec()) // C
 	} else {
-		price = amountToReceive.ToLegacyDec().Quo(amountToGive.ToLegacyDec())
+		price = amountToReceive.ToLegacyDec().Quo(amountToGive.ToLegacyDec()) // C
 	}
 
 	return &types.QuerySimulateTradeResponse{

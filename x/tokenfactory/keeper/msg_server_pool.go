@@ -102,7 +102,11 @@ func (k Keeper) getLiquidityForAddress(ctx context.Context, fullName, amount str
 		return types.FactoryDenom{}, types.LiquidityPool{}, math.Int{}, math.Int{}, fmt.Errorf("invalid factory denom amount: %v", amount)
 	}
 
-	poolRatio := getPoolRatio(pool)
+	poolRatio, err := getPoolRatio(pool)
+	if err != nil {
+		return types.FactoryDenom{}, types.LiquidityPool{}, math.Int{}, math.Int{}, err
+	}
+
 	amountOtherDenom := amountFactory.ToLegacyDec().Mul(poolRatio).TruncateInt()
 
 	return factoryDenom, pool, amountFactory, amountOtherDenom, nil
@@ -275,7 +279,11 @@ func (k Keeper) payoutLiquidityUnlockins(ctx context.Context, factoryDenom types
 }
 
 func (k Keeper) payoutLiquidityProviders(ctx context.Context, factoryDenom types.FactoryDenom, pool types.LiquidityPool) error {
-	ratio := getPoolRatio(pool)
+	ratio, err := getPoolRatio(pool)
+	if err != nil {
+		return err
+	}
+
 	shareIterator := k.LiquidityShareIterator(ctx, factoryDenom.FullName)
 
 	for shareIterator.Valid() {

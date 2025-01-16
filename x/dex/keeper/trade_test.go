@@ -71,9 +71,9 @@ func TestCalculateSingleMaximumTradableAmount4(t *testing.T) {
 	maxPrice, _ := math.LegacyNewDecFromStr("4.18418")
 	fee := math.LegacyZeroDec()
 
-	maximumGiving := constant_product.CalculateMaximumGiving(liqFrom, liqTo, maxPrice)
+	maximumGiving, _ := constant_product.CalculateMaximumGiving(liqFrom, liqTo, maxPrice)
 	receiving, _, _ := constant_product.ConstantProductTradeSell(liqFrom, liqTo, maximumGiving, fee)
-	price := maximumGiving.Quo(receiving)
+	price := maximumGiving.Quo(receiving) // C
 
 	require.True(t, maxPrice.Equal(price))
 	require.Greater(t, maximumGiving.TruncateInt64(), int64(0))
@@ -85,7 +85,7 @@ func TestTradeSteps1(t *testing.T) {
 	poolTo := math.LegacyNewDec(1_000_000)
 	maxPrice := math.LegacyNewDecWithPrec(101, 2)
 
-	maxAmount := constant_product.CalculateMaximumReceiving(poolFrom, poolTo, maxPrice)
+	maxAmount, _ := constant_product.CalculateMaximumReceiving(poolFrom, poolTo, maxPrice)
 	amountToGive1, _, err := constant_product.ConstantProductTradeBuy(poolFrom, poolTo, maxAmount, math.LegacyZeroDec())
 	require.NoError(t, err)
 
@@ -93,7 +93,7 @@ func TestTradeSteps1(t *testing.T) {
 	poolBase = poolBase.Add(intermediate)
 	amountToGive2, _, _ := constant_product.ConstantProductTradeBuy(poolFrom, poolBase, intermediate, math.LegacyZeroDec())
 
-	pricePaid := amountToGive2.Quo(maxAmount)
+	pricePaid := amountToGive2.Quo(maxAmount) // C
 
 	require.True(t, maxPrice.GTE(pricePaid))
 	require.Equal(t, amountToGive1.TruncateInt().Int64(), amountToGive2.TruncateInt().Int64())
@@ -105,7 +105,7 @@ func TestTradeSteps2(t *testing.T) {
 	poolTo := math.LegacyNewDec(1_000_000_000)
 	maxPrice := math.LegacyNewDecWithPrec(101, 2)
 
-	maxAmount := constant_product.CalculateMaximumReceiving(poolFrom, poolTo, maxPrice)
+	maxAmount, _ := constant_product.CalculateMaximumReceiving(poolFrom, poolTo, maxPrice)
 
 	amountToGive1, _, err := constant_product.ConstantProductTradeBuy(poolFrom, poolTo, maxAmount, math.LegacyZeroDec())
 	require.NoError(t, err)
@@ -114,7 +114,7 @@ func TestTradeSteps2(t *testing.T) {
 	poolBase = poolBase.Add(intermediate)
 	amountToGive2, _, _ := constant_product.ConstantProductTradeBuy(poolFrom, poolBase, intermediate, math.LegacyZeroDec())
 
-	pricePaid := amountToGive2.Quo(maxAmount)
+	pricePaid := amountToGive2.Quo(maxAmount) // C
 
 	require.True(t, maxPrice.GTE(pricePaid))
 	require.Equal(t, amountToGive1.TruncateInt().Int64(), amountToGive2.TruncateInt().Int64())
@@ -857,7 +857,9 @@ func TestSingleTrade12(t *testing.T) {
 		return err
 	}))
 
-	require.True(t, maxPrice.GT(res.PricePaid()))
+	pricePaid, err := res.PricePaid()
+	require.NoError(t, err)
+	require.True(t, maxPrice.GT(pricePaid))
 }
 
 func TestSingleTrade13(t *testing.T) {
@@ -892,7 +894,9 @@ func TestSingleTrade13(t *testing.T) {
 		return err
 	}))
 
-	require.True(t, maxPrice.GTE(res.PricePaid()))
+	pricePaid, err := res.PricePaid()
+	require.NoError(t, err)
+	require.True(t, maxPrice.GTE(pricePaid))
 }
 
 func TestSingleTrade14(t *testing.T) {
@@ -927,7 +931,9 @@ func TestSingleTrade14(t *testing.T) {
 		return err
 	}))
 
-	require.True(t, maxPrice.GTE(res.PricePaid()))
+	pricePaid, err := res.PricePaid()
+	require.NoError(t, err)
+	require.True(t, maxPrice.GTE(pricePaid))
 }
 
 func TestSingleTrade15(t *testing.T) {
@@ -964,7 +970,9 @@ func TestSingleTrade15(t *testing.T) {
 		return err
 	}))
 
-	require.True(t, maxPrice.GTE(res.PricePaid()))
+	pricePaid, err := res.PricePaid()
+	require.NoError(t, err)
+	require.True(t, maxPrice.GTE(pricePaid))
 }
 
 func TestSingleTrade16(t *testing.T) {
@@ -1001,7 +1009,9 @@ func TestSingleTrade16(t *testing.T) {
 		return err
 	}))
 
-	require.True(t, maxPrice.GTE(res.PricePaid()))
+	pricePaid, err := res.PricePaid()
+	require.NoError(t, err)
+	require.True(t, maxPrice.GTE(pricePaid))
 }
 
 func TestSingleTrade17(t *testing.T) {
@@ -1041,7 +1051,9 @@ func TestSingleTrade17(t *testing.T) {
 		return err
 	}))
 
-	require.True(t, maxPrice.GTE(res.PricePaid()))
+	pricePaid, err := res.PricePaid()
+	require.NoError(t, err)
+	require.True(t, maxPrice.GTE(pricePaid))
 }
 
 func TestSingleTrade18(t *testing.T) {
@@ -1081,7 +1093,9 @@ func TestSingleTrade18(t *testing.T) {
 		return err
 	}))
 
-	require.True(t, maxPrice.GTE(res.PricePaid()))
+	pricePaid, err := res.PricePaid()
+	require.NoError(t, err)
+	require.True(t, maxPrice.GTE(pricePaid))
 }
 
 func TestSingleTrade19(t *testing.T) {
@@ -1124,7 +1138,9 @@ func TestSingleTrade19(t *testing.T) {
 		return err
 	}))
 
-	require.True(t, maxPrice.GTE(res.PricePaid()))
+	pricePaid, err := res.PricePaid()
+	require.NoError(t, err)
+	require.True(t, maxPrice.GTE(pricePaid))
 }
 
 func TestSingleTrade20(t *testing.T) {
@@ -1167,7 +1183,9 @@ func TestSingleTrade20(t *testing.T) {
 		return err
 	}))
 
-	require.True(t, maxPrice.GTE(res.PricePaid()))
+	pricePaid, err := res.PricePaid()
+	require.NoError(t, err)
+	require.True(t, maxPrice.GTE(pricePaid))
 }
 
 func TestSingleTrade21(t *testing.T) {
@@ -2285,7 +2303,7 @@ func TestTrade25(t *testing.T) {
 
 	var maximum1 *math.LegacyDec
 	if c.IsPositive() {
-		m := A.Mul(b.Add(c)).Quo(c).Sub(A)
+		m := A.Mul(b.Add(c)).Quo(c).Sub(A) // C
 		maximum1 = &m
 	}
 
@@ -2307,7 +2325,7 @@ func TestTrade25(t *testing.T) {
 
 	maximum1 = nil
 	if c.IsPositive() {
-		m := A.Mul(b.Add(c)).Quo(c).Sub(A)
+		m := A.Mul(b.Add(c)).Quo(c).Sub(A) // C
 		maximum1 = &m
 	}
 

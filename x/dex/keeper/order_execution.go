@@ -135,9 +135,14 @@ func (k Keeper) ExecuteOrder(ctx context.Context, ordersCaches *types.OrdersCach
 		return types.TradeResult{}, false, nil
 	}
 
+	if !order.MaxPrice.IsPositive() {
+		k.Logger().Error(fmt.Sprintf("max_price for order %v is not positive", order.Index))
+		return types.TradeResult{}, false, nil
+	}
+
 	maxPrice := order.MaxPrice
 	if !order.IsBuyOrder {
-		maxPrice = math.LegacyOneDec().Quo(maxPrice)
+		maxPrice = math.LegacyOneDec().Quo(maxPrice) // C
 	}
 
 	address := sdk.MustAccAddressFromBech32(order.Creator)

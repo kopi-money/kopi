@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"cosmossdk.io/math"
-
 	"github.com/kopi-money/kopi/x/dex/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -61,20 +59,28 @@ func (k Keeper) querySimulateTrade(ctx context.Context, req *types.QuerySimulate
 		return nil, fmt.Errorf("could not get price in USD: %w", err)
 	}
 
-	var price math.LegacyDec
+	var price string
 	if tradeResult.AmountReceived.IsPositive() {
-		price = tradeResult.AmountGiven.ToLegacyDec().Quo(tradeResult.AmountReceived.ToLegacyDec())
-	} else {
-		price = math.LegacyZeroDec()
+		price = tradeResult.AmountGiven.ToLegacyDec().Quo(tradeResult.AmountReceived.ToLegacyDec()).String() // C
+	}
+
+	var amountGivenUSD string
+	if priceGivingUSD.IsPositive() {
+		amountGivenUSD = tradeResult.AmountGiven.ToLegacyDec().Quo(priceGivingUSD).RoundInt().String() // C
+	}
+
+	var amountReceivedInUSD string
+	if priceReceivingUSD.IsPositive() {
+		amountReceivedInUSD = tradeResult.AmountReceived.ToLegacyDec().Quo(priceReceivingUSD).RoundInt().String() // C
 	}
 
 	return &types.QuerySimulateTradeResponse{
 		AmountGiven:         tradeResult.AmountGiven.String(),
-		AmountGivenInUsd:    tradeResult.AmountGiven.ToLegacyDec().Quo(priceGivingUSD).RoundInt().String(),
+		AmountGivenInUsd:    amountGivenUSD,
 		AmountReceived:      tradeResult.AmountReceived.String(),
-		AmountReceivedInUsd: tradeResult.AmountReceived.ToLegacyDec().Quo(priceReceivingUSD).RoundInt().String(),
+		AmountReceivedInUsd: amountReceivedInUSD,
 		Fee:                 tradeResult.FeeGiven.String(),
-		Price:               price.String(),
+		Price:               price,
 		PriceGivenInUsd:     priceGivingUSD.String(),
 		PriceReceivedInUsd:  priceReceivingUSD.String(),
 	}, nil

@@ -98,8 +98,8 @@ func (k Keeper) AddOrder(ctx context.Context, creator, denomGiving, denomReceivi
 
 func (k Keeper) calculateBuyLockAmount(ctx context.Context, amountRequested, maxPrice math.LegacyDec) math.Int {
 	amountRequired := amountRequested.Mul(maxPrice)
-	amountRequired = amountRequired.Quo(math.LegacyOneDec().Sub(k.GetOrderFee(ctx)))
-	amountRequired = amountRequired.Quo(math.LegacyOneDec().Sub(k.GetTradeFee(ctx)))
+	amountRequired = amountRequired.Quo(math.LegacyOneDec().Sub(k.GetOrderFee(ctx))) // C
+	amountRequired = amountRequired.Quo(math.LegacyOneDec().Sub(k.GetTradeFee(ctx))) // C
 
 	return amountRequired.Ceil().TruncateInt()
 }

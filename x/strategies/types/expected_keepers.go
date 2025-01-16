@@ -97,7 +97,7 @@ type MMKeeper interface {
 	Borrow(context.Context, sdk.AccAddress, string, math.Int) (math.Int, math.Int, error)
 	CalculateBorrowableAmount(context.Context, string, string) (math.LegacyDec, error)
 	CalcWithdrawableCollateralAmount(context.Context, string, string) (math.LegacyDec, error)
-	CalculateNewCAssetAmount(context.Context, *denomtypes.CAsset, math.Int) math.Int
+	CalculateNewCAssetAmount(context.Context, *denomtypes.CAsset, math.Int) (math.Int, error)
 	CalculateCAssetRedemptionValue(context.Context, *denomtypes.CAsset) math.LegacyDec
 	CalculateCreditLineUsage(context.Context, string) (math.LegacyDec, error)
 	CalculateInterestRateForDenom(context.Context, string) math.LegacyDec

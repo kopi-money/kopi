@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"cosmossdk.io/math"
+	"fmt"
 	"github.com/kopi-money/kopi/x/dex/types"
 )
 
@@ -125,13 +126,17 @@ func (k Keeper) distributeGivenFunds(ctx types.TradeStepContext, ordersCaches *t
 	)
 
 	sum := liquidityProviders.amountSum().ToLegacyDec()
+	if !sum.IsPositive() {
+		return fmt.Errorf("provided sum is not positive")
+	}
+
 	for index, liquidityProvider := range liquidityProviders {
 		if index+1 == len(liquidityProviders) {
 			// In case of the last liquidity provider, we use the remaining funds to make sure there are no leftovers
 			// (cause by potential rounding issues)
 			eligable = fundsToDistributeRemaining
 		} else {
-			share := liquidityProvider.amount.ToLegacyDec().Quo(sum)
+			share := liquidityProvider.amount.ToLegacyDec().Quo(sum) // C
 			eligable = share.Mul(fundsToDistribute.ToLegacyDec()).RoundInt()
 		}
 

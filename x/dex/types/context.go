@@ -182,12 +182,12 @@ func (tc *TradeContext) HasTwoSteps() bool {
 }
 
 func (tc *TradeContext) StepFee() math.LegacyDec {
-	return tc.Fee.Quo(math.LegacyNewDec(2))
+	return tc.Fee.Quo(math.LegacyNewDec(2)) // C
 }
 
 func (tc *TradeContext) CalcStepFee(fee math.LegacyDec) math.LegacyDec {
 	if tc.HasTwoSteps() {
-		return fee.Quo(math.LegacyNewDec(2))
+		return fee.Quo(math.LegacyNewDec(2)) // C
 	}
 
 	return fee
@@ -267,8 +267,12 @@ type TradeResult struct {
 	FeeOther           math.Int
 }
 
-func (tr TradeResult) PricePaid() math.LegacyDec {
-	return tr.AmountGiven.ToLegacyDec().Quo(tr.AmountReceived.ToLegacyDec())
+func (tr TradeResult) PricePaid() (math.LegacyDec, error) {
+	if !tr.AmountReceived.IsPositive() {
+		return math.LegacyDec{}, fmt.Errorf("amount received not positive")
+	}
+
+	return tr.AmountGiven.ToLegacyDec().Quo(tr.AmountReceived.ToLegacyDec()), nil // C
 }
 
 type Sender interface {

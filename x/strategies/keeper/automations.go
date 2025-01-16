@@ -170,7 +170,7 @@ func (k Keeper) getIntervalCheckData(ctx context.Context, secondsPerBlock math.L
 		runtimeInSeconds = convertBlocksToSeconds(secondsPerBlock, runtimeInBlocks)
 	}
 
-	expectedChecks := runtimeInSeconds.Quo(intervalInSeconds)
+	expectedChecks := runtimeInSeconds.Quo(intervalInSeconds) // C
 
 	return intervalInSeconds, runtimeInSeconds, expectedChecks, nil
 }

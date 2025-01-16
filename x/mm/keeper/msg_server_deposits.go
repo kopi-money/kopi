@@ -49,7 +49,11 @@ func (k Keeper) Deposit(ctx context.Context, address sdk.AccAddress, cAsset *den
 		return math.Int{}, types.ErrNotEnoughFunds
 	}
 
-	newCAssetTokens := k.CalculateNewCAssetAmount(ctx, cAsset, amount)
+	newCAssetTokens, err := k.CalculateNewCAssetAmount(ctx, cAsset, amount)
+	if err != nil {
+		return math.Int{}, err
+	}
+
 	if newCAssetTokens.LTE(math.ZeroInt()) {
 		return math.Int{}, types.ErrZeroCAssets
 	}

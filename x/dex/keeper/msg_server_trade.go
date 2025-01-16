@@ -102,7 +102,7 @@ func (k Keeper) getTradeFee(ctx context.Context, fee math.LegacyDec, discountAdd
 	fee = fee.Mul(discount)
 
 	if denomGiving != constants.BaseCurrency && denomReceiving != constants.BaseCurrency {
-		fee = fee.Quo(math.LegacyNewDec(2))
+		fee = fee.Quo(math.LegacyNewDec(2)) // C
 	}
 
 	return fee

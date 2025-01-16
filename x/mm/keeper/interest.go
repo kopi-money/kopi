@@ -33,10 +33,8 @@ func (k Keeper) calculateInterestRate(ctx context.Context, utilityRate math.Lega
 	a := k.GetParams(ctx).A
 	b := k.GetParams(ctx).B
 
-	//k.Logger().Info(fmt.Sprintf("%v %v %v %v", utilityRate.String(), a.String(), b.String()))
 	power := uint64(utilityRate.Mul(a).RoundInt64())
-	//k.Logger().Info(fmt.Sprintf("%v %v %v %v", minimumInterestRate.String(), e.String(), power, b.String()))
-	return minimumInterestRate.Add(e.Power(power).Quo(b))
+	return minimumInterestRate.Add(e.Power(power).Quo(b)) // C
 }
 
 // calculateUtilityRate return the utility rate of a borrowable asset. It gets the sum of given out loans and the
@@ -50,7 +48,7 @@ func (k Keeper) calculateUtilityRate(ctx context.Context, cAsset *denomtypes.CAs
 		return math.LegacyZeroDec()
 	}
 
-	return loanSum.Quo(sum)
+	return loanSum.Quo(sum) // C
 }
 
 func (k Keeper) ApplyInterest(ctx context.Context) error {
@@ -69,7 +67,7 @@ func (k Keeper) ApplyInterest(ctx context.Context) error {
 func (k Keeper) applyInterestForCAssetLoans(ctx context.Context, cAsset *denomtypes.CAsset, blocksPerYear math.LegacyDec) {
 	utilityRate := k.calculateUtilityRate(ctx, cAsset)
 	interestRate := k.calculateInterestRate(ctx, utilityRate)
-	interestRate = interestRate.Quo(blocksPerYear)
+	interestRate = interestRate.Quo(blocksPerYear) // C
 	interestRate = interestRate.Add(math.LegacyOneDec())
 
 	loanSum := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom)

@@ -64,7 +64,7 @@ func (k Keeper) GetDepositStats(ctx context.Context, _ *types.GetDepositStatsQue
 
 		borrowLimitUsage := math.LegacyZeroDec()
 		if borrowed.IsPositive() {
-			borrowLimitUsage = deposited.Quo(borrowLimit)
+			borrowLimitUsage = deposited.Quo(borrowLimit) // C
 		}
 
 		redeeming := k.GetRedemptionSum(ctx, cAsset.BaseDexDenom)
@@ -286,7 +286,7 @@ func (k Keeper) getUtilityRate(ctx context.Context, cAsset *denomtypes.CAsset) m
 	utilityRate := math.LegacyZeroDec()
 
 	if available.ToLegacyDec().Add(totalBorrowed).IsPositive() {
-		utilityRate = totalBorrowed.Quo(available.ToLegacyDec().Add(totalBorrowed))
+		utilityRate = totalBorrowed.Quo(available.ToLegacyDec().Add(totalBorrowed)) // C
 	}
 
 	return utilityRate

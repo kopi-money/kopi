@@ -49,7 +49,15 @@ func (k Keeper) CheckBurn(ctx context.Context, kCoin string, maxBurnAmount math.
 		return fmt.Errorf("could not convert to maxBurnAmountBase: %w", err)
 	}
 
-	referenceRatio, _ := k.DenomKeeper.GetRatio(ctx, referenceDenom)
+	referenceRatio, err := k.DenomKeeper.GetRatio(ctx, referenceDenom)
+	if err != nil {
+		return fmt.Errorf("ratio: %w", err)
+	}
+
+	if !referenceRatio.Ratio.IsPositive() {
+		return fmt.Errorf("ratio (%v) is not positive", referenceDenom)
+	}
+
 	mintAmountBase := k.calcBaseMintAmount(ctx, referenceRatio.Ratio, kCoin)
 	mintAmountBase = math.MinInt(mintAmountBase, maxBurnAmountBase.TruncateInt())
 	if mintAmountBase.LTE(math.ZeroInt()) {
@@ -72,7 +80,7 @@ func (k Keeper) CheckBurn(ctx context.Context, kCoin string, maxBurnAmount math.
 func (k Keeper) calcBaseMintAmount(ctx context.Context, referenceRatio math.LegacyDec, kCoin string) math.Int {
 	liqBase := k.DexKeeper.GetFullLiquidityBase(ctx, kCoin)
 	liqKCoin := k.DexKeeper.GetFullLiquidityOther(ctx, kCoin)
-	constantProductRoot, _ := liqBase.Mul(liqKCoin).Quo(referenceRatio).ApproxSqrt()
+	constantProductRoot, _ := liqBase.Mul(liqKCoin).Quo(referenceRatio).ApproxSqrt() // C
 	mintAmount := constantProductRoot.Sub(liqBase)
 
 	mintAmount = mintAmount.Mul(k.BlockspeedKeeper.GetBlocksPerSecond(ctx))

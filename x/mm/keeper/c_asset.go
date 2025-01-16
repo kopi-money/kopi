@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"cosmossdk.io/math"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
@@ -22,10 +23,10 @@ func (k Keeper) getCAssetSupply(ctx context.Context, cAsset *denomtypes.CAsset) 
 
 // CalculateNewCAssetAmount calculates how much new c-tokens have to be minted given how much value is being added to
 // the vault.
-func (k Keeper) CalculateNewCAssetAmount(ctx context.Context, cAsset *denomtypes.CAsset, addedAmount math.Int) math.Int {
+func (k Keeper) CalculateNewCAssetAmount(ctx context.Context, cAsset *denomtypes.CAsset, addedAmount math.Int) (math.Int, error) {
 	cAssetSupply := k.getCAssetSupply(ctx, cAsset)
 	if cAssetSupply.IsZero() {
-		return addedAmount
+		return addedAmount, nil
 	}
 
 	loanSum := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom).LoanSum
@@ -34,16 +35,20 @@ func (k Keeper) CalculateNewCAssetAmount(ctx context.Context, cAsset *denomtypes
 	cAssetValue := loanSum.Add(vaultSize)
 
 	newTotalValue := addedAmount.ToLegacyDec().Add(cAssetValue)
-	valueShare := addedAmount.ToLegacyDec().Quo(newTotalValue)
+	if !newTotalValue.IsPositive() {
+		return math.Int{}, fmt.Errorf("new total value not positive")
+	}
+
+	valueShare := addedAmount.ToLegacyDec().Quo(newTotalValue) // C
 
 	var newTokens math.Int
 	if valueShare.Equal(math.LegacyOneDec()) {
 		newTokens = addedAmount
 	} else {
-		newTokens = cAssetSupply.ToLegacyDec().Quo(math.LegacyOneDec().Sub(valueShare)).TruncateInt().Sub(cAssetSupply)
+		newTokens = cAssetSupply.ToLegacyDec().Quo(math.LegacyOneDec().Sub(valueShare)).TruncateInt().Sub(cAssetSupply) // C
 	}
 
-	return newTokens
+	return newTokens, nil
 }
 
 // CalculateCAssetValue calculates the total underlying of an CAsset. This includes funds lying in the vault as well as
@@ -62,21 +67,21 @@ func (k Keeper) CalculateCAssetRedemptionValue(ctx context.Context, cAsset *deno
 	}
 
 	value := k.CalculateCAssetValue(ctx, cAsset)
-	redemptionValue := value.Quo(supply.Amount.ToLegacyDec())
+	redemptionValue := value.Quo(supply.Amount.ToLegacyDec()) // C
 	return redemptionValue
 }
 
 // calculateCAssetPrice calculates the price of a CAsset in relation to its base denomination.
 func (k Keeper) calculateCAssetPrice(ctx context.Context, cAsset *denomtypes.CAsset) math.LegacyDec {
-	CAssetValue := k.CalculateCAssetValue(ctx, cAsset)
-	CAssetSupply := math.LegacyNewDecFromInt(k.BankKeeper.GetSupply(ctx, cAsset.DexDenom).Amount)
+	cAssetValue := k.CalculateCAssetValue(ctx, cAsset)
+	cAssetSupply := math.LegacyNewDecFromInt(k.BankKeeper.GetSupply(ctx, cAsset.DexDenom).Amount)
 
-	CAssetPrice := math.LegacyOneDec()
-	if CAssetSupply.IsPositive() {
-		CAssetPrice = CAssetValue.Quo(CAssetSupply)
+	cAssetPrice := math.LegacyOneDec()
+	if cAssetSupply.IsPositive() {
+		cAssetPrice = cAssetValue.Quo(cAssetSupply) // C
 	}
 
-	return CAssetPrice
+	return cAssetPrice
 }
 
 func (k Keeper) ConvertToBaseAmount(ctx context.Context, cAsset *denomtypes.CAsset, amountCAsset math.LegacyDec) math.LegacyDec {
@@ -95,5 +100,5 @@ func convertToBaseAmount(supply, value, amountCAsset math.LegacyDec) math.Legacy
 		return math.LegacyZeroDec()
 	}
 
-	return amountCAsset.Quo(supply).Mul(value)
+	return amountCAsset.Quo(supply).Mul(value) // C
 }

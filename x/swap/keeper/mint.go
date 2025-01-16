@@ -46,7 +46,15 @@ func (k Keeper) CheckMint(ctx context.Context, kCoin string, maxMintAmount math.
 		return nil
 	}
 
-	referenceRatio, _ := k.DenomKeeper.GetRatio(ctx, referenceDenom)
+	referenceRatio, err := k.DenomKeeper.GetRatio(ctx, referenceDenom)
+	if err != nil {
+		return fmt.Errorf("ratio: %w", err)
+	}
+
+	if !referenceRatio.Ratio.IsPositive() {
+		return fmt.Errorf("ratio (%v) is not positive", referenceDenom)
+	}
+
 	mintAmount := k.calcKCoinMintAmount(ctx, referenceRatio.Ratio, kCoin)
 	mintAmount = math.MinInt(mintAmount, maxMintAmount)
 	mintAmount = k.adjustForSupplyCap(ctx, kCoin, mintAmount)
@@ -106,10 +114,10 @@ func (k Keeper) adjustForSupplyCap(ctx context.Context, kCoin string, amountToAd
 }
 
 func (k Keeper) calcKCoinMintAmount(ctx context.Context, referenceRatio math.LegacyDec, kCoin string) math.Int {
-	referenceRatio = math.LegacyOneDec().Quo(referenceRatio)
+	referenceRatio = math.LegacyOneDec().Quo(referenceRatio) // C
 	liqBase := k.DexKeeper.GetFullLiquidityBase(ctx, kCoin)
 	liqKCoin := k.DexKeeper.GetFullLiquidityOther(ctx, kCoin)
-	constantProductRoot, _ := liqBase.Mul(liqKCoin).Quo(referenceRatio).ApproxSqrt()
+	constantProductRoot, _ := liqBase.Mul(liqKCoin).Quo(referenceRatio).ApproxSqrt() // C
 	mintAmount := constantProductRoot.Sub(liqKCoin)
 
 	mintAmount = mintAmount.Mul(k.BlockspeedKeeper.GetBlocksPerSecond(ctx))

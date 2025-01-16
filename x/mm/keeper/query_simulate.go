@@ -19,8 +19,12 @@ func (k Keeper) SimulateDeposit(ctx context.Context, req *types.SimulateDepositQ
 		return nil, fmt.Errorf("invalid deposit amount: %s", req.DepositAmount)
 	}
 
-	newCAssetTokens := k.CalculateNewCAssetAmount(ctx, cAsset, amount)
-	if newCAssetTokens.LTE(math.ZeroInt()) {
+	newCAssetTokens, err := k.CalculateNewCAssetAmount(ctx, cAsset, amount)
+	if err != nil {
+		return nil, err
+	}
+
+	if !newCAssetTokens.IsPositive() {
 		return nil, types.ErrZeroCAssets
 	}
 

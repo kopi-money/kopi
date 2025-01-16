@@ -325,7 +325,7 @@ func ConvertToExponent(amount math.LegacyDec, sourceExponent, targetExponent uin
 	switch {
 	case sourceExponent > targetExponent:
 		factor := math.LegacyNewDec(10).Power(sourceExponent - targetExponent)
-		return amount.Quo(factor)
+		return amount.Quo(factor) // C
 	case sourceExponent < targetExponent:
 		factor := math.LegacyNewDec(10).Power(targetExponent - sourceExponent)
 		return amount.Mul(factor)

@@ -190,7 +190,7 @@ func (k Keeper) CalculateRedemptionAmount(ctx context.Context, cAsset *denomtype
 	cAssetValue := k.CalculateCAssetValue(ctx, cAsset)
 
 	// how much value of all cAssetValue does the redemption request represent
-	redemptionShare := requestedCAssetAmount.Quo(cAssetSupply)
+	redemptionShare := requestedCAssetAmount.Quo(cAssetSupply) // C
 	redemptionValue := cAssetValue.Mul(redemptionShare)
 
 	return redemptionValue
@@ -209,7 +209,7 @@ func (k Keeper) CalculateAvailableRedemptionAmount(ctx context.Context, cAsset *
 	}
 
 	// the share of what is paid out in relation to what has been requested
-	requestedShare := redeemAmount.Quo(redemptionValue)
+	requestedShare := redeemAmount.Quo(redemptionValue) // C
 
 	// how much of the given cAssets have been used
 	usedCAssets := requestedCAssetAmount.Mul(requestedShare)

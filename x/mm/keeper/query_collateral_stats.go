@@ -39,8 +39,8 @@ func (k Keeper) GetCollateralStats(ctx context.Context, _ *types.GetCollateralSt
 		}
 
 		depositCapUsed := math.LegacyZeroDec()
-		if depositCap.GT(math.ZeroInt()) {
-			depositCapUsed = sum.ToLegacyDec().Quo(depositCap.ToLegacyDec())
+		if depositCap.IsPositive() {
+			depositCapUsed = sum.ToLegacyDec().Quo(depositCap.ToLegacyDec()) // C
 		}
 
 		totalUSD = totalUSD.Add(sumUSD)
@@ -139,8 +139,8 @@ func (k Keeper) GetCollateralUserStats(ctx context.Context, req *types.GetCollat
 		}
 
 		depositCapUsed := math.LegacyZeroDec()
-		if depositCap.GT(math.ZeroInt()) {
-			depositCapUsed = collateralSum.ToLegacyDec().Quo(depositCap.ToLegacyDec())
+		if depositCap.IsPositive() {
+			depositCapUsed = collateralSum.ToLegacyDec().Quo(depositCap.ToLegacyDec()) // C
 		}
 
 		priceUSD, err = k.DexKeeper.CalculatePrice(ctx, denom.DexDenom, referenceDenom)

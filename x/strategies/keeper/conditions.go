@@ -39,7 +39,7 @@ func (k Keeper) CheckCondition(ctx context.Context, condition *types.Condition) 
 
 	// PriceChangePercentage is the only condition that can have a negative value since a change in % can be negative
 	if !(condition.ConditionType == types.ConditionPriceChangePercentage || condition.ConditionType == types.ConditionPriceChangeAmount) {
-		if !condition.Value.GTE(math.LegacyZeroDec()) {
+		if condition.Value.IsNegative() {
 			return fmt.Errorf("must not be less than 0, was: %v", condition.Value.String())
 		}
 	}
@@ -211,7 +211,11 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 			return false, fmt.Errorf("could not calculate price: %w", err)
 		}
 
-		value = math.LegacyOneDec().Quo(value)
+		if value.IsZero() {
+			return false, fmt.Errorf("value is zero")
+		}
+
+		value = math.LegacyOneDec().Quo(value) // C
 
 	case types.ConditionPriceChangePercentage:
 		var factor math.LegacyDec
@@ -230,7 +234,11 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 			return false, fmt.Errorf("could not calculate price: %w", err)
 		}
 
-		value = math.LegacyOneDec().Quo(value)
+		if value.IsZero() {
+			return false, fmt.Errorf("value is zero")
+		}
+
+		value = math.LegacyOneDec().Quo(value) // C
 
 	case types.ConditionWalletAmount:
 		value = k.BankKeeper.SpendableCoin(ctx, accAddr, condition.String1).Amount.ToLegacyDec()

@@ -146,8 +146,16 @@ func (k Keeper) toOrderResponse(ctx context.Context, order types.Order, feeFac m
 	if order.IsBuyOrder {
 		currentPrice = currentPrice.Mul(feeFac)
 	} else {
-		currentPrice = math.LegacyOneDec().Quo(currentPrice)
-		currentPrice = currentPrice.Quo(feeFac)
+		if !currentPrice.IsPositive() {
+			return nil, fmt.Errorf("current price is not positive")
+		}
+
+		if !feeFac.IsPositive() {
+			return nil, fmt.Errorf("feefac is not positive")
+		}
+
+		currentPrice = math.LegacyOneDec().Quo(currentPrice) // C
+		currentPrice = currentPrice.Quo(feeFac)              // C
 	}
 
 	currentPriceUSD, err := k.GetValueIn(ctx, order.DenomReceiving, referenceDenom, currentPrice)

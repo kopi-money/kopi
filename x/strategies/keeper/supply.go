@@ -36,13 +36,17 @@ func (k Keeper) calculateNewStrategyAssetAmount(ctx context.Context, denom strin
 		return math.Int{}, fmt.Errorf("could not calculate aasset value: %w", err)
 	}
 
-	valueShare := addedAmount.ToLegacyDec().Quo(aAssetValue)
+	if !aAssetValue.IsPositive() {
+		return math.Int{}, fmt.Errorf("%v aasset amount is not positive", denom)
+	}
+
+	valueShare := addedAmount.ToLegacyDec().Quo(aAssetValue) // C
 
 	var newTokens math.Int
 	if valueShare.Equal(math.LegacyOneDec()) {
 		newTokens = addedAmount
 	} else {
-		newTokens = assetSupply.ToLegacyDec().Quo(math.LegacyOneDec().Sub(valueShare)).RoundInt().Sub(assetSupply)
+		newTokens = assetSupply.ToLegacyDec().Quo(math.LegacyOneDec().Sub(valueShare)).RoundInt().Sub(assetSupply) // C
 	}
 
 	return newTokens, nil
@@ -58,8 +62,12 @@ func (k Keeper) calculateRedemptionAmount(ctx context.Context, arbitrageDenom *d
 		return math.Int{}, math.Int{}, types.ErrNotEnoughVault
 	}
 
+	if !redemptionValue.IsPositive() {
+		return math.Int{}, math.Int{}, fmt.Errorf("redemption amount is not positive")
+	}
+
 	redeemAmount := math.MinInt(redemptionValue, available)
-	requestedShare := redeemAmount.Quo(redemptionValue)
+	requestedShare := redeemAmount.Quo(redemptionValue) // C
 
 	// how much of the given cAssets have been used
 	usedTokens := requestedAAssetAmount.Mul(requestedShare)
@@ -78,8 +86,12 @@ func (k Keeper) calculateRedemptionValue(ctx context.Context, arbitrageDenom *de
 		return math.Int{}, fmt.Errorf("could not calculate aAsset value: %w", err)
 	}
 
+	if !assetSupply.IsPositive() {
+		return math.Int{}, fmt.Errorf("assetSupply amount is not positive")
+	}
+
 	// how much value of all cAssetValue does the redemption request represent
-	redemptionShare := requestedAAssetAmount.ToLegacyDec().Quo(assetSupply)
+	redemptionShare := requestedAAssetAmount.ToLegacyDec().Quo(assetSupply) // C
 	redemptionValue := assetValue.Mul(redemptionShare).TruncateInt()
 
 	msg := fmt.Sprintf("Share: %v, Total value: %v, Redemption value: %v", redemptionShare.String(), assetValue.String(), redemptionValue.String())

@@ -75,12 +75,12 @@ func (k Keeper) GetMarketStats(ctx context.Context, _ *types.GetMarketStatsQuery
 	totalDeposited := totalBorrowed.Add(totalBorrowable)
 	utilityRate := math.LegacyZeroDec()
 	if totalDeposited.IsPositive() {
-		utilityRate = totalBorrowed.Quo(totalDeposited)
+		utilityRate = totalBorrowed.Quo(totalDeposited) // C
 	}
 
 	weightedInterestRate := math.LegacyNewDecWithPrec(5, 2)
 	if totalBorrowed.IsPositive() {
-		weightedInterestRate = totalInterest.Quo(totalBorrowed)
+		weightedInterestRate = totalInterest.Quo(totalBorrowed) // C
 	}
 
 	return &types.GetMarketStatsResponse{
@@ -116,7 +116,7 @@ func (k Keeper) GetUserStats(ctx context.Context, req *types.GetUserStatsQuery) 
 
 	var utilityRate, weightedInterestRate string
 	if totalBorrowable.IsPositive() {
-		utilityRate = totalBorrowed.Quo(totalBorrowable).String()
+		utilityRate = totalBorrowed.Quo(totalBorrowable).String() // C
 		weightedInterestRate = weightedInterestRateDec.String()
 	}
 
@@ -219,7 +219,7 @@ func (k Keeper) getUserLoansSumUSD(ctx context.Context, address string) (math.Le
 
 	interestRate := math.LegacyZeroDec()
 	if sum.IsPositive() {
-		interestRate = interestRateSum.Quo(sum)
+		interestRate = interestRateSum.Quo(sum) // C
 	}
 
 	return sum, interestRate, nil

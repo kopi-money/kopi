@@ -20,7 +20,11 @@ func (k Keeper) CalculatePrice(ctx context.Context, denomGiving, denomReceiving 
 			return price, err
 		}
 
-		price = price.Quo(ratio.Ratio)
+		if !ratio.Ratio.IsPositive() {
+			return price, fmt.Errorf("ratio is not positive")
+		}
+
+		price = price.Quo(ratio.Ratio) // C
 	}
 
 	if denomReceiving != constants.BaseCurrency {
@@ -36,7 +40,7 @@ func (k Keeper) CalculatePrice(ctx context.Context, denomGiving, denomReceiving 
 		return math.LegacyDec{}, types.ErrZeroPrice
 	}
 
-	price = math.LegacyOneDec().Quo(price)
+	price = math.LegacyOneDec().Quo(price) // C
 	return price, nil
 }
 
@@ -84,7 +88,11 @@ func (k Keeper) GetValueInUSD(ctx context.Context, denom string, amount math.Leg
 		return math.LegacyDec{}, err
 	}
 
-	value := amount.Quo(price)
+	if !price.IsPositive() {
+		return math.LegacyDec{}, fmt.Errorf("price is not positive")
+	}
+
+	value := amount.Quo(price) // C
 	return k.DenomKeeper.ConvertToExponent(ctx, denom, value, 6)
 }
 
@@ -98,5 +106,9 @@ func (k Keeper) GetValueIn(ctx context.Context, denomFrom, denomTo string, amoun
 		return math.LegacyDec{}, err
 	}
 
-	return amount.Quo(price), nil
+	if !price.IsPositive() {
+		return math.LegacyDec{}, fmt.Errorf("price is not positive")
+	}
+
+	return amount.Quo(price), nil // C
 }

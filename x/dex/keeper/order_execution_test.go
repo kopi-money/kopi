@@ -864,7 +864,9 @@ func TestOrders31(t *testing.T) {
 	require.Equal(t, int64(10_000), tradeResult.AmountGiven.Int64())
 	require.Equal(t, int64(2_473), tradeResult.AmountReceived.Int64())
 
-	require.True(t, math.LegacyOneDec().Quo(tradeResult.PricePaid()).LT(math.LegacyNewDec(5)))
+	pricePaid, err := tradeResult.PricePaid()
+	require.NoError(t, err)
+	require.True(t, math.LegacyOneDec().Quo(pricePaid).LT(math.LegacyNewDec(5))) // C
 }
 
 func TestOrders32(t *testing.T) {
@@ -894,7 +896,9 @@ func TestOrders32(t *testing.T) {
 	require.Equal(t, int64(10_000), tradeResult.AmountGiven.Int64())
 	require.Equal(t, int64(39_288), tradeResult.AmountReceived.Int64())
 
-	require.True(t, math.LegacyOneDec().Quo(tradeResult.PricePaid()).GT(math.LegacyNewDecWithPrec(35, 1)))
+	pricePaid, err := tradeResult.PricePaid()
+	require.NoError(t, err)
+	require.True(t, math.LegacyOneDec().Quo(pricePaid).GT(math.LegacyNewDecWithPrec(35, 1))) // C
 }
 
 func TestOrders33(t *testing.T) {
@@ -927,7 +931,9 @@ func TestOrders33(t *testing.T) {
 	require.Equal(t, int64(10_183), tradeResult.AmountGiven.Int64())
 	require.Equal(t, int64(40_000), tradeResult.AmountReceived.Int64())
 
-	require.True(t, tradeResult.PricePaid().LT(math.LegacyNewDecWithPrec(3, 1)))
+	pricePaid, err := tradeResult.PricePaid()
+	require.NoError(t, err)
+	require.True(t, pricePaid.LT(math.LegacyNewDecWithPrec(3, 1)))
 }
 
 func TestOrders34(t *testing.T) {
@@ -960,7 +966,9 @@ func TestOrders34(t *testing.T) {
 	require.Equal(t, int64(40_729), tradeResult.AmountGiven.Int64())
 	require.Equal(t, int64(10_000), tradeResult.AmountReceived.Int64())
 
-	require.True(t, tradeResult.PricePaid().LT(math.LegacyNewDec(5)))
+	pricePaid, err := tradeResult.PricePaid()
+	require.NoError(t, err)
+	require.True(t, pricePaid.LT(math.LegacyNewDec(5)))
 }
 
 func TestOrders35(t *testing.T) {

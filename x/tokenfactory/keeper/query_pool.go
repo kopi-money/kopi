@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 	"google.golang.org/grpc/codes"
@@ -37,7 +38,11 @@ func (k Keeper) GetPool(ctx context.Context, req *types.QueryPoolRequest) (*type
 
 	normalizedKCoin := adjustToNormal(pool.KCoinAmount.ToLegacyDec(), 6)
 	normalizedFactory := adjustToNormal(pool.FactoryDenomAmount.ToLegacyDec(), factoryDenom.Exponent)
-	price := normalizedKCoin.Quo(normalizedFactory)
+	if !normalizedFactory.IsPositive() {
+		return nil, fmt.Errorf("normalized factory is negative")
+	}
+
+	price := normalizedKCoin.Quo(normalizedFactory) // C
 
 	return &types.QueryPoolResponse{
 		KcoinDenom:        pool.KCoin,
@@ -51,5 +56,5 @@ func (k Keeper) GetPool(ctx context.Context, req *types.QueryPoolRequest) (*type
 }
 
 func adjustToNormal(amount math.LegacyDec, exponent uint64) math.LegacyDec {
-	return amount.Quo(math.LegacyNewDec(10).Power(exponent))
+	return amount.Quo(math.LegacyNewDec(10).Power(exponent)) // C
 }

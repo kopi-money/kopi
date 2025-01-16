@@ -157,7 +157,12 @@ func (k Keeper) executeTrade(ctx *types.TradeContext) (types.TradeResults, error
 	// When a maximum price is set, it is checked how much can be received to stay below the maximum price.
 
 	if ctx.MaxPrice != nil {
-		priceAmount := k.calculateAmountGivenPrice(ctx).TruncateInt()
+		priceAmountDec, err := k.calculateAmountGivenPrice(ctx)
+		if err != nil {
+			return types.TradeResults{}, err
+		}
+
+		priceAmount := priceAmountDec.TruncateInt()
 		if !priceAmount.IsPositive() {
 			return types.TradeResults{}, types.ErrNegativeTradeAmount
 		}
@@ -278,11 +283,16 @@ func (k Keeper) ExecuteTradeStep(ctx types.TradeStepContext) (math.Int, math.Int
 	if err != nil {
 		return math.Int{}, math.Int{}, math.Int{}, fmt.Errorf("could not send from source to dex (2): %w", err)
 	}
+
+	if !amountToReceiveGross.IsPositive() {
+		return math.Int{}, math.Int{}, math.Int{}, types.ErrZeroTrade
+	}
+
 	amountActuallyReceivedGross := amountToReceiveGross.Sub(amountToReceiveLeft)
 
 	shareUsed := math.LegacyZeroDec()
 	if amountActuallyReceivedGross.IsPositive() {
-		shareUsed = amountActuallyReceivedGross.ToLegacyDec().Quo(amountToReceiveGross.ToLegacyDec())
+		shareUsed = amountActuallyReceivedGross.ToLegacyDec().Quo(amountToReceiveGross.ToLegacyDec()) // C
 	}
 
 	amountUsedNet := shareUsed.Mul(amountToGiveGross.ToLegacyDec()).RoundInt()
@@ -296,7 +306,7 @@ func (k Keeper) ExecuteTradeStep(ctx types.TradeStepContext) (math.Int, math.Int
 
 	if ctx.TradeType == types.TradeTypeSell {
 		feePaid, feeForReserve, feeForLiquidityProviders = manageFee(feeReceiving, ctx.ReserveFeeShare)
-		receiveFactor := amountToGiveGross.ToLegacyDec().Quo(amountToReceiveGross.ToLegacyDec())
+		receiveFactor := amountToGiveGross.ToLegacyDec().Quo(amountToReceiveGross.ToLegacyDec()) // C
 		k.distributeSellFee(ctx, liquidityProviders, feeForLiquidityProviders, receiveFactor, ctx.StepDenomReceiving)
 
 		reserveFeeDenom = ctx.StepDenomReceiving
@@ -365,7 +375,7 @@ func (k Keeper) updateRatiosToBase(ctx types.TradeStepContext, poolLiquidity sdk
 		if fullBase.IsPositive() {
 			k.DenomKeeper.SetRatio(ctx, denomtypes.Ratio{
 				Denom: ratio.Denom,
-				Ratio: fullOther.Quo(fullBase),
+				Ratio: fullOther.Quo(fullBase), // C
 			})
 		}
 	}
@@ -419,7 +429,7 @@ func (k Keeper) handleOrderFee(ordersCaches *types.OrdersCaches, tradeBalances t
 	var feeAmount math.Int
 
 	if isBuy {
-		feeAmount = amount.ToLegacyDec().Quo(math.LegacyOneDec().Sub(orderFee)).Sub(amount.ToLegacyDec()).TruncateInt()
+		feeAmount = amount.ToLegacyDec().Quo(math.LegacyOneDec().Sub(orderFee)).Sub(amount.ToLegacyDec()).TruncateInt() // C
 		amount = amount.Add(feeAmount)
 	} else {
 		feeAmount = amount.ToLegacyDec().Mul(orderFee).TruncateInt()
@@ -435,10 +445,9 @@ func (k Keeper) handleOrderFee(ordersCaches *types.OrdersCaches, tradeBalances t
 	return amount
 }
 
-func (k Keeper) calculateAmountGivenPrice(ctx *types.TradeContext) math.LegacyDec {
+func (k Keeper) calculateAmountGivenPrice(ctx *types.TradeContext) (math.LegacyDec, error) {
 	liqFrom, liqTo := k.GetCrossLiquidity(ctx)
 	maxPrice := ctx.MaxPrice.Mul(math.LegacyOneDec().Sub(ctx.Fee))
-
 	return ctx.CalcTradableAmountGivenPrice(liqFrom, liqTo, maxPrice)
 }
 
@@ -527,12 +536,12 @@ func CalculateSingleMaximumSellableAmount(actualFrom, actualTo, virtualFrom, vir
 }
 
 func calculateSingleMaximumTradableAmount(actualFrom, actualTo, virtualFrom, virtualTo math.LegacyDec) *math.LegacyDec {
-	if virtualTo.IsZero() {
+	if !virtualTo.IsPositive() {
 		return nil
 	}
 
 	X := actualFrom.Add(virtualFrom)
-	maximum := X.Mul(actualTo.Quo(virtualTo))
+	maximum := X.Mul(actualTo.Quo(virtualTo)) // C
 	return &maximum
 }
 
@@ -562,7 +571,7 @@ func (k Keeper) CalculateMaximumBuyableAmount(ctx types.TradeContext) *math.Int 
 
 		if ctx.TradeDenomReceiving == constants.BaseCurrency {
 			orderFee := ctx.OrdersCaches.OrderFee.Get()
-			feeAmount := poolReceive.ToLegacyDec().Quo(math.LegacyOneDec().Sub(orderFee)).Sub(poolReceive.ToLegacyDec()).TruncateInt()
+			feeAmount := poolReceive.ToLegacyDec().Quo(math.LegacyOneDec().Sub(orderFee)).Sub(poolReceive.ToLegacyDec()).TruncateInt() // C
 			poolReceive = poolReceive.Sub(feeAmount)
 		}
 
@@ -648,7 +657,7 @@ func (k Keeper) addProviderFee(ctx context.Context, amount, tradeFee math.Legacy
 	feeShareProvider := math.LegacyOneDec().Sub(feeShareReserve)
 	feeProvider := tradeFee.Mul(feeShareProvider)
 
-	return amount.Quo(math.LegacyOneDec().Sub(feeProvider))
+	return amount.Quo(math.LegacyOneDec().Sub(feeProvider)) // C
 }
 
 // manageFee is called each time liquidity is used for a trade. amount indicates how much is traded right now, the

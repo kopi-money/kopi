@@ -232,13 +232,13 @@ func (k Keeper) PrepareAdditionalLiquidity(ctx *types.TradeContext) {
 
 	if ctx.TradeDenomGiving != constants.BaseCurrency {
 		ratioFrom, _ = k.DenomKeeper.GetRatio(ctx, ctx.TradeDenomGiving)
-		liqValueFrom = liqFrom.ToLegacyDec().Quo(ratioFrom.Ratio)
+		liqValueFrom = liqFrom.ToLegacyDec().Quo(ratioFrom.Ratio) // C
 		maxValue = math.LegacyMaxDec(liqValueFrom, maxValue)
 	}
 
 	if ctx.TradeDenomReceiving != constants.BaseCurrency {
 		ratioTo, _ = k.DenomKeeper.GetRatio(ctx, ctx.TradeDenomReceiving)
-		liqValueTo = liqTo.ToLegacyDec().Quo(ratioTo.Ratio)
+		liqValueTo = liqTo.ToLegacyDec().Quo(ratioTo.Ratio) // C
 		maxValue = math.LegacyMaxDec(liqValueTo, maxValue)
 	}
 
