@@ -99,3 +99,9 @@ func CreateUpgradeHandler_rc3(mm *module.Manager, configurator module.Configurat
 		return vm, nil
 	}
 }
+
+func CreateUpgradeHandler_rc5(_ *module.Manager, _ module.Configurator) upgradetypes.UpgradeHandler {
+	return func(ctx context.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
+		return vm, nil
+	}
+}
