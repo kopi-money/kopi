@@ -569,7 +569,7 @@ func (k Keeper) CalculateMaximumBuyableAmount(ctx types.TradeContext) *math.Int 
 			poolReceive = poolReceive.Sub(math.OneInt())
 		}
 
-		if ctx.TradeDenomReceiving == constants.BaseCurrency {
+		if ctx.TradeDenomReceiving == constants.BaseCurrency && ctx.IsOrder {
 			orderFee := ctx.OrdersCaches.OrderFee.Get()
 			feeAmount := poolReceive.ToLegacyDec().Quo(math.LegacyOneDec().Sub(orderFee)).Sub(poolReceive.ToLegacyDec()).TruncateInt() // C
 			poolReceive = poolReceive.Sub(feeAmount)
