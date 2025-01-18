@@ -45,10 +45,9 @@ type DexKeeper interface {
 	ExecuteSell(ctx dextypes.TradeContext) (dextypes.TradeResult, error)
 	GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int
 	GetFullLiquidityBase(ctx context.Context, denomOther string) math.LegacyDec
-	GetFullLiquidityOther(ctx context.Context, denom string) math.LegacyDec
+	GetFullLiquidityOther(ctx context.Context, denomOther string) math.LegacyDec
 	GetLiquiditySum(ctx context.Context, denom string) math.Int
 	GetValueInBase(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
-	RemoveAllLiquidityForModule(ctx context.Context, denom, module string) error
 	RemoveLiquidityForAddress(ctx context.Context, accAddress sdk.AccAddress, denom string, amount math.Int) error
 	SimulateTradeForReserve(ctx dextypes.TradeContext) (dextypes.TradeSimulationResult, error)
 }
