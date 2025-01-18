@@ -33,8 +33,8 @@ func (d DummyBlockspeedKeeper) GetSecondsPerBlock(_ context.Context) math.Legacy
 	return math.LegacyOneDec()
 }
 
-func (d DummyBlockspeedKeeper) GetBlocksPerSecond(_ context.Context) math.LegacyDec {
-	return math.LegacyOneDec()
+func (d DummyBlockspeedKeeper) GetBlocksPerSecond(_ context.Context) (math.LegacyDec, error) {
+	return math.LegacyOneDec(), nil
 }
 
 func (d DummyBlockspeedKeeper) BlocksPerYear(_ context.Context) (math.LegacyDec, error) {
