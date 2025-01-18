@@ -119,7 +119,6 @@ type OrdersCaches struct {
 	LiquidityPool         *ItemCache[*CoinMap]
 	ReimbursementPool     *ItemCache[*CoinMap]
 	LiquidityPair         *MapCache[LiquidityPair]
-	AdditionalLiquidity   *MapCache[math.LegacyDec]
 	PriceAmountsSell      map[Pair]math.LegacyDec
 	PriceAmountsBuy       map[Pair]math.LegacyDec
 	PriceMaxAmounts       map[string]math.LegacyDec
@@ -187,11 +186,11 @@ func (ic *ItemCache[T]) clear() {
 }
 
 type MapCache[T any] struct {
-	loader func(string) T
+	loader func(string, ...any) T
 	m      map[string]T
 }
 
-func NewMapCache[T any](loader func(string) T) *MapCache[T] {
+func NewMapCache[T any](loader func(string, ...any) T) *MapCache[T] {
 	return &MapCache[T]{
 		loader: loader,
 		m:      make(map[string]T),
@@ -202,14 +201,18 @@ func (mc *MapCache[T]) Set(denom string, t T) {
 	mc.m[denom] = t
 }
 
-func (mc *MapCache[T]) Get(denom string) T {
+func (mc *MapCache[T]) Get(denom string, params ...any) T {
 	value, has := mc.m[denom]
 	if !has {
-		value = mc.loader(denom)
+		value = mc.Load(denom, params...)
 		mc.m[denom] = value
 	}
 
 	return value
+}
+
+func (mc *MapCache[T]) Load(denom string, params ...any) T {
+	return mc.loader(denom, params...)
 }
 
 func (mc *MapCache[T]) GetHas(denom string) (T, bool) {

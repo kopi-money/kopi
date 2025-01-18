@@ -20,7 +20,7 @@ func TestTradeAmount1(t *testing.T) {
 
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 500_000))
 
-	maximumTradable := k.CalculateMaximumSellableAmount(types.TradeContext{
+	maximumTradable, _ := k.CalculateMaximumSellableAmount(types.TradeContext{
 		TradeDenomGiving:    constants.KUSD,
 		TradeDenomReceiving: constants.BaseCurrency,
 		OrdersCaches:        k.NewOrdersCaches(ctx),

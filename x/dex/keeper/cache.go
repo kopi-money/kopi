@@ -48,10 +48,11 @@ func (k Keeper) NewOrdersCaches(ctx context.Context) *types.OrdersCaches {
 		},
 	)
 
-	oc.LiquidityPair = types.NewMapCache(func(denom string) types.LiquidityPair {
+	oc.LiquidityPair = types.NewMapCache(func(denom string, params ...any) types.LiquidityPair {
+		sizeFactor := params[0].(math.LegacyDec)
 		liqBase := oc.LiquidityPool.Get().AmountOf(constants.BaseCurrency)
 		liqOther := oc.LiquidityPool.Get().AmountOf(denom)
-		pair, _ := k.GetLiquidityPairWithLiquidity(ctx, denom, liqBase, liqOther)
+		pair, _ := k.GetLiquidityPairWithLiquidity(ctx, denom, liqBase, liqOther, sizeFactor)
 
 		return pair
 	})

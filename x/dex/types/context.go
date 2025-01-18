@@ -19,7 +19,8 @@ const (
 )
 
 type AdditionalLiquidity struct {
-	addLiq map[string]math.LegacyDec
+	addLiq  map[string]math.LegacyDec
+	sizeFac map[string]math.LegacyDec
 }
 
 func (al *AdditionalLiquidity) Set(denom string, value math.LegacyDec) {
@@ -37,6 +38,23 @@ func (al *AdditionalLiquidity) Add(denom string, value math.LegacyDec) math.Lega
 	}
 
 	return value
+}
+
+func (al *AdditionalLiquidity) SetSizeFactor(denom string, value math.LegacyDec) {
+	if al.sizeFac == nil {
+		al.sizeFac = make(map[string]math.LegacyDec)
+	}
+
+	al.sizeFac[denom] = value
+}
+
+func (al *AdditionalLiquidity) GetSizeFactor(denom string) math.LegacyDec {
+	sizeFactor, has := al.sizeFac[denom]
+	if !has {
+		return math.LegacyOneDec()
+	}
+
+	return sizeFactor
 }
 
 type TradeContext struct {
@@ -61,7 +79,7 @@ type TradeContext struct {
 	CoinTarget      string
 	DiscountAddress string
 
-	CalcMaximumTradableAmount      func(TradeContext) *math.Int
+	CalcMaximumTradableAmount      func(TradeContext) (*math.Int, error)
 	CalcTradableAmountGivenPrice   constant_product.CalculateMaximumAmount
 	CalcAmountToGive               func() (math.Int, error)
 	IntermediateTradeAmount        IntermediateTradeAmount
@@ -208,10 +226,6 @@ func (tc *TradeContext) ToSell(amount math.Int) TradeContext {
 		TradeBalances:          tc.TradeBalances,
 		Fee:                    tc.Fee,
 	}
-}
-
-func (tc *TradeContext) SetAdditionalLiquidity(denom string, value math.LegacyDec) {
-	tc.AdditionalLiquidity.Set(denom, value)
 }
 
 type IntermediateTradeAmount func(math.Int, math.Int) math.Int

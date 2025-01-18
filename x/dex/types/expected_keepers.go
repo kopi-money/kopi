@@ -46,6 +46,7 @@ type DenomKeeper interface {
 	GetAuthority() string
 	GetCAssetByBaseName(ctx context.Context, baseDenom string) (*denomtypes.CAsset, error)
 	GetRatio(ctx context.Context, denom string) (denomtypes.Ratio, error)
+	IsCollateralDenom(ctx context.Context, denom string) bool
 	IsKCoin(ctx context.Context, denom string) bool
 	IsNativeDenom(ctx context.Context, denom string) bool
 	IsValidDenom(ctx context.Context, denom string) bool
@@ -55,5 +56,6 @@ type DenomKeeper interface {
 	MinLiquidity(ctx context.Context, denom string) math.Int
 	MinOrderSize(ctx context.Context, denom string) math.Int
 	ReferenceDenoms(ctx context.Context, kCoin string) []string
+	RemoveDenom(ctx context.Context, denom string) error
 	SetRatio(ctx context.Context, ratio denomtypes.Ratio)
 }

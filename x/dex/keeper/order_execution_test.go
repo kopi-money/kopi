@@ -1178,6 +1178,6 @@ func checkOrderPoolBalanceDiff(t *testing.T, k dexkeeper.Keeper, ctx context.Con
 			fmt.Println(fmt.Sprintf("denom:%v, poolAmount: %v, sumOrder: %v", denom, poolAmount, sumOrder))
 		}
 
-		require.True(t, diff == 0)
+		require.Zero(t, diff)
 	}
 }

@@ -56,8 +56,6 @@ func (k Keeper) RemoveAllLiquidityForAddress(ctx context.Context, address, denom
 		}
 	}
 
-	//k.updatePair(ctx, nil, denom)
-
 	addr, err := sdk.AccAddressFromBech32(address)
 	if err != nil {
 		return fmt.Errorf("invalid address (%v): %w", address, err)
@@ -94,18 +92,6 @@ func (k msgServer) RemoveLiquidity(ctx context.Context, msg *types.MsgRemoveLiqu
 	return &types.MsgRemoveLiquidityResponse{}, nil
 }
 
-func (k Keeper) RemoveAllLiquidityForModule(ctx context.Context, denom, module string) error {
-	address := k.AccountKeeper.GetModuleAccount(ctx, module).GetAddress()
-	removed := k.removeAllLiquidityForAddress(ctx, denom, address.String())
-
-	coins := sdk.NewCoins(sdk.NewCoin(denom, removed))
-	if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolLiquidity, module, coins); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (k Keeper) RemoveLiquidityForAddress(ctx context.Context, accAddr sdk.AccAddress, denom string, amount math.Int) error {
 	removed := math.ZeroInt()
 	address := accAddr.String()
@@ -132,7 +118,7 @@ func (k Keeper) RemoveLiquidityForAddress(ctx context.Context, accAddr sdk.AccAd
 		}
 	}
 
-	if amount.GT(math.ZeroInt()) {
+	if amount.IsPositive() {
 		return types.ErrNotEnoughFunds
 	}
 
@@ -142,19 +128,4 @@ func (k Keeper) RemoveLiquidityForAddress(ctx context.Context, accAddr sdk.AccAd
 	}
 
 	return nil
-}
-
-func (k Keeper) removeAllLiquidityForAddress(ctx context.Context, denom, address string) math.Int {
-	removed := math.ZeroInt()
-
-	iterator := k.LiquidityIterator(ctx, denom)
-	for iterator.Valid() {
-		liq := iterator.GetNext()
-		if liq.Address == address {
-			k.RemoveLiquidity(ctx, denom, liq.Index)
-			removed = removed.Add(liq.Amount)
-		}
-	}
-
-	return removed
 }

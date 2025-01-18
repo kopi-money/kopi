@@ -223,7 +223,6 @@ func (k Keeper) PrepareAdditionalLiquidity(ctx *types.TradeContext) {
 	liqBase := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(constants.BaseCurrency)
 
 	var (
-		maxValue     = liqBase.ToLegacyDec()
 		ratioFrom    denomtypes.Ratio
 		ratioTo      denomtypes.Ratio
 		liqValueFrom math.LegacyDec
@@ -233,32 +232,49 @@ func (k Keeper) PrepareAdditionalLiquidity(ctx *types.TradeContext) {
 	if ctx.TradeDenomGiving != constants.BaseCurrency {
 		ratioFrom, _ = k.DenomKeeper.GetRatio(ctx, ctx.TradeDenomGiving)
 		liqValueFrom = liqFrom.ToLegacyDec().Quo(ratioFrom.Ratio) // C
-		maxValue = math.LegacyMaxDec(liqValueFrom, maxValue)
 	}
 
 	if ctx.TradeDenomReceiving != constants.BaseCurrency {
 		ratioTo, _ = k.DenomKeeper.GetRatio(ctx, ctx.TradeDenomReceiving)
 		liqValueTo = liqTo.ToLegacyDec().Quo(ratioTo.Ratio) // C
-		maxValue = math.LegacyMaxDec(liqValueTo, maxValue)
 	}
 
-	ctx.SetAdditionalLiquidity(constants.BaseCurrency, maxValue.Sub(liqBase.ToLegacyDec()))
+	maxValue := math.LegacyMaxDec(liqValueFrom, liqValueTo)
+	if maxValue.LT(liqBase.ToLegacyDec()) {
+		ctx.AdditionalLiquidity.SetSizeFactor(ctx.TradeDenomGiving, liqValueFrom.Quo(liqBase.ToLegacyDec()))
+		ctx.AdditionalLiquidity.SetSizeFactor(ctx.TradeDenomReceiving, liqValueTo.Quo(liqBase.ToLegacyDec()))
+	}
+
+	ctx.AdditionalLiquidity.Set(constants.BaseCurrency, maxValue.Sub(liqBase.ToLegacyDec()))
 
 	if ctx.TradeDenomGiving != constants.BaseCurrency {
 		if liqValueFrom.LT(maxValue) {
 			missing := maxValue.Sub(liqValueFrom).Mul(ratioFrom.Ratio)
-			ctx.SetAdditionalLiquidity(ctx.TradeDenomGiving, missing)
-		} else {
-			ctx.SetAdditionalLiquidity(ctx.TradeDenomGiving, math.LegacyZeroDec())
+			ctx.AdditionalLiquidity.Set(ctx.TradeDenomGiving, missing)
 		}
 	}
 
 	if ctx.TradeDenomReceiving != constants.BaseCurrency {
 		if liqValueTo.LT(maxValue) {
 			missing := maxValue.Sub(liqValueTo).Mul(ratioTo.Ratio)
-			ctx.SetAdditionalLiquidity(ctx.TradeDenomReceiving, missing)
-		} else {
-			ctx.SetAdditionalLiquidity(ctx.TradeDenomReceiving, math.LegacyZeroDec())
+			ctx.AdditionalLiquidity.Set(ctx.TradeDenomReceiving, missing)
 		}
 	}
+}
+
+func (k Keeper) RemoveAllLiquidityForDenom(ctx context.Context, denom string) error {
+	iterator := k.LiquidityIterator(ctx, denom)
+	for iterator.Valid() {
+		liq := iterator.GetNext()
+
+		acc, _ := sdk.AccAddressFromBech32(liq.Address)
+		coins := sdk.NewCoins(sdk.NewCoin(denom, liq.Amount))
+		if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolLiquidity, acc, coins); err != nil {
+			return fmt.Errorf("could not send coins from module to account: %w", err)
+		}
+
+		k.RemoveLiquidity(ctx, denom, liq.Index)
+	}
+
+	return nil
 }
