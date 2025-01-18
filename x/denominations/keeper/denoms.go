@@ -312,6 +312,20 @@ func (k Keeper) GetArbitrageDenoms(ctx context.Context) []*types.ArbitrageDenom 
 	return strategyDenoms.ArbitrageDenoms
 }
 
+func (k Keeper) RemoveDenom(ctx context.Context, denom string) error {
+	params := k.GetParams(ctx)
+
+	var filtered []*types.DexDenom
+	for _, dexDenom := range params.DexDenoms {
+		if dexDenom.Name != denom {
+			filtered = append(filtered, dexDenom)
+		}
+	}
+
+	params.DexDenoms = filtered
+	return k.SetParams(ctx, params)
+}
+
 func (k Keeper) ConvertToExponent(ctx context.Context, denom string, amount math.LegacyDec, targetExponent uint64) (math.LegacyDec, error) {
 	sourceExponent, err := k.Exponent(ctx, denom)
 	if err != nil {

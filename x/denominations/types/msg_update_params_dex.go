@@ -14,6 +14,14 @@ var (
 	_ sdk.Msg = &MsgDexUpdateMinimumOrderSize{}
 )
 
+func (msg *MsgDexAddDenom) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
+		return errorsmod.Wrap(err, "invalid authority address")
+	}
+
+	return nil
+}
+
 func (msg *MsgDexUpdateMinimumLiquidity) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
 		return errorsmod.Wrap(err, "invalid authority address")

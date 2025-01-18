@@ -35,6 +35,7 @@ const (
 	Msg_UpdateMaxOrderLife_FullMethodName          = "/kopi.dex.Msg/UpdateMaxOrderLife"
 	Msg_UpdateTradeAmountDecay_FullMethodName      = "/kopi.dex.Msg/UpdateTradeAmountDecay"
 	Msg_UpdateDiscountLevels_FullMethodName        = "/kopi.dex.Msg/UpdateDiscountLevels"
+	Msg_RemoveDexDenom_FullMethodName              = "/kopi.dex.Msg/RemoveDexDenom"
 )
 
 // MsgClient is the client API for Msg service.
@@ -58,6 +59,7 @@ type MsgClient interface {
 	UpdateMaxOrderLife(ctx context.Context, in *MsgUpdateMaxOrderLife, opts ...grpc.CallOption) (*Void, error)
 	UpdateTradeAmountDecay(ctx context.Context, in *MsgUpdateTradeAmountDecay, opts ...grpc.CallOption) (*Void, error)
 	UpdateDiscountLevels(ctx context.Context, in *MsgUpdateDiscountLevels, opts ...grpc.CallOption) (*Void, error)
+	RemoveDexDenom(ctx context.Context, in *MsgRemoveDexDenom, opts ...grpc.CallOption) (*Void, error)
 }
 
 type msgClient struct {
@@ -212,6 +214,15 @@ func (c *msgClient) UpdateDiscountLevels(ctx context.Context, in *MsgUpdateDisco
 	return out, nil
 }
 
+func (c *msgClient) RemoveDexDenom(ctx context.Context, in *MsgRemoveDexDenom, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_RemoveDexDenom_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -233,6 +244,7 @@ type MsgServer interface {
 	UpdateMaxOrderLife(context.Context, *MsgUpdateMaxOrderLife) (*Void, error)
 	UpdateTradeAmountDecay(context.Context, *MsgUpdateTradeAmountDecay) (*Void, error)
 	UpdateDiscountLevels(context.Context, *MsgUpdateDiscountLevels) (*Void, error)
+	RemoveDexDenom(context.Context, *MsgRemoveDexDenom) (*Void, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -287,6 +299,9 @@ func (UnimplementedMsgServer) UpdateTradeAmountDecay(context.Context, *MsgUpdate
 }
 func (UnimplementedMsgServer) UpdateDiscountLevels(context.Context, *MsgUpdateDiscountLevels) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateDiscountLevels not implemented")
+}
+func (UnimplementedMsgServer) RemoveDexDenom(context.Context, *MsgRemoveDexDenom) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveDexDenom not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -589,6 +604,24 @@ func _Msg_UpdateDiscountLevels_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_RemoveDexDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRemoveDexDenom)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RemoveDexDenom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_RemoveDexDenom_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RemoveDexDenom(ctx, req.(*MsgRemoveDexDenom))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -659,6 +692,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateDiscountLevels",
 			Handler:    _Msg_UpdateDiscountLevels_Handler,
+		},
+		{
+			MethodName: "RemoveDexDenom",
+			Handler:    _Msg_RemoveDexDenom_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

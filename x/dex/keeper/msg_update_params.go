@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-
 	"github.com/kopi-money/kopi/cache"
 
 	"cosmossdk.io/math"
@@ -160,6 +159,34 @@ func (k msgServer) UpdateDiscountLevels(ctx context.Context, req *types.MsgUpdat
 		params.DiscountLevels = req.DiscountLevels
 
 		if err := k.SetParams(innerCtx, params); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return &types.Void{}, err
+}
+
+func (k msgServer) RemoveDexDenom(ctx context.Context, req *types.MsgRemoveDexDenom) (*types.Void, error) {
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
+		if k.GetAuthority() != req.Authority {
+			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+		}
+
+		if !k.DenomKeeper.IsValidDenom(innerCtx, req.Name) {
+			return types.ErrDenomNotFound
+		}
+
+		if k.DenomKeeper.IsCollateralDenom(innerCtx, req.Name) {
+			return types.ErrCannotRemoveCollateralDenom
+		}
+
+		if err := k.Keeper.RemoveAllLiquidityForDenom(innerCtx, req.Name); err != nil {
+			return err
+		}
+
+		if err := k.DenomKeeper.RemoveDenom(innerCtx, req.Name); err != nil {
 			return err
 		}
 
