@@ -68,6 +68,12 @@ func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
 				return v7.CreateUpgradeHandler_rc5(manager, configurator)
 			},
 		},
+		{
+			UpgradeName: v7.UpgradeName_rc6,
+			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
+				return v7.CreateUpgradeHandler_rc6(manager, configurator)
+			},
+		},
 	}
 
 	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
