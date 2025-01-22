@@ -273,6 +273,14 @@ type TradeSimulationResult struct {
 	FeeGiven           math.Int
 }
 
+func (tsr TradeSimulationResult) PricePaid() (math.LegacyDec, error) {
+	if !tsr.AmountReceived.IsPositive() {
+		return math.LegacyDec{}, fmt.Errorf("amount received not positive")
+	}
+
+	return tsr.AmountGiven.ToLegacyDec().Quo(tsr.AmountReceived.ToLegacyDec()), nil
+}
+
 type TradeResult struct {
 	AmountIntermediate math.Int
 	AmountGiven        math.Int

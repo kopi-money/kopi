@@ -890,23 +890,27 @@ func TestSingleTrade13(t *testing.T) {
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 100_000))
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 100_000))
 
-	maxPrice, err := math.LegacyNewDecFromStr("0.2565")
+	tradeContext := types.TradeContext{
+		Context:             ctx,
+		TradeAmount:         math.NewInt(10_000),
+		TradeDenomGiving:    constants.KUSD,
+		TradeDenomReceiving: constants.BaseCurrency,
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+		Fee:                 math.LegacyZeroDec(),
+	}
+
+	res1, err := k.SimulateBuy(tradeContext)
 	require.NoError(t, err)
+
+	maxPrice, _ := res1.PricePaid()
 
 	var res types.TradeResult
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		res, err = k.ExecuteBuy(types.TradeContext{
-			Context:             innerCtx,
-			TradeAmount:         math.NewInt(10_000),
-			TradeDenomGiving:    constants.KUSD,
-			TradeDenomReceiving: constants.BaseCurrency,
-			MaxPrice:            &maxPrice,
-			TradeBalances:       dexkeeper.NewTradeBalances(),
-			CoinSource:          keepertest.Bob,
-			CoinTarget:          keepertest.Bob,
-			Fee:                 math.LegacyZeroDec(),
-		})
-
+		tradeContext.Context = innerCtx
+		tradeContext.MaxPrice = &maxPrice
+		res, err = k.ExecuteBuy(tradeContext)
 		return err
 	}))
 
@@ -1414,9 +1418,13 @@ func TestSingleTrade26(t *testing.T) {
 	res1, err := k.SimulateBuy(tradeContext)
 	require.NoError(t, err)
 
+	pricePaid, err := res1.PricePaid()
+	require.NoError(t, err)
+
 	var res2 types.TradeResult
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		tradeContext.Context = innerCtx
+		tradeContext.MaxPrice = &pricePaid
 		res2, err = k.ExecuteBuy(tradeContext)
 		return err
 	}))
@@ -1457,9 +1465,13 @@ func TestSingleTrade27(t *testing.T) {
 	res1, err := k.SimulateBuy(tradeContext)
 	require.NoError(t, err)
 
+	pricePaid, err := res1.PricePaid()
+	require.NoError(t, err)
+
 	var res2 types.TradeResult
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		tradeContext.Context = innerCtx
+		tradeContext.MaxPrice = &pricePaid
 		tradeContext.OrdersCaches = k.NewOrdersCaches(ctx)
 		res2, err = k.ExecuteBuy(tradeContext)
 		return err
@@ -1501,9 +1513,13 @@ func TestSingleTrade28(t *testing.T) {
 	res1, err := k.SimulateBuy(tradeContext)
 	require.NoError(t, err)
 
+	pricePaid, err := res1.PricePaid()
+	require.NoError(t, err)
+
 	var res2 types.TradeResult
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		tradeContext.Context = innerCtx
+		tradeContext.MaxPrice = &pricePaid
 		tradeContext.OrdersCaches = k.NewOrdersCaches(ctx)
 		res2, err = k.ExecuteBuy(tradeContext)
 		return err
@@ -1545,9 +1561,13 @@ func TestSingleTrade29(t *testing.T) {
 	res1, err := k.SimulateBuy(tradeContext)
 	require.NoError(t, err)
 
+	pricePaid, err := res1.PricePaid()
+	require.NoError(t, err)
+
 	var res2 types.TradeResult
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		tradeContext.Context = innerCtx
+		tradeContext.MaxPrice = &pricePaid
 		tradeContext.OrdersCaches = k.NewOrdersCaches(ctx)
 		res2, err = k.ExecuteBuy(tradeContext)
 		return err
@@ -1619,9 +1639,13 @@ func TestSingleTrade31(t *testing.T) {
 	res1, err := k.SimulateSell(tradeContext)
 	require.NoError(t, err)
 
+	pricePaid, err := res1.PricePaid()
+	require.NoError(t, err)
+
 	var res2 types.TradeResult
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		tradeContext.Context = innerCtx
+		tradeContext.MaxPrice = &pricePaid
 		res2, err = k.ExecuteSell(tradeContext)
 		return err
 	}))
@@ -1662,9 +1686,13 @@ func TestSingleTrade32(t *testing.T) {
 	res1, err := k.SimulateSell(tradeContext)
 	require.NoError(t, err)
 
+	pricePaid, err := res1.PricePaid()
+	require.NoError(t, err)
+
 	var res2 types.TradeResult
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		tradeContext.Context = innerCtx
+		tradeContext.MaxPrice = &pricePaid
 		tradeContext.OrdersCaches = k.NewOrdersCaches(ctx)
 		res2, err = k.ExecuteSell(tradeContext)
 		return err
@@ -1706,9 +1734,13 @@ func TestSingleTrade33(t *testing.T) {
 	res1, err := k.SimulateSell(tradeContext)
 	require.NoError(t, err)
 
+	pricePaid, err := res1.PricePaid()
+	require.NoError(t, err)
+
 	var res2 types.TradeResult
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		tradeContext.Context = innerCtx
+		tradeContext.MaxPrice = &pricePaid
 		tradeContext.OrdersCaches = k.NewOrdersCaches(ctx)
 		res2, err = k.ExecuteSell(tradeContext)
 		return err
@@ -1750,9 +1782,13 @@ func TestSingleTrade34(t *testing.T) {
 	res1, err := k.SimulateSell(tradeContext)
 	require.NoError(t, err)
 
+	pricePaid, err := res1.PricePaid()
+	require.NoError(t, err)
+
 	var res2 types.TradeResult
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		tradeContext.Context = innerCtx
+		tradeContext.MaxPrice = &pricePaid
 		tradeContext.OrdersCaches = k.NewOrdersCaches(ctx)
 		res2, err = k.ExecuteSell(tradeContext)
 		return err
@@ -3484,7 +3520,7 @@ func TestTrade60(t *testing.T) {
 	require.True(t, liquidityBalanced(ctx, k))
 }
 
-func TestSingleTrade60(t *testing.T) {
+func TestTrade61(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
 	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 49_967842_769650)
@@ -3517,7 +3553,7 @@ func TestSingleTrade60(t *testing.T) {
 	}))
 }
 
-func TestSingleTrade61(t *testing.T) {
+func TestTrade62(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
 	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 40_000_000)
@@ -3572,7 +3608,7 @@ func TestSingleTrade61(t *testing.T) {
 	require.True(t, price1.LT(price2))
 }
 
-func TestTrade62(t *testing.T) {
+func TestTrade63(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1_000_000))
@@ -3600,6 +3636,255 @@ func TestTrade62(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeBalances.Settle(ctx, k.BankKeeper))
+}
+
+func TestTrade64(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 49967842769650)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Bob, 10_000_000_000000)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 49967842769650))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 76706))
+
+	r, _ := math.LegacyNewDecFromStr("0.228660473988140735")
+	keepertest.SetRatio(ctx, k.DenomKeeper, constants.KUSD, r)
+	keepertest.SetRatio(ctx, k.DenomKeeper, "uwusdc", r)
+
+	fmt.Println(k.CalculatePrice(ctx, constants.KUSD, constants.BaseCurrency))
+
+	for range 10 {
+		tradeBalances := dexkeeper.NewTradeBalances()
+		var res types.TradeResult
+		require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+			var err error
+			res, err = k.ExecuteSell(types.TradeContext{
+				Context:             innerCtx,
+				TradeAmount:         math.NewInt(100_000_000000),
+				CoinSource:          keepertest.Bob,
+				CoinTarget:          keepertest.Bob,
+				TradeDenomGiving:    constants.KUSD,
+				TradeDenomReceiving: constants.BaseCurrency,
+				OrdersCaches:        k.NewOrdersCaches(ctx),
+				TradeBalances:       tradeBalances,
+			})
+			return err
+		}))
+
+		_ = res
+		require.NoError(t, tradeBalances.Settle(ctx, k.BankKeeper))
+	}
+}
+
+func TestTrade65(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 49976153908117)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "uwusdc", keepertest.Alice, 1000_000000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "uwusdc", keepertest.Bob, 1000_000000)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 49976153908117))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 10_000_000000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "uwusdc", 10_000000))
+
+	r, _ := math.LegacyNewDecFromStr("0.25")
+	keepertest.SetRatio(ctx, k.DenomKeeper, constants.KUSD, r)
+	keepertest.SetRatio(ctx, k.DenomKeeper, "uwusdc", r)
+
+	tradeContext := types.TradeContext{
+		Context:             ctx,
+		TradeAmount:         math.NewInt(1_000000),
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+		TradeDenomGiving:    "uwusdc",
+		TradeDenomReceiving: constants.KUSD,
+		OrdersCaches:        k.NewOrdersCaches(ctx),
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+		Fee:                 math.LegacyNewDecWithPrec(1, 3),
+	}
+
+	res1, err := k.SimulateSell(tradeContext)
+	require.NoError(t, err)
+
+	maxPrice, _ := res1.PricePaid()
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		tradeContext.Context = innerCtx
+		tradeContext.MaxPrice = &maxPrice
+		_, err = k.ExecuteSell(tradeContext)
+
+		return err
+	}))
+}
+
+func TestTrade66(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "uwusdc", 1_000_000))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Dave, 2_000_000)
+
+	tradeContext := types.TradeContext{
+		Context:             ctx,
+		TradeAmount:         math.NewInt(10000),
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+		TradeDenomGiving:    constants.KUSD,
+		TradeDenomReceiving: "uwusdc",
+		OrdersCaches:        k.NewOrdersCaches(ctx),
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+		Fee:                 math.LegacyNewDecWithPrec(1, 3),
+	}
+
+	res1, err := k.SimulateBuy(tradeContext)
+	require.NoError(t, err)
+
+	maxPrice, _ := res1.PricePaid()
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		tradeContext.Context = innerCtx
+		tradeContext.MaxPrice = &maxPrice
+		_, err = k.ExecuteBuy(tradeContext)
+		return err
+	}))
+}
+
+func TestTrade67(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "uwusdc", 1_000_000))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Dave, 2_000_000)
+
+	tradeContext := types.TradeContext{
+		Context:             ctx,
+		TradeAmount:         math.NewInt(10000),
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+		TradeDenomGiving:    constants.KUSD,
+		TradeDenomReceiving: constants.BaseCurrency,
+		OrdersCaches:        k.NewOrdersCaches(ctx),
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+		Fee:                 math.LegacyNewDecWithPrec(1, 3),
+	}
+
+	res1, err := k.SimulateBuy(tradeContext)
+	require.NoError(t, err)
+
+	maxPrice, _ := res1.PricePaid()
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		tradeContext.Context = innerCtx
+		tradeContext.MaxPrice = &maxPrice
+		_, err = k.ExecuteBuy(tradeContext)
+		return err
+	}))
+}
+
+func TestTrade68(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "uwusdc", 1_000_000))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Dave, 2_000_000)
+
+	tradeContext := types.TradeContext{
+		Context:             ctx,
+		TradeAmount:         math.NewInt(10000),
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+		TradeDenomGiving:    constants.BaseCurrency,
+		TradeDenomReceiving: constants.KUSD,
+		OrdersCaches:        k.NewOrdersCaches(ctx),
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+		Fee:                 math.LegacyNewDecWithPrec(1, 3),
+	}
+
+	res1, err := k.SimulateBuy(tradeContext)
+	require.NoError(t, err)
+
+	maxPrice, _ := res1.PricePaid()
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		tradeContext.Context = innerCtx
+		tradeContext.MaxPrice = &maxPrice
+		_, err = k.ExecuteBuy(tradeContext)
+		return err
+	}))
+}
+
+func TestTrade69(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "uwusdc", 1_000_000))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Dave, 2_000_000)
+
+	tradeContext := types.TradeContext{
+		Context:             ctx,
+		TradeAmount:         math.NewInt(10000),
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+		TradeDenomGiving:    constants.BaseCurrency,
+		TradeDenomReceiving: constants.KUSD,
+		OrdersCaches:        k.NewOrdersCaches(ctx),
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+		Fee:                 math.LegacyNewDecWithPrec(1, 3),
+	}
+
+	res1, err := k.SimulateSell(tradeContext)
+	require.NoError(t, err)
+
+	maxPrice, _ := res1.PricePaid()
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		tradeContext.Context = innerCtx
+		tradeContext.MaxPrice = &maxPrice
+		_, err = k.ExecuteSell(tradeContext)
+		return err
+	}))
+}
+
+func TestTrade70(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "uwusdc", 1_000_000))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Dave, 2_000_000)
+
+	tradeContext := types.TradeContext{
+		Context:             ctx,
+		TradeAmount:         math.NewInt(10000),
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+		TradeDenomGiving:    constants.KUSD,
+		TradeDenomReceiving: constants.BaseCurrency,
+		OrdersCaches:        k.NewOrdersCaches(ctx),
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+		Fee:                 math.LegacyNewDecWithPrec(1, 3),
+	}
+
+	res1, err := k.SimulateSell(tradeContext)
+	require.NoError(t, err)
+
+	maxPrice, _ := res1.PricePaid()
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		tradeContext.Context = innerCtx
+		tradeContext.MaxPrice = &maxPrice
+		_, err = k.ExecuteSell(tradeContext)
+		return err
+	}))
 }
 
 func liquidityBalanced(ctx context.Context, k dexkeeper.Keeper) bool {

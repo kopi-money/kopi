@@ -391,9 +391,10 @@ func (k Keeper) updateRatiosToBase(ctx types.TradeStepContext, poolLiquidity sdk
 		}
 
 		if fullBase.IsPositive() {
+			newRatio := fullOther.Quo(fullBase) // C
 			k.DenomKeeper.SetRatio(ctx, denomtypes.Ratio{
 				Denom: ratio.Denom,
-				Ratio: fullOther.Quo(fullBase), // C
+				Ratio: newRatio,
 			})
 		}
 	}
@@ -493,7 +494,13 @@ func (k Keeper) handleOrderFee(ordersCaches *types.OrdersCaches, tradeBalances t
 }
 
 func (k Keeper) calculateAmountGivenPrice(ctx *types.TradeContext) (math.LegacyDec, error) {
-	liqFrom, liqTo := k.GetCrossLiquidity(ctx)
+	var liqFrom, liqTo math.LegacyDec
+	if ctx.HasTwoSteps() {
+		liqFrom, liqTo = k.GetCrossLiquidity(ctx)
+	} else {
+		liqFrom, liqTo = GetTradeLiquidities(ctx.TradeDenomGiving, ctx.TradeDenomReceiving, ctx.OrdersCaches, ctx.AdditionalLiquidity)
+	}
+
 	maxPrice := ctx.MaxPrice.Mul(math.LegacyOneDec().Sub(ctx.Fee))
 	return ctx.CalcTradableAmountGivenPrice(liqFrom, liqTo, maxPrice)
 }

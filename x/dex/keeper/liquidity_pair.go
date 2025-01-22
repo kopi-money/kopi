@@ -76,30 +76,13 @@ func (k Keeper) GetFullLiquidity(ordersCaches *types.OrdersCaches, additionalLiq
 }
 
 func (k Keeper) GetCrossLiquidity(ctx *types.TradeContext) (math.LegacyDec, math.LegacyDec) {
-	if ctx.TradeDenomGiving == constants.BaseCurrency || ctx.TradeDenomReceiving == constants.BaseCurrency {
-		liqFrom := k.GetFullLiquidity(ctx.OrdersCaches, ctx.AdditionalLiquidity, ctx.TradeDenomGiving, ctx.TradeDenomReceiving)
-		liqTo := k.GetFullLiquidity(ctx.OrdersCaches, ctx.AdditionalLiquidity, ctx.TradeDenomReceiving, ctx.TradeDenomGiving)
-		return liqFrom, liqTo
-	}
+	fullFrom := GetFullLiquidityOtherCache(ctx.OrdersCaches, ctx.AdditionalLiquidity, ctx.TradeDenomGiving)
+	fullFrom = ctx.AdditionalLiquidity.Add(ctx.TradeDenomGiving, fullFrom)
 
-	fromRatio, _ := k.DenomKeeper.GetRatio(ctx, ctx.TradeDenomGiving)
-	fromLiquidity := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomGiving).ToLegacyDec()
-	fromLiquidityValueBase := fromLiquidity.Quo(fromRatio.Ratio) // C
+	fullTo := GetFullLiquidityOtherCache(ctx.OrdersCaches, ctx.AdditionalLiquidity, ctx.TradeDenomReceiving)
+	fullTo = ctx.AdditionalLiquidity.Add(ctx.TradeDenomReceiving, fullTo)
 
-	toRatio, _ := k.DenomKeeper.GetRatio(ctx, ctx.TradeDenomReceiving)
-	toLiquidity := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomReceiving).ToLegacyDec()
-	toLiquidityValueBase := toLiquidity.Quo(toRatio.Ratio) // C
-
-	switch {
-	case fromLiquidityValueBase.LT(toLiquidityValueBase):
-		missing := toLiquidityValueBase.Sub(fromLiquidityValueBase)
-		fromLiquidity = fromLiquidity.Add(missing.Mul(fromRatio.Ratio))
-	case toLiquidityValueBase.LT(fromLiquidityValueBase):
-		missing := fromLiquidityValueBase.Sub(toLiquidityValueBase)
-		toLiquidity = toLiquidity.Add(missing.Mul(toRatio.Ratio))
-	}
-
-	return fromLiquidity, toLiquidity
+	return fullFrom, fullTo
 }
 
 func (k Keeper) GetFullLiquidityBaseOther(ctx context.Context, denomFrom, denomTo string) (math.LegacyDec, math.LegacyDec) {
