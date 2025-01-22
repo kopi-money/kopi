@@ -184,6 +184,11 @@ func (k Keeper) UpdateVirtualLiquidities(ctx context.Context) error {
 		if denom != constants.BaseCurrency {
 			liq := poolBalance.AmountOf(denom)
 			if liq.LT(k.DenomKeeper.MinLiquidity(ctx, denom)) {
+				// If a kCoin is above parity, the protocol mints+sells and thereby adds already liquidity.
+				if k.skipKCoin(ctx, denom) {
+					continue
+				}
+
 				ratio, err := k.DenomKeeper.GetRatio(ctx, denom)
 				if err != nil {
 					return fmt.Errorf("could not get ratio for %v: %w", denom, err)
@@ -196,6 +201,20 @@ func (k Keeper) UpdateVirtualLiquidities(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+func (k Keeper) skipKCoin(ctx context.Context, denom string) bool {
+	if !k.DenomKeeper.IsKCoin(ctx, denom) {
+		return false
+	}
+
+	aboveParity, err := k.isAboveParity(ctx, denom)
+	if err != nil {
+		k.Logger().Error(fmt.Sprintf("aboveParity: %v", err))
+		return false
+	}
+
+	return aboveParity
 }
 
 func (k Keeper) GetDenomValue(ctx context.Context, denom string) (math.LegacyDec, error) {

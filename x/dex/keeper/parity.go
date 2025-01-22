@@ -40,6 +40,19 @@ func (k Keeper) CalculateParity(ctx context.Context, kCoin string) (*math.Legacy
 	return &parity, referenceDenom, nil
 }
 
+func (k Keeper) isAboveParity(ctx context.Context, kCoin string) (bool, error) {
+	parity, _, err := k.CalculateParity(ctx, kCoin)
+	if err != nil {
+		return false, err
+	}
+
+	if parity == nil || parity.IsNil() {
+		return false, fmt.Errorf("parity has nil value")
+	}
+
+	return parity.GT(math.LegacyOneDec()), nil
+}
+
 // GetHighestPriceDenom returns the highest valued of all reference denoms given one unit of a kCoin. For example,
 // kUSD is connected to axlUSDC, axlUSDT and others. The price of those currencies can fluctuate or even depeg, so the
 // most valued price is used as "true" price.
