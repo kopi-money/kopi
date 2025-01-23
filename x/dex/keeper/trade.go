@@ -526,6 +526,11 @@ func (k Keeper) CalculateMaximumSellableAmount(ctx types.TradeContext) (*math.In
 		max2 = k.CalculateSingleSellableAmount(ctx, constants.BaseCurrency, ctx.TradeDenomReceiving, nil)
 	}
 
+	if max2 != nil && max2.IsZero() {
+		zeroInt := math.ZeroInt()
+		return &zeroInt, nil
+	}
+
 	if ctx.TradeDenomGiving != constants.BaseCurrency {
 		max1 = k.CalculateSingleSellableAmount(ctx, ctx.TradeDenomGiving, constants.BaseCurrency, max2)
 	} else {
@@ -592,6 +597,9 @@ func (k Keeper) CalculateMaximumBuyableAmount(ctx types.TradeContext) (*math.Int
 	}
 
 	maximumInt := maximum.TruncateInt()
+	available := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomReceiving)
+	maximumInt = math.MinInt(maximumInt, available)
+
 	return &maximumInt, nil
 }
 

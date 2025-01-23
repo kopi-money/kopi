@@ -3887,6 +3887,115 @@ func TestTrade70(t *testing.T) {
 	}))
 }
 
+func TestTrade71(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "uwusdc", 1_000_000))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Dave, 2_000_000)
+
+	maxPrice, _ := math.LegacyNewDecFromStr("0.1")
+
+	require.Error(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := k.ExecuteSell(types.TradeContext{
+			Context:             innerCtx,
+			TradeAmount:         math.NewInt(100_000_000000),
+			CoinSource:          keepertest.Bob,
+			CoinTarget:          keepertest.Bob,
+			TradeDenomGiving:    constants.KUSD,
+			TradeDenomReceiving: constants.BaseCurrency,
+			OrdersCaches:        k.NewOrdersCaches(ctx),
+			TradeBalances:       dexkeeper.NewTradeBalances(),
+			MaxPrice:            &maxPrice,
+			Fee:                 math.LegacyZeroDec(),
+		})
+		return err
+	}))
+}
+
+func TestTrade72(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 4114494_580260)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "uwusdc", keepertest.Alice, 52875_551701)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 4114494_580260))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "uwusdc", 52875_551701))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "uwusdc", keepertest.Bob, 200_000_000_000)
+
+	require.ErrorContains(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := k.ExecuteSell(types.TradeContext{
+			Context:             innerCtx,
+			TradeAmount:         math.NewInt(1000000),
+			CoinSource:          keepertest.Bob,
+			CoinTarget:          keepertest.Bob,
+			TradeDenomGiving:    "uwusdc",
+			TradeDenomReceiving: constants.KUSD,
+			OrdersCaches:        k.NewOrdersCaches(ctx),
+			TradeBalances:       dexkeeper.NewTradeBalances(),
+			Fee:                 math.LegacyZeroDec(),
+		})
+		return err
+	}), "trade amount too small")
+}
+
+func TestTrade73(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 4114494_580260)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "uwusdc", keepertest.Alice, 52875_551701)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 4114494_580260))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "uwusdc", 52875_551701))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "uwusdc", keepertest.Bob, 200_000_000_000)
+
+	require.ErrorContains(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := k.ExecuteBuy(types.TradeContext{
+			Context:             innerCtx,
+			TradeAmount:         math.NewInt(1000000),
+			CoinSource:          keepertest.Bob,
+			CoinTarget:          keepertest.Bob,
+			TradeDenomGiving:    "uwusdc",
+			TradeDenomReceiving: constants.KUSD,
+			OrdersCaches:        k.NewOrdersCaches(ctx),
+			TradeBalances:       dexkeeper.NewTradeBalances(),
+			Fee:                 math.LegacyZeroDec(),
+		})
+		return err
+	}), "trade amount too small")
+}
+
+func TestTrade74(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 4114494_580260)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "uwusdc", keepertest.Alice, 52875_551701)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 4114494_580260))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "uwusdc", 52875_551701))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "uwusdc", keepertest.Bob, 200_000_000_000)
+
+	require.ErrorContains(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := k.ExecuteBuy(types.TradeContext{
+			Context:             innerCtx,
+			TradeAmount:         math.NewInt(1000000),
+			CoinSource:          keepertest.Bob,
+			CoinTarget:          keepertest.Bob,
+			TradeDenomGiving:    constants.BaseCurrency,
+			TradeDenomReceiving: constants.KUSD,
+			OrdersCaches:        k.NewOrdersCaches(ctx),
+			TradeBalances:       dexkeeper.NewTradeBalances(),
+			Fee:                 math.LegacyZeroDec(),
+		})
+		return err
+	}), "trade amount too small")
+}
+
 func liquidityBalanced(ctx context.Context, k dexkeeper.Keeper) bool {
 	acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
 	coins := k.BankKeeper.SpendableCoins(ctx, acc.GetAddress())
