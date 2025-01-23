@@ -241,7 +241,7 @@ func (k Keeper) processLiquidation(ctx context.Context, tradeBalances dextypes.T
 
 		tradeResult, err := k.DexKeeper.ExecuteBuy(tradeCtx)
 		if err != nil {
-			k.Logger().Error(fmt.Sprintf("could not execute collateral sell: %v", err.Error()))
+			k.Logger().Info(fmt.Sprintf("could not execute collateral sell: %v", err.Error()))
 			return math.Int{}, err
 		}
 
