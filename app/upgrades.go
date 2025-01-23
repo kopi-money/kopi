@@ -20,6 +20,7 @@ import (
 	"github.com/kopi-money/kopi/app/upgrades/v0_6_5_2"
 	"github.com/kopi-money/kopi/app/upgrades/v7"
 	"github.com/kopi-money/kopi/app/upgrades/v8"
+	"github.com/kopi-money/kopi/app/upgrades/v9"
 )
 
 func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
@@ -79,6 +80,12 @@ func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
 			UpgradeName: v8.UpgradeName,
 			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
 				return v8.CreateUpgradeHandler(manager, configurator)
+			},
+		},
+		{
+			UpgradeName: v9.UpgradeName,
+			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
+				return v9.CreateUpgradeHandler(manager, configurator)
 			},
 		},
 	}
