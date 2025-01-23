@@ -419,6 +419,10 @@ func (k Keeper) updatePairRatios(ctx *types.TradeContext, ratioFrom, ratioTo, li
 	liqFrom = liqFrom.Add(amountGiven.ToLegacyDec())
 	liqTo = liqTo.Sub(amountReceived.ToLegacyDec())
 
+	if liqTo.IsZero() {
+		liqTo = liqTo.Add(math.LegacyOneDec())
+	}
+
 	newRatio := liqTo.Quo(liqFrom)
 	newRatioFac, _ := newRatio.Mul(ratioFrom).Quo(ratioTo).ApproxSqrt()
 
