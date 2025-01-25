@@ -90,10 +90,8 @@ func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
 			},
 		},
 		{
-			UpgradeName: v11.UpgradeName_rc1,
-			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
-				return v11.CreateUpgradeHandler_rc1
-			},
+			UpgradeName:          v11.UpgradeName_rc1,
+			CreateUpgradeHandler: v11.CreateUpgradeHandler_rc1,
 		},
 	}
 
