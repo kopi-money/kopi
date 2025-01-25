@@ -370,3 +370,13 @@ func SetRatio(ctx context.Context, k SetRatioKeeper, denom string, ratio math.Le
 		return nil
 	})
 }
+
+type SetMinimumLiquidityKeeper interface {
+	DexUpdateMinimumLiquidity(ctx context.Context, denom, minLiquidityStr string) error
+}
+
+func SetMinimumLiquidity(ctx context.Context, k SetMinimumLiquidityKeeper, denom, minLiquidity string) error {
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.DexUpdateMinimumLiquidity(innerCtx, denom, minLiquidity)
+	})
+}

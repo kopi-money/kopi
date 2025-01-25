@@ -26,8 +26,8 @@ func createDefaultDexDenoms() []*DexDenom {
 	return []*DexDenom{
 		{
 			Name:         constants.BaseCurrency,
-			MinLiquidity: math.NewInt(10_000),
-			MinOrderSize: math.NewInt(1),
+			MinLiquidity: math.NewInt(1_000_000_000),
+			MinOrderSize: math.NewInt(1_000_000_000),
 			Exponent:     6,
 		},
 	}

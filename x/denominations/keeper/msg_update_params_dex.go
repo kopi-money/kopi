@@ -46,34 +46,38 @@ func (k msgServer) DexUpdateMinimumLiquidity(ctx context.Context, req *types.Msg
 			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		params := k.GetParams(innerCtx)
-		minLiquidity, _ := math.NewIntFromString(req.MinLiquidity)
-		dexDenoms := []*types.DexDenom{}
-		found := false
-
-		for _, dexDenom := range params.DexDenoms {
-			if dexDenom.Name == req.Name {
-				dexDenom.MinLiquidity = minLiquidity
-				found = true
-			}
-
-			dexDenoms = append(dexDenoms, dexDenom)
-		}
-
-		if !found {
-			return types.ErrInvalidDexAsset
-		}
-
-		params.DexDenoms = dexDenoms
-
-		if err := k.SetParams(innerCtx, params); err != nil {
-			return err
-		}
-
-		return nil
+		return k.Keeper.DexUpdateMinimumLiquidity(ctx, req.Name, req.MinLiquidity)
 	})
 
 	return &types.MsgUpdateParamsResponse{}, err
+}
+
+func (k Keeper) DexUpdateMinimumLiquidity(ctx context.Context, denom, minLiquidityStr string) error {
+	params := k.GetParams(ctx)
+	minLiquidity, _ := math.NewIntFromString(minLiquidityStr)
+	dexDenoms := []*types.DexDenom{}
+	found := false
+
+	for _, dexDenom := range params.DexDenoms {
+		if dexDenom.Name == denom {
+			dexDenom.MinLiquidity = minLiquidity
+			found = true
+		}
+
+		dexDenoms = append(dexDenoms, dexDenom)
+	}
+
+	if !found {
+		return types.ErrInvalidDexAsset
+	}
+
+	params.DexDenoms = dexDenoms
+
+	if err := k.SetParams(ctx, params); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (k msgServer) DexUpdateMinimumOrderSize(ctx context.Context, req *types.MsgDexUpdateMinimumOrderSize) (*types.MsgUpdateParamsResponse, error) {
