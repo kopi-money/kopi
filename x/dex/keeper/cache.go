@@ -4,7 +4,6 @@ import (
 	"context"
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/kopi-money/kopi/constants"
 	"github.com/kopi-money/kopi/x/dex/types"
 )
 
@@ -47,15 +46,6 @@ func (k Keeper) NewOrdersCaches(ctx context.Context) *types.OrdersCaches {
 			return k.LiquidityIterator(ctx, denom).GetAll()
 		},
 	)
-
-	oc.LiquidityPair = types.NewMapCache(func(denom string, params ...any) types.LiquidityPair {
-		sizeFactor := params[0].(math.LegacyDec)
-		liqBase := oc.LiquidityPool.Get().AmountOf(constants.BaseCurrency)
-		liqOther := oc.LiquidityPool.Get().AmountOf(denom)
-		pair, _ := k.GetLiquidityPairWithLiquidity(ctx, denom, liqBase, liqOther, sizeFactor)
-
-		return pair
-	})
 
 	return oc
 }

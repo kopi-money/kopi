@@ -118,7 +118,6 @@ type OrdersCaches struct {
 	ProviderFee           *ItemCache[math.LegacyDec]
 	LiquidityPool         *ItemCache[*CoinMap]
 	ReimbursementPool     *ItemCache[*CoinMap]
-	LiquidityPair         *MapCache[LiquidityPair]
 	PriceAmountsSell      map[Pair]math.LegacyDec
 	PriceAmountsBuy       map[Pair]math.LegacyDec
 	PriceMaxAmounts       map[string]math.LegacyDec
