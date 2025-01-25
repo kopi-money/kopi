@@ -9,6 +9,7 @@ import (
 	"github.com/kopi-money/kopi/x/strategies/types"
 )
 
+var minimumAmount = math.NewInt(1_000_000_000) // i.e. 1,0000
 type CalculateValue []func() (math.LegacyDec, error)
 
 func (cv CalculateValue) get() (math.LegacyDec, error) {
@@ -26,6 +27,28 @@ func (cv CalculateValue) get() (math.LegacyDec, error) {
 }
 
 func (k Keeper) calculateNewStrategyAssetAmount(ctx context.Context, denom string, addedAmount math.Int, calculateValue CalculateValue) (math.Int, error) {
+	assetSupply := k.BankKeeper.GetSupply(ctx, denom).Amount
+	newTokens := math.ZeroInt()
+
+	amountBelowThreshold := minimumAmount.Sub(assetSupply)
+	if amountBelowThreshold.IsPositive() {
+		newTokens = math.MinInt(amountBelowThreshold, addedAmount)
+		addedAmount = addedAmount.Sub(newTokens)
+	}
+
+	if addedAmount.IsPositive() {
+		newTokensFromShare, err := k.calculateNewStrategyAssetAmountWithShare(ctx, denom, addedAmount, calculateValue)
+		if err != nil {
+			return math.Int{}, err
+		}
+
+		newTokens = newTokens.Add(newTokensFromShare)
+	}
+
+	return newTokens, nil
+}
+
+func (k Keeper) calculateNewStrategyAssetAmountWithShare(ctx context.Context, denom string, addedAmount math.Int, calculateValue CalculateValue) (math.Int, error) {
 	assetSupply := k.BankKeeper.GetSupply(ctx, denom).Amount
 	if assetSupply.IsZero() {
 		return addedAmount, nil

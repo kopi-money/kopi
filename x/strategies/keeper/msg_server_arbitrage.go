@@ -31,9 +31,6 @@ func (k msgServer) ArbitrageDeposit(ctx context.Context, msg *types.MsgArbitrage
 			return nil, fmt.Errorf("could not deposit into c asset: %w", err)
 		}
 
-		m := fmt.Sprintf("%v %v > %v %v", amount.String(), msg.Denom, cAssetAmount.String(), cAsset.DexDenom)
-		k.Logger().Info(m)
-
 		amount = cAssetAmount
 	} else {
 		cAsset, err = k.DenomKeeper.GetCAsset(ctx, msg.Denom)

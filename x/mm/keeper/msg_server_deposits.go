@@ -59,16 +59,16 @@ func (k Keeper) Deposit(ctx context.Context, address sdk.AccAddress, cAsset *den
 	}
 
 	coins := sdk.NewCoins(sdk.NewCoin(cAsset.BaseDexDenom, amount))
-	if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, address, types.PoolVault, coins); err != nil {
+	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, address, types.PoolVault, coins); err != nil {
 		return math.Int{}, fmt.Errorf("could not send coins to module: %w", err)
 	}
 
 	coins = sdk.NewCoins(sdk.NewCoin(cAsset.DexDenom, newCAssetTokens))
-	if err := k.BankKeeper.MintCoins(ctx, types.ModuleName, coins); err != nil {
+	if err = k.BankKeeper.MintCoins(ctx, types.ModuleName, coins); err != nil {
 		return math.Int{}, err
 	}
 
-	if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, address, coins); err != nil {
+	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, address, coins); err != nil {
 		return math.Int{}, fmt.Errorf("could not send coins to module: %w", err)
 	}
 

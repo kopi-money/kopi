@@ -9,6 +9,8 @@ import (
 	"github.com/kopi-money/kopi/x/mm/types"
 )
 
+var minimumAmount = math.NewInt(1_000_000_000) // i.e. 1,0000
+
 // GetVaultAmount return the amount of funds held in the base denom of an CAsset. For example, when akUSD is the CAsset,
 // this functions return the amount of available kUSD
 func (k Keeper) GetVaultAmount(ctx context.Context, cAsset *denomtypes.CAsset) math.Int {
@@ -25,7 +27,29 @@ func (k Keeper) getCAssetSupply(ctx context.Context, cAsset *denomtypes.CAsset) 
 // the vault.
 func (k Keeper) CalculateNewCAssetAmount(ctx context.Context, cAsset *denomtypes.CAsset, addedAmount math.Int) (math.Int, error) {
 	cAssetSupply := k.getCAssetSupply(ctx, cAsset)
-	if cAssetSupply.IsZero() {
+	newTokens := math.ZeroInt()
+
+	amountBelowThreshold := minimumAmount.Sub(cAssetSupply)
+	if amountBelowThreshold.IsPositive() {
+		newTokens = math.MinInt(amountBelowThreshold, addedAmount)
+		addedAmount = addedAmount.Sub(newTokens)
+	}
+
+	if addedAmount.IsPositive() {
+		newTokensFromShare, err := k.CalculateNewCAssetAmountWithShare(ctx, cAsset, addedAmount)
+		if err != nil {
+			return math.Int{}, err
+		}
+
+		newTokens = newTokens.Add(newTokensFromShare)
+	}
+
+	return newTokens, nil
+}
+
+func (k Keeper) CalculateNewCAssetAmountWithShare(ctx context.Context, cAsset *denomtypes.CAsset, addedAmount math.Int) (math.Int, error) {
+	cAssetSupply := k.getCAssetSupply(ctx, cAsset)
+	if cAssetSupply.LT(minimumAmount) {
 		return addedAmount, nil
 	}
 
