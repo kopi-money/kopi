@@ -22,7 +22,16 @@ func TestSimulateTrade1(t *testing.T) {
 		DenomGiving:    constants.BaseCurrency,
 		DenomReceiving: constants.KUSD,
 		Address:        keepertest.Alice,
-		Amount:         "9999_999999",
+		Amount:         "2_500_000000",
+	})
+
+	require.Error(t, err)
+
+	_, err = k.QuerySimulateBuy(ctx, &types.QuerySimulateTradeRequest{
+		DenomGiving:    constants.BaseCurrency,
+		DenomReceiving: constants.KUSD,
+		Address:        keepertest.Alice,
+		Amount:         "2_499_999999",
 	})
 
 	require.NoError(t, err)

@@ -668,7 +668,7 @@ func TestOrders22(t *testing.T) {
 
 	liqOther = k.LiquidityIterator(ctx, constants.KUSD).GetAll()
 	require.Equal(t, 1, len(liqOther))
-	require.Equal(t, int64(9_759), liqOther[0].Amount.Int64())
+	require.Equal(t, int64(9_775), liqOther[0].Amount.Int64())
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.NoError(t, checkCache(ctx, k))
@@ -831,10 +831,10 @@ func TestOrders28(t *testing.T) {
 
 	order, has = k.GetOrder(ctx, 1)
 	require.True(t, has)
-	require.Equal(t, int64(97_260), order.AmountLocked.Int64())
+	require.Equal(t, int64(98_103), order.AmountLocked.Int64())
 	require.Equal(t, int64(200_000), order.AmountRequested.Int64())
-	require.Equal(t, int64(9_950), order.AmountReceived.Int64())
-	require.Equal(t, int64(3_344), order.AmountGiven.Int64())
+	require.Equal(t, int64(4_969), order.AmountReceived.Int64())
+	require.Equal(t, int64(2_501), order.AmountGiven.Int64())
 }
 
 func TestOrders31(t *testing.T) {
@@ -862,7 +862,7 @@ func TestOrders31(t *testing.T) {
 
 	require.True(t, fullyExecuted)
 	require.Equal(t, int64(10_000), tradeResult.AmountGiven.Int64())
-	require.Equal(t, int64(2_473), tradeResult.AmountReceived.Int64())
+	require.Equal(t, int64(2_455), tradeResult.AmountReceived.Int64())
 
 	pricePaid, err := tradeResult.PricePaid()
 	require.NoError(t, err)
@@ -894,7 +894,7 @@ func TestOrders32(t *testing.T) {
 
 	require.True(t, fullyExecuted)
 	require.Equal(t, int64(10_000), tradeResult.AmountGiven.Int64())
-	require.Equal(t, int64(39_288), tradeResult.AmountReceived.Int64())
+	require.Equal(t, int64(38_155), tradeResult.AmountReceived.Int64())
 
 	pricePaid, err := tradeResult.PricePaid()
 	require.NoError(t, err)
@@ -928,7 +928,7 @@ func TestOrders33(t *testing.T) {
 	require.False(t, tradeResult.AmountReceived.IsNil())
 
 	require.True(t, fullyExecuted)
-	require.Equal(t, int64(10_183), tradeResult.AmountGiven.Int64())
+	require.Equal(t, int64(10_503), tradeResult.AmountGiven.Int64())
 	require.Equal(t, int64(40_000), tradeResult.AmountReceived.Int64())
 
 	pricePaid, err := tradeResult.PricePaid()
@@ -963,7 +963,7 @@ func TestOrders34(t *testing.T) {
 	require.False(t, tradeResult.AmountReceived.IsNil())
 
 	require.True(t, fullyExecuted)
-	require.Equal(t, int64(40_729), tradeResult.AmountGiven.Int64())
+	require.Equal(t, int64(42_002), tradeResult.AmountGiven.Int64())
 	require.Equal(t, int64(10_000), tradeResult.AmountReceived.Int64())
 
 	pricePaid, err := tradeResult.PricePaid()

@@ -232,51 +232,57 @@ func (k Keeper) GetDenomValue(ctx context.Context, denom string) (math.LegacyDec
 	return liq.Mul(price), nil
 }
 
-func (k Keeper) PrepareAdditionalLiquidity(ctx *types.TradeContext) {
-	if ctx.HasOneStep() {
-		return
-	}
-
+func (k Keeper) PrepareCutLiquidity(ctx *types.TradeContext) {
 	liqFrom := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomGiving)
 	liqTo := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomReceiving)
-	liqBase := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(constants.BaseCurrency)
+	liqBase := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(constants.BaseCurrency).ToLegacyDec()
 
 	var (
-		ratioFrom    denomtypes.Ratio
-		ratioTo      denomtypes.Ratio
-		liqValueFrom math.LegacyDec
-		liqValueTo   math.LegacyDec
+		ratioFrom denomtypes.Ratio
+		ratioTo   denomtypes.Ratio
 	)
 
+	liqValueFrom := liqFrom.ToLegacyDec()
 	if ctx.TradeDenomGiving != constants.BaseCurrency {
 		ratioFrom, _ = k.DenomKeeper.GetRatio(ctx, ctx.TradeDenomGiving)
 		liqValueFrom = liqFrom.ToLegacyDec().Quo(ratioFrom.Ratio) // C
 	}
 
+	liqValueTo := liqTo.ToLegacyDec()
 	if ctx.TradeDenomReceiving != constants.BaseCurrency {
 		ratioTo, _ = k.DenomKeeper.GetRatio(ctx, ctx.TradeDenomReceiving)
 		liqValueTo = liqTo.ToLegacyDec().Quo(ratioTo.Ratio) // C
 	}
 
-	maxValue := math.LegacyMaxDec(liqValueFrom, liqValueTo)
-	if maxValue.LT(liqBase.ToLegacyDec()) {
-		ctx.AdditionalLiquidity.SetSizeFactor(ctx.TradeDenomGiving, liqValueFrom.Quo(liqBase.ToLegacyDec()))
-		ctx.AdditionalLiquidity.SetSizeFactor(ctx.TradeDenomReceiving, liqValueTo.Quo(liqBase.ToLegacyDec()))
+	minValue := math.LegacyMinDec(liqValueFrom, liqValueTo)
+	minValue = math.LegacyMaxDec(minValue, k.DenomKeeper.MinLiquidity(ctx, constants.BaseCurrency).ToLegacyDec())
+
+	cutLiqBase := math.LegacyMinDec(minValue, liqBase)
+	ctx.CutLiquidity.Set(constants.BaseCurrency, cutLiqBase)
+	if cutLiqBase.LT(minValue) {
+		missing := minValue.Sub(cutLiqBase)
+		ctx.CutLiquidity.SetVirtual(constants.BaseCurrency, missing)
 	}
 
-	ctx.AdditionalLiquidity.Set(constants.BaseCurrency, maxValue.Sub(liqBase.ToLegacyDec()))
-
 	if ctx.TradeDenomGiving != constants.BaseCurrency {
-		if liqValueFrom.LT(maxValue) {
-			missing := maxValue.Sub(liqValueFrom).Mul(ratioFrom.Ratio)
-			ctx.AdditionalLiquidity.Set(ctx.TradeDenomGiving, missing)
+		cutLiqFrom := minValue.Mul(ratioFrom.Ratio)
+		cutLiqFrom = math.LegacyMinDec(cutLiqFrom, liqFrom.ToLegacyDec())
+
+		ctx.CutLiquidity.Set(ctx.TradeDenomGiving, cutLiqFrom)
+		if liqValueFrom.LT(minValue) {
+			missing := minValue.Sub(liqValueFrom).Mul(ratioFrom.Ratio)
+			ctx.CutLiquidity.SetVirtual(ctx.TradeDenomGiving, missing)
 		}
 	}
 
 	if ctx.TradeDenomReceiving != constants.BaseCurrency {
-		if liqValueTo.LT(maxValue) {
-			missing := maxValue.Sub(liqValueTo).Mul(ratioTo.Ratio)
-			ctx.AdditionalLiquidity.Set(ctx.TradeDenomReceiving, missing)
+		cutLiqTo := minValue.Mul(ratioTo.Ratio)
+		cutLiqTo = math.LegacyMinDec(cutLiqTo, liqTo.ToLegacyDec())
+
+		ctx.CutLiquidity.Set(ctx.TradeDenomReceiving, cutLiqTo)
+		if liqValueTo.LT(minValue) {
+			missing := minValue.Sub(liqValueTo).Mul(ratioTo.Ratio)
+			ctx.CutLiquidity.SetVirtual(ctx.TradeDenomReceiving, missing)
 		}
 	}
 }

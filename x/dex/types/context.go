@@ -18,43 +18,60 @@ const (
 	TradeTypeBuy
 )
 
-type AdditionalLiquidity struct {
-	addLiq  map[string]math.LegacyDec
-	sizeFac map[string]math.LegacyDec
+type CutLiquidity struct {
+	cutLiq  map[string]math.LegacyDec
+	virtual map[string]math.LegacyDec
 }
 
-func (al *AdditionalLiquidity) Set(denom string, value math.LegacyDec) {
-	if al.addLiq == nil {
-		al.addLiq = make(map[string]math.LegacyDec)
+func (cl *CutLiquidity) UpdateBase(tradeType TradeType, amountGiven, amountReceived math.Int) {
+	amountBase := cl.Get(constants.BaseCurrency)
+	if tradeType == TradeTypeSell {
+		amountBase = amountBase.Sub(amountReceived.ToLegacyDec())
+	} else {
+		amountBase = amountBase.Add(amountGiven.ToLegacyDec())
 	}
 
-	al.addLiq[denom] = value
+	cl.Set(constants.BaseCurrency, amountBase)
 }
 
-func (al *AdditionalLiquidity) Add(denom string, value math.LegacyDec) math.LegacyDec {
-	addLiq, has := al.addLiq[denom]
-	if has {
-		value = value.Add(addLiq)
+func (cl *CutLiquidity) Set(denom string, cut math.LegacyDec) {
+	if cl.cutLiq == nil {
+		cl.cutLiq = make(map[string]math.LegacyDec)
+		cl.virtual = make(map[string]math.LegacyDec)
 	}
 
-	return value
+	cl.cutLiq[denom] = cut
 }
 
-func (al *AdditionalLiquidity) SetSizeFactor(denom string, value math.LegacyDec) {
-	if al.sizeFac == nil {
-		al.sizeFac = make(map[string]math.LegacyDec)
+func (cl *CutLiquidity) SetVirtual(denom string, virtual math.LegacyDec) {
+	if cl.cutLiq == nil {
+		cl.cutLiq = make(map[string]math.LegacyDec)
+		cl.virtual = make(map[string]math.LegacyDec)
 	}
 
-	al.sizeFac[denom] = value
+	cl.virtual[denom] = virtual
 }
 
-func (al *AdditionalLiquidity) GetSizeFactor(denom string) math.LegacyDec {
-	sizeFactor, has := al.sizeFac[denom]
+func (cl *CutLiquidity) Get(denom string) math.LegacyDec {
+	cutLiq, has := cl.cutLiq[denom]
 	if !has {
-		return math.LegacyOneDec()
+		return math.LegacyZeroDec()
 	}
 
-	return sizeFactor
+	return cutLiq
+}
+
+func (cl *CutLiquidity) GetVirtual(denom string) math.LegacyDec {
+	virtual, has := cl.virtual[denom]
+	if !has {
+		return math.LegacyZeroDec()
+	}
+
+	return virtual
+}
+
+func (cl *CutLiquidity) GetFull(denom string) math.LegacyDec {
+	return cl.Get(denom).Add(cl.GetVirtual(denom))
 }
 
 type TradeContext struct {
@@ -66,7 +83,7 @@ type TradeContext struct {
 	MaxPrice               *math.LegacyDec
 	MinimumTradeAmount     *math.Int
 	MaximumAvailableAmount math.Int
-	AdditionalLiquidity    AdditionalLiquidity
+	CutLiquidity           CutLiquidity
 
 	TradeDenomGiving    string
 	TradeDenomReceiving string
