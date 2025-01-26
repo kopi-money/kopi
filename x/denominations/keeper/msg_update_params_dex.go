@@ -117,35 +117,9 @@ func (k msgServer) DexUpdateMinimumOrderSize(ctx context.Context, req *types.Msg
 }
 
 func (k Keeper) createDexDenom(ctx context.Context, name, factorStr, minLiquidityStr, minOrderSizeStr string, exponent uint64) (types.DexDenom, types.Ratio, error) {
-	referenceFactor, referenceDenom, err := types.ExtractNumberAndString(factorStr)
+	ratioFactor, err := k.CreateRatio(ctx, factorStr, exponent)
 	if err != nil {
 		return types.DexDenom{}, types.Ratio{}, err
-	}
-
-	if !referenceFactor.IsPositive() {
-		return types.DexDenom{}, types.Ratio{}, types.ErrInvalidFactor
-	}
-
-	if referenceDenom != constants.BaseCurrency && referenceDenom != "" {
-		var otherRatio types.Ratio
-		otherRatio, err = k.GetRatio(ctx, referenceDenom)
-		if err != nil {
-			return types.DexDenom{}, types.Ratio{}, fmt.Errorf("unable to find ratio for %s: %w", referenceDenom, err)
-		}
-
-		referenceFactor = otherRatio.Ratio.Quo(referenceFactor) // C
-	} else {
-		referenceDenom = constants.BaseCurrency
-	}
-
-	otherDenom, has := k.GetDexDenom(ctx, referenceDenom)
-	if !has {
-		return types.DexDenom{}, types.Ratio{}, fmt.Errorf("unable to find other denom: %v", referenceDenom)
-	}
-
-	referenceFactor = adjustForExponent(referenceFactor, otherDenom.Exponent, exponent)
-	if !referenceFactor.IsPositive() {
-		return types.DexDenom{}, types.Ratio{}, types.ErrInvalidFactor
 	}
 
 	minLiquidity, _ := math.NewIntFromString(minLiquidityStr)
@@ -160,10 +134,45 @@ func (k Keeper) createDexDenom(ctx context.Context, name, factorStr, minLiquidit
 
 	ratio := types.Ratio{
 		Denom: name,
-		Ratio: referenceFactor,
+		Ratio: ratioFactor,
 	}
 
 	return dexDenom, ratio, nil
+}
+
+func (k Keeper) CreateRatio(ctx context.Context, factorStr string, exponent uint64) (math.LegacyDec, error) {
+	referenceFactor, referenceDenom, err := types.ExtractNumberAndString(factorStr)
+	if err != nil {
+		return math.LegacyDec{}, err
+	}
+
+	if !referenceFactor.IsPositive() {
+		return math.LegacyDec{}, types.ErrInvalidFactor
+	}
+
+	if referenceDenom != constants.BaseCurrency && referenceDenom != "" {
+		var otherRatio types.Ratio
+		otherRatio, err = k.GetRatio(ctx, referenceDenom)
+		if err != nil {
+			return math.LegacyDec{}, fmt.Errorf("unable to find ratio for %s: %w", referenceDenom, err)
+		}
+
+		referenceFactor = otherRatio.Ratio.Quo(referenceFactor) // C
+	} else {
+		referenceDenom = constants.BaseCurrency
+	}
+
+	otherDenom, has := k.GetDexDenom(ctx, referenceDenom)
+	if !has {
+		return math.LegacyDec{}, fmt.Errorf("unable to find other denom: %v", referenceDenom)
+	}
+
+	referenceFactor = adjustForExponent(referenceFactor, otherDenom.Exponent, exponent)
+	if !referenceFactor.IsPositive() {
+		return math.LegacyDec{}, types.ErrInvalidFactor
+	}
+
+	return referenceFactor, nil
 }
 
 func adjustForExponent(value math.LegacyDec, exp1, exp2 uint64) math.LegacyDec {

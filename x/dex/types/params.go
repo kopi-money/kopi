@@ -54,7 +54,7 @@ func (p Params) Validate() error {
 		return fmt.Errorf("invalid order fee: %w", err)
 	}
 
-	if err := validateZeroOne(p.VirtualLiquidityDecay); err != nil {
+	if err := validateVirtualLiquidityDecay(p.VirtualLiquidityDecay); err != nil {
 		return fmt.Errorf("invalid virtual liquidity decay: %w", err)
 	}
 
@@ -111,6 +111,27 @@ func validateLessThanOne(d any) error {
 
 	if v.IsNegative() {
 		return fmt.Errorf("fee must be bigger than 0")
+	}
+
+	return nil
+}
+
+func validateVirtualLiquidityDecay(d any) error {
+	v, ok := d.(math.LegacyDec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", d)
+	}
+
+	if v.IsNil() {
+		return fmt.Errorf("value is nil")
+	}
+
+	if v.GT(math.LegacyOneDec()) {
+		return fmt.Errorf("must not be larger than 1")
+	}
+
+	if !v.IsPositive() {
+		return fmt.Errorf("must be bigger than 0")
 	}
 
 	return nil
