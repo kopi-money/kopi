@@ -35,6 +35,7 @@ const (
 	Msg_UpdateMaxOrderLife_FullMethodName          = "/kopi.dex.Msg/UpdateMaxOrderLife"
 	Msg_UpdateTradeAmountDecay_FullMethodName      = "/kopi.dex.Msg/UpdateTradeAmountDecay"
 	Msg_UpdateDiscountLevels_FullMethodName        = "/kopi.dex.Msg/UpdateDiscountLevels"
+	Msg_UpdateTradeBaseValue_FullMethodName        = "/kopi.dex.Msg/UpdateTradeBaseValue"
 	Msg_RemoveDexDenom_FullMethodName              = "/kopi.dex.Msg/RemoveDexDenom"
 )
 
@@ -59,6 +60,7 @@ type MsgClient interface {
 	UpdateMaxOrderLife(ctx context.Context, in *MsgUpdateMaxOrderLife, opts ...grpc.CallOption) (*Void, error)
 	UpdateTradeAmountDecay(ctx context.Context, in *MsgUpdateTradeAmountDecay, opts ...grpc.CallOption) (*Void, error)
 	UpdateDiscountLevels(ctx context.Context, in *MsgUpdateDiscountLevels, opts ...grpc.CallOption) (*Void, error)
+	UpdateTradeBaseValue(ctx context.Context, in *MsgUpdateTradeBaseValue, opts ...grpc.CallOption) (*Void, error)
 	RemoveDexDenom(ctx context.Context, in *MsgRemoveDexDenom, opts ...grpc.CallOption) (*Void, error)
 }
 
@@ -214,6 +216,15 @@ func (c *msgClient) UpdateDiscountLevels(ctx context.Context, in *MsgUpdateDisco
 	return out, nil
 }
 
+func (c *msgClient) UpdateTradeBaseValue(ctx context.Context, in *MsgUpdateTradeBaseValue, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateTradeBaseValue_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) RemoveDexDenom(ctx context.Context, in *MsgRemoveDexDenom, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
 	err := c.cc.Invoke(ctx, Msg_RemoveDexDenom_FullMethodName, in, out, opts...)
@@ -244,6 +255,7 @@ type MsgServer interface {
 	UpdateMaxOrderLife(context.Context, *MsgUpdateMaxOrderLife) (*Void, error)
 	UpdateTradeAmountDecay(context.Context, *MsgUpdateTradeAmountDecay) (*Void, error)
 	UpdateDiscountLevels(context.Context, *MsgUpdateDiscountLevels) (*Void, error)
+	UpdateTradeBaseValue(context.Context, *MsgUpdateTradeBaseValue) (*Void, error)
 	RemoveDexDenom(context.Context, *MsgRemoveDexDenom) (*Void, error)
 	mustEmbedUnimplementedMsgServer()
 }
@@ -299,6 +311,9 @@ func (UnimplementedMsgServer) UpdateTradeAmountDecay(context.Context, *MsgUpdate
 }
 func (UnimplementedMsgServer) UpdateDiscountLevels(context.Context, *MsgUpdateDiscountLevels) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateDiscountLevels not implemented")
+}
+func (UnimplementedMsgServer) UpdateTradeBaseValue(context.Context, *MsgUpdateTradeBaseValue) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateTradeBaseValue not implemented")
 }
 func (UnimplementedMsgServer) RemoveDexDenom(context.Context, *MsgRemoveDexDenom) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveDexDenom not implemented")
@@ -604,6 +619,24 @@ func _Msg_UpdateDiscountLevels_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateTradeBaseValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateTradeBaseValue)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateTradeBaseValue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateTradeBaseValue_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateTradeBaseValue(ctx, req.(*MsgUpdateTradeBaseValue))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_RemoveDexDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgRemoveDexDenom)
 	if err := dec(in); err != nil {
@@ -692,6 +725,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateDiscountLevels",
 			Handler:    _Msg_UpdateDiscountLevels_Handler,
+		},
+		{
+			MethodName: "UpdateTradeBaseValue",
+			Handler:    _Msg_UpdateTradeBaseValue_Handler,
 		},
 		{
 			MethodName: "RemoveDexDenom",

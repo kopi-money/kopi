@@ -40,4 +40,9 @@ message Params {
   repeated DiscountLevel discount_levels = 6;
 
   uint64 max_order_life = 7;
+
+  bytes trade_base_value = 8 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
 }
