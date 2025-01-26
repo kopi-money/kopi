@@ -21,9 +21,13 @@ import (
 func TestBurn1(t *testing.T) {
 	k, msg, dexK, reserveK, ctx := keepertest.SetupSwapMsgServer(t)
 
-	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.BaseCurrency, 1_000_000_000)
-	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.KUSD, 100000)
-	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, "uwusdc", 100000)
+	keepertest.AddFunds(ctx, t, dexK.BankKeeper, constants.BaseCurrency, keepertest.Alice, 4_000000_000000)
+	keepertest.AddFunds(ctx, t, dexK.BankKeeper, constants.KUSD, keepertest.Alice, 1_000000_000000)
+	keepertest.AddFunds(ctx, t, dexK.BankKeeper, "uwusdc", keepertest.Alice, 1_000000_000000)
+
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.BaseCurrency, 4_000000_000000)
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.KUSD, 1_000000_000000)
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, "uwusdc", 1_000000_000000)
 	addReserveFundsToDex(ctx, k.AccountKeeper, k.DexKeeper, k.BankKeeper, t, "uwusdc", 10)
 
 	addr, _ := sdk.AccAddressFromBech32(keepertest.Alice)
@@ -39,7 +43,7 @@ func TestBurn1(t *testing.T) {
 		Creator:        keepertest.Bob,
 		DenomGiving:    constants.KUSD,
 		DenomReceiving: "uwusdc",
-		Amount:         "100000",
+		Amount:         "1_00000_000000",
 	})
 	require.NoError(t, err)
 
@@ -73,9 +77,13 @@ func TestBurn1(t *testing.T) {
 func TestBurn2(t *testing.T) {
 	k, msg, dexK, _, ctx := keepertest.SetupSwapMsgServer(t)
 
-	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.BaseCurrency, 100000)
-	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.KUSD, 100000)
-	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, "uwusdc", 100000)
+	keepertest.AddFunds(ctx, t, dexK.BankKeeper, constants.BaseCurrency, keepertest.Alice, 4_000000_000000)
+	keepertest.AddFunds(ctx, t, dexK.BankKeeper, constants.KUSD, keepertest.Alice, 1_000000_000000)
+	keepertest.AddFunds(ctx, t, dexK.BankKeeper, "uwusdc", keepertest.Alice, 1_000000_000000)
+
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.BaseCurrency, 4_000000_000000)
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.KUSD, 1_000000_000000)
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, "uwusdc", 1_000000_000000)
 
 	addr, _ := sdk.AccAddressFromBech32(keepertest.Alice)
 	reserveCoins := sdk.NewCoins(sdk.NewCoin("uwusdc", math.NewInt(10)))
@@ -89,7 +97,7 @@ func TestBurn2(t *testing.T) {
 		Creator:        keepertest.Bob,
 		DenomGiving:    constants.KUSD,
 		DenomReceiving: "uwusdc",
-		Amount:         "10000",
+		Amount:         "1_000_000000",
 	})
 	require.NoError(t, err)
 
@@ -100,6 +108,11 @@ func TestBurn2(t *testing.T) {
 	priceBase, err := k.DexKeeper.CalculatePrice(ctx, constants.BaseCurrency, "uwusdc")
 	require.NoError(t, err)
 	require.False(t, priceBase.IsNil())
+
+	parity, _, err := k.DexKeeper.CalculateParity(ctx, constants.KUSD)
+	require.NoError(t, err)
+	require.False(t, parity.IsNil())
+	require.True(t, parity.LT(math.LegacyOneDec()))
 
 	for i := 0; i < 10; i++ {
 		require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
@@ -136,10 +149,10 @@ func addReserveFundsToDex(ctx context.Context, acc swaptypes.AccountKeeper, dex 
 }
 
 func TestBurn3(t *testing.T) {
-	supply1 := burnScenario(t, 1_000)
-	supply2 := burnScenario(t, 10_000)
+	supply1 := burnScenario(t, 1_000_000000)
+	supply2 := burnScenario(t, 10_000_000000)
 
-	require.Less(t, supply1, supply2)
+	require.Equal(t, supply1, supply2)
 }
 
 func burnScenario(t *testing.T, sellAmount int64) int64 {

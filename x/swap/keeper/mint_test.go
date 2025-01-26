@@ -30,7 +30,7 @@ func TestMint1(t *testing.T) {
 		Context:             ctx,
 		CoinSource:          addr.String(),
 		CoinTarget:          addr.String(),
-		TradeAmount:         math.NewInt(5000),
+		TradeAmount:         math.NewInt(5_000_000),
 		TradeDenomGiving:    "uwusdc",
 		TradeDenomReceiving: constants.KUSD,
 		TradeBalances:       dexkeeper.NewTradeBalances(),
@@ -64,10 +64,10 @@ func TestMint1(t *testing.T) {
 }
 
 func TestMint2(t *testing.T) {
-	supply1 := mintScenario(t, 5000)
-	supply2 := mintScenario(t, 10000)
+	supply1 := mintScenario(t, 5000_000000)
+	supply2 := mintScenario(t, 10000_000000)
 
-	require.Less(t, supply1, supply2)
+	require.Equal(t, supply1, supply2)
 }
 
 func mintScenario(t *testing.T, buyAmount int64) int64 {

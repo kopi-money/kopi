@@ -42,7 +42,7 @@ func (k Keeper) CheckMint(ctx context.Context, kCoin string, maxMintAmount math.
 		return nil
 	}
 
-	if parity.LT(k.mintThreshold(ctx)) {
+	if parity.LTE(k.mintThreshold(ctx)) {
 		return nil
 	}
 
@@ -55,13 +55,7 @@ func (k Keeper) CheckMint(ctx context.Context, kCoin string, maxMintAmount math.
 		return fmt.Errorf("ratio (%v) is not positive", referenceDenom)
 	}
 
-	mintAmount, err := k.calcKCoinMintAmount(ctx, referenceRatio.Ratio, kCoin)
-	if err != nil {
-		return fmt.Errorf("calculating mint amount: %w", err)
-	}
-
-	mintAmount = math.MinInt(mintAmount, maxMintAmount)
-	mintAmount = k.adjustForSupplyCap(ctx, kCoin, mintAmount)
+	mintAmount := k.adjustForSupplyCap(ctx, kCoin, maxMintAmount)
 	if mintAmount.LTE(math.OneInt()) {
 		return nil
 	}
@@ -86,6 +80,8 @@ func (k Keeper) CheckMint(ctx context.Context, kCoin string, maxMintAmount math.
 	}
 
 	if _, err = k.DexKeeper.ExecuteSell(tradeCtx); err != nil {
+		k.Logger().Info(err.Error())
+
 		if errors.Is(err, dextypes.ErrTradeAmountTooSmall) {
 			return nil
 		}
@@ -115,21 +111,6 @@ func (k Keeper) adjustForSupplyCap(ctx context.Context, kCoin string, amountToAd
 	amountToAdd = math.MinInt(maximumAddableAmount, amountToAdd)
 
 	return amountToAdd
-}
-
-func (k Keeper) calcKCoinMintAmount(ctx context.Context, referenceRatio math.LegacyDec, kCoin string) (math.Int, error) {
-	referenceRatio = math.LegacyOneDec().Quo(referenceRatio) // C
-	liqBase := k.DexKeeper.GetFullLiquidityBase(ctx, kCoin)
-	liqKCoin := k.DexKeeper.GetFullLiquidityOther(ctx, kCoin)
-	constantProductRoot, _ := liqBase.Mul(liqKCoin).Quo(referenceRatio).ApproxSqrt() // C
-	mintAmount := constantProductRoot.Sub(liqKCoin)
-
-	blocksPerSecond, err := k.BlockspeedKeeper.GetBlocksPerSecond(ctx)
-	if err != nil {
-		return math.Int{}, err
-	}
-
-	return mintAmount.Mul(blocksPerSecond).TruncateInt(), nil
 }
 
 func (k Keeper) getUsableAmount(ctx context.Context, denom, module string) math.Int {

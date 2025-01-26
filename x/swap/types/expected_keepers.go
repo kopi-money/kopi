@@ -49,7 +49,6 @@ type DexKeeper interface {
 	GetLiquiditySum(ctx context.Context, denom string) math.Int
 	GetValueInBase(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
 	RemoveLiquidityForAddress(ctx context.Context, accAddress sdk.AccAddress, denom string, amount math.Int) error
-	SimulateTradeForReserve(ctx dextypes.TradeContext) (dextypes.TradeSimulationResult, error)
 }
 
 type DenomKeeper interface {
