@@ -25,7 +25,7 @@ func TestSimulateTrade1(t *testing.T) {
 		Amount:         "2_500_000000",
 	})
 
-	require.Error(t, err)
+	require.NoError(t, err)
 
 	_, err = k.QuerySimulateBuy(ctx, &types.QuerySimulateTradeRequest{
 		DenomGiving:    constants.BaseCurrency,
@@ -40,10 +40,10 @@ func TestSimulateTrade1(t *testing.T) {
 		DenomGiving:    constants.BaseCurrency,
 		DenomReceiving: constants.KUSD,
 		Address:        keepertest.Alice,
-		Amount:         "10000000000",
+		Amount:         "10_000_000000",
 	})
 
-	require.Error(t, err)
+	require.NoError(t, err)
 
 	_, err = k.QuerySimulateBuy(ctx, &types.QuerySimulateTradeRequest{
 		DenomGiving:    constants.BaseCurrency,
@@ -52,7 +52,7 @@ func TestSimulateTrade1(t *testing.T) {
 		Amount:         "10000000001",
 	})
 
-	require.Error(t, err)
+	require.NoError(t, err)
 }
 
 func TestSimulateTrade2(t *testing.T) {

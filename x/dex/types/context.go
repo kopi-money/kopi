@@ -19,8 +19,9 @@ const (
 )
 
 type CutLiquidity struct {
-	cutLiq  map[string]math.LegacyDec
-	virtual map[string]math.LegacyDec
+	cutLiq    map[string]math.LegacyDec
+	virtual   map[string]math.LegacyDec
+	BaseValue math.LegacyDec
 }
 
 func (cl *CutLiquidity) UpdateBase(tradeType TradeType, amountGiven, amountReceived math.Int) {

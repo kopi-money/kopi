@@ -23,6 +23,7 @@ var (
 			Discount:    math.LegacyNewDecWithPrec(1, 1),
 		},
 	}
+	TradeBaseValue = math.LegacyNewDec(1_000000_000000) // 1mio
 )
 
 // DefaultParams returns a default set of parameters
@@ -35,6 +36,7 @@ func DefaultParams() Params {
 		MaxOrderLife:          uint64(MaxOrderLife),
 		TradeAmountDecay:      TradeAmountDecay,
 		DiscountLevels:        DiscountLevels,
+		TradeBaseValue:        TradeBaseValue,
 	}
 }
 
@@ -66,6 +68,14 @@ func (p Params) Validate() error {
 
 	if err := validateBetweenZeroAndOne(p.TradeAmountDecay); err != nil {
 		return fmt.Errorf("invalid trade amount decay: %w", err)
+	}
+
+	if p.TradeBaseValue.IsNil() {
+		p.TradeBaseValue = TradeBaseValue
+	}
+
+	if err := validateDexBiggerThanZero(p.TradeBaseValue); err != nil {
+		return fmt.Errorf("invalid trade base value: %w", err)
 	}
 
 	return nil
@@ -134,6 +144,19 @@ func validateBiggerThanZero(d any) error {
 	}
 
 	if v < 1 {
+		return fmt.Errorf("value is smaller than 1")
+	}
+
+	return nil
+}
+
+func validateDexBiggerThanZero(d any) error {
+	v, ok := d.(math.LegacyDec)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", d)
+	}
+
+	if !v.IsPositive() {
 		return fmt.Errorf("value is smaller than 1")
 	}
 

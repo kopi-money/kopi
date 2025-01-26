@@ -95,6 +95,8 @@ func (k Keeper) ExecuteBuy(ctx types.TradeContext) (types.TradeResult, error) {
 }
 
 func (k Keeper) executeTrade(ctx *types.TradeContext) (types.TradeResults, error) {
+	// return types.TradeResults{}, types.ErrTradeAmountTooSmall
+
 	if err := k.validateTradeOptions(ctx); err != nil {
 		return types.TradeResults{}, fmt.Errorf("error in trade options: %w", err)
 	}
@@ -117,7 +119,9 @@ func (k Keeper) executeTrade(ctx *types.TradeContext) (types.TradeResults, error
 
 	// When the trade is touching three denoms, maxLiqBase holds the maximum amount of liquidity of those three denoms
 	// expressed in the base denom
-	k.PrepareCutLiquidity(ctx)
+	if err := k.PrepareCutLiquidity(ctx); err != nil {
+		return types.TradeResults{}, fmt.Errorf("preparing cutliquidity: %w", err)
+	}
 
 	// When selling:
 	// With the given funds and the liquidity on the DEX, we can calculate how much a user is to receive when trading.
@@ -134,11 +138,7 @@ func (k Keeper) executeTrade(ctx *types.TradeContext) (types.TradeResults, error
 
 	if maximumTradableAmount != nil && maximumTradableAmount.LT(ctx.TradeAmount) {
 		if ctx.MinimumTradeAmount != nil && maximumTradableAmount.LT(*ctx.MinimumTradeAmount) {
-			if ctx.TradeType == types.TradeTypeSell {
-				return types.TradeResults{}, types.ErrNotEnoughLiquidity
-			} else {
-				return types.TradeResults{}, types.ErrNotEnoughFunds
-			}
+			return types.TradeResults{}, types.ErrNotEnoughLiquidity
 		}
 
 		ctx.TradeAmount = *maximumTradableAmount
@@ -282,7 +282,6 @@ func (k Keeper) ExecuteTradeStep(ctx types.TradeStepContext) (math.Int, math.Int
 	poolFrom1 := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.StepDenomGiving)
 	poolTo1 := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.StepDenomReceiving)
 	fullFrom, fullTo := GetTradeLiquidities(ctx.StepDenomGiving, ctx.StepDenomReceiving, ctx.CutLiquidity)
-	poolLiquidity := ctx.OrdersCaches.LiquidityPool.Get().Coins()
 
 	amountToGiveGross, feeGiving, amountToReceiveGross, feeReceiving, err := k.calculateTradeAmounts(ctx, fullFrom, fullTo, ctx.TradeAmount.ToLegacyDec(), ctx.StepFee())
 	if err != nil {
@@ -347,12 +346,12 @@ func (k Keeper) ExecuteTradeStep(ctx types.TradeStepContext) (math.Int, math.Int
 	changeTo := poolTo2.Sub(poolTo1)
 
 	ctx.CutLiquidity.UpdateBase(ctx.TradeType, amountToGiveGross, amountToReceiveGross)
-	k.updateRatios(ctx, poolLiquidity, changeFrom, changeTo)
+	k.updateRatios(ctx, ctx.CutLiquidity.BaseValue, changeFrom, changeTo)
 
 	return amountToGiveGross, payoutAmount, feePaid, nil
 }
 
-func (k Keeper) updateRatios(ctx types.TradeStepContext, poolLiquidity sdk.Coins, changeFrom, changeTo math.Int) {
+func (k Keeper) updateRatios(ctx types.TradeStepContext, tradeValueBase math.LegacyDec, changeFrom, changeTo math.Int) {
 	var (
 		baseChange  math.Int
 		otherChange math.Int
@@ -371,22 +370,18 @@ func (k Keeper) updateRatios(ctx types.TradeStepContext, poolLiquidity sdk.Coins
 		otherDenom = ctx.StepDenomReceiving
 	}
 
-	k.updateRatiosToBase(ctx, poolLiquidity, otherDenom, baseChange, otherChange)
+	k.updateRatiosToBase(ctx, tradeValueBase, otherDenom, baseChange, otherChange)
 }
 
-func (k Keeper) updateRatiosToBase(ctx types.TradeStepContext, poolLiquidity sdk.Coins, otherDenom string, baseChange, otherChange math.Int) {
-	amountBase := poolLiquidity.AmountOf(constants.BaseCurrency)
+func (k Keeper) updateRatiosToBase(ctx types.TradeStepContext, tradeValueBase math.LegacyDec, otherDenom string, baseChange, otherChange math.Int) {
+	fullBase := tradeValueBase.Add(baseChange.ToLegacyDec())
 
 	for _, ratio := range k.DenomKeeper.GetAllRatios(ctx) {
 		if ctx.HasTwoSteps() && (ratio.Denom != ctx.TradeDenomGiving || ratio.Denom == ctx.TradeDenomReceiving) {
 			continue
 		}
 
-		amountOther := poolLiquidity.AmountOf(ratio.Denom)
-		pair := k.CreateLiquidityPairWithLiquidity(ratio, amountBase, amountOther)
-		fullBase := pair.VirtualBase.Add(amountBase.ToLegacyDec()).Add(baseChange.ToLegacyDec())
-		fullOther := pair.VirtualOther.Add(amountOther.ToLegacyDec())
-
+		fullOther := tradeValueBase.Mul(ratio.Ratio)
 		if ratio.Denom == otherDenom {
 			fullOther = fullOther.Add(otherChange.ToLegacyDec())
 		}
@@ -646,7 +641,9 @@ func (k Keeper) SimulateWithFee(ctx types.TradeContext, fee math.LegacyDec, cpTr
 	}
 
 	ctx.OrdersCaches = k.NewOrdersCaches(ctx)
-	k.PrepareCutLiquidity(&ctx)
+	if err := k.PrepareCutLiquidity(&ctx); err != nil {
+		return types.TradeSimulationResult{}, fmt.Errorf("preparing cutliquidity: %v", err)
+	}
 
 	var (
 		amountIntermediate math.LegacyDec
@@ -762,12 +759,4 @@ func applySellFee(amount, amountFee math.LegacyDec) math.LegacyDec {
 
 func applyBuyFee(amount, amountFee math.LegacyDec) math.LegacyDec {
 	return amount.Add(amountFee)
-}
-
-func getOtherDenom(d1, d2 string) string {
-	if d1 == constants.BaseCurrency {
-		return d2
-	}
-
-	return d1
 }

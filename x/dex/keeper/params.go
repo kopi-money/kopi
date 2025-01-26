@@ -55,3 +55,12 @@ func (k Keeper) getProviderFee(ctx context.Context) math.LegacyDec {
 func (k Keeper) getVirtualLiquidityDecay(ctx context.Context) math.LegacyDec {
 	return k.GetParams(ctx).VirtualLiquidityDecay
 }
+
+func (k Keeper) getTradeBaseValue(ctx context.Context) math.LegacyDec {
+	params := k.GetParams(ctx)
+	if params.TradeBaseValue.IsNil() || params.TradeBaseValue.IsZero() {
+		return types.TradeBaseValue
+	}
+
+	return params.TradeBaseValue
+}

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 	"github.com/kopi-money/kopi/cache"
 
 	"cosmossdk.io/math"
@@ -159,6 +160,30 @@ func (k msgServer) UpdateDiscountLevels(ctx context.Context, req *types.MsgUpdat
 		params.DiscountLevels = req.DiscountLevels
 
 		if err := k.SetParams(innerCtx, params); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return &types.Void{}, err
+}
+
+func (k msgServer) UpdateTradeBaseValue(ctx context.Context, req *types.MsgUpdateTradeBaseValue) (*types.Void, error) {
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
+		if k.GetAuthority() != req.Authority {
+			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+		}
+
+		tradeBaseValue, err := math.LegacyNewDecFromStr(req.TradeBaseValue)
+		if err != nil {
+			return fmt.Errorf("convert from string: %w", err)
+		}
+
+		params := k.GetParams(innerCtx)
+		params.TradeBaseValue = tradeBaseValue
+
+		if err = k.SetParams(innerCtx, params); err != nil {
 			return err
 		}
 

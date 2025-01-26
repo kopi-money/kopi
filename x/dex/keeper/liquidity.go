@@ -232,7 +232,7 @@ func (k Keeper) GetDenomValue(ctx context.Context, denom string) (math.LegacyDec
 	return liq.Mul(price), nil
 }
 
-func (k Keeper) PrepareCutLiquidity(ctx *types.TradeContext) {
+func (k Keeper) PrepareCutLiquidity(ctx *types.TradeContext) error {
 	liqFrom := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomGiving)
 	liqTo := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomReceiving)
 	liqBase := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(constants.BaseCurrency).ToLegacyDec()
@@ -254,37 +254,57 @@ func (k Keeper) PrepareCutLiquidity(ctx *types.TradeContext) {
 		liqValueTo = liqTo.ToLegacyDec().Quo(ratioTo.Ratio) // C
 	}
 
-	minValue := math.LegacyMinDec(liqValueFrom, liqValueTo)
-	minValue = math.LegacyMaxDec(minValue, k.DenomKeeper.MinLiquidity(ctx, constants.BaseCurrency).ToLegacyDec())
+	tradeValue, err := k.CalcTradeBaseValue(ctx)
+	if err != nil {
+		return fmt.Errorf("calc trade value: %w", err)
+	}
 
-	cutLiqBase := math.LegacyMinDec(minValue, liqBase)
+	cutLiqBase := math.LegacyMinDec(tradeValue, liqBase)
 	ctx.CutLiquidity.Set(constants.BaseCurrency, cutLiqBase)
-	if cutLiqBase.LT(minValue) {
-		missing := minValue.Sub(cutLiqBase)
+	if cutLiqBase.LT(tradeValue) {
+		missing := tradeValue.Sub(cutLiqBase)
 		ctx.CutLiquidity.SetVirtual(constants.BaseCurrency, missing)
 	}
 
 	if ctx.TradeDenomGiving != constants.BaseCurrency {
-		cutLiqFrom := minValue.Mul(ratioFrom.Ratio)
+		cutLiqFrom := tradeValue.Mul(ratioFrom.Ratio)
 		cutLiqFrom = math.LegacyMinDec(cutLiqFrom, liqFrom.ToLegacyDec())
 
 		ctx.CutLiquidity.Set(ctx.TradeDenomGiving, cutLiqFrom)
-		if liqValueFrom.LT(minValue) {
-			missing := minValue.Sub(liqValueFrom).Mul(ratioFrom.Ratio)
+		if liqValueFrom.LT(tradeValue) {
+			missing := tradeValue.Sub(liqValueFrom).Mul(ratioFrom.Ratio)
 			ctx.CutLiquidity.SetVirtual(ctx.TradeDenomGiving, missing)
 		}
 	}
 
 	if ctx.TradeDenomReceiving != constants.BaseCurrency {
-		cutLiqTo := minValue.Mul(ratioTo.Ratio)
+		cutLiqTo := tradeValue.Mul(ratioTo.Ratio)
 		cutLiqTo = math.LegacyMinDec(cutLiqTo, liqTo.ToLegacyDec())
 
 		ctx.CutLiquidity.Set(ctx.TradeDenomReceiving, cutLiqTo)
-		if liqValueTo.LT(minValue) {
-			missing := minValue.Sub(liqValueTo).Mul(ratioTo.Ratio)
+		if liqValueTo.LT(tradeValue) {
+			missing := tradeValue.Sub(liqValueTo).Mul(ratioTo.Ratio)
 			ctx.CutLiquidity.SetVirtual(ctx.TradeDenomReceiving, missing)
 		}
 	}
+
+	ctx.CutLiquidity.BaseValue = tradeValue
+	return err
+}
+
+func (k Keeper) CalcTradeBaseValue(ctx context.Context) (math.LegacyDec, error) {
+	tradeBaseValueUSD := k.getTradeBaseValue(ctx)
+	referenceDenom, err := k.GetHighestUSDReference(ctx)
+	if err != nil {
+		return math.LegacyDec{}, fmt.Errorf("highest USD reference: %w", err)
+	}
+
+	tradeValueBase, err := k.GetValueInBase(ctx, referenceDenom, tradeBaseValueUSD)
+	if err != nil {
+		return math.LegacyDec{}, fmt.Errorf("convert to base: %w", err)
+	}
+
+	return tradeValueBase, nil
 }
 
 func (k Keeper) RemoveAllLiquidityForDenom(ctx context.Context, denom string) error {
