@@ -74,7 +74,7 @@ func (k Keeper) handleBorrowerLiquidation(ctx context.Context, collateralDenoms 
 		return fmt.Errorf("could not calculate collateral base value: %w", err)
 	}
 
-	loanBaseValue, err := k.calculateLoanBaseValue(ctx, borrower)
+	loanBaseValue, loanValues, err := k.calculateLoanBaseValue(ctx, borrower)
 	if err != nil {
 		return fmt.Errorf("could not calculate loan base value: %w", err)
 	}
@@ -84,8 +84,7 @@ func (k Keeper) handleBorrowerLiquidation(ctx context.Context, collateralDenoms 
 	}
 
 	discountFactor := math.LegacyOneDec().Sub(k.GetParams(ctx).CollateralDiscount)
-	discountedCollateralValue := collateralBaseValue.Mul(discountFactor)
-	excessAmountBase := loanBaseValue.Sub(discountedCollateralValue)
+	excessAmountBase := loanBaseValue.Mul(discountFactor)
 	loans := k.getUserLoans(ctx, borrower)
 
 	sort.SliceStable(loans, func(i, j int) bool {
@@ -122,7 +121,7 @@ func (k Keeper) handleBorrowerLiquidation(ctx context.Context, collateralDenoms 
 		if err = cache.TransactWithNewMultiStore(ctx, func(innerCtx context.Context) error {
 			tradeBalances := dexkeeper.NewTradeBalances()
 			ordersCaches := k.DexKeeper.NewOrdersCaches(innerCtx)
-			if err = k.liquidateCollateral(innerCtx, tradeBalances, ordersCaches, collateralDenoms, loan.cAsset, loan.Loan, borrower, &excessAmountBase); err != nil {
+			if err = k.liquidateCollateral(innerCtx, tradeBalances, ordersCaches, collateralDenoms, loan.cAsset, loan.Loan, borrower, loanValues[loan.cAsset.BaseDexDenom], &excessAmountBase); err != nil {
 				return fmt.Errorf("liquidate collateral: %w", err)
 			}
 
@@ -149,7 +148,7 @@ func loanUnderMinimumThreshold(cAsset *denomtypes.CAsset, loanValue math.LegacyD
 
 // liquidateCollateral calculates for each collateral denom how much collateral to sell such as to repay the loan and lower
 // excess borrow amount. Sold collateral is sent to the vault.
-func (k Keeper) liquidateCollateral(ctx context.Context, tradeBalances dextypes.TradeBalances, ordersCaches *dextypes.OrdersCaches, collateralDenoms []string, cAsset *denomtypes.CAsset, loan types.Loan, borrower string, excessAmountBase *math.LegacyDec) error {
+func (k Keeper) liquidateCollateral(ctx context.Context, tradeBalances dextypes.TradeBalances, ordersCaches *dextypes.OrdersCaches, collateralDenoms []string, cAsset *denomtypes.CAsset, loan types.Loan, borrower string, loanValue math.LegacyDec, excessAmountBase *math.LegacyDec) error {
 	addr, _ := sdk.AccAddressFromBech32(borrower)
 	repayAmount := math.LegacyZeroDec()
 
@@ -158,7 +157,6 @@ func (k Keeper) liquidateCollateral(ctx context.Context, tradeBalances dextypes.
 		return err
 	}
 
-	loanValue := k.GetLoanValue(ctx, cAsset.BaseDexDenom, borrower)
 	// There might be loans in multiple denoms, but the excess amount for this loan must not be larger than the loan
 	// itself. If the excessAmount is larger than this loan, it means the next loan will be repaid as well.
 	excessAmount = math.LegacyMinDec(excessAmount, loanValue)
@@ -201,7 +199,7 @@ func (k Keeper) liquidateCollateral(ctx context.Context, tradeBalances dextypes.
 			sdk.Attribute{Key: "index", Value: strconv.Itoa(int(loan.Index))},
 			sdk.Attribute{Key: "address", Value: borrower},
 			sdk.Attribute{Key: "denom", Value: cAsset.BaseDexDenom},
-			sdk.Attribute{Key: "repaid", Value: repayAmount.String()},
+			sdk.Attribute{Key: "repaid", Value: repayAmount.TruncateInt().String()},
 		),
 	)
 

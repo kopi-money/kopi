@@ -17,16 +17,19 @@ import (
 func TestLiquidate1(t *testing.T) {
 	k, dexMsg, mmMsg, ctx := keepertest.SetupMMMsgServer(t)
 
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Alice, 100_000_000_000)
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, constants.KUSD, 1_000_000_000))
+
 	require.NoError(t, keepertest.AddDeposit(ctx, mmMsg, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
 		Denom:   constants.KUSD,
-		Amount:  "1000000",
+		Amount:  "100_000000",
 	}))
 
 	require.NoError(t, keepertest.AddCollateral(ctx, mmMsg, &types.MsgAddCollateral{
 		Creator: keepertest.Bob,
 		Denom:   constants.BaseCurrency,
-		Amount:  "100000",
+		Amount:  "100_000000",
 	}))
 
 	availableToBorrow, err := k.CalcAvailableToBorrow(ctx, keepertest.Bob, constants.KUSD)
@@ -42,7 +45,7 @@ func TestLiquidate1(t *testing.T) {
 		Creator:        keepertest.Alice,
 		DenomGiving:    constants.BaseCurrency,
 		DenomReceiving: constants.KUSD,
-		Amount:         "10000000",
+		Amount:         "10_000_000000",
 		MaxPrice:       "",
 	})
 	require.NoError(t, err)
