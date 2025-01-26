@@ -84,7 +84,8 @@ func (k Keeper) handleBorrowerLiquidation(ctx context.Context, collateralDenoms 
 	}
 
 	discountFactor := math.LegacyOneDec().Sub(k.GetParams(ctx).CollateralDiscount)
-	excessAmountBase := loanBaseValue.Mul(discountFactor)
+	discountedCollateralValue := collateralBaseValue.Mul(discountFactor)
+	excessAmountBase := loanBaseValue.Sub(discountedCollateralValue)
 	loans := k.getUserLoans(ctx, borrower)
 
 	sort.SliceStable(loans, func(i, j int) bool {

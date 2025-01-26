@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -208,4 +209,72 @@ func TestLiquidate4(t *testing.T) {
 	require.True(t, collateralUser2.Amount.LT(collateralUser1.Amount))
 
 	require.NoError(t, checkCollateralSum(ctx, k))
+}
+
+func TestLiquidate5(t *testing.T) {
+	k, _, mmMsg, ctx := keepertest.SetupMMMsgServer(t)
+
+	require.NoError(t, keepertest.AddDeposit(ctx, mmMsg, &types.MsgAddDeposit{
+		Creator: keepertest.Alice,
+		Denom:   constants.KUSD,
+		Amount:  "10000000",
+	}))
+
+	require.NoError(t, keepertest.AddCollateral(ctx, mmMsg, &types.MsgAddCollateral{
+		Creator: keepertest.Bob,
+		Denom:   "uwusdc",
+		Amount:  "10_000000",
+	}))
+
+	require.NoError(t, checkCollateralSum(ctx, k))
+
+	require.NoError(t, keepertest.Borrow(ctx, mmMsg, &types.MsgBorrow{
+		Creator: keepertest.Bob,
+		Denom:   constants.KUSD,
+		Amount:  "9_000000",
+	}))
+
+	r, _ := math.LegacyNewDecFromStr("0.26")
+
+	setRatioKeeper, ok := k.DenomKeeper.(keepertest.SetRatioKeeper)
+	require.True(t, ok)
+	keepertest.SetRatio(ctx, setRatioKeeper, "uwusdc", r)
+
+	require.NoError(t, k.HandleLiquidations(ctx))
+
+	value := k.GetLoanValue(ctx, constants.KUSD, keepertest.Bob)
+	require.Equal(t, int64(8500126), value.TruncateInt().Int64())
+}
+
+func TestLiquidate6(t *testing.T) {
+	k, _, mmMsg, ctx := keepertest.SetupMMMsgServer(t)
+
+	require.NoError(t, keepertest.AddDeposit(ctx, mmMsg, &types.MsgAddDeposit{
+		Creator: keepertest.Alice,
+		Denom:   constants.KUSD,
+		Amount:  "10000000",
+	}))
+
+	require.NoError(t, keepertest.AddCollateral(ctx, mmMsg, &types.MsgAddCollateral{
+		Creator: keepertest.Bob,
+		Denom:   constants.KUSD,
+		Amount:  "10_000000",
+	}))
+
+	require.NoError(t, checkCollateralSum(ctx, k))
+
+	require.NoError(t, keepertest.Borrow(ctx, mmMsg, &types.MsgBorrow{
+		Creator: keepertest.Bob,
+		Denom:   constants.KUSD,
+		Amount:  "9_000000",
+	}))
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.ApplyInterest(innerCtx)
+	}))
+
+	require.NoError(t, k.HandleLiquidations(ctx))
+
+	value := k.GetLoanValue(ctx, constants.KUSD, keepertest.Bob)
+	require.Equal(t, int64(8550000), value.TruncateInt().Int64())
 }
