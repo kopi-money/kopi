@@ -93,6 +93,10 @@ func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
 			UpgradeName:          v11.UpgradeName_rc1,
 			CreateUpgradeHandler: v11.CreateUpgradeHandler_rc1,
 		},
+		{
+			UpgradeName:          v11.UpgradeName_rc2,
+			CreateUpgradeHandler: v11.CreateUpgradeHandler_rc2,
+		},
 	}
 
 	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()

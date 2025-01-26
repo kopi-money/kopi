@@ -12,3 +12,9 @@ func CreateUpgradeHandler_rc1(_ *module.Manager, _ module.Configurator) upgradet
 		return vm, nil
 	}
 }
+
+func CreateUpgradeHandler_rc2(_ *module.Manager, _ module.Configurator) upgradetypes.UpgradeHandler {
+	return func(ctx context.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
+		return vm, nil
+	}
+}
