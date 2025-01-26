@@ -95,7 +95,7 @@ func (k Keeper) ExecuteBuy(ctx types.TradeContext) (types.TradeResult, error) {
 }
 
 func (k Keeper) executeTrade(ctx *types.TradeContext) (types.TradeResults, error) {
-	// return types.TradeResults{}, types.ErrTradeAmountTooSmall
+	return types.TradeResults{}, types.ErrTradeAmountTooSmall
 
 	if err := k.validateTradeOptions(ctx); err != nil {
 		return types.TradeResults{}, fmt.Errorf("error in trade options: %w", err)
