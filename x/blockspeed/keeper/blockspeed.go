@@ -48,7 +48,9 @@ func (k Keeper) calcAverageTime(ctx context.Context, averageTime math.LegacyDec,
 
 func (k Keeper) GetSecondsPerBlock(ctx context.Context) math.LegacyDec {
 	blockspeed := k.GetBlockspeed(ctx)
-	return blockspeed.AverageTime.Quo(math.LegacyNewDec(1000)) // C
+	blocksPerSecond := blockspeed.AverageTime.Quo(math.LegacyNewDec(1000)) // C
+	blocksPerSecond = math.LegacyMinDec(blocksPerSecond, math.LegacyNewDec(5))
+	return blocksPerSecond
 }
 
 func (k Keeper) GetBlocksPerSecond(ctx context.Context) (math.LegacyDec, error) {
