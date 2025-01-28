@@ -83,13 +83,13 @@ func CreateUpgradeHandler(_ *module.Manager, _ module.Configurator, denomK denom
 				Ratio: atomRatio,
 			})
 
-			injRatio, _ := denomK.CreateRatio(ctx, "20ukusd", 18)
+			injRatio, _ := denomK.CreateRatio(ctx, "16ukusd", 18)
 			denomK.SetRatio(innerCtx, denomtypes.Ratio{
 				Denom: "ibc/DE63D8AC34B752FB7D4CAA7594145EDE1C9FC256AC6D4043D0F12310EB8FC255", // INJ
 				Ratio: injRatio,
 			})
 
-			lunaRatio, _ := denomK.CreateRatio(ctx, "0.3ukusd", 6)
+			lunaRatio, _ := denomK.CreateRatio(ctx, "0.29ukusd", 6)
 			denomK.SetRatio(innerCtx, denomtypes.Ratio{
 				Denom: "ibc/DA59C009A0B3B95E0549E6BF7B075C8239285989FF457A8EDDBB56F10B2A6986", // LUNA
 				Ratio: lunaRatio,
