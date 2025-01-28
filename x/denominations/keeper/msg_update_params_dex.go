@@ -46,7 +46,7 @@ func (k msgServer) DexUpdateMinimumLiquidity(ctx context.Context, req *types.Msg
 			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		return k.Keeper.DexUpdateMinimumLiquidity(ctx, req.Name, req.MinLiquidity)
+		return k.Keeper.DexUpdateMinimumLiquidity(innerCtx, req.Name, req.MinLiquidity)
 	})
 
 	return &types.MsgUpdateParamsResponse{}, err
