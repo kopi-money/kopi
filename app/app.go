@@ -96,7 +96,7 @@ import (
 
 const (
 	AccountAddressPrefix = "kopi"
-	Name                 = "kopid"
+	Name                 = "kopi"
 )
 
 var (
