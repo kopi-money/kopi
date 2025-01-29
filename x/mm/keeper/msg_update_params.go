@@ -2,6 +2,8 @@ package keeper
 
 import (
 	"context"
+	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/kopi-money/kopi/cache"
 
@@ -123,4 +125,39 @@ func (k msgServer) UpdateInterestRateParameters(ctx context.Context, req *types.
 	})
 
 	return &types.Void{}, err
+}
+
+func (k msgServer) DelistCollateralDenom(ctx context.Context, req *types.MsgDelistCollateralDenom) (*types.Void, error) {
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.Keeper.DelistCollateralDenom(ctx, req.Denom)
+	})
+
+	return &types.Void{}, err
+}
+
+func (k Keeper) DelistCollateralDenom(ctx context.Context, denom string) error {
+	if !k.DenomKeeper.IsValidCollateralDenom(ctx, denom) {
+		return types.ErrInvalidCollateralDenom
+	}
+
+	ltv, err := k.DenomKeeper.GetLTV(ctx, denom)
+	if err != nil {
+		return err
+	}
+
+	if !ltv.IsZero() {
+		return fmt.Errorf("can only delist collateral when ltv is zero")
+	}
+
+	iterator := k.collateral.Iterator(ctx, nil, denom)
+	for iterator.Valid() {
+		collateral := iterator.GetNext()
+
+		address, _ := sdk.AccAddressFromBech32(collateral.Address)
+		if _, err = k.WithdrawCollateral(ctx, address, denom, collateral.Amount); err != nil {
+			return fmt.Errorf("withdraw collateral: %w", err)
+		}
+	}
+
+	return k.DenomKeeper.RemoveCollateralDenom(ctx, denom)
 }

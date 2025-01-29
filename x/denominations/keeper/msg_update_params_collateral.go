@@ -38,38 +38,38 @@ func (k msgServer) CollateralAddDenom(ctx context.Context, req *types.MsgCollate
 
 func (k msgServer) CollateralUpdateLTV(ctx context.Context, req *types.MsgCollateralUpdateLTV) (*types.MsgUpdateParamsResponse, error) {
 	err := cache.Transact(ctx, func(innerCtx context.Context) error {
-		if k.GetAuthority() != req.Authority {
-			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-		}
-
-		params := k.GetParams(innerCtx)
-		ltv, _ := math.LegacyNewDecFromStr(req.Ltv)
-		collateralDenoms := []*types.CollateralDenom{}
-		found := false
-
-		for _, collateralDenom := range params.CollateralDenoms {
-			if collateralDenom.DexDenom == req.Denom {
-				collateralDenom.Ltv = ltv
-				found = true
-			}
-
-			collateralDenoms = append(collateralDenoms, collateralDenom)
-		}
-
-		if !found {
-			return types.ErrInvalidCollateralDenom
-		}
-
-		params.CollateralDenoms = collateralDenoms
-
-		if err := k.SetParams(innerCtx, params); err != nil {
-			return err
-		}
-
-		return nil
+		return k.Keeper.CollateralUpdateLTV(ctx, req.Denom, req.Ltv)
 	})
 
 	return &types.MsgUpdateParamsResponse{}, err
+}
+
+func (k Keeper) CollateralUpdateLTV(ctx context.Context, denom, ltvString string) error {
+	params := k.GetParams(ctx)
+	ltv, err := math.LegacyNewDecFromStr(ltvString)
+	if err != nil {
+		return err
+	}
+
+	collateralDenoms := []*types.CollateralDenom{}
+	found := false
+
+	for _, collateralDenom := range params.CollateralDenoms {
+		if collateralDenom.DexDenom == denom {
+			collateralDenom.Ltv = ltv
+			found = true
+		}
+
+		collateralDenoms = append(collateralDenoms, collateralDenom)
+	}
+
+	if !found {
+		return types.ErrInvalidCollateralDenom
+	}
+
+	params.CollateralDenoms = collateralDenoms
+
+	return k.SetParams(ctx, params)
 }
 
 func (k msgServer) CollateralUpdateDepositLimit(ctx context.Context, req *types.MsgCollateralUpdateDepositLimit) (*types.MsgUpdateParamsResponse, error) {
@@ -107,4 +107,18 @@ func (k msgServer) CollateralUpdateDepositLimit(ctx context.Context, req *types.
 	})
 
 	return &types.MsgUpdateParamsResponse{}, err
+}
+
+func (k Keeper) RemoveCollateralDenom(ctx context.Context, denom string) error {
+	params := k.GetParams(ctx)
+
+	collateralDenoms := []*types.CollateralDenom{}
+	for _, collateralDenom := range params.CollateralDenoms {
+		if collateralDenom.DexDenom != denom {
+			collateralDenoms = append(collateralDenoms, collateralDenom)
+		}
+	}
+
+	params.CollateralDenoms = collateralDenoms
+	return k.SetParams(ctx, params)
 }

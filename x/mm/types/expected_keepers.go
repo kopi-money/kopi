@@ -48,6 +48,7 @@ type DenomKeeper interface {
 	GetDepositCap(context.Context, string) (math.Int, error)
 	GetLTV(ctx context.Context, denom string) (math.LegacyDec, error)
 	IsValidCollateralDenom(context.Context, string) bool
+	RemoveCollateralDenom(ctx context.Context, denom string) error
 }
 type DexKeeper interface {
 	cache.Cache
