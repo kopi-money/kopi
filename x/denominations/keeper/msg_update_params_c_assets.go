@@ -47,11 +47,40 @@ func (k msgServer) CAssetAddDenom(ctx context.Context, req *types.MsgCAssetAddDe
 			k.ratios.Set(innerCtx, req.Name, ratio)
 		}
 
-		if err := k.SetParams(innerCtx, params); err != nil {
-			return err
+		return k.SetParams(innerCtx, params)
+	})
+
+	return &types.MsgUpdateParamsResponse{}, err
+}
+
+func (k msgServer) CAssetUpdateReference(ctx context.Context, req *types.MsgCAssetUpdateReference) (*types.MsgUpdateParamsResponse, error) {
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
+		if k.GetAuthority() != req.Authority {
+			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		return nil
+		params := k.GetParams(innerCtx)
+
+		var (
+			cAssets []*types.CAsset
+			found   bool
+		)
+
+		for _, cAsset := range params.CAssets {
+			if cAsset.DexDenom == req.Name {
+				cAsset.BaseDexDenom = req.NewBaseDenom
+				found = true
+			}
+
+			cAssets = append(cAssets, cAsset)
+		}
+
+		if !found {
+			return types.ErrInvalidCAsset
+		}
+
+		params.CAssets = cAssets
+		return k.SetParams(innerCtx, params)
 	})
 
 	return &types.MsgUpdateParamsResponse{}, err
@@ -64,10 +93,12 @@ func (k msgServer) CAssetUpdateDexFeeShare(ctx context.Context, req *types.MsgCA
 		}
 
 		params := k.GetParams(innerCtx)
-
 		dexFeeShare, _ := math.LegacyNewDecFromStr(req.DexFeeShare)
-		cAssets := []*types.CAsset{}
-		found := false
+
+		var (
+			cAssets []*types.CAsset
+			found   bool
+		)
 
 		for _, cAsset := range params.CAssets {
 			if cAsset.DexDenom == req.Name {
@@ -83,12 +114,7 @@ func (k msgServer) CAssetUpdateDexFeeShare(ctx context.Context, req *types.MsgCA
 		}
 
 		params.CAssets = cAssets
-
-		if err := k.SetParams(innerCtx, params); err != nil {
-			return err
-		}
-
-		return nil
+		return k.SetParams(innerCtx, params)
 	})
 
 	return &types.MsgUpdateParamsResponse{}, err
@@ -101,11 +127,12 @@ func (k msgServer) CAssetUpdateBorrowLimit(ctx context.Context, req *types.MsgCA
 		}
 
 		params := k.GetParams(innerCtx)
-
 		borrowLimit, _ := math.LegacyNewDecFromStr(req.BorrowLimit)
 
-		cAssets := []*types.CAsset{}
-		found := false
+		var (
+			cAssets []*types.CAsset
+			found   bool
+		)
 
 		for _, cAsset := range params.CAssets {
 			if cAsset.DexDenom == req.Name {
@@ -121,12 +148,7 @@ func (k msgServer) CAssetUpdateBorrowLimit(ctx context.Context, req *types.MsgCA
 		}
 
 		params.CAssets = cAssets
-
-		if err := k.SetParams(innerCtx, params); err != nil {
-			return err
-		}
-
-		return nil
+		return k.SetParams(innerCtx, params)
 	})
 
 	return &types.MsgUpdateParamsResponse{}, err
@@ -145,8 +167,10 @@ func (k msgServer) CAssetUpdateMinimumLoanSize(ctx context.Context, req *types.M
 			return types.ErrInvalidAmount
 		}
 
-		cAssets := []*types.CAsset{}
-		found := false
+		var (
+			cAssets []*types.CAsset
+			found   bool
+		)
 
 		for _, cAsset := range params.CAssets {
 			if cAsset.DexDenom == req.Name {
@@ -162,12 +186,7 @@ func (k msgServer) CAssetUpdateMinimumLoanSize(ctx context.Context, req *types.M
 		}
 
 		params.CAssets = cAssets
-
-		if err := k.SetParams(innerCtx, params); err != nil {
-			return err
-		}
-
-		return nil
+		return k.SetParams(innerCtx, params)
 	})
 
 	return &types.MsgUpdateParamsResponse{}, err

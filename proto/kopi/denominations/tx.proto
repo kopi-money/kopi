@@ -29,6 +29,7 @@ service Msg {
   rpc CollateralUpdateDepositLimit(MsgCollateralUpdateDepositLimit) returns (MsgUpdateParamsResponse);
 
   rpc CAssetAddDenom(MsgCAssetAddDenom) returns (MsgUpdateParamsResponse);
+  rpc CAssetUpdateReference(MsgCAssetUpdateReference) returns (MsgUpdateParamsResponse);
   rpc CAssetUpdateDexFeeShare(MsgCAssetUpdateDexFeeShare) returns (MsgUpdateParamsResponse);
   rpc CAssetUpdateBorrowLimit(MsgCAssetUpdateBorrowLimit) returns (MsgUpdateParamsResponse);
   rpc CAssetUpdateMinimumLoanSize(MsgCAssetUpdateMinimumLoanSize) returns (MsgUpdateParamsResponse);
@@ -176,6 +177,15 @@ message MsgCAssetAddDenom {
   string min_order_size = 7;
   string borrow_limit = 8;
   string min_loan_size = 9;
+}
+
+message MsgCAssetUpdateReference {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/denominations/MsgCAssetUpdateReference";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string name = 2;
+  string new_base_denom = 3;
 }
 
 message MsgCAssetUpdateDexFeeShare {
