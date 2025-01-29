@@ -176,7 +176,7 @@ func parseAmount(amountStr string, canBeZero bool) (math.Int, error) {
 		return math.Int{}, types.ErrInvalidAmountFormat
 	}
 
-	if amount.LT(math.ZeroInt()) {
+	if amount.IsNegative() {
 		return math.Int{}, types.ErrNegativeAmount
 	}
 
@@ -198,7 +198,7 @@ func (k Keeper) checkSpendableCoins(ctx context.Context, address sdk.AccAddress,
 
 func (k Keeper) handleRedemptionFee(ctx context.Context, arbitrageDenom *denomtypes.ArbitrageDenom, payoutAmountGross math.Int) (math.Int, error) {
 	if !payoutAmountGross.IsPositive() {
-		return math.ZeroInt(), nil
+		return math.Int{}, types.ErrNonPositiveRedemptionAmount
 	}
 
 	redemptionFee := arbitrageDenom.RedemptionFee.Mul(payoutAmountGross.ToLegacyDec()).TruncateInt()
