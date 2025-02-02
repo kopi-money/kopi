@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	Msg_DexAddDenom_FullMethodName                              = "/kopi.denominations.Msg/DexAddDenom"
+	Msg_DexRemoveDenom_FullMethodName                           = "/kopi.denominations.Msg/DexRemoveDenom"
 	Msg_DexUpdateMinimumLiquidity_FullMethodName                = "/kopi.denominations.Msg/DexUpdateMinimumLiquidity"
 	Msg_DexUpdateMinimumOrderSize_FullMethodName                = "/kopi.denominations.Msg/DexUpdateMinimumOrderSize"
 	Msg_KCoinAddDenom_FullMethodName                            = "/kopi.denominations.Msg/KCoinAddDenom"
@@ -50,6 +51,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MsgClient interface {
 	DexAddDenom(ctx context.Context, in *MsgDexAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	DexRemoveDenom(ctx context.Context, in *MsgDexRemoveDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	DexUpdateMinimumLiquidity(ctx context.Context, in *MsgDexUpdateMinimumLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	DexUpdateMinimumOrderSize(ctx context.Context, in *MsgDexUpdateMinimumOrderSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	KCoinAddDenom(ctx context.Context, in *MsgKCoinAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
@@ -86,6 +88,15 @@ func NewMsgClient(cc grpc.ClientConnInterface) MsgClient {
 func (c *msgClient) DexAddDenom(ctx context.Context, in *MsgDexAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
 	err := c.cc.Invoke(ctx, Msg_DexAddDenom_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) DexRemoveDenom(ctx context.Context, in *MsgDexRemoveDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, Msg_DexRemoveDenom_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -304,6 +315,7 @@ func (c *msgClient) ArbitrageUpdateRedemptionFeeReserveShare(ctx context.Context
 // for forward compatibility
 type MsgServer interface {
 	DexAddDenom(context.Context, *MsgDexAddDenom) (*MsgUpdateParamsResponse, error)
+	DexRemoveDenom(context.Context, *MsgDexRemoveDenom) (*MsgUpdateParamsResponse, error)
 	DexUpdateMinimumLiquidity(context.Context, *MsgDexUpdateMinimumLiquidity) (*MsgUpdateParamsResponse, error)
 	DexUpdateMinimumOrderSize(context.Context, *MsgDexUpdateMinimumOrderSize) (*MsgUpdateParamsResponse, error)
 	KCoinAddDenom(context.Context, *MsgKCoinAddDenom) (*MsgUpdateParamsResponse, error)
@@ -336,6 +348,9 @@ type UnimplementedMsgServer struct {
 
 func (UnimplementedMsgServer) DexAddDenom(context.Context, *MsgDexAddDenom) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DexAddDenom not implemented")
+}
+func (UnimplementedMsgServer) DexRemoveDenom(context.Context, *MsgDexRemoveDenom) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DexRemoveDenom not implemented")
 }
 func (UnimplementedMsgServer) DexUpdateMinimumLiquidity(context.Context, *MsgDexUpdateMinimumLiquidity) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DexUpdateMinimumLiquidity not implemented")
@@ -433,6 +448,24 @@ func _Msg_DexAddDenom_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).DexAddDenom(ctx, req.(*MsgDexAddDenom))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_DexRemoveDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDexRemoveDenom)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DexRemoveDenom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_DexRemoveDenom_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DexRemoveDenom(ctx, req.(*MsgDexRemoveDenom))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -861,6 +894,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DexAddDenom",
 			Handler:    _Msg_DexAddDenom_Handler,
+		},
+		{
+			MethodName: "DexRemoveDenom",
+			Handler:    _Msg_DexRemoveDenom_Handler,
 		},
 		{
 			MethodName: "DexUpdateMinimumLiquidity",

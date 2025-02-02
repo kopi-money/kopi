@@ -40,6 +40,32 @@ func (k msgServer) DexAddDenom(ctx context.Context, req *types.MsgDexAddDenom) (
 	return &types.MsgUpdateParamsResponse{}, err
 }
 
+func (k msgServer) DexRemoveDenom(ctx context.Context, req *types.MsgDexRemoveDenom) (*types.MsgUpdateParamsResponse, error) {
+	err := cache.Transact(ctx, func(innerCtx context.Context) error {
+		if k.GetAuthority() != req.Authority {
+			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+		}
+
+		if k.IsCollateralDenom(ctx, req.Name) {
+			return fmt.Errorf("cannot remove collateral denom")
+		}
+
+		params := k.GetParams(innerCtx)
+
+		dexDenoms := []types.DexDenom{}
+		for _, dexDenom := range params.DexDenoms {
+			if dexDenom.Name == req.Name {
+				dexDenoms = append(dexDenoms, dexDenom)
+			}
+		}
+
+		params.DexDenoms = dexDenoms
+		return k.SetParams(innerCtx, params)
+	})
+
+	return &types.MsgUpdateParamsResponse{}, err
+}
+
 func (k msgServer) DexUpdateMinimumLiquidity(ctx context.Context, req *types.MsgDexUpdateMinimumLiquidity) (*types.MsgUpdateParamsResponse, error) {
 	err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		if k.GetAuthority() != req.Authority {
