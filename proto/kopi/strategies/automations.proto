@@ -70,8 +70,12 @@ message Automation {
   int64 validity_type = 17;
   int64 validity_value = 18;
 
-  repeated Condition conditions = 19;
-  repeated Action actions = 20;
+  repeated Condition conditions = 19 [
+    (gogoproto.nullable) = false
+  ];
+  repeated Action actions = 20 [
+    (gogoproto.nullable) = false
+  ];
 
   bytes inactive_reason = 21 [
     (gogoproto.customtype) = "InactiveReason",

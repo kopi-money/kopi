@@ -18,6 +18,35 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestOrderChange1(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 2_000000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 2_000000))
+
+	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
+		Creator:        keepertest.Bob,
+		DenomGiving:    constants.KUSD,
+		DenomReceiving: constants.BaseCurrency,
+		Amount:         "1",
+		MaxPrice:       "1",
+	}))
+
+	order, _ := k.GetOrder(ctx, 1)
+	amountLocked1 := order.AmountLocked
+
+	require.Error(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		order, _ = k.GetOrder(innerCtx, 1)
+		order.AmountLocked = math.NewInt(100)
+		return fmt.Errorf("")
+	}))
+
+	order, _ = k.GetOrder(ctx, 1)
+	amountLocked2 := order.AmountLocked
+
+	require.Equal(t, amountLocked1.Int64(), amountLocked2.Int64())
+}
+
 func TestOrders1(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 

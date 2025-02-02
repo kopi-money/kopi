@@ -36,7 +36,9 @@ message Loans {
     (gogoproto.nullable) = false
   ];
 
-  repeated GenesisLoan loans = 4;
+  repeated GenesisLoan loans = 4 [
+    (gogoproto.nullable) = false
+  ];
 }
 
 // Used in production, loans are stored seperately with a different key

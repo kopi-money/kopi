@@ -13,7 +13,7 @@ var (
 	VirtualLiquidityDecay = math.LegacyNewDecWithPrec(999997, 6) // 0.999997
 	TradeAmountDecay      = math.LegacyNewDecWithPrec(95, 2)     // 0.95
 	MaxOrderLife          = 60 * 60 * 24 * 7
-	DiscountLevels        = []*DiscountLevel{
+	DiscountLevels        = []DiscountLevel{
 		{
 			TradeAmount: math.LegacyNewDec(1_000_000),
 			Discount:    math.LegacyNewDecWithPrec(1, 2),

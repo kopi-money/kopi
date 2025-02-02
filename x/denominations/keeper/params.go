@@ -6,7 +6,6 @@ import (
 	"github.com/kopi-money/kopi/x/denominations/types"
 )
 
-// GetParams get all parameters as types.Params
 func (k Keeper) GetParams(ctx context.Context) types.Params {
 	params, _ := k.params.Get(ctx)
 	return params

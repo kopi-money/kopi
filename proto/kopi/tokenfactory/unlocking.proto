@@ -14,7 +14,7 @@ message LiquidityUnlocking {
 
   google.protobuf.Timestamp created_at = 5 [
     (gogoproto.stdtime) = true,
-    (gogoproto.nullable) = true,
+    (gogoproto.nullable) = false,
     (gogoproto.moretags) = "yaml:\"created_at\""
   ];
 

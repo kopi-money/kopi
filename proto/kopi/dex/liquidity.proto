@@ -7,7 +7,9 @@ option go_package = "github.com/kopi-money/kopi/x/dex/types";
 
 message DenomLiquidity {
   string denom = 1;
-  repeated Liquidity entries = 2;
+  repeated Liquidity entries = 2 [
+    (gogoproto.nullable) = false
+  ];
 }
 
 

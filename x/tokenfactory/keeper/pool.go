@@ -32,12 +32,12 @@ func (k Keeper) GetGenesisLiquidityPools(ctx context.Context) (pools []types.Gen
 	return
 }
 
-func (k Keeper) getGenesisLiquidityShares(ctx context.Context, factoryDenom string) (list []*types.GenesisProviderShare) {
+func (k Keeper) getGenesisLiquidityShares(ctx context.Context, factoryDenom string) (list []types.GenesisProviderShare) {
 	iterator := k.LiquidityShareIterator(ctx, factoryDenom)
 	for iterator.Valid() {
 		keyValue := iterator.GetNextKeyValue()
 
-		list = append(list, &types.GenesisProviderShare{
+		list = append(list, types.GenesisProviderShare{
 			Address: keyValue.Key(),
 			Share:   keyValue.Value().Value().Share,
 		})
@@ -62,7 +62,7 @@ func (k Keeper) SetGenesisLiquidityPool(ctx context.Context, pool types.GenesisL
 	}
 
 	for _, unlocking := range pool.Unlockings {
-		k.liquidityUnlockings.Set(ctx, unlocking.Index, *unlocking)
+		k.liquidityUnlockings.Set(ctx, unlocking.Index, unlocking)
 	}
 }
 

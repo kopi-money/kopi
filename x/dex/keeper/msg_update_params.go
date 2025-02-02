@@ -157,7 +157,13 @@ func (k msgServer) UpdateDiscountLevels(ctx context.Context, req *types.MsgUpdat
 		}
 
 		params := k.GetParams(innerCtx)
-		params.DiscountLevels = req.DiscountLevels
+
+		params.DiscountLevels = []types.DiscountLevel{}
+		for _, discountLevel := range req.DiscountLevels {
+			if discountLevel != nil {
+				params.DiscountLevels = append(params.DiscountLevels, *discountLevel)
+			}
+		}
 
 		if err := k.SetParams(innerCtx, params); err != nil {
 			return err

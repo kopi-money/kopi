@@ -45,7 +45,7 @@ func (k Keeper) calculateCollateralBaseValue(ctx context.Context, address string
 	return borrowableAmount, nil
 }
 
-func (k Keeper) calculateCollateralValueForDenom(ctx context.Context, collateralDenom *denomtypes.CollateralDenom, address string) (math.LegacyDec, error) {
+func (k Keeper) calculateCollateralValueForDenom(ctx context.Context, collateralDenom denomtypes.CollateralDenom, address string) (math.LegacyDec, error) {
 	collateral, found := k.collateral.Get(ctx, collateralDenom.DexDenom, address)
 	if !found || collateral.Amount.IsZero() {
 		return math.LegacyZeroDec(), nil

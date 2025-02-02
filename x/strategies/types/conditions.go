@@ -55,8 +55,8 @@ func IsValidComparison(conditionType int64, comp string) bool {
 	}
 }
 
-func ConvertConditions(messageConditions []MessageCondition) ([]*Condition, error) {
-	var conditions []*Condition
+func ConvertConditions(messageConditions []MessageCondition) ([]Condition, error) {
+	var conditions []Condition
 
 	for index, messageCondition := range messageConditions {
 		condition, err := convertCondition(&messageCondition)
@@ -79,10 +79,10 @@ type MessageIn interface {
 	GetString2() string
 }
 
-func convertCondition(messageCondition MessageIn) (*Condition, error) {
+func convertCondition(messageCondition MessageIn) (Condition, error) {
 	value, err := math.LegacyNewDecFromStr(messageCondition.GetValue())
 	if err != nil {
-		return nil, fmt.Errorf("could not parse value: %w", err)
+		return Condition{}, fmt.Errorf("could not parse value: %w", err)
 	}
 
 	var referencePrice *math.LegacyDec
@@ -90,25 +90,25 @@ func convertCondition(messageCondition MessageIn) (*Condition, error) {
 		var rp math.LegacyDec
 		rp, err = math.LegacyNewDecFromStr(messageCondition.GetReferencePrice())
 		if err != nil {
-			return nil, fmt.Errorf("could not parse reference price: %w", err)
+			return Condition{}, fmt.Errorf("could not parse reference price: %w", err)
 		}
 
 		referencePrice = &rp
 	}
 
 	if err = checkAutomationString(messageCondition.GetString1()); err != nil {
-		return nil, fmt.Errorf("invalid string1: %w", err)
+		return Condition{}, fmt.Errorf("invalid string1: %w", err)
 	}
 
 	if err = checkAutomationString(messageCondition.GetString2()); err != nil {
-		return nil, fmt.Errorf("invalid string2: %w", err)
+		return Condition{}, fmt.Errorf("invalid string2: %w", err)
 	}
 
 	if !IsValidComparison(messageCondition.GetConditionType(), messageCondition.GetComparison()) {
-		return nil, fmt.Errorf("invalid comparison: %v", messageCondition.GetComparison())
+		return Condition{}, fmt.Errorf("invalid comparison: %v", messageCondition.GetComparison())
 	}
 
-	return &Condition{
+	return Condition{
 		ConditionType:  messageCondition.GetConditionType(),
 		String1:        messageCondition.GetString1(),
 		String2:        messageCondition.GetString2(),

@@ -8,8 +8,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-func createDefaultCollateralDenoms() []*CollateralDenom {
-	return []*CollateralDenom{
+func createDefaultCollateralDenoms() []CollateralDenom {
+	return []CollateralDenom{
 		{
 			DexDenom:   constants.BaseCurrency,
 			Ltv:        math.LegacyNewDecWithPrec(5, 1),
@@ -18,12 +18,12 @@ func createDefaultCollateralDenoms() []*CollateralDenom {
 	}
 }
 
-func createDefaultCAssets() []*CAsset {
-	return []*CAsset{}
+func createDefaultCAssets() []CAsset {
+	return []CAsset{}
 }
 
-func createDefaultDexDenoms() []*DexDenom {
-	return []*DexDenom{
+func createDefaultDexDenoms() []DexDenom {
+	return []DexDenom{
 		{
 			Name:         constants.BaseCurrency,
 			MinLiquidity: math.NewInt(1_000_000_000_000),
@@ -33,8 +33,8 @@ func createDefaultDexDenoms() []*DexDenom {
 	}
 }
 
-func createDefaultKCoins() []*KCoin {
-	return []*KCoin{}
+func createDefaultKCoins() []KCoin {
+	return []KCoin{}
 }
 
 // DefaultParams returns a default set of parameters
@@ -73,10 +73,6 @@ func (p Params) Validate() error {
 }
 
 func validateArbitrageDenoms(p Params) error {
-	if p.StrategyDenoms == nil {
-		return nil
-	}
-
 	seen := make(map[string]struct{})
 
 	for _, arbitrageDenom := range p.StrategyDenoms.ArbitrageDenoms {
@@ -103,7 +99,7 @@ func validateArbitrageDenoms(p Params) error {
 	return nil
 }
 
-func validateArbitrageDenom(p Params, arbitrageDenom *ArbitrageDenom) error {
+func validateArbitrageDenom(p Params, arbitrageDenom ArbitrageDenom) error {
 	if arbitrageDenom.DexDenom == "" {
 		return fmt.Errorf("must not have empty name")
 	}
@@ -182,11 +178,7 @@ func validateArbitrageDenom(p Params, arbitrageDenom *ArbitrageDenom) error {
 func validateKCoins(p Params) error {
 	seen := make(map[string]struct{})
 
-	for index, kCoin := range p.KCoins {
-		if kCoin == nil {
-			return fmt.Errorf("kCoin #%v is nil", index)
-		}
-
+	for _, kCoin := range p.KCoins {
 		if err := validateKCoin(p, kCoin); err != nil {
 			return fmt.Errorf("error validating kCoin %v: %w", kCoin.DexDenom, err)
 		}
@@ -209,7 +201,7 @@ func validateKCoins(p Params) error {
 	return nil
 }
 
-func validateKCoin(p Params, kCoin *KCoin) error {
+func validateKCoin(p Params, kCoin KCoin) error {
 	if !hasDenom(p.DexDenoms, kCoin.DexDenom) {
 		return fmt.Errorf("kCoin is no dex denom")
 	}
@@ -258,11 +250,7 @@ func validateKCoin(p Params, kCoin *KCoin) error {
 func validateCAssets(p Params) error {
 	seen := make(map[string]struct{})
 
-	for index, cAsset := range p.CAssets {
-		if cAsset == nil {
-			return fmt.Errorf("cAsset #%v is nil", index)
-		}
-
+	for _, cAsset := range p.CAssets {
 		if err := validateCAsset(p, cAsset); err != nil {
 			return fmt.Errorf("error validating cAsset denom %v: %w", cAsset.DexDenom, err)
 		}
@@ -277,7 +265,7 @@ func validateCAssets(p Params) error {
 	return nil
 }
 
-func validateCAsset(p Params, cAsset *CAsset) error {
+func validateCAsset(p Params, cAsset CAsset) error {
 	if !hasDenom(p.DexDenoms, cAsset.BaseDexDenom) {
 		return fmt.Errorf("cAsset's base denom (%v) not found in dex denoms", cAsset.BaseDexDenom)
 	}
@@ -334,7 +322,7 @@ func validateCollateralDenoms(p Params) error {
 	return nil
 }
 
-func validateCollateralDenom(p Params, collateralDenom *CollateralDenom) error {
+func validateCollateralDenom(p Params, collateralDenom CollateralDenom) error {
 	if collateralDenom.Ltv.IsNil() {
 		return fmt.Errorf("ltv is nil")
 	}
@@ -365,11 +353,7 @@ func validateCollateralDenom(p Params, collateralDenom *CollateralDenom) error {
 func validateDexDenoms(p Params) error {
 	seen := make(map[string]struct{})
 
-	for index, dexDenom := range p.DexDenoms {
-		if dexDenom == nil {
-			return fmt.Errorf("dex denom #%v is nil", index)
-		}
-
+	for _, dexDenom := range p.DexDenoms {
 		if err := validateDexDenom(dexDenom); err != nil {
 			return fmt.Errorf("error validating dex denom %v: %w", dexDenom.Name, err)
 		}
@@ -383,7 +367,7 @@ func validateDexDenoms(p Params) error {
 	return nil
 }
 
-func validateDexDenom(dexDenom *DexDenom) error {
+func validateDexDenom(dexDenom DexDenom) error {
 	if dexDenom.Name == "" {
 		return fmt.Errorf("dex denom name cannot be empty")
 	}
@@ -396,14 +380,12 @@ func validateDexDenom(dexDenom *DexDenom) error {
 		return fmt.Errorf("minimum order size has to be bigger than zero")
 	}
 
-	if dexDenom.Name != constants.BaseCurrency {
-		if dexDenom.MinLiquidity.IsNil() {
-			return fmt.Errorf("min liquidity is nil")
-		}
+	if dexDenom.MinLiquidity.IsNil() {
+		return fmt.Errorf("min liquidity is nil")
+	}
 
-		if dexDenom.MinLiquidity.LTE(math.ZeroInt()) {
-			return fmt.Errorf("minimum liquidty must not be smaller than zero")
-		}
+	if !dexDenom.MinLiquidity.IsPositive() {
+		return fmt.Errorf("minimum liquidty must not be smaller than zero")
 	}
 
 	if dexDenom.Exponent < 1 {
@@ -413,7 +395,7 @@ func validateDexDenom(dexDenom *DexDenom) error {
 	return nil
 }
 
-func hasDenom(dexDenoms []*DexDenom, denom string) bool {
+func hasDenom(dexDenoms []DexDenom, denom string) bool {
 	for _, dexDenom := range dexDenoms {
 		if dexDenom.Name == denom {
 			return true
@@ -423,7 +405,7 @@ func hasDenom(dexDenoms []*DexDenom, denom string) bool {
 	return false
 }
 
-func hasKCoin(kcoins []*KCoin, denom string) bool {
+func hasKCoin(kcoins []KCoin, denom string) bool {
 	for _, kCoin := range kcoins {
 		if kCoin.DexDenom == denom {
 			return true
@@ -433,7 +415,7 @@ func hasKCoin(kcoins []*KCoin, denom string) bool {
 	return false
 }
 
-func hasCAsset(cAssets []*CAsset, denom string) bool {
+func hasCAsset(cAssets []CAsset, denom string) bool {
 	for _, cAsset := range cAssets {
 		if cAsset.DexDenom == denom {
 			return true

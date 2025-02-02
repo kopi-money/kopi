@@ -178,7 +178,7 @@ func (k msgServer) UnlockLiquidity(ctx context.Context, msg *types.MsgUnlockLiqu
 		FactoryDenomAmount: amountFactory,
 		KCoin:              pool.KCoin,
 		KCoinAmount:        amountKCoin,
-		CreatedAt:          &now,
+		CreatedAt:          now,
 	})
 
 	return &types.Void{}, nil

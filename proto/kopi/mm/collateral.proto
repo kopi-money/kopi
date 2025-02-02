@@ -15,5 +15,7 @@ message Collateral {
 
 message Collaterals {
   string denom = 1;
-  repeated Collateral collaterals = 2;
+  repeated Collateral collaterals = 2 [
+    (gogoproto.nullable) = false
+  ];
 }

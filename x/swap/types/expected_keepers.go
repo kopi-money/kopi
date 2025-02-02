@@ -52,7 +52,7 @@ type DexKeeper interface {
 }
 
 type DenomKeeper interface {
-	GetArbitrageDenoms(ctx context.Context) []*denomtypes.ArbitrageDenom
+	GetArbitrageDenoms(ctx context.Context) []denomtypes.ArbitrageDenom
 	GetRatio(ctx context.Context, denom string) (denomtypes.Ratio, error)
 	IsKCoin(ctx context.Context, denom string) bool
 	KCoins(ctx context.Context) []string

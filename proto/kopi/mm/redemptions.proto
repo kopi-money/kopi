@@ -22,5 +22,7 @@ message Redemption {
 
 message DenomRedemption {
   string denom = 1;
-  repeated Redemption redemptions = 2;
+  repeated Redemption redemptions = 2 [
+    (gogoproto.nullable) = false
+  ];
 }

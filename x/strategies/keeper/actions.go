@@ -26,7 +26,7 @@ func isNoAmountAction(actionType int64) bool {
 	return false
 }
 
-func (k Keeper) CheckActions(ctx context.Context, address string, actions []*types.Action) error {
+func (k Keeper) CheckActions(ctx context.Context, address string, actions []types.Action) error {
 	for actionIndex, action := range actions {
 		if err := k.CheckAction(ctx, address, action); err != nil {
 			return fmt.Errorf("invalid action[%d]: %w", actionIndex, err)
@@ -36,11 +36,7 @@ func (k Keeper) CheckActions(ctx context.Context, address string, actions []*typ
 	return nil
 }
 
-func (k Keeper) CheckAction(ctx context.Context, address string, action *types.Action) error {
-	if action == nil {
-		return fmt.Errorf("action must not be nil")
-	}
-
+func (k Keeper) CheckAction(ctx context.Context, address string, action types.Action) error {
 	if !isNoAmountAction(action.ActionType) {
 		if !types.RegexPercentage.MatchString(action.Amount) {
 			integer, ok := math.NewIntFromString(action.Amount)
@@ -201,7 +197,7 @@ func (k Keeper) CheckAction(ctx context.Context, address string, action *types.A
 	return nil
 }
 
-func (k Keeper) ExecuteAction(ctx context.Context, address sdk.AccAddress, action *types.Action, automationIndex, automationExecutionIndex, actionIndex int) error {
+func (k Keeper) ExecuteAction(ctx context.Context, address sdk.AccAddress, action types.Action, automationIndex, automationExecutionIndex, actionIndex int) error {
 	tradeBalances := dexkeeper.NewTradeBalances()
 
 	amount1, amount2, volume, string1, string2, err := k.executeAction(ctx, address, action, tradeBalances, automationIndex, automationExecutionIndex, actionIndex)
@@ -274,7 +270,7 @@ func (k Keeper) ExecuteAction(ctx context.Context, address sdk.AccAddress, actio
 func (k Keeper) executeAction(
 	ctx context.Context,
 	address sdk.AccAddress,
-	action *types.Action,
+	action types.Action,
 	tradeBalances dextypes.TradeBalances,
 	automationIndex, automationExecutionIndex, actionIndex int) (amount1, amount2 math.Int, volume math.LegacyDec, string1, string2 string, err error) {
 
@@ -349,7 +345,7 @@ func (k Keeper) executeAction(
 			return
 		}
 
-		var cAsset *denomtypes.CAsset
+		var cAsset denomtypes.CAsset
 		cAsset, err = k.DenomKeeper.GetCAsset(ctx, action.String1)
 		if err != nil {
 			err = fmt.Errorf("could not get c asset: %w", err)
@@ -365,7 +361,7 @@ func (k Keeper) executeAction(
 			return
 		}
 
-		var cAsset *denomtypes.CAsset
+		var cAsset denomtypes.CAsset
 		cAsset, err = k.DenomKeeper.GetCAsset(ctx, action.String1)
 		if err != nil {
 			err = fmt.Errorf("could not get c asset: %w", err)
@@ -589,7 +585,7 @@ func (k Keeper) getAmountLiquidity(ctx context.Context, address sdk.AccAddress, 
 	return liquidityAmount.TruncateInt()
 }
 
-func (k Keeper) getActionsCost(ctx context.Context, actions []*types.Action) (sum int64) {
+func (k Keeper) getActionsCost(ctx context.Context, actions []types.Action) (sum int64) {
 	params := k.GetParams(ctx)
 
 	for _, action := range actions {

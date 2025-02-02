@@ -37,7 +37,7 @@ type ParamSubspace interface {
 }
 
 type DenomKeeper interface {
-	GetCAssetByBaseName(ctx context.Context, baseDenom string) (*denomtypes.CAsset, error)
+	GetCAssetByBaseName(ctx context.Context, baseDenom string) (denomtypes.CAsset, error)
 	IsKCoin(ctx context.Context, denom string) bool
 	IsValidDenom(ctx context.Context, denom string) bool
 	KCoins(ctx context.Context) []string
@@ -54,5 +54,5 @@ type DexKeeper interface {
 }
 
 type MMKeeper interface {
-	CalculateCAssetValue(ctx context.Context, cAsset *denomtypes.CAsset) math.LegacyDec
+	CalculateCAssetValue(ctx context.Context, cAsset denomtypes.CAsset) math.LegacyDec
 }

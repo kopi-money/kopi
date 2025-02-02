@@ -72,9 +72,9 @@ func (k Keeper) GetCollateralDenomStats(ctx context.Context, req *types.GetColla
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	denom := k.DenomKeeper.GetCollateralDenom(ctx, req.Denom)
-	if denom == nil {
-		return nil, types.ErrInvalidCollateralDenom
+	denom, err := k.DenomKeeper.GetCollateralDenom(ctx, req.Denom)
+	if err != nil {
+		return nil, err
 	}
 
 	sum := math.ZeroInt()

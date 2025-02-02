@@ -36,7 +36,7 @@ func (k msgServer) CreateRedemptionRequest(ctx context.Context, msg *types.MsgCr
 	return &types.Void{}, nil
 }
 
-func (k Keeper) CreateRedemptionRequest(ctx context.Context, address sdk.AccAddress, cAsset *denomtypes.CAsset, amount math.Int, fee math.LegacyDec) error {
+func (k Keeper) CreateRedemptionRequest(ctx context.Context, address sdk.AccAddress, cAsset denomtypes.CAsset, amount math.Int, fee math.LegacyDec) error {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	_, has := k.redemptions.Get(ctx, cAsset.BaseDexDenom, address.String())

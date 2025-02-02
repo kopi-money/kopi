@@ -15,10 +15,9 @@ import (
 func TestConditions1(t *testing.T) {
 	k, _, _, _, ctx := keepertest.SetupStrategiesMsgServer(t)
 
-	require.Error(t, k.CheckCondition(ctx, nil))
-	require.Error(t, k.CheckCondition(ctx, &types.Condition{}))
+	require.Error(t, k.CheckCondition(ctx, types.Condition{}))
 
-	require.Error(t, k.CheckCondition(ctx, &types.Condition{
+	require.Error(t, k.CheckCondition(ctx, types.Condition{
 		ConditionType: types.ConditionPrice,
 		String1:       constants.KUSD,
 		String2:       constants.BaseCurrency,
@@ -26,7 +25,7 @@ func TestConditions1(t *testing.T) {
 		Comparison:    "",
 	}))
 
-	require.Error(t, k.CheckCondition(ctx, &types.Condition{
+	require.Error(t, k.CheckCondition(ctx, types.Condition{
 		ConditionType: types.ConditionPrice,
 		String1:       constants.BaseCurrency,
 		String2:       constants.BaseCurrency,
@@ -34,7 +33,7 @@ func TestConditions1(t *testing.T) {
 		Comparison:    "GT",
 	}))
 
-	require.Error(t, k.CheckCondition(ctx, &types.Condition{
+	require.Error(t, k.CheckCondition(ctx, types.Condition{
 		ConditionType: types.ConditionPrice,
 		String1:       constants.BaseCurrency,
 		String2:       constants.BaseCurrency,
@@ -42,7 +41,7 @@ func TestConditions1(t *testing.T) {
 		Comparison:    "GT",
 	}))
 
-	require.NoError(t, k.CheckCondition(ctx, &types.Condition{
+	require.NoError(t, k.CheckCondition(ctx, types.Condition{
 		ConditionType: types.ConditionPrice,
 		String1:       constants.KUSD,
 		String2:       constants.BaseCurrency,
@@ -50,21 +49,21 @@ func TestConditions1(t *testing.T) {
 		Comparison:    "GT",
 	}))
 
-	require.NoError(t, k.CheckCondition(ctx, &types.Condition{
+	require.NoError(t, k.CheckCondition(ctx, types.Condition{
 		ConditionType: types.ConditionWalletAmount,
 		String1:       constants.KUSD,
 		Value:         math.LegacyNewDec(1000),
 		Comparison:    "GT",
 	}))
 
-	require.NoError(t, k.CheckCondition(ctx, &types.Condition{
+	require.NoError(t, k.CheckCondition(ctx, types.Condition{
 		ConditionType: types.ConditionWalletAmount,
 		String1:       constants.KUSD,
 		Value:         math.LegacyNewDec(1000),
 		Comparison:    "GT",
 	}))
 
-	require.Error(t, k.CheckCondition(ctx, &types.Condition{
+	require.Error(t, k.CheckCondition(ctx, types.Condition{
 		ConditionType: types.ConditionWalletAmount,
 		String1:       constants.KUSD,
 		String2:       constants.KUSD,
@@ -72,7 +71,7 @@ func TestConditions1(t *testing.T) {
 		Comparison:    "E",
 	}))
 
-	require.NoError(t, k.CheckCondition(ctx, &types.Condition{
+	require.NoError(t, k.CheckCondition(ctx, types.Condition{
 		ConditionType: types.ConditionWalletAmount,
 		String1:       constants.KUSD,
 		String2:       constants.KUSD,
@@ -80,7 +79,7 @@ func TestConditions1(t *testing.T) {
 		Comparison:    "GT",
 	}))
 
-	require.Error(t, k.CheckCondition(ctx, &types.Condition{
+	require.Error(t, k.CheckCondition(ctx, types.Condition{
 		ConditionType: types.ConditionWalletAmount,
 		String1:       constants.KUSD,
 		String2:       constants.KUSD,
@@ -88,7 +87,7 @@ func TestConditions1(t *testing.T) {
 		Comparison:    "GT",
 	}))
 
-	require.NoError(t, k.CheckCondition(ctx, &types.Condition{
+	require.NoError(t, k.CheckCondition(ctx, types.Condition{
 		ConditionType: types.ConditionWalletValue,
 		String1:       constants.KUSD,
 		String2:       constants.BaseCurrency,
@@ -96,14 +95,14 @@ func TestConditions1(t *testing.T) {
 		Comparison:    "GT",
 	}))
 
-	require.NoError(t, k.CheckCondition(ctx, &types.Condition{
+	require.NoError(t, k.CheckCondition(ctx, types.Condition{
 		ConditionType: types.ConditionCollateralAmount,
 		String1:       constants.KUSD,
 		Value:         math.LegacyNewDecWithPrec(1, 1),
 		Comparison:    "LTE",
 	}))
 
-	require.NoError(t, k.CheckCondition(ctx, &types.Condition{
+	require.NoError(t, k.CheckCondition(ctx, types.Condition{
 		ConditionType: types.ConditionCollateralValue,
 		String1:       constants.KUSD,
 		String2:       constants.BaseCurrency,
@@ -111,33 +110,33 @@ func TestConditions1(t *testing.T) {
 		Comparison:    "LTE",
 	}))
 
-	require.Error(t, k.CheckCondition(ctx, &types.Condition{
+	require.Error(t, k.CheckCondition(ctx, types.Condition{
 		ConditionType: types.ConditionInterestRate,
 		Value:         math.LegacyNewDecWithPrec(1, 1),
 		Comparison:    "LTE",
 	}))
 
-	require.NoError(t, k.CheckCondition(ctx, &types.Condition{
+	require.NoError(t, k.CheckCondition(ctx, types.Condition{
 		ConditionType: types.ConditionInterestRate,
 		String1:       constants.KUSD,
 		Value:         math.LegacyNewDecWithPrec(1, 1),
 		Comparison:    "LTE",
 	}))
 
-	require.Error(t, k.CheckCondition(ctx, &types.Condition{
+	require.Error(t, k.CheckCondition(ctx, types.Condition{
 		ConditionType: types.ConditionInterestRate,
 		String1:       constants.BaseCurrency,
 		Value:         math.LegacyNewDecWithPrec(1, 1),
 		Comparison:    "LTE",
 	}))
 
-	require.NoError(t, k.CheckCondition(ctx, &types.Condition{
+	require.NoError(t, k.CheckCondition(ctx, types.Condition{
 		ConditionType: types.ConditionCreditLineUsage,
 		Value:         math.LegacyNewDecWithPrec(1, 1),
 		Comparison:    "LTE",
 	}))
 
-	require.NoError(t, k.CheckCondition(ctx, &types.Condition{
+	require.NoError(t, k.CheckCondition(ctx, types.Condition{
 		ConditionType: types.ConditionAutomationFundsAmount,
 		Value:         math.LegacyNewDecWithPrec(1, 1),
 		Comparison:    "LTE",
@@ -148,7 +147,7 @@ func TestConditions2(t *testing.T) {
 	k, _, _, _, ctx := keepertest.SetupStrategiesMsgServer(t)
 	accAddress, _ := sdk.AccAddressFromBech32(keepertest.Alice)
 
-	c := &types.Condition{
+	c := types.Condition{
 		ConditionType: types.ConditionWalletAmount,
 		String1:       constants.BaseCurrency,
 		Value:         math.LegacyNewDecWithPrec(1, 1),
@@ -160,7 +159,7 @@ func TestConditions2(t *testing.T) {
 	require.NoError(t, err)
 	require.True(t, met)
 
-	c = &types.Condition{
+	c = types.Condition{
 		ConditionType: types.ConditionWalletAmount,
 		String1:       constants.BaseCurrency,
 		Value:         math.LegacyNewDecWithPrec(1, 1),
@@ -177,7 +176,7 @@ func TestConditions3(t *testing.T) {
 	k, _, _, mmMsg, ctx := keepertest.SetupStrategiesMsgServer(t)
 	accAddress, _ := sdk.AccAddressFromBech32(keepertest.Alice)
 
-	c := &types.Condition{
+	c := types.Condition{
 		ConditionType: types.ConditionCollateralAmount,
 		String1:       constants.BaseCurrency,
 		Value:         math.LegacyNewDec(1000),
@@ -204,7 +203,7 @@ func TestConditions4(t *testing.T) {
 	k, _, _, mmMsg, ctx := keepertest.SetupStrategiesMsgServer(t)
 	accAddress, _ := sdk.AccAddressFromBech32(keepertest.Alice)
 
-	c1 := &types.Condition{
+	c1 := types.Condition{
 		ConditionType: types.ConditionCollateralAmount,
 		String1:       constants.BaseCurrency,
 		Value:         math.LegacyNewDec(1000),
@@ -212,7 +211,7 @@ func TestConditions4(t *testing.T) {
 	}
 	require.NoError(t, k.CheckCondition(ctx, c1))
 
-	c2 := &types.Condition{
+	c2 := types.Condition{
 		ConditionType: types.ConditionCollateralAmount,
 		String1:       constants.BaseCurrency,
 		Value:         math.LegacyNewDec(1000),
@@ -220,7 +219,7 @@ func TestConditions4(t *testing.T) {
 	}
 	require.NoError(t, k.CheckCondition(ctx, c2))
 
-	conditions := []*types.Condition{c1, c2}
+	conditions := []types.Condition{c1, c2}
 	_, numValid, err := k.CheckIfConditionsMet(ctx, accAddress, conditions, 0)
 	require.NoError(t, err)
 	require.NotEqual(t, len(conditions), numValid)
@@ -240,9 +239,9 @@ func TestConditions5(t *testing.T) {
 	k, _, _, _, ctx := keepertest.SetupStrategiesMsgServer(t)
 
 	require.Error(t, k.CheckConditions(ctx, nil))
-	require.Error(t, k.CheckConditions(ctx, []*types.Condition{}))
+	require.Error(t, k.CheckConditions(ctx, []types.Condition{}))
 
-	require.NoError(t, k.CheckConditions(ctx, []*types.Condition{
+	require.NoError(t, k.CheckConditions(ctx, []types.Condition{
 		{
 			ConditionType: types.ConditionPrice,
 			String1:       constants.KUSD,
@@ -252,7 +251,7 @@ func TestConditions5(t *testing.T) {
 		},
 	}))
 
-	require.NoError(t, k.CheckConditions(ctx, []*types.Condition{
+	require.NoError(t, k.CheckConditions(ctx, []types.Condition{
 		{
 			ConditionType: types.ConditionPrice,
 			String1:       constants.KUSD,
@@ -273,7 +272,7 @@ func TestConditions6(t *testing.T) {
 	k, _, dexMsg, _, ctx := keepertest.SetupStrategiesMsgServer(t)
 	accAddress, _ := sdk.AccAddressFromBech32(keepertest.Alice)
 
-	condition := &types.Condition{
+	condition := types.Condition{
 		ConditionType: types.ConditionLiquidityAmount,
 		String1:       constants.BaseCurrency,
 		Value:         math.LegacyNewDec(1000),
@@ -314,7 +313,7 @@ func TestConditions7(t *testing.T) {
 		Amount:  "10000",
 	}))
 
-	conditionIR := &types.Condition{
+	conditionIR := types.Condition{
 		ConditionType: types.ConditionInterestRate,
 		String1:       constants.KUSD,
 		Value:         math.LegacyNewDecWithPrec(6, 2),
@@ -322,7 +321,7 @@ func TestConditions7(t *testing.T) {
 	}
 	require.NoError(t, k.CheckCondition(ctx, conditionIR))
 
-	conditionLA := &types.Condition{
+	conditionLA := types.Condition{
 		ConditionType: types.ConditionLoanAmount,
 		String1:       constants.KUSD,
 		Value:         math.LegacyNewDec(1000),

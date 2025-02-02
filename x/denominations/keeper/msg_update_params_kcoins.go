@@ -23,7 +23,7 @@ func (k msgServer) KCoinAddDenom(ctx context.Context, req *types.MsgKCoinAddDeno
 		maxBurnAmount, _ := math.NewIntFromString(req.MaxBurnAmount)
 		maxMintAmount, _ := math.NewIntFromString(req.MaxMintAmount)
 
-		params.KCoins = append(params.KCoins, &types.KCoin{
+		params.KCoins = append(params.KCoins, types.KCoin{
 			DexDenom:      req.Name,
 			References:    req.References,
 			MaxSupply:     maxSupply,
@@ -36,7 +36,7 @@ func (k msgServer) KCoinAddDenom(ctx context.Context, req *types.MsgKCoinAddDeno
 			return err
 		}
 
-		params.DexDenoms = append(params.DexDenoms, &dexDenom)
+		params.DexDenoms = append(params.DexDenoms, dexDenom)
 
 		if err = k.SetParams(innerCtx, params); err != nil {
 			return err
@@ -58,7 +58,7 @@ func (k msgServer) KCoinUpdateSupplyLimit(ctx context.Context, req *types.MsgKCo
 
 		params := k.GetParams(innerCtx)
 		maxSupply, _ := math.NewIntFromString(req.MaxSupply)
-		kCoins := []*types.KCoin{}
+		kCoins := []types.KCoin{}
 		found := false
 
 		for _, kCoin := range params.KCoins {
@@ -94,7 +94,7 @@ func (k msgServer) KCoinUpdateMintAmount(ctx context.Context, req *types.MsgKCoi
 
 		params := k.GetParams(innerCtx)
 		maxMintAmount, _ := math.NewIntFromString(req.MaxMintAmount)
-		kCoins := []*types.KCoin{}
+		kCoins := []types.KCoin{}
 		found := false
 
 		for _, kCoin := range params.KCoins {
@@ -130,7 +130,7 @@ func (k msgServer) KCoinUpdateBurnAmount(ctx context.Context, req *types.MsgKCoi
 
 		params := k.GetParams(innerCtx)
 		maxBurnAmount, _ := math.NewIntFromString(req.MaxBurnAmount)
-		kCoins := []*types.KCoin{}
+		kCoins := []types.KCoin{}
 		found := false
 
 		for _, kCoin := range params.KCoins {
@@ -166,7 +166,7 @@ func (k msgServer) KCoinAddReferences(ctx context.Context, req *types.MsgKCoinAd
 
 		params := k.GetParams(innerCtx)
 
-		kCoins := []*types.KCoin{}
+		kCoins := []types.KCoin{}
 		found := false
 
 		for _, kCoin := range params.KCoins {
@@ -202,7 +202,7 @@ func (k msgServer) KCoinRemoveReferences(ctx context.Context, req *types.MsgKCoi
 
 		params := k.GetParams(innerCtx)
 
-		kCoins := []*types.KCoin{}
+		kCoins := []types.KCoin{}
 		found := false
 
 		for _, kCoin := range params.KCoins {

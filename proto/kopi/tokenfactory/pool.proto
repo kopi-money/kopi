@@ -48,8 +48,12 @@ message GenesisLiquidityPool {
     (gogoproto.nullable) = false
   ];
 
-  repeated GenesisProviderShare shares = 8;
-  repeated LiquidityUnlocking unlockings = 9;
+  repeated GenesisProviderShare shares = 8 [
+    (gogoproto.nullable) = false
+  ];
+  repeated LiquidityUnlocking unlockings = 9 [
+    (gogoproto.nullable) = false
+  ];
 }
 
 message ProviderShare {

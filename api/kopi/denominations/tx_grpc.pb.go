@@ -32,6 +32,7 @@ const (
 	Msg_CollateralUpdateLTV_FullMethodName                      = "/kopi.denominations.Msg/CollateralUpdateLTV"
 	Msg_CollateralUpdateDepositLimit_FullMethodName             = "/kopi.denominations.Msg/CollateralUpdateDepositLimit"
 	Msg_CAssetAddDenom_FullMethodName                           = "/kopi.denominations.Msg/CAssetAddDenom"
+	Msg_CAssetUpdateReference_FullMethodName                    = "/kopi.denominations.Msg/CAssetUpdateReference"
 	Msg_CAssetUpdateDexFeeShare_FullMethodName                  = "/kopi.denominations.Msg/CAssetUpdateDexFeeShare"
 	Msg_CAssetUpdateBorrowLimit_FullMethodName                  = "/kopi.denominations.Msg/CAssetUpdateBorrowLimit"
 	Msg_CAssetUpdateMinimumLoanSize_FullMethodName              = "/kopi.denominations.Msg/CAssetUpdateMinimumLoanSize"
@@ -61,6 +62,7 @@ type MsgClient interface {
 	CollateralUpdateLTV(ctx context.Context, in *MsgCollateralUpdateLTV, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	CollateralUpdateDepositLimit(ctx context.Context, in *MsgCollateralUpdateDepositLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	CAssetAddDenom(ctx context.Context, in *MsgCAssetAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	CAssetUpdateReference(ctx context.Context, in *MsgCAssetUpdateReference, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	CAssetUpdateDexFeeShare(ctx context.Context, in *MsgCAssetUpdateDexFeeShare, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	CAssetUpdateBorrowLimit(ctx context.Context, in *MsgCAssetUpdateBorrowLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	CAssetUpdateMinimumLoanSize(ctx context.Context, in *MsgCAssetUpdateMinimumLoanSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
@@ -198,6 +200,15 @@ func (c *msgClient) CAssetAddDenom(ctx context.Context, in *MsgCAssetAddDenom, o
 	return out, nil
 }
 
+func (c *msgClient) CAssetUpdateReference(ctx context.Context, in *MsgCAssetUpdateReference, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, Msg_CAssetUpdateReference_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) CAssetUpdateDexFeeShare(ctx context.Context, in *MsgCAssetUpdateDexFeeShare, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
 	err := c.cc.Invoke(ctx, Msg_CAssetUpdateDexFeeShare_FullMethodName, in, out, opts...)
@@ -305,6 +316,7 @@ type MsgServer interface {
 	CollateralUpdateLTV(context.Context, *MsgCollateralUpdateLTV) (*MsgUpdateParamsResponse, error)
 	CollateralUpdateDepositLimit(context.Context, *MsgCollateralUpdateDepositLimit) (*MsgUpdateParamsResponse, error)
 	CAssetAddDenom(context.Context, *MsgCAssetAddDenom) (*MsgUpdateParamsResponse, error)
+	CAssetUpdateReference(context.Context, *MsgCAssetUpdateReference) (*MsgUpdateParamsResponse, error)
 	CAssetUpdateDexFeeShare(context.Context, *MsgCAssetUpdateDexFeeShare) (*MsgUpdateParamsResponse, error)
 	CAssetUpdateBorrowLimit(context.Context, *MsgCAssetUpdateBorrowLimit) (*MsgUpdateParamsResponse, error)
 	CAssetUpdateMinimumLoanSize(context.Context, *MsgCAssetUpdateMinimumLoanSize) (*MsgUpdateParamsResponse, error)
@@ -360,6 +372,9 @@ func (UnimplementedMsgServer) CollateralUpdateDepositLimit(context.Context, *Msg
 }
 func (UnimplementedMsgServer) CAssetAddDenom(context.Context, *MsgCAssetAddDenom) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CAssetAddDenom not implemented")
+}
+func (UnimplementedMsgServer) CAssetUpdateReference(context.Context, *MsgCAssetUpdateReference) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CAssetUpdateReference not implemented")
 }
 func (UnimplementedMsgServer) CAssetUpdateDexFeeShare(context.Context, *MsgCAssetUpdateDexFeeShare) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CAssetUpdateDexFeeShare not implemented")
@@ -638,6 +653,24 @@ func _Msg_CAssetAddDenom_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_CAssetUpdateReference_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCAssetUpdateReference)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CAssetUpdateReference(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_CAssetUpdateReference_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CAssetUpdateReference(ctx, req.(*MsgCAssetUpdateReference))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_CAssetUpdateDexFeeShare_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgCAssetUpdateDexFeeShare)
 	if err := dec(in); err != nil {
@@ -876,6 +909,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CAssetAddDenom",
 			Handler:    _Msg_CAssetAddDenom_Handler,
+		},
+		{
+			MethodName: "CAssetUpdateReference",
+			Handler:    _Msg_CAssetUpdateReference_Handler,
 		},
 		{
 			MethodName: "CAssetUpdateDexFeeShare",

@@ -37,7 +37,9 @@ message Params {
     (gogoproto.nullable)   = false
   ];
 
-  repeated DiscountLevel discount_levels = 6;
+  repeated DiscountLevel discount_levels = 6 [
+    (gogoproto.nullable) = false
+  ];
 
   uint64 max_order_life = 7;
 

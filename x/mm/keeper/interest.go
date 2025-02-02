@@ -22,7 +22,7 @@ func (k Keeper) CalculateInterestRateForDenom(ctx context.Context, denom string)
 	return k.CalculateInterestRate(ctx, cAsset)
 }
 
-func (k Keeper) CalculateInterestRate(ctx context.Context, cAsset *denomtypes.CAsset) math.LegacyDec {
+func (k Keeper) CalculateInterestRate(ctx context.Context, cAsset denomtypes.CAsset) math.LegacyDec {
 	utilityRate := k.calculateUtilityRate(ctx, cAsset)
 	interestRate := k.calculateInterestRate(ctx, utilityRate)
 	return interestRate
@@ -39,7 +39,7 @@ func (k Keeper) calculateInterestRate(ctx context.Context, utilityRate math.Lega
 
 // calculateUtilityRate return the utility rate of a borrowable asset. It gets the sum of given out loans and the
 // currently available funds in the vault. The UR then is loan_sum / (loan_sum + funds_in_vault)
-func (k Keeper) calculateUtilityRate(ctx context.Context, cAsset *denomtypes.CAsset) math.LegacyDec {
+func (k Keeper) calculateUtilityRate(ctx context.Context, cAsset denomtypes.CAsset) math.LegacyDec {
 	loanSum := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom).LoanSum
 	borrowableAmount := k.GetVaultAmount(ctx, cAsset)
 
@@ -64,7 +64,7 @@ func (k Keeper) ApplyInterest(ctx context.Context) error {
 	return nil
 }
 
-func (k Keeper) applyInterestForCAssetLoans(ctx context.Context, cAsset *denomtypes.CAsset, blocksPerYear math.LegacyDec) {
+func (k Keeper) applyInterestForCAssetLoans(ctx context.Context, cAsset denomtypes.CAsset, blocksPerYear math.LegacyDec) {
 	utilityRate := k.calculateUtilityRate(ctx, cAsset)
 	interestRate := k.calculateInterestRate(ctx, utilityRate)
 	interestRate = interestRate.Quo(blocksPerYear) // C

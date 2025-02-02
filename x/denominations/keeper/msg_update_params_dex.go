@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 	"fmt"
-
 	"github.com/kopi-money/kopi/cache"
 	"github.com/kopi-money/kopi/constants"
 
@@ -26,7 +25,7 @@ func (k msgServer) DexAddDenom(ctx context.Context, req *types.MsgDexAddDenom) (
 			return err
 		}
 
-		params.DexDenoms = append(params.DexDenoms, &dexDenom)
+		params.DexDenoms = append(params.DexDenoms, dexDenom)
 
 		if err = k.SetParams(innerCtx, params); err != nil {
 			return err
@@ -46,7 +45,7 @@ func (k msgServer) DexUpdateMinimumLiquidity(ctx context.Context, req *types.Msg
 			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 		}
 
-		return k.Keeper.DexUpdateMinimumLiquidity(innerCtx, req.Name, req.MinLiquidity)
+		return k.Keeper.DexUpdateMinimumLiquidity(ctx, req.Name, req.MinLiquidity)
 	})
 
 	return &types.MsgUpdateParamsResponse{}, err
@@ -55,7 +54,7 @@ func (k msgServer) DexUpdateMinimumLiquidity(ctx context.Context, req *types.Msg
 func (k Keeper) DexUpdateMinimumLiquidity(ctx context.Context, denom, minLiquidityStr string) error {
 	params := k.GetParams(ctx)
 	minLiquidity, _ := math.NewIntFromString(minLiquidityStr)
-	dexDenoms := []*types.DexDenom{}
+	dexDenoms := []types.DexDenom{}
 	found := false
 
 	for _, dexDenom := range params.DexDenoms {
@@ -88,7 +87,7 @@ func (k msgServer) DexUpdateMinimumOrderSize(ctx context.Context, req *types.Msg
 
 		params := k.GetParams(innerCtx)
 		minOrderSize, _ := math.NewIntFromString(req.MinOrderSize)
-		dexDenoms := []*types.DexDenom{}
+		dexDenoms := []types.DexDenom{}
 		found := false
 
 		for _, dexDenom := range params.DexDenoms {

@@ -40,11 +40,11 @@ type BlockspeedKeeper interface {
 
 type DenomKeeper interface {
 	Denoms(ctx context.Context) []string
-	GetCAssets(context.Context) []*denomtypes.CAsset
-	GetCAssetByBaseName(context.Context, string) (*denomtypes.CAsset, error)
-	GetCAssetByName(context.Context, string) (*denomtypes.CAsset, error)
-	GetCollateralDenom(context.Context, string) *denomtypes.CollateralDenom
-	GetCollateralDenoms(context.Context) []*denomtypes.CollateralDenom
+	GetCAssets(context.Context) []denomtypes.CAsset
+	GetCAssetByBaseName(context.Context, string) (denomtypes.CAsset, error)
+	GetCAssetByName(context.Context, string) (denomtypes.CAsset, error)
+	GetCollateralDenom(context.Context, string) (denomtypes.CollateralDenom, error)
+	GetCollateralDenoms(context.Context) []denomtypes.CollateralDenom
 	GetDepositCap(context.Context, string) (math.Int, error)
 	GetLTV(ctx context.Context, denom string) (math.LegacyDec, error)
 	IsValidCollateralDenom(context.Context, string) bool
