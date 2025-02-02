@@ -129,7 +129,7 @@ func (k msgServer) UpdateInterestRateParameters(ctx context.Context, req *types.
 
 func (k msgServer) DelistCollateralDenom(ctx context.Context, req *types.MsgDelistCollateralDenom) (*types.Void, error) {
 	err := cache.Transact(ctx, func(innerCtx context.Context) error {
-		return k.Keeper.DelistCollateralDenom(ctx, req.Denom)
+		return k.Keeper.DelistCollateralDenom(innerCtx, req.Denom)
 	})
 
 	return &types.Void{}, err
