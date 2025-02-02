@@ -229,7 +229,7 @@ func (ic *ItemCache[V]) CommitToDB(ctx context.Context) error {
 	if itemTransaction != nil {
 		if itemTransaction.change.value != nil {
 			if err := ic.collection.Set(ctx, *itemTransaction.change.value); err != nil {
-				sdk.UnwrapSDKContext(ctx).Logger().Error(fmt.Sprintf("%v: collection set: %w", ic.name, err))
+				sdk.UnwrapSDKContext(ctx).Logger().Error(fmt.Sprintf("%v: collection set: %v", ic.name, err))
 				return err
 			}
 		} else {

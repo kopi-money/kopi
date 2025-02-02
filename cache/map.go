@@ -222,8 +222,8 @@ func (mc *MapCache[K, V]) Initialize(ctx context.Context) error {
 
 	var (
 		key   K
-		has   bool
 		entry Entry[V]
+		has   bool
 	)
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -234,7 +234,7 @@ func (mc *MapCache[K, V]) Initialize(ctx context.Context) error {
 
 		entry, has, err = mc.loadFromStorage(ctx, key)
 		if err != nil {
-			return fmt.Errorf("load from storage: %w", err)
+			return fmt.Errorf("could not load key '%v': %w", key, err)
 		}
 
 		if has {
