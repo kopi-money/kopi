@@ -176,7 +176,7 @@ func parseAmount(amountStr string, canBeZero bool) (math.Int, error) {
 		return math.Int{}, types.ErrInvalidAmountFormat
 	}
 
-	if amount.IsNegative() {
+	if amount.LT(math.ZeroInt()) {
 		return math.Int{}, types.ErrNegativeAmount
 	}
 
@@ -197,12 +197,15 @@ func (k Keeper) checkSpendableCoins(ctx context.Context, address sdk.AccAddress,
 }
 
 func (k Keeper) handleRedemptionFee(ctx context.Context, arbitrageDenom *denomtypes.ArbitrageDenom, payoutAmountGross math.Int) (math.Int, error) {
-	if !payoutAmountGross.IsPositive() {
-		return math.Int{}, types.ErrNonPositiveRedemptionAmount
+	if payoutAmountGross.LTE(math.ZeroInt()) {
+		return math.ZeroInt(), nil
 	}
 
 	redemptionFee := arbitrageDenom.RedemptionFee.Mul(payoutAmountGross.ToLegacyDec()).TruncateInt()
 	payoutAmountNet := payoutAmountGross.Sub(redemptionFee)
+
+	msg := fmt.Sprintf("Gross: %v, Net: %v, Fee: %v", payoutAmountGross.String(), payoutAmountNet.String(), redemptionFee.String())
+	k.Logger().Info(msg)
 
 	redemptionFeeProtocolShare := arbitrageDenom.RedemptionFeeReserveShare.Mul(redemptionFee.ToLegacyDec()).TruncateInt()
 	coins := sdk.NewCoins(sdk.NewCoin(arbitrageDenom.CAsset, redemptionFeeProtocolShare))
