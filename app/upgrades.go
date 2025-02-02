@@ -109,6 +109,10 @@ func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
 			CreateUpgradeHandler: v12.CreateUpgradeHandler,
 		},
 		{
+			UpgradeName:          v12.UpgradeName_rc2,
+			CreateUpgradeHandler: v12.CreateUpgradeHandler,
+		},
+		{
 			UpgradeName:          v12.UpgradeName,
 			CreateUpgradeHandler: v12.CreateUpgradeHandler,
 		},
