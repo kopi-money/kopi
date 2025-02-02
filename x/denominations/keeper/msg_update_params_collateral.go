@@ -38,7 +38,11 @@ func (k msgServer) CollateralAddDenom(ctx context.Context, req *types.MsgCollate
 
 func (k msgServer) CollateralUpdateLTV(ctx context.Context, req *types.MsgCollateralUpdateLTV) (*types.MsgUpdateParamsResponse, error) {
 	err := cache.Transact(ctx, func(innerCtx context.Context) error {
-		return k.Keeper.CollateralUpdateLTV(ctx, req.Denom, req.Ltv)
+		if k.GetAuthority() != req.Authority {
+			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+		}
+
+		return k.Keeper.CollateralUpdateLTV(innerCtx, req.Denom, req.Ltv)
 	})
 
 	return &types.MsgUpdateParamsResponse{}, err
