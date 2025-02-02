@@ -55,13 +55,13 @@ func (k Keeper) HandleUnlockings(ctx context.Context, now time.Time) {
 	}
 }
 
-func (k Keeper) getPoolUnlockings(ctx context.Context, factoryDenomHash string) (unlockings []*types.LiquidityUnlocking) {
+func (k Keeper) getPoolUnlockings(ctx context.Context, factoryDenomHash string) (unlockings []types.LiquidityUnlocking) {
 	iterator := k.liquidityUnlockings.Iterator(ctx, nil)
 	for iterator.Valid() {
 		unlocking := iterator.GetNext()
 
 		if unlocking.FactoryDenomHash == factoryDenomHash {
-			unlockings = append(unlockings, &unlocking)
+			unlockings = append(unlockings, unlocking)
 		}
 	}
 

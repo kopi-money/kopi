@@ -10,7 +10,7 @@ import (
 	"github.com/kopi-money/kopi/x/strategies/types"
 )
 
-func (k Keeper) CheckConditions(ctx context.Context, conditions []*types.Condition) error {
+func (k Keeper) CheckConditions(ctx context.Context, conditions []types.Condition) error {
 	if len(conditions) == 0 {
 		return types.ErrEmptyConditions
 	}
@@ -24,11 +24,7 @@ func (k Keeper) CheckConditions(ctx context.Context, conditions []*types.Conditi
 	return nil
 }
 
-func (k Keeper) CheckCondition(ctx context.Context, condition *types.Condition) error {
-	if condition == nil {
-		return fmt.Errorf("condition must not be nil")
-	}
-
+func (k Keeper) CheckCondition(ctx context.Context, condition types.Condition) error {
 	if !types.IsValidComparison(condition.ConditionType, condition.Comparison) {
 		return fmt.Errorf("invalid comparison: %v", condition.Comparison)
 	}
@@ -160,7 +156,7 @@ func (k Keeper) CheckCondition(ctx context.Context, condition *types.Condition) 
 	return nil
 }
 
-func (k Keeper) CheckIfConditionsMet(ctx context.Context, acc sdk.AccAddress, conditions []*types.Condition, automationIndex int) (int, int, error) {
+func (k Keeper) CheckIfConditionsMet(ctx context.Context, acc sdk.AccAddress, conditions []types.Condition, automationIndex int) (int, int, error) {
 	checked := 0
 	correct := 0
 
@@ -182,7 +178,7 @@ func (k Keeper) CheckIfConditionsMet(ctx context.Context, acc sdk.AccAddress, co
 	return checked, correct, nil
 }
 
-func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress, condition *types.Condition, automationIndex, conditionIndex int) (bool, error) {
+func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress, condition types.Condition, automationIndex, conditionIndex int) (bool, error) {
 	var (
 		conditionValue      = condition.Value
 		conditionComparison = condition.Comparison

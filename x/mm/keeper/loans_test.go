@@ -634,7 +634,7 @@ func TestLoans17(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	var cAsset *denomtypes.CAsset
+	var cAsset denomtypes.CAsset
 	cAsset, err = k.DenomKeeper.GetCAssetByBaseName(ctx, constants.KUSD)
 	require.NoError(t, err)
 

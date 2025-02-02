@@ -114,16 +114,28 @@ message CAsset {
 }
 
 message StrategyDenoms {
-  repeated ArbitrageDenom arbitrage_denoms = 5;
+  repeated ArbitrageDenom arbitrage_denoms = 5 [
+    (gogoproto.nullable) = false
+  ];
 }
 
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
 
-  repeated DexDenom dex_denoms = 1;
-  repeated KCoin k_coins = 2;
-  repeated CAsset c_assets = 3;
-  repeated CollateralDenom collateral_denoms = 4;
-  StrategyDenoms strategy_denoms = 5;
+  repeated DexDenom dex_denoms = 1 [
+    (gogoproto.nullable) = false
+  ];
+  repeated KCoin k_coins = 2 [
+    (gogoproto.nullable) = false
+  ];
+  repeated CAsset c_assets = 3 [
+    (gogoproto.nullable) = false
+  ];
+  repeated CollateralDenom collateral_denoms = 4 [
+    (gogoproto.nullable) = false
+  ];
+  StrategyDenoms strategy_denoms = 5 [
+    (gogoproto.nullable) = false
+  ];
 }

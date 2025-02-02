@@ -44,7 +44,7 @@ func (k msgServer) AddDeposit(ctx context.Context, msg *types.MsgAddDeposit) (*t
 	return &types.Void{}, nil
 }
 
-func (k Keeper) Deposit(ctx context.Context, address sdk.AccAddress, cAsset *denomtypes.CAsset, amount math.Int) (math.Int, error) {
+func (k Keeper) Deposit(ctx context.Context, address sdk.AccAddress, cAsset denomtypes.CAsset, amount math.Int) (math.Int, error) {
 	if k.BankKeeper.SpendableCoin(ctx, address, cAsset.BaseDexDenom).Amount.LT(amount) {
 		return math.Int{}, types.ErrNotEnoughFunds
 	}

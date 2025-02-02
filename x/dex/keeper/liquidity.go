@@ -150,7 +150,7 @@ func (k Keeper) GetAllLiquidity(ctx context.Context) (list []types.DenomLiquidit
 		denomLiquidity := types.DenomLiquidity{Denom: denom}
 		for iterator.Valid() {
 			liq := iterator.GetNext()
-			denomLiquidity.Entries = append(denomLiquidity.Entries, &liq)
+			denomLiquidity.Entries = append(denomLiquidity.Entries, liq)
 		}
 
 		sort.SliceStable(denomLiquidity.Entries, func(i, j int) bool {

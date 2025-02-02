@@ -79,7 +79,7 @@ func (k Keeper) checkReserveForDenom(ctx context.Context, address sdk.AccAddress
 	}
 
 	// If the denom is a borrowable denom, part of the reserve is sent to the money market to incentivize deposits
-	if cAsset, _ := k.DenomKeeper.GetCAssetByBaseName(ctx, coin.Denom); cAsset != nil {
+	if cAsset, err := k.DenomKeeper.GetCAssetByBaseName(ctx, coin.Denom); err == nil {
 		coin = k.sendToMoneyMarket(ctx, coin, cAsset)
 	}
 
@@ -119,7 +119,7 @@ func (k Keeper) burnKCoinReserve(ctx context.Context, coin sdk.Coin) (sdk.Coin, 
 	return coin, nil
 }
 
-func (k Keeper) sendToMoneyMarket(ctx context.Context, coin sdk.Coin, cAsset *denomtypes.CAsset) sdk.Coin {
+func (k Keeper) sendToMoneyMarket(ctx context.Context, coin sdk.Coin, cAsset denomtypes.CAsset) sdk.Coin {
 	cAssetValue := k.MMKeeper.CalculateCAssetValue(ctx, cAsset)
 	sendAmount := math.LegacyNewDecFromInt(coin.Amount).Mul(cAsset.DexFeeShare)
 

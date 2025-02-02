@@ -13,19 +13,19 @@ var minimumAmount = math.NewInt(100_000_000) // i.e. 100
 
 // GetVaultAmount return the amount of funds held in the base denom of an CAsset. For example, when akUSD is the CAsset,
 // this functions return the amount of available kUSD
-func (k Keeper) GetVaultAmount(ctx context.Context, cAsset *denomtypes.CAsset) math.Int {
+func (k Keeper) GetVaultAmount(ctx context.Context, cAsset denomtypes.CAsset) math.Int {
 	address := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault).GetAddress()
 	amount := k.BankKeeper.SpendableCoins(ctx, address).AmountOf(cAsset.BaseDexDenom)
 	return amount
 }
 
-func (k Keeper) getCAssetSupply(ctx context.Context, cAsset *denomtypes.CAsset) math.Int {
+func (k Keeper) getCAssetSupply(ctx context.Context, cAsset denomtypes.CAsset) math.Int {
 	return k.BankKeeper.GetSupply(ctx, cAsset.DexDenom).Amount
 }
 
 // CalculateNewCAssetAmount calculates how much new c-tokens have to be minted given how much value is being added to
 // the vault.
-func (k Keeper) CalculateNewCAssetAmount(ctx context.Context, cAsset *denomtypes.CAsset, addedAmount math.Int) (math.Int, error) {
+func (k Keeper) CalculateNewCAssetAmount(ctx context.Context, cAsset denomtypes.CAsset, addedAmount math.Int) (math.Int, error) {
 	cAssetSupply := k.getCAssetSupply(ctx, cAsset)
 	newTokens := math.ZeroInt()
 
@@ -47,7 +47,7 @@ func (k Keeper) CalculateNewCAssetAmount(ctx context.Context, cAsset *denomtypes
 	return newTokens, nil
 }
 
-func (k Keeper) CalculateNewCAssetAmountWithShare(ctx context.Context, cAsset *denomtypes.CAsset, addedAmount math.Int) (math.Int, error) {
+func (k Keeper) CalculateNewCAssetAmountWithShare(ctx context.Context, cAsset denomtypes.CAsset, addedAmount math.Int) (math.Int, error) {
 	cAssetSupply := k.getCAssetSupply(ctx, cAsset)
 	if cAssetSupply.LT(minimumAmount) {
 		return addedAmount, nil
@@ -77,14 +77,14 @@ func (k Keeper) CalculateNewCAssetAmountWithShare(ctx context.Context, cAsset *d
 
 // CalculateCAssetValue calculates the total underlying of an CAsset. This includes funds lying in the vault as well as
 // funds in outstanding loans.
-func (k Keeper) CalculateCAssetValue(ctx context.Context, cAsset *denomtypes.CAsset) math.LegacyDec {
+func (k Keeper) CalculateCAssetValue(ctx context.Context, cAsset denomtypes.CAsset) math.LegacyDec {
 	loanSum := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom).LoanSum
 	vaultSize := k.GetVaultAmount(ctx, cAsset).ToLegacyDec()
 
 	return vaultSize.Add(loanSum)
 }
 
-func (k Keeper) CalculateCAssetRedemptionValue(ctx context.Context, cAsset *denomtypes.CAsset) math.LegacyDec {
+func (k Keeper) CalculateCAssetRedemptionValue(ctx context.Context, cAsset denomtypes.CAsset) math.LegacyDec {
 	supply := k.BankKeeper.GetSupply(ctx, cAsset.DexDenom)
 	if supply.Amount.IsZero() {
 		return math.LegacyZeroDec()
@@ -96,7 +96,7 @@ func (k Keeper) CalculateCAssetRedemptionValue(ctx context.Context, cAsset *deno
 }
 
 // calculateCAssetPrice calculates the price of a CAsset in relation to its base denomination.
-func (k Keeper) calculateCAssetPrice(ctx context.Context, cAsset *denomtypes.CAsset) math.LegacyDec {
+func (k Keeper) calculateCAssetPrice(ctx context.Context, cAsset denomtypes.CAsset) math.LegacyDec {
 	cAssetValue := k.CalculateCAssetValue(ctx, cAsset)
 	cAssetSupply := math.LegacyNewDecFromInt(k.BankKeeper.GetSupply(ctx, cAsset.DexDenom).Amount)
 
@@ -108,7 +108,7 @@ func (k Keeper) calculateCAssetPrice(ctx context.Context, cAsset *denomtypes.CAs
 	return cAssetPrice
 }
 
-func (k Keeper) ConvertToBaseAmount(ctx context.Context, cAsset *denomtypes.CAsset, amountCAsset math.LegacyDec) math.LegacyDec {
+func (k Keeper) ConvertToBaseAmount(ctx context.Context, cAsset denomtypes.CAsset, amountCAsset math.LegacyDec) math.LegacyDec {
 	if amountCAsset.IsZero() {
 		return math.LegacyZeroDec()
 	}

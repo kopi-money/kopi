@@ -125,7 +125,7 @@ func (k msgServer) AutomationsUpdate(ctx context.Context, msg *types.MsgAutomati
 	return &types.Void{}, nil
 }
 
-func (k Keeper) checkAutomationMessage(ctx context.Context, address string, am types.AutomationMessage) ([]*types.Condition, []*types.Action, error) {
+func (k Keeper) checkAutomationMessage(ctx context.Context, address string, am types.AutomationMessage) ([]types.Condition, []types.Action, error) {
 	if k.GetAutomationFunds(ctx, address).LTE(math.ZeroInt()) {
 		return nil, nil, types.ErrEmptyAutomationFunds
 	}
@@ -172,7 +172,7 @@ func (k Keeper) checkAutomationMessage(ctx context.Context, address string, am t
 		return nil, nil, fmt.Errorf("invalid conditions: %w", err)
 	}
 
-	var actions []*types.Action
+	var actions []types.Action
 	if err = json.Unmarshal([]byte(am.GetActions()), &actions); err != nil {
 		return nil, nil, fmt.Errorf("could not unmarshal actions: %w", err)
 	}

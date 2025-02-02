@@ -170,7 +170,6 @@ func (k msgServer) UnlockLiquidity(ctx context.Context, msg *types.MsgUnlockLiqu
 		return nil, fmt.Errorf("could not update liquidity share: %w", err)
 	}
 
-	now := sdk.UnwrapSDKContext(ctx).BlockTime()
 	k.SetLiquidityUnlocking(ctx, types.LiquidityUnlocking{
 		Index:              0,
 		Address:            msg.Creator,
@@ -178,7 +177,7 @@ func (k msgServer) UnlockLiquidity(ctx context.Context, msg *types.MsgUnlockLiqu
 		FactoryDenomAmount: amountFactory,
 		KCoin:              pool.KCoin,
 		KCoinAmount:        amountKCoin,
-		CreatedAt:          &now,
+		CreatedAt:          sdk.UnwrapSDKContext(ctx).BlockTime(),
 	})
 
 	return &types.Void{}, nil

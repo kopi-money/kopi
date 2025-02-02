@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/cache"
 
@@ -23,7 +21,7 @@ func (k msgServer) CAssetAddDenom(ctx context.Context, req *types.MsgCAssetAddDe
 		borrowLimit, _ := math.LegacyNewDecFromStr(req.BorrowLimit)
 		minimumLoanSize, _ := math.NewIntFromString(req.MinLoanSize)
 
-		params.CAssets = append(params.CAssets, &types.CAsset{
+		params.CAssets = append(params.CAssets, types.CAsset{
 			DexDenom:        req.Name,
 			BaseDexDenom:    req.BaseDenom,
 			DexFeeShare:     dexFeeShare,
@@ -31,9 +29,9 @@ func (k msgServer) CAssetAddDenom(ctx context.Context, req *types.MsgCAssetAddDe
 			MinimumLoanSize: minimumLoanSize,
 		})
 
-		baseDenom, has := k.GetDexDenom(innerCtx, req.BaseDenom)
-		if !has {
-			return fmt.Errorf("base denom does not exist: %v", req.BaseDenom)
+		baseDenom, err := k.GetDexDenom(innerCtx, req.BaseDenom)
+		if err != nil {
+			return err
 		}
 
 		if !k.IsValidDenom(innerCtx, req.Name) {
@@ -42,7 +40,7 @@ func (k msgServer) CAssetAddDenom(ctx context.Context, req *types.MsgCAssetAddDe
 				return err
 			}
 
-			params.DexDenoms = append(params.DexDenoms, &dexDenom)
+			params.DexDenoms = append(params.DexDenoms, dexDenom)
 
 			k.ratios.Set(innerCtx, req.Name, ratio)
 		}
@@ -62,7 +60,7 @@ func (k msgServer) CAssetUpdateReference(ctx context.Context, req *types.MsgCAss
 		params := k.GetParams(innerCtx)
 
 		var (
-			cAssets []*types.CAsset
+			cAssets []types.CAsset
 			found   bool
 		)
 
@@ -96,7 +94,7 @@ func (k msgServer) CAssetUpdateDexFeeShare(ctx context.Context, req *types.MsgCA
 		dexFeeShare, _ := math.LegacyNewDecFromStr(req.DexFeeShare)
 
 		var (
-			cAssets []*types.CAsset
+			cAssets []types.CAsset
 			found   bool
 		)
 
@@ -130,7 +128,7 @@ func (k msgServer) CAssetUpdateBorrowLimit(ctx context.Context, req *types.MsgCA
 		borrowLimit, _ := math.LegacyNewDecFromStr(req.BorrowLimit)
 
 		var (
-			cAssets []*types.CAsset
+			cAssets []types.CAsset
 			found   bool
 		)
 
@@ -168,7 +166,7 @@ func (k msgServer) CAssetUpdateMinimumLoanSize(ctx context.Context, req *types.M
 		}
 
 		var (
-			cAssets []*types.CAsset
+			cAssets []types.CAsset
 			found   bool
 		)
 

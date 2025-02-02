@@ -80,11 +80,11 @@ type DexKeeper interface {
 }
 
 type DenomKeeper interface {
-	GetArbitrageDenoms(context.Context) []*denomtypes.ArbitrageDenom
-	GetCAsset(context.Context, string) (*denomtypes.CAsset, error)
-	GetCAssetByBaseName(context.Context, string) (*denomtypes.CAsset, error)
-	GetArbitrageDenomByCAsset(context.Context, string) (*denomtypes.ArbitrageDenom, error)
-	GetArbitrageDenomByName(context.Context, string) (*denomtypes.ArbitrageDenom, error)
+	GetArbitrageDenoms(context.Context) []denomtypes.ArbitrageDenom
+	GetCAsset(context.Context, string) (denomtypes.CAsset, error)
+	GetCAssetByBaseName(context.Context, string) (denomtypes.CAsset, error)
+	GetArbitrageDenomByCAsset(context.Context, string) (denomtypes.ArbitrageDenom, error)
+	GetArbitrageDenomByName(context.Context, string) (denomtypes.ArbitrageDenom, error)
 	IsBorrowableDenom(context.Context, string) bool
 	IsCAsset(context.Context, string) bool
 	IsCollateralDenom(context.Context, string) bool
@@ -97,13 +97,13 @@ type MMKeeper interface {
 	Borrow(context.Context, sdk.AccAddress, string, math.Int) (math.Int, math.Int, error)
 	CalculateBorrowableAmount(context.Context, string, string) (math.LegacyDec, error)
 	CalcWithdrawableCollateralAmount(context.Context, string, string) (math.LegacyDec, error)
-	CalculateNewCAssetAmount(context.Context, *denomtypes.CAsset, math.Int) (math.Int, error)
-	CalculateCAssetRedemptionValue(context.Context, *denomtypes.CAsset) math.LegacyDec
+	CalculateNewCAssetAmount(context.Context, denomtypes.CAsset, math.Int) (math.Int, error)
+	CalculateCAssetRedemptionValue(context.Context, denomtypes.CAsset) math.LegacyDec
 	CalculateCreditLineUsage(context.Context, string) (math.LegacyDec, error)
 	CalculateInterestRateForDenom(context.Context, string) math.LegacyDec
-	CreateRedemptionRequest(context.Context, sdk.AccAddress, *denomtypes.CAsset, math.Int, math.LegacyDec) error
-	ConvertToBaseAmount(context.Context, *denomtypes.CAsset, math.LegacyDec) math.LegacyDec
-	Deposit(context.Context, sdk.AccAddress, *denomtypes.CAsset, math.Int) (math.Int, error)
+	CreateRedemptionRequest(context.Context, sdk.AccAddress, denomtypes.CAsset, math.Int, math.LegacyDec) error
+	ConvertToBaseAmount(context.Context, denomtypes.CAsset, math.LegacyDec) math.LegacyDec
+	Deposit(context.Context, sdk.AccAddress, denomtypes.CAsset, math.Int) (math.Int, error)
 	GetCollateralForDenomForAddressWithDefault(context.Context, string, string) math.Int
 	GetLoanValue(ctx context.Context, denom, address string) math.LegacyDec
 	GetMinimumRedemptionFee(context.Context) math.LegacyDec

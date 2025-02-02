@@ -53,10 +53,10 @@ func (k Keeper) HandleArbitrageDenoms(ctx context.Context) error {
 // executed first, it would mean that denom has more chances to use arbitrage opportunities than the other denoms. By
 // flipping the order depending on the block height, every denom gets the chance to be first, result in a fair
 // execution order.
-func shiftDenomOrder(ctx context.Context, arbitrageDenoms []*denomtypes.ArbitrageDenom) []*denomtypes.ArbitrageDenom {
+func shiftDenomOrder(ctx context.Context, arbitrageDenoms []denomtypes.ArbitrageDenom) []denomtypes.ArbitrageDenom {
 	shift := int(sdk.UnwrapSDKContext(ctx).BlockHeight()) % len(arbitrageDenoms)
 
-	result := make([]*denomtypes.ArbitrageDenom, len(arbitrageDenoms))
+	result := make([]denomtypes.ArbitrageDenom, len(arbitrageDenoms))
 	for i, arbitrageDenom := range arbitrageDenoms {
 		newIndex := (i + shift) % len(arbitrageDenoms)
 		result[newIndex] = arbitrageDenom
@@ -65,7 +65,7 @@ func shiftDenomOrder(ctx context.Context, arbitrageDenoms []*denomtypes.Arbitrag
 	return result
 }
 
-func (k Keeper) handleArbitrageDenom(ctx context.Context, arbitrageDenom *denomtypes.ArbitrageDenom) error {
+func (k Keeper) handleArbitrageDenom(ctx context.Context, arbitrageDenom denomtypes.ArbitrageDenom) error {
 	parity, _, err := k.DexKeeper.CalculateParity(ctx, arbitrageDenom.KCoin)
 	if err != nil {
 		return fmt.Errorf("calculate parity: %w", err)

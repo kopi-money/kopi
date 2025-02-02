@@ -44,7 +44,7 @@ type DenomKeeper interface {
 	Denoms(ctx context.Context) []string
 	GetAllRatios(ctx context.Context) []denomtypes.Ratio
 	GetAuthority() string
-	GetCAssetByBaseName(ctx context.Context, baseDenom string) (*denomtypes.CAsset, error)
+	GetCAssetByBaseName(ctx context.Context, baseDenom string) (denomtypes.CAsset, error)
 	GetRatio(ctx context.Context, denom string) (denomtypes.Ratio, error)
 	IsCollateralDenom(ctx context.Context, denom string) bool
 	IsKCoin(ctx context.Context, denom string) bool

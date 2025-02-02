@@ -139,7 +139,7 @@ func (k Keeper) handleBorrowerLiquidation(ctx context.Context, collateralDenoms 
 	return nil
 }
 
-func loanUnderMinimumThreshold(cAsset *denomtypes.CAsset, loanValue math.LegacyDec) bool {
+func loanUnderMinimumThreshold(cAsset denomtypes.CAsset, loanValue math.LegacyDec) bool {
 	if cAsset.MinimumLoanSize.IsNil() {
 		return false
 	}
@@ -149,7 +149,7 @@ func loanUnderMinimumThreshold(cAsset *denomtypes.CAsset, loanValue math.LegacyD
 
 // liquidateCollateral calculates for each collateral denom how much collateral to sell such as to repay the loan and lower
 // excess borrow amount. Sold collateral is sent to the vault.
-func (k Keeper) liquidateCollateral(ctx context.Context, tradeBalances dextypes.TradeBalances, ordersCaches *dextypes.OrdersCaches, collateralDenoms []string, cAsset *denomtypes.CAsset, loan types.Loan, borrower string, loanValue math.LegacyDec, excessAmountBase *math.LegacyDec) error {
+func (k Keeper) liquidateCollateral(ctx context.Context, tradeBalances dextypes.TradeBalances, ordersCaches *dextypes.OrdersCaches, collateralDenoms []string, cAsset denomtypes.CAsset, loan types.Loan, borrower string, loanValue math.LegacyDec, excessAmountBase *math.LegacyDec) error {
 	addr, _ := sdk.AccAddressFromBech32(borrower)
 	repayAmount := math.LegacyZeroDec()
 
@@ -207,7 +207,7 @@ func (k Keeper) liquidateCollateral(ctx context.Context, tradeBalances dextypes.
 	return nil
 }
 
-func (k Keeper) processLiquidation(ctx context.Context, tradeBalances dextypes.TradeBalances, ordersCaches *dextypes.OrdersCaches, cAsset *denomtypes.CAsset, excessAmount math.LegacyDec, collateralDenom, address string) (math.Int, error) {
+func (k Keeper) processLiquidation(ctx context.Context, tradeBalances dextypes.TradeBalances, ordersCaches *dextypes.OrdersCaches, cAsset denomtypes.CAsset, excessAmount math.LegacyDec, collateralDenom, address string) (math.Int, error) {
 	collateral, found := k.collateral.Get(ctx, collateralDenom, address)
 	if !found {
 		return math.ZeroInt(), nil

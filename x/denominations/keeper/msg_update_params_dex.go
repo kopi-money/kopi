@@ -26,7 +26,7 @@ func (k msgServer) DexAddDenom(ctx context.Context, req *types.MsgDexAddDenom) (
 			return err
 		}
 
-		params.DexDenoms = append(params.DexDenoms, &dexDenom)
+		params.DexDenoms = append(params.DexDenoms, dexDenom)
 
 		if err = k.SetParams(innerCtx, params); err != nil {
 			return err
@@ -55,7 +55,7 @@ func (k msgServer) DexUpdateMinimumLiquidity(ctx context.Context, req *types.Msg
 func (k Keeper) DexUpdateMinimumLiquidity(ctx context.Context, denom, minLiquidityStr string) error {
 	params := k.GetParams(ctx)
 	minLiquidity, _ := math.NewIntFromString(minLiquidityStr)
-	dexDenoms := []*types.DexDenom{}
+	dexDenoms := []types.DexDenom{}
 	found := false
 
 	for _, dexDenom := range params.DexDenoms {
@@ -88,7 +88,7 @@ func (k msgServer) DexUpdateMinimumOrderSize(ctx context.Context, req *types.Msg
 
 		params := k.GetParams(innerCtx)
 		minOrderSize, _ := math.NewIntFromString(req.MinOrderSize)
-		dexDenoms := []*types.DexDenom{}
+		dexDenoms := []types.DexDenom{}
 		found := false
 
 		for _, dexDenom := range params.DexDenoms {
@@ -162,9 +162,9 @@ func (k Keeper) CreateRatio(ctx context.Context, factorStr string, exponent uint
 		referenceDenom = constants.BaseCurrency
 	}
 
-	otherDenom, has := k.GetDexDenom(ctx, referenceDenom)
-	if !has {
-		return math.LegacyDec{}, fmt.Errorf("unable to find other denom: %v", referenceDenom)
+	otherDenom, err := k.GetDexDenom(ctx, referenceDenom)
+	if err != nil {
+		return math.LegacyDec{}, err
 	}
 
 	referenceFactor = adjustForExponent(referenceFactor, otherDenom.Exponent, exponent)

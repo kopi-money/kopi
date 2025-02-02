@@ -23,8 +23,8 @@ func (k msgServer) ArbitrageDeposit(ctx context.Context, msg *types.MsgArbitrage
 		return nil, err
 	}
 
-	var cAsset *denomtypes.CAsset
-	if cAsset, _ = k.DenomKeeper.GetCAssetByBaseName(ctx, msg.Denom); cAsset != nil {
+	var cAsset denomtypes.CAsset
+	if cAsset, err = k.DenomKeeper.GetCAssetByBaseName(ctx, msg.Denom); err == nil {
 		var cAssetAmount math.Int
 		cAssetAmount, err = k.MMKeeper.Deposit(ctx, address, cAsset, amount)
 		if err != nil {
@@ -149,7 +149,7 @@ func (k msgServer) ArbitrageRedeem(ctx context.Context, msg *types.MsgArbitrageR
 	return &types.Void{}, nil
 }
 
-func (k Keeper) calculateArbitrageTokenValue(ctx context.Context, arbitrageDenom *denomtypes.ArbitrageDenom) CalculateValue {
+func (k Keeper) calculateArbitrageTokenValue(ctx context.Context, arbitrageDenom denomtypes.ArbitrageDenom) CalculateValue {
 	acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolArbitrage)
 
 	return CalculateValue{
@@ -196,7 +196,7 @@ func (k Keeper) checkSpendableCoins(ctx context.Context, address sdk.AccAddress,
 	return nil
 }
 
-func (k Keeper) handleRedemptionFee(ctx context.Context, arbitrageDenom *denomtypes.ArbitrageDenom, payoutAmountGross math.Int) (math.Int, error) {
+func (k Keeper) handleRedemptionFee(ctx context.Context, arbitrageDenom denomtypes.ArbitrageDenom, payoutAmountGross math.Int) (math.Int, error) {
 	if !payoutAmountGross.IsPositive() {
 		return math.Int{}, types.ErrNonPositiveRedemptionAmount
 	}

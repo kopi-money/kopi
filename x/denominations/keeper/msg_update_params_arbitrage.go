@@ -20,9 +20,6 @@ func (k msgServer) ArbitrageAddDenom(ctx context.Context, req *types.MsgAddArbit
 
 		params := k.GetParams(innerCtx)
 		strategyDenoms := params.StrategyDenoms
-		if strategyDenoms == nil {
-			strategyDenoms = &types.StrategyDenoms{}
-		}
 
 		buyThreshold, _ := math.LegacyNewDecFromStr(req.BuyThreshold)
 		sellTreshold, _ := math.LegacyNewDecFromStr(req.SellThreshold)
@@ -31,9 +28,9 @@ func (k msgServer) ArbitrageAddDenom(ctx context.Context, req *types.MsgAddArbit
 		redemptionFee, _ := math.LegacyNewDecFromStr(req.RedemptionFee)
 		redemptionFeeReserveShare, _ := math.LegacyNewDecFromStr(req.RedemptionFeeReserveShare)
 
-		cAsset, has := k.GetDexDenom(innerCtx, req.CAsset)
-		if !has {
-			return fmt.Errorf("no dex asset found for given c asset: %v", req.CAsset)
+		cAsset, err := k.GetDexDenom(innerCtx, req.CAsset)
+		if err != nil {
+			return err
 		}
 
 		dexDenom, ratio, err := k.createDexDenom(ctx, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, cAsset.Exponent)
@@ -41,9 +38,9 @@ func (k msgServer) ArbitrageAddDenom(ctx context.Context, req *types.MsgAddArbit
 			return err
 		}
 
-		params.DexDenoms = append(params.DexDenoms, &dexDenom)
+		params.DexDenoms = append(params.DexDenoms, dexDenom)
 
-		strategyDenoms.ArbitrageDenoms = append(strategyDenoms.ArbitrageDenoms, &types.ArbitrageDenom{
+		strategyDenoms.ArbitrageDenoms = append(strategyDenoms.ArbitrageDenoms, types.ArbitrageDenom{
 			DexDenom:                  req.Name,
 			KCoin:                     req.Kcoin,
 			CAsset:                    req.CAsset,
@@ -76,13 +73,9 @@ func (k msgServer) ArbitrageUpdateBuyThreshold(ctx context.Context, req *types.M
 
 		params := k.GetParams(innerCtx)
 		strategyDenoms := params.StrategyDenoms
-		if strategyDenoms == nil {
-			strategyDenoms = &types.StrategyDenoms{}
-		}
-
 		buyTreshold, _ := math.LegacyNewDecFromStr(req.BuyThreshold)
 
-		arbitrageDenoms := []*types.ArbitrageDenom{}
+		arbitrageDenoms := []types.ArbitrageDenom{}
 		found := false
 
 		for _, arbitrageDenom := range strategyDenoms.ArbitrageDenoms {
@@ -118,12 +111,9 @@ func (k msgServer) ArbitrageUpdateSellThreshold(ctx context.Context, req *types.
 
 		params := k.GetParams(innerCtx)
 		strategyDenoms := params.StrategyDenoms
-		if strategyDenoms == nil {
-			strategyDenoms = &types.StrategyDenoms{}
-		}
 
 		sellTreshold, _ := math.LegacyNewDecFromStr(req.SellThreshold)
-		arbitrageDenoms := []*types.ArbitrageDenom{}
+		arbitrageDenoms := []types.ArbitrageDenom{}
 		found := false
 
 		for _, arbitrageDenom := range strategyDenoms.ArbitrageDenoms {
@@ -160,16 +150,13 @@ func (k msgServer) ArbitrageUpdateBuyAmount(ctx context.Context, req *types.MsgA
 
 		params := k.GetParams(innerCtx)
 		strategyDenoms := params.StrategyDenoms
-		if strategyDenoms == nil {
-			strategyDenoms = &types.StrategyDenoms{}
-		}
 
 		buyAmount, ok := math.NewIntFromString(req.BuyAmount)
 		if !ok {
 			return fmt.Errorf("invalid buy amount: %v", req.BuyAmount)
 		}
 
-		arbitrageDenoms := []*types.ArbitrageDenom{}
+		arbitrageDenoms := []types.ArbitrageDenom{}
 		found := false
 
 		for _, arbitrageDenom := range strategyDenoms.ArbitrageDenoms {
@@ -206,16 +193,13 @@ func (k msgServer) ArbitrageUpdateSellAmount(ctx context.Context, req *types.Msg
 
 		params := k.GetParams(innerCtx)
 		strategyDenoms := params.StrategyDenoms
-		if strategyDenoms == nil {
-			strategyDenoms = &types.StrategyDenoms{}
-		}
 
 		sellAmount, ok := math.NewIntFromString(req.SellAmount)
 		if !ok {
 			return fmt.Errorf("invalid sell amount: %v", req.SellAmount)
 		}
 
-		arbitrageDenoms := []*types.ArbitrageDenom{}
+		arbitrageDenoms := []types.ArbitrageDenom{}
 		found := false
 
 		for _, arbitrageDenom := range strategyDenoms.ArbitrageDenoms {
@@ -252,16 +236,13 @@ func (k msgServer) ArbitrageUpdateRedemptionFee(ctx context.Context, req *types.
 
 		params := k.GetParams(innerCtx)
 		strategyDenoms := params.StrategyDenoms
-		if strategyDenoms == nil {
-			strategyDenoms = &types.StrategyDenoms{}
-		}
 
 		fee, err := math.LegacyNewDecFromStr(req.RedemptionFee)
 		if err != nil {
 			return errorsmod.Wrap(err, fmt.Sprintf("invalid fee: %v", req.RedemptionFee))
 		}
 
-		arbitrageDenoms := []*types.ArbitrageDenom{}
+		arbitrageDenoms := []types.ArbitrageDenom{}
 		found := false
 
 		for _, arbitrageDenom := range strategyDenoms.ArbitrageDenoms {
@@ -298,16 +279,13 @@ func (k msgServer) ArbitrageUpdateRedemptionFeeReserveShare(ctx context.Context,
 
 		params := k.GetParams(innerCtx)
 		strategyDenoms := params.StrategyDenoms
-		if strategyDenoms == nil {
-			strategyDenoms = &types.StrategyDenoms{}
-		}
 
 		share, err := math.LegacyNewDecFromStr(req.RedemptionFeeReserveShare)
 		if err != nil {
 			return errorsmod.Wrap(err, fmt.Sprintf("invalid fee: %v", req.RedemptionFeeReserveShare))
 		}
 
-		arbitrageDenoms := []*types.ArbitrageDenom{}
+		arbitrageDenoms := []types.ArbitrageDenom{}
 		found := false
 
 		for _, arbitrageDenom := range strategyDenoms.ArbitrageDenoms {

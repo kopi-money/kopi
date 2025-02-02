@@ -279,7 +279,7 @@ func (k Keeper) GetDepositUserDenomStats(ctx context.Context, req *types.GetDepo
 	return &depositStats, nil
 }
 
-func (k Keeper) getUtilityRate(ctx context.Context, cAsset *denomtypes.CAsset) math.LegacyDec {
+func (k Keeper) getUtilityRate(ctx context.Context, cAsset denomtypes.CAsset) math.LegacyDec {
 	available := k.GetVaultAmount(ctx, cAsset)
 	totalBorrowed := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom).LoanSum
 

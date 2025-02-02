@@ -31,12 +31,12 @@ func (k Keeper) GetRedemptionSum(ctx context.Context, denom string) math.Int {
 
 func (k Keeper) GetDenomRedemptions(ctx context.Context) (list []types.DenomRedemption) {
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
-		var redemptions []*types.Redemption
+		var redemptions []types.Redemption
 
 		iterator := k.RedemptionIterator(ctx, cAsset.BaseDexDenom)
 		for iterator.Valid() {
 			redemption := iterator.GetNext()
-			redemptions = append(redemptions, &redemption)
+			redemptions = append(redemptions, redemption)
 		}
 
 		list = append(list, types.DenomRedemption{
@@ -88,7 +88,7 @@ func (k Keeper) HandleRedemptions(ctx context.Context) error {
 	return nil
 }
 
-func (k Keeper) handleRedemptionsForCAsset(ctx context.Context, cAsset *denomtypes.CAsset) error {
+func (k Keeper) handleRedemptionsForCAsset(ctx context.Context, cAsset denomtypes.CAsset) error {
 	redemptions := k.RedemptionIterator(ctx, cAsset.BaseDexDenom).GetAll()
 	if len(redemptions) == 0 {
 		return nil
@@ -128,7 +128,7 @@ func (k Keeper) handleRedemptionsForCAsset(ctx context.Context, cAsset *denomtyp
 	return nil
 }
 
-func (k Keeper) handleSingleRedemption(ctx context.Context, cAsset *denomtypes.CAsset, entry types.Redemption, available math.LegacyDec) (math.LegacyDec, error) {
+func (k Keeper) handleSingleRedemption(ctx context.Context, cAsset denomtypes.CAsset, entry types.Redemption, available math.LegacyDec) (math.LegacyDec, error) {
 	grossRedemptionAmountBase, redemptionAmountCAsset := k.CalculateAvailableRedemptionAmount(ctx, cAsset, entry.Amount.ToLegacyDec(), available)
 	if grossRedemptionAmountBase.IsZero() {
 		return math.LegacyZeroDec(), nil
@@ -176,7 +176,7 @@ func (k Keeper) handleSingleRedemption(ctx context.Context, cAsset *denomtypes.C
 	return grossRedemptionAmountBase, nil
 }
 
-func (k Keeper) CalculateRedemptionAmount(ctx context.Context, cAsset *denomtypes.CAsset, requestedCAssetAmount math.LegacyDec) math.LegacyDec {
+func (k Keeper) CalculateRedemptionAmount(ctx context.Context, cAsset denomtypes.CAsset, requestedCAssetAmount math.LegacyDec) math.LegacyDec {
 	if requestedCAssetAmount.IsZero() {
 		return math.LegacyZeroDec()
 	}
@@ -196,7 +196,7 @@ func (k Keeper) CalculateRedemptionAmount(ctx context.Context, cAsset *denomtype
 	return redemptionValue
 }
 
-func (k Keeper) CalculateAvailableRedemptionAmount(ctx context.Context, cAsset *denomtypes.CAsset, requestedCAssetAmount, available math.LegacyDec) (math.LegacyDec, math.LegacyDec) {
+func (k Keeper) CalculateAvailableRedemptionAmount(ctx context.Context, cAsset denomtypes.CAsset, requestedCAssetAmount, available math.LegacyDec) (math.LegacyDec, math.LegacyDec) {
 	redemptionValue := k.CalculateRedemptionAmount(ctx, cAsset, requestedCAssetAmount)
 	if redemptionValue.IsZero() {
 		return math.LegacyZeroDec(), math.LegacyZeroDec()
@@ -216,7 +216,7 @@ func (k Keeper) CalculateAvailableRedemptionAmount(ctx context.Context, cAsset *
 	return redeemAmount, usedCAssets
 }
 
-func (k Keeper) handleRedemptionFee(ctx context.Context, cAsset *denomtypes.CAsset, amount math.LegacyDec) error {
+func (k Keeper) handleRedemptionFee(ctx context.Context, cAsset denomtypes.CAsset, amount math.LegacyDec) error {
 	if amount.LTE(math.LegacyZeroDec()) {
 		return nil
 	}

@@ -15,13 +15,13 @@ import (
 // GetGenesisLoans is used for genesis export
 func (k Keeper) GetGenesisLoans(ctx context.Context) (denomLoans []types.Loans) {
 	for _, denom := range k.DenomKeeper.GetCAssets(ctx) {
-		var loans []*types.GenesisLoan
+		var loans []types.GenesisLoan
 		iterator := k.LoanIterator(ctx, denom.BaseDexDenom)
 		for iterator.Valid() {
 			keyValue := iterator.GetNextKeyValue()
 			loan := keyValue.Value().Value()
 
-			loans = append(loans, &types.GenesisLoan{
+			loans = append(loans, types.GenesisLoan{
 				Index:   loan.Index,
 				Address: keyValue.Key(),
 				Weight:  loan.Weight,
@@ -134,7 +134,7 @@ func (k Keeper) GetLoansNumForAddress(ctx context.Context, address string) (num 
 
 type CAssetLoan struct {
 	types.Loan
-	cAsset *denomtypes.CAsset
+	cAsset denomtypes.CAsset
 	value  math.LegacyDec
 }
 
@@ -194,7 +194,7 @@ func (k Keeper) CalcAvailableToBorrow(ctx context.Context, address, denom string
 	return math.MinInt(available, borrowable.TruncateInt()), nil
 }
 
-func (k Keeper) checkBorrowLimitExceeded(ctx context.Context, cAsset *denomtypes.CAsset, amount math.Int) bool {
+func (k Keeper) checkBorrowLimitExceeded(ctx context.Context, cAsset denomtypes.CAsset, amount math.Int) bool {
 	if cAsset.BorrowLimit.IsZero() {
 		return false
 	}

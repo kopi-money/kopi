@@ -20,14 +20,14 @@ func (k Keeper) IsValidDenom(ctx context.Context, denom string) bool {
 	return false
 }
 
-func (k Keeper) GetDexDenom(ctx context.Context, denom string) (*types.DexDenom, bool) {
+func (k Keeper) GetDexDenom(ctx context.Context, denom string) (types.DexDenom, error) {
 	for _, dexDenom := range k.GetParams(ctx).DexDenoms {
 		if dexDenom.Name == denom {
-			return dexDenom, true
+			return dexDenom, nil
 		}
 	}
 
-	return &types.DexDenom{}, false
+	return types.DexDenom{}, types.ErrInvalidDexAsset
 }
 
 // Denoms returns a list of all denoms
@@ -201,76 +201,76 @@ func (k Keeper) MinOrderSize(ctx context.Context, denom string) math.Int {
 	panic(fmt.Sprintf("no minimum order size found for %v", denom))
 }
 
-func (k Keeper) GetArbitrageDenomByCAsset(ctx context.Context, cAsset string) (*types.ArbitrageDenom, error) {
+func (k Keeper) GetArbitrageDenomByCAsset(ctx context.Context, cAsset string) (types.ArbitrageDenom, error) {
 	for _, arbitrageDenom := range k.GetParams(ctx).StrategyDenoms.ArbitrageDenoms {
 		if arbitrageDenom.CAsset == cAsset {
 			return arbitrageDenom, nil
 		}
 	}
 
-	return nil, types.ErrInvalidArbitrageDenom
+	return types.ArbitrageDenom{}, types.ErrInvalidArbitrageDenom
 }
 
-func (k Keeper) GetArbitrageDenomByName(ctx context.Context, name string) (*types.ArbitrageDenom, error) {
+func (k Keeper) GetArbitrageDenomByName(ctx context.Context, name string) (types.ArbitrageDenom, error) {
 	for _, arbitrageDenom := range k.GetParams(ctx).StrategyDenoms.ArbitrageDenoms {
 		if arbitrageDenom.DexDenom == name {
 			return arbitrageDenom, nil
 		}
 	}
 
-	return nil, types.ErrInvalidArbitrageDenom
+	return types.ArbitrageDenom{}, types.ErrInvalidArbitrageDenom
 }
 
-func (k Keeper) GetCAssets(ctx context.Context) []*types.CAsset {
+func (k Keeper) GetCAssets(ctx context.Context) []types.CAsset {
 	return k.GetParams(ctx).CAssets
 }
 
-func (k Keeper) GetCAsset(ctx context.Context, name string) (*types.CAsset, error) {
-	cAsset, _ := k.GetCAssetByName(ctx, name)
-	if cAsset != nil {
+func (k Keeper) GetCAsset(ctx context.Context, name string) (types.CAsset, error) {
+	cAsset, err := k.GetCAssetByName(ctx, name)
+	if err == nil {
 		return cAsset, nil
 	}
 
-	cAsset, _ = k.GetCAssetByBaseName(ctx, name)
-	if cAsset != nil {
+	cAsset, err = k.GetCAssetByBaseName(ctx, name)
+	if err == nil {
 		return cAsset, nil
 	}
 
-	return nil, types.ErrInvalidCAsset
+	return types.CAsset{}, types.ErrInvalidCAsset
 }
 
-func (k Keeper) GetCAssetByBaseName(ctx context.Context, baseDenom string) (*types.CAsset, error) {
+func (k Keeper) GetCAssetByBaseName(ctx context.Context, baseDenom string) (types.CAsset, error) {
 	for _, cAsset := range k.GetParams(ctx).CAssets {
 		if cAsset.BaseDexDenom == baseDenom {
 			return cAsset, nil
 		}
 	}
 
-	return nil, types.ErrInvalidCAsset
+	return types.CAsset{}, types.ErrInvalidCAsset
 }
 
-func (k Keeper) GetCAssetByName(ctx context.Context, name string) (*types.CAsset, error) {
+func (k Keeper) GetCAssetByName(ctx context.Context, name string) (types.CAsset, error) {
 	for _, aasset := range k.GetParams(ctx).CAssets {
 		if aasset.DexDenom == name {
 			return aasset, nil
 		}
 	}
 
-	return nil, types.ErrInvalidCAsset
+	return types.CAsset{}, types.ErrInvalidCAsset
 }
 
-func (k Keeper) GetCollateralDenoms(ctx context.Context) []*types.CollateralDenom {
+func (k Keeper) GetCollateralDenoms(ctx context.Context) []types.CollateralDenom {
 	return k.GetParams(ctx).CollateralDenoms
 }
 
-func (k Keeper) GetCollateralDenom(ctx context.Context, denom string) *types.CollateralDenom {
+func (k Keeper) GetCollateralDenom(ctx context.Context, denom string) (types.CollateralDenom, error) {
 	for _, collateralDenom := range k.GetParams(ctx).CollateralDenoms {
 		if collateralDenom.DexDenom == denom {
-			return collateralDenom
+			return collateralDenom, nil
 		}
 	}
 
-	return nil
+	return types.CollateralDenom{}, types.ErrInvalidCollateralDenom
 }
 
 func (k Keeper) GetDepositCap(ctx context.Context, denom string) (math.Int, error) {
@@ -303,19 +303,14 @@ func (k Keeper) IsValidCollateralDenom(ctx context.Context, denom string) bool {
 	return false
 }
 
-func (k Keeper) GetArbitrageDenoms(ctx context.Context) []*types.ArbitrageDenom {
-	strategyDenoms := k.GetParams(ctx).StrategyDenoms
-	if strategyDenoms == nil {
-		return nil
-	}
-
-	return strategyDenoms.ArbitrageDenoms
+func (k Keeper) GetArbitrageDenoms(ctx context.Context) []types.ArbitrageDenom {
+	return k.GetParams(ctx).StrategyDenoms.ArbitrageDenoms
 }
 
 func (k Keeper) RemoveDenom(ctx context.Context, denom string) error {
 	params := k.GetParams(ctx)
 
-	var filtered []*types.DexDenom
+	var filtered []types.DexDenom
 	for _, dexDenom := range params.DexDenoms {
 		if dexDenom.Name != denom {
 			filtered = append(filtered, dexDenom)

@@ -26,7 +26,7 @@ func TestAutomation1(t *testing.T) {
 	require.Error(t, keepertest.AddAutomationMsg(ctx, msg, &types.MsgAutomationsAdd{}))
 	require.Error(t, keepertest.AddAutomationMsg(ctx, msg, &types.MsgAutomationsAdd{Creator: keepertest.Alice, Title: "test"}))
 
-	conditions := []*types.Condition{
+	conditions := []types.Condition{
 		{
 			ConditionType: types.ConditionWalletAmount,
 			String1:       constants.KUSD,
@@ -97,7 +97,7 @@ func TestAutomation3(t *testing.T) {
 		Index:   0,
 		Address: keepertest.Alice,
 		Active:  true,
-		Conditions: []*types.Condition{
+		Conditions: []types.Condition{
 			{
 				ConditionType: types.ConditionWalletAmount,
 				String1:       constants.KUSD,
@@ -105,7 +105,7 @@ func TestAutomation3(t *testing.T) {
 				Value:         math.LegacyNewDec(1000),
 			},
 		},
-		Actions: []*types.Action{
+		Actions: []types.Action{
 			{
 				ActionType: types.ActionCollateralAdd,
 				String1:    constants.KUSD,
@@ -129,7 +129,7 @@ func TestAutomation4(t *testing.T) {
 		Index:   0,
 		Address: keepertest.Alice,
 		Active:  true,
-		Conditions: []*types.Condition{
+		Conditions: []types.Condition{
 			{
 				ConditionType: types.ConditionWalletAmount,
 				String1:       constants.KUSD,
@@ -137,7 +137,7 @@ func TestAutomation4(t *testing.T) {
 				Value:         math.LegacyNewDec(1000),
 			},
 		},
-		Actions: []*types.Action{
+		Actions: []types.Action{
 			{
 				ActionType: types.ActionCollateralAdd,
 				String1:    constants.KUSD,
@@ -172,7 +172,7 @@ func TestAutomation5(t *testing.T) {
 		Index:   0,
 		Address: keepertest.Alice,
 		Active:  true,
-		Conditions: []*types.Condition{
+		Conditions: []types.Condition{
 			{
 				ConditionType: types.ConditionWalletAmount,
 				String1:       constants.KUSD,
@@ -180,7 +180,7 @@ func TestAutomation5(t *testing.T) {
 				Value:         math.LegacyNewDec(1000),
 			},
 		},
-		Actions: []*types.Action{
+		Actions: []types.Action{
 			{
 				ActionType: types.ActionCollateralAdd,
 				String1:    constants.KUSD,
@@ -208,7 +208,7 @@ func TestAutomation6(t *testing.T) {
 		Index:   0,
 		Address: keepertest.Alice,
 		Active:  true,
-		Conditions: []*types.Condition{
+		Conditions: []types.Condition{
 			{
 				ConditionType: types.ConditionWalletAmount,
 				String1:       constants.KUSD,
@@ -222,7 +222,7 @@ func TestAutomation6(t *testing.T) {
 				Value:         math.LegacyNewDec(1000),
 			},
 		},
-		Actions: []*types.Action{
+		Actions: []types.Action{
 			{
 				ActionType: types.ActionCollateralAdd,
 				String1:    constants.KUSD,
@@ -251,7 +251,7 @@ func TestAutomation7(t *testing.T) {
 		Index:   0,
 		Address: keepertest.Alice,
 		Active:  true,
-		Conditions: []*types.Condition{
+		Conditions: []types.Condition{
 			{
 				ConditionType: types.ConditionWalletAmount,
 				String1:       constants.KUSD,
@@ -259,7 +259,7 @@ func TestAutomation7(t *testing.T) {
 				Value:         math.LegacyNewDec(1000),
 			},
 		},
-		Actions: []*types.Action{
+		Actions: []types.Action{
 			{
 				ActionType: types.ActionCollateralAdd,
 				String1:    constants.KUSD,
@@ -298,7 +298,7 @@ func TestAutomation8(t *testing.T) {
 		Index:   0,
 		Address: keepertest.Dave,
 		Active:  true,
-		Conditions: []*types.Condition{
+		Conditions: []types.Condition{
 			{
 				ConditionType: types.ConditionWalletAmount,
 				String1:       constants.KUSD,
@@ -306,7 +306,7 @@ func TestAutomation8(t *testing.T) {
 				Value:         math.LegacyNewDec(1000),
 			},
 		},
-		Actions: []*types.Action{
+		Actions: []types.Action{
 			{
 				ActionType: types.ActionCollateralAdd,
 				String1:    constants.KUSD,
@@ -339,7 +339,7 @@ func TestAutomation9(t *testing.T) {
 		Index:   0,
 		Address: keepertest.Alice,
 		Active:  true,
-		Conditions: []*types.Condition{
+		Conditions: []types.Condition{
 			{
 				ConditionType: types.ConditionWalletAmount,
 				String1:       constants.KUSD,
@@ -347,7 +347,7 @@ func TestAutomation9(t *testing.T) {
 				Value:         math.LegacyNewDec(1000),
 			},
 		},
-		Actions: []*types.Action{
+		Actions: []types.Action{
 			{
 				ActionType: types.ActionCollateralWithdraw,
 				String1:    constants.KUSD,
@@ -378,7 +378,7 @@ func TestAutomation10(t *testing.T) {
 		Active:        true,
 		ValidityType:  keeper.AutomationValidityNumExecutions,
 		ValidityValue: 2,
-		Conditions: []*types.Condition{
+		Conditions: []types.Condition{
 			{
 				ConditionType: types.ConditionWalletAmount,
 				String1:       constants.KUSD,
@@ -386,7 +386,7 @@ func TestAutomation10(t *testing.T) {
 				Value:         math.LegacyNewDec(100),
 			},
 		},
-		Actions: []*types.Action{
+		Actions: []types.Action{
 			{
 				ActionType: types.ActionSendCoins,
 				String1:    constants.KUSD,
@@ -435,7 +435,7 @@ func TestAutomation11(t *testing.T) {
 		Active:        true,
 		ValidityType:  keeper.AutomationValidityFeesConsumed,
 		ValidityValue: 4,
-		Conditions: []*types.Condition{
+		Conditions: []types.Condition{
 			{
 				ConditionType: types.ConditionWalletAmount,
 				String1:       constants.KUSD,
@@ -443,7 +443,7 @@ func TestAutomation11(t *testing.T) {
 				Value:         math.LegacyNewDec(100),
 			},
 		},
-		Actions: []*types.Action{
+		Actions: []types.Action{
 			{
 				ActionType: types.ActionSendCoins,
 				String1:    constants.KUSD,
@@ -492,7 +492,7 @@ func TestAutomation12(t *testing.T) {
 		Active:        true,
 		ValidityType:  keeper.AutomationIntervalSeconds,
 		ValidityValue: 10,
-		Conditions: []*types.Condition{
+		Conditions: []types.Condition{
 			{
 				ConditionType: types.ConditionWalletAmount,
 				String1:       constants.KUSD,
@@ -500,7 +500,7 @@ func TestAutomation12(t *testing.T) {
 				Value:         math.LegacyNewDec(100),
 			},
 		},
-		Actions: []*types.Action{
+		Actions: []types.Action{
 			{
 				ActionType: types.ActionSendCoins,
 				String1:    constants.KUSD,
@@ -552,7 +552,7 @@ func TestAutomation13(t *testing.T) {
 		Active:        true,
 		ValidityType:  keeper.AutomationIntervalSeconds,
 		ValidityValue: 10,
-		Conditions: []*types.Condition{
+		Conditions: []types.Condition{
 			{
 				ConditionType: types.ConditionWalletAmount,
 				String1:       constants.KUSD,
@@ -560,7 +560,7 @@ func TestAutomation13(t *testing.T) {
 				Value:         math.LegacyNewDec(100),
 			},
 		},
-		Actions: []*types.Action{
+		Actions: []types.Action{
 			{
 				ActionType: types.ActionSendCoins,
 				String1:    keepertest.Carol,
@@ -596,7 +596,7 @@ func TestAutomation14(t *testing.T) {
 		Active:        true,
 		ValidityType:  keeper.AutomationIntervalSeconds,
 		ValidityValue: 10,
-		Conditions: []*types.Condition{
+		Conditions: []types.Condition{
 			{
 				ConditionType: types.ConditionWalletAmount,
 				String1:       "uwusdc",
@@ -604,7 +604,7 @@ func TestAutomation14(t *testing.T) {
 				Value:         math.LegacyNewDec(1_000_000),
 			},
 		},
-		Actions: []*types.Action{
+		Actions: []types.Action{
 			{
 				ActionType: types.ActionDeposit,
 				String1:    "uwusdc",
@@ -650,7 +650,7 @@ func TestAutomation15(t *testing.T) {
 		Active:        true,
 		ValidityType:  keeper.AutomationIntervalSeconds,
 		ValidityValue: 10,
-		Conditions: []*types.Condition{
+		Conditions: []types.Condition{
 			{
 				ConditionType: types.ConditionWalletAmount,
 				String1:       "uwusdc",
@@ -658,7 +658,7 @@ func TestAutomation15(t *testing.T) {
 				Value:         math.LegacyNewDec(1_000_000),
 			},
 		},
-		Actions: []*types.Action{
+		Actions: []types.Action{
 			{
 				ActionType: types.ActionDeposit,
 				String1:    "uwusdc",

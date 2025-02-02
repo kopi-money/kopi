@@ -75,7 +75,7 @@ func (k Keeper) calculateNewStrategyAssetAmountWithShare(ctx context.Context, de
 	return newTokens, nil
 }
 
-func (k Keeper) calculateRedemptionAmount(ctx context.Context, arbitrageDenom *denomtypes.ArbitrageDenom, requestedAAssetAmount, available math.Int, calculateValue CalculateValue, allowIncomplete bool) (math.Int, math.Int, error) {
+func (k Keeper) calculateRedemptionAmount(ctx context.Context, arbitrageDenom denomtypes.ArbitrageDenom, requestedAAssetAmount, available math.Int, calculateValue CalculateValue, allowIncomplete bool) (math.Int, math.Int, error) {
 	redemptionValue, err := k.calculateRedemptionValue(ctx, arbitrageDenom, requestedAAssetAmount, calculateValue)
 	if err != nil {
 		return math.Int{}, math.Int{}, fmt.Errorf("could not calculate redemption value: %w", err)
@@ -97,7 +97,7 @@ func (k Keeper) calculateRedemptionAmount(ctx context.Context, arbitrageDenom *d
 	return redeemAmount, usedTokens, nil
 }
 
-func (k Keeper) calculateRedemptionValue(ctx context.Context, arbitrageDenom *denomtypes.ArbitrageDenom, requestedAAssetAmount math.Int, calculateValue CalculateValue) (math.Int, error) {
+func (k Keeper) calculateRedemptionValue(ctx context.Context, arbitrageDenom denomtypes.ArbitrageDenom, requestedAAssetAmount math.Int, calculateValue CalculateValue) (math.Int, error) {
 	if requestedAAssetAmount.IsZero() {
 		return math.ZeroInt(), nil
 	}

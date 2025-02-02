@@ -39,7 +39,7 @@ func (k Keeper) ArbitrageBalance(ctx context.Context, _ *types.QueryArbitrageBal
 		coins         = k.BankKeeper.SpendableCoins(ctx, acc.GetAddress())
 		totalValueUSD = math.LegacyZeroDec()
 
-		cAsset        *denomtypes.CAsset
+		cAsset        denomtypes.CAsset
 		tokenValue    math.LegacyDec
 		tokenValueUSD math.LegacyDec
 		parity        *math.LegacyDec
@@ -112,7 +112,7 @@ func (k Keeper) ArbitrageBalanceAddress(ctx context.Context, req *types.QueryArb
 		moduleCoins = k.BankKeeper.SpendableCoins(ctx, moduleAcc.GetAddress())
 		userCoins   = k.BankKeeper.SpendableCoins(ctx, userAcc)
 
-		cAsset           *denomtypes.CAsset
+		cAsset           denomtypes.CAsset
 		balances         []*types.ArbitrageBalanceAddress
 		tokenValueCAsset math.LegacyDec
 		parity           *math.LegacyDec
@@ -205,7 +205,7 @@ func (k Keeper) ArbitrageBalanceAddress(ctx context.Context, req *types.QueryArb
 	}, nil
 }
 
-func (k Keeper) arbitrageUserBaseValue(ctx context.Context, cAsset *denomtypes.CAsset, userShareCAssetValue math.LegacyDec) math.Int {
+func (k Keeper) arbitrageUserBaseValue(ctx context.Context, cAsset denomtypes.CAsset, userShareCAssetValue math.LegacyDec) math.Int {
 	baseValue := k.MMKeeper.CalculateCAssetRedemptionValue(ctx, cAsset).Mul(userShareCAssetValue)
 	return baseValue.TruncateInt()
 }

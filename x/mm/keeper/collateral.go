@@ -14,11 +14,11 @@ import (
 
 func (k Keeper) GetAllDenomCollaterals(ctx context.Context) (list []types.Collaterals) {
 	for _, collateralDemom := range k.DenomKeeper.GetCollateralDenoms(ctx) {
-		var collaterals []*types.Collateral
+		var collaterals []types.Collateral
 		iterator := k.CollateralIterator(ctx, collateralDemom.DexDenom)
 		for iterator.Valid() {
 			collateral := iterator.GetNext()
-			collaterals = append(collaterals, &collateral)
+			collaterals = append(collaterals, collateral)
 		}
 
 		list = append(list, types.Collaterals{

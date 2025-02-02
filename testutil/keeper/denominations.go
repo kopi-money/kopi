@@ -98,19 +98,19 @@ func DenomKeeper(t *testing.T) (denomkeeper.Keeper, context.Context, *Keys) {
 	ctx := sdk.NewContext(stateStore, cmtproto.Header{}, false, log.NewNopLogger())
 	params := createDenomTestParams()
 	params.DexDenoms = append(params.DexDenoms,
-		&denomtypes.DexDenom{
+		denomtypes.DexDenom{
 			Name:         "ibc/8E27BA2D5493AF5636760E354E46004562C46AB7EC0CC4C1CA14E9E20E2545B5",
 			MinLiquidity: math.NewInt(100_000),
 			MinOrderSize: math.NewInt(1_000_000),
 			Exponent:     6,
 		},
-		&denomtypes.DexDenom{
+		denomtypes.DexDenom{
 			Name:         "uawusdc",
 			MinLiquidity: math.NewInt(1000),
 			MinOrderSize: math.NewInt(1000),
 			Exponent:     6,
 		},
-		&denomtypes.DexDenom{
+		denomtypes.DexDenom{
 			Name:         "inj",
 			MinLiquidity: math.NewInt(1000),
 			MinOrderSize: math.NewInt(1000),
@@ -118,8 +118,8 @@ func DenomKeeper(t *testing.T) (denomkeeper.Keeper, context.Context, *Keys) {
 		},
 	)
 
-	params.StrategyDenoms = &denomtypes.StrategyDenoms{
-		ArbitrageDenoms: []*denomtypes.ArbitrageDenom{
+	params.StrategyDenoms = denomtypes.StrategyDenoms{
+		ArbitrageDenoms: []denomtypes.ArbitrageDenom{
 			{
 				DexDenom:                  "uawusdc",
 				KCoin:                     "ukusd",
@@ -207,8 +207,8 @@ func createDenomTestParams() denomtypes.Params {
 	}
 }
 
-func createDefaultCollateralDenoms() []*denomtypes.CollateralDenom {
-	return []*denomtypes.CollateralDenom{
+func createDefaultCollateralDenoms() []denomtypes.CollateralDenom {
+	return []denomtypes.CollateralDenom{
 		{
 			DexDenom:   constants.BaseCurrency,
 			Ltv:        math.LegacyNewDecWithPrec(5, 1),
@@ -247,8 +247,8 @@ func createDefaultCollateralDenoms() []*denomtypes.CollateralDenom {
 	}
 }
 
-func createDefaultCAssets() []*denomtypes.CAsset {
-	return []*denomtypes.CAsset{
+func createDefaultCAssets() []denomtypes.CAsset {
+	return []denomtypes.CAsset{
 		{
 			DexDenom:        "uckusd",
 			BaseDexDenom:    constants.KUSD,
@@ -273,8 +273,8 @@ func createDefaultCAssets() []*denomtypes.CAsset {
 	}
 }
 
-func createDefaultDexDenoms() []*denomtypes.DexDenom {
-	return []*denomtypes.DexDenom{
+func createDefaultDexDenoms() []denomtypes.DexDenom {
+	return []denomtypes.DexDenom{
 		{
 			Name:         constants.BaseCurrency,
 			MinLiquidity: math.NewInt(1_000_000_000),
@@ -337,8 +337,8 @@ func AddDexDenom(ctx context.Context, k denomtypes.MsgServer, msg *denomtypes.Ms
 	return err
 }
 
-func createDefaultKCoins() []*denomtypes.KCoin {
-	return []*denomtypes.KCoin{
+func createDefaultKCoins() []denomtypes.KCoin {
+	return []denomtypes.KCoin{
 		{
 			DexDenom:      constants.KUSD,
 			References:    []string{"uwusdc", "uwusdt"},

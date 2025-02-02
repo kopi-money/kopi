@@ -21,7 +21,7 @@ func (k msgServer) CollateralAddDenom(ctx context.Context, req *types.MsgCollate
 		ltv, _ := math.LegacyNewDecFromStr(req.Ltv)
 		maxDeposit, _ := math.NewIntFromString(req.MaxDeposit)
 
-		params.CollateralDenoms = append(params.CollateralDenoms, &types.CollateralDenom{
+		params.CollateralDenoms = append(params.CollateralDenoms, types.CollateralDenom{
 			DexDenom:   req.Denom,
 			Ltv:        ltv,
 			MaxDeposit: maxDeposit,
@@ -51,7 +51,7 @@ func (k Keeper) CollateralUpdateLTV(ctx context.Context, denom, ltvString string
 		return err
 	}
 
-	collateralDenoms := []*types.CollateralDenom{}
+	collateralDenoms := []types.CollateralDenom{}
 	found := false
 
 	for _, collateralDenom := range params.CollateralDenoms {
@@ -81,7 +81,7 @@ func (k msgServer) CollateralUpdateDepositLimit(ctx context.Context, req *types.
 		params := k.GetParams(innerCtx)
 
 		maxDeposit, _ := math.NewIntFromString(req.MaxDeposit)
-		collateralDenoms := []*types.CollateralDenom{}
+		collateralDenoms := []types.CollateralDenom{}
 		found := false
 
 		for _, collateralDenom := range params.CollateralDenoms {
@@ -112,7 +112,7 @@ func (k msgServer) CollateralUpdateDepositLimit(ctx context.Context, req *types.
 func (k Keeper) RemoveCollateralDenom(ctx context.Context, denom string) error {
 	params := k.GetParams(ctx)
 
-	collateralDenoms := []*types.CollateralDenom{}
+	collateralDenoms := []types.CollateralDenom{}
 	for _, collateralDenom := range params.CollateralDenoms {
 		if collateralDenom.DexDenom != denom {
 			collateralDenoms = append(collateralDenoms, collateralDenom)

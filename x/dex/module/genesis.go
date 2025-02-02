@@ -15,9 +15,7 @@ func InitGenesis(ctx context.Context, k keeper.Keeper, genState types.GenesisSta
 		// Set all the liquidity
 		for _, denomLiquidity := range genState.LiquidityList {
 			for _, entry := range denomLiquidity.Entries {
-				if entry != nil {
-					k.SetLiquidity(innerCtx, denomLiquidity.Denom, *entry)
-				}
+				k.SetLiquidity(innerCtx, denomLiquidity.Denom, entry)
 			}
 		}
 
