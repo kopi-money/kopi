@@ -158,21 +158,29 @@ func (nmc *NestedMapCache[K1, K2, V]) Initialize(ctx context.Context) error {
 		return fmt.Errorf("could not create collection iterator: %w", err)
 	}
 
-	var key collections.Pair[K1, K2]
+	var (
+		key   collections.Pair[K1, K2]
+		entry Entry[V]
+		has   bool
+	)
+
 	for ; iterator.Valid(); iterator.Next() {
 		key, err = iterator.Key()
 		if err != nil {
 			return fmt.Errorf("could not get key: %w", err)
 		}
 
-		entry, has := nmc.loadFromStorage(ctx, key.K1(), key.K2())
+		entry, has, err = nmc.loadFromStorage(ctx, key.K1(), key.K2())
+		if err != nil {
+			return fmt.Errorf("load from storage: %w", err)
+		}
+
 		if has {
 			nmc.cache.Set(key.K1(), key.K2(), entry)
 		}
 	}
 
 	nmc.initialized = true
-
 	return nil
 }
 
@@ -209,7 +217,7 @@ func (nmc *NestedMapCache[K1, K2, V]) Get(ctx context.Context, key1 K1, key2 K2)
 	}
 
 	if !useCache(ctx, nmc.currentHeight) {
-		entry, has := nmc.loadFromStorage(ctx, key1, key2)
+		entry, has, _ := nmc.loadFromStorage(ctx, key1, key2)
 		if has {
 			return *entry.value, true
 		} else {
@@ -227,7 +235,7 @@ func (nmc *NestedMapCache[K1, K2, V]) Get(ctx context.Context, key1 K1, key2 K2)
 	return v, false
 }
 
-func (nmc *NestedMapCache[K1, K2, V]) loadFromStorage(ctx context.Context, key1 K1, key2 K2) (Entry[V], bool) {
+func (nmc *NestedMapCache[K1, K2, V]) loadFromStorage(ctx context.Context, key1 K1, key2 K2) (Entry[V], bool, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	gasMeter := sdkCtx.GasMeter()
@@ -237,13 +245,13 @@ func (nmc *NestedMapCache[K1, K2, V]) loadFromStorage(ctx context.Context, key1 
 	ctx = sdkCtx.WithGasMeter(gasMeter)
 
 	if err != nil {
-		return Entry[V]{}, false
+		return Entry[V]{}, false, fmt.Errorf("%v: %w", nmc.collection.GetName(), err)
 	}
 
 	return Entry[V]{
 		value: &value,
 		cost:  CalculateReadCostMap(nmc.prefix, nmc.kc, nmc.vc, key, value),
-	}, true
+	}, true, nil
 }
 
 func (nmc *NestedMapCache[K1, K2, V]) Set(ctx context.Context, key1 K1, key2 K2, value V) {

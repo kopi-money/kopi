@@ -22,15 +22,6 @@ type CollectionMap[K, V any] interface {
 	GetName() string
 }
 
-type Entry[V any] struct {
-	value *V
-	cost  uint64
-}
-
-func (e Entry[V]) Value() *V {
-	return e.value
-}
-
 type MapTransaction[K ordered, V any] struct {
 	key      TXKey
 	changes  *OrderedList[K, Entry[V]]
@@ -229,21 +220,29 @@ func (mc *MapCache[K, V]) Initialize(ctx context.Context) error {
 		return fmt.Errorf("could not create collection iterator: %w", err)
 	}
 
-	var key K
+	var (
+		key   K
+		has   bool
+		entry Entry[V]
+	)
+
 	for ; iterator.Valid(); iterator.Next() {
 		key, err = iterator.Key()
 		if err != nil {
 			return fmt.Errorf("could not get key: %w", err)
 		}
 
-		entry, has := mc.loadFromStorage(ctx, key)
+		entry, has, err = mc.loadFromStorage(ctx, key)
+		if err != nil {
+			return fmt.Errorf("load from storage: %w", err)
+		}
+
 		if has {
 			mc.cache.Set(KeyValue[K, Entry[V]]{key: key, value: entry})
 		}
 	}
 
 	mc.initialized = true
-
 	return nil
 }
 
@@ -259,7 +258,7 @@ func (mc *MapCache[K, V]) Get(ctx context.Context, key K) (V, bool) {
 
 	requestedHeight := sdk.UnwrapSDKContext(ctx).BlockHeight()
 	if requestedHeight != mc.currentHeight {
-		entry, has := mc.loadFromStorage(ctx, key)
+		entry, has, _ := mc.loadFromStorage(ctx, key)
 		if has {
 			return *entry.value, true
 		} else {
@@ -277,7 +276,7 @@ func (mc *MapCache[K, V]) Get(ctx context.Context, key K) (V, bool) {
 	return v, false
 }
 
-func (mc *MapCache[K, V]) loadFromStorage(ctx context.Context, key K) (Entry[V], bool) {
+func (mc *MapCache[K, V]) loadFromStorage(ctx context.Context, key K) (Entry[V], bool, error) {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	gasMeter := sdkCtx.GasMeter()
@@ -286,13 +285,13 @@ func (mc *MapCache[K, V]) loadFromStorage(ctx context.Context, key K) (Entry[V],
 	ctx = sdkCtx.WithGasMeter(gasMeter)
 
 	if err != nil {
-		return Entry[V]{}, false
+		return Entry[V]{}, false, fmt.Errorf("%v: %w", mc.collection.GetName(), err)
 	}
 
 	return Entry[V]{
 		value: &value,
 		cost:  CalculateReadCostMap(mc.prefix, mc.kc, mc.vc, key, value),
-	}, true
+	}, true, nil
 }
 
 func (mc *MapCache[K, V]) Set(ctx context.Context, key K, value V) {
