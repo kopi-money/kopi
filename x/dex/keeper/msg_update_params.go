@@ -208,15 +208,34 @@ func (k msgServer) RemoveDexDenom(ctx context.Context, req *types.MsgRemoveDexDe
 		}
 
 		if err := k.Keeper.RemoveAllLiquidityForDenom(innerCtx, req.Name); err != nil {
-			return err
+			return fmt.Errorf("remove liquidity from denom: %w", err)
+		}
+
+		if err := k.RemoveDenomOrders(innerCtx, req.Name); err != nil {
+			return fmt.Errorf("remove orders: %w", err)
 		}
 
 		if err := k.DenomKeeper.RemoveDenom(innerCtx, req.Name); err != nil {
-			return err
+			return fmt.Errorf("remove denom: %w", err)
 		}
 
 		return nil
 	})
 
 	return &types.Void{}, err
+}
+
+func (k Keeper) RemoveDenomOrders(ctx context.Context, denom string) error {
+	iterator := k.orders.Iterator(ctx, nil)
+	for iterator.Valid() {
+		order := iterator.GetNext()
+
+		if order.DenomGiving == denom || order.DenomReceiving == denom {
+			if err := k.RemoveOrder(ctx, order); err != nil {
+				return fmt.Errorf("RemoveOrder: %w", err)
+			}
+		}
+	}
+
+	return nil
 }
