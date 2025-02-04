@@ -6,7 +6,7 @@ import (
 
 	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 

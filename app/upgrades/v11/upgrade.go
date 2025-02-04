@@ -3,7 +3,7 @@ package v11
 import (
 	"context"
 	"cosmossdk.io/math"
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"

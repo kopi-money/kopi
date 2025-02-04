@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 	"fmt"
-	"github.com/kopi-money/kopi/cache"
 
 	"cosmossdk.io/math"
 
@@ -12,217 +11,181 @@ import (
 )
 
 func (k msgServer) UpdateTradeFee(ctx context.Context, req *types.MsgUpdateTradeFee) (*types.Void, error) {
-	err := cache.Transact(ctx, func(innerCtx context.Context) error {
-		if k.GetAuthority() != req.Authority {
-			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-		}
+	if k.GetAuthority() != req.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	}
 
-		tradeFee, err := math.LegacyNewDecFromStr(req.TradeFee)
-		if err != nil {
-			return err
-		}
+	tradeFee, err := math.LegacyNewDecFromStr(req.TradeFee)
+	if err != nil {
+		return nil, err
+	}
 
-		params := k.GetParams(innerCtx)
-		params.TradeFee = tradeFee
+	params := k.GetParams(ctx)
+	params.TradeFee = tradeFee
 
-		if err = k.SetParams(innerCtx, params); err != nil {
-			return err
-		}
+	if err = k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
 
-		return nil
-	})
-
-	return &types.Void{}, err
+	return &types.Void{}, nil
 }
 
 func (k msgServer) UpdateOrderFee(ctx context.Context, req *types.MsgUpdateOrderFee) (*types.Void, error) {
-	err := cache.Transact(ctx, func(innerCtx context.Context) error {
-		if k.GetAuthority() != req.Authority {
-			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-		}
+	if k.GetAuthority() != req.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	}
 
-		orderFee, err := math.LegacyNewDecFromStr(req.OrderFee)
-		if err != nil {
-			return err
-		}
+	orderFee, err := math.LegacyNewDecFromStr(req.OrderFee)
+	if err != nil {
+		return nil, err
+	}
 
-		params := k.GetParams(innerCtx)
-		params.OrderFee = orderFee
+	params := k.GetParams(ctx)
+	params.OrderFee = orderFee
 
-		if err = k.SetParams(innerCtx, params); err != nil {
-			return err
-		}
+	if err = k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
 
-		return nil
-	})
-
-	return &types.Void{}, err
+	return &types.Void{}, nil
 }
 
 func (k msgServer) UpdateReserveShare(ctx context.Context, req *types.MsgUpdateReserveShare) (*types.Void, error) {
-	err := cache.Transact(ctx, func(innerCtx context.Context) error {
-		if k.GetAuthority() != req.Authority {
-			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-		}
+	if k.GetAuthority() != req.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	}
 
-		reserveShare, err := math.LegacyNewDecFromStr(req.ReserveShare)
-		if err != nil {
-			return err
-		}
+	reserveShare, err := math.LegacyNewDecFromStr(req.ReserveShare)
+	if err != nil {
+		return nil, err
+	}
 
-		params := k.GetParams(innerCtx)
-		params.ReserveShare = reserveShare
+	params := k.GetParams(ctx)
+	params.ReserveShare = reserveShare
 
-		if err = k.SetParams(innerCtx, params); err != nil {
-			return err
-		}
+	if err = k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
 
-		return nil
-	})
-
-	return &types.Void{}, err
+	return &types.Void{}, nil
 }
 
 func (k msgServer) UpdateVirtualLiquidityDecay(ctx context.Context, req *types.MsgUpdateVirtualLiquidityDecay) (*types.Void, error) {
-	err := cache.Transact(ctx, func(innerCtx context.Context) error {
-		if k.GetAuthority() != req.Authority {
-			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-		}
+	if k.GetAuthority() != req.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	}
 
-		virtualLiquidityDecay, err := math.LegacyNewDecFromStr(req.VirtualLiquidityDecay)
-		if err != nil {
-			return err
-		}
+	virtualLiquidityDecay, err := math.LegacyNewDecFromStr(req.VirtualLiquidityDecay)
+	if err != nil {
+		return nil, err
+	}
 
-		params := k.GetParams(innerCtx)
-		params.VirtualLiquidityDecay = virtualLiquidityDecay
+	params := k.GetParams(ctx)
+	params.VirtualLiquidityDecay = virtualLiquidityDecay
 
-		if err = k.SetParams(innerCtx, params); err != nil {
-			return err
-		}
+	if err = k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
 
-		return nil
-	})
-
-	return &types.Void{}, err
+	return &types.Void{}, nil
 }
 
 func (k msgServer) UpdateMaxOrderLife(ctx context.Context, req *types.MsgUpdateMaxOrderLife) (*types.Void, error) {
-	err := cache.Transact(ctx, func(innerCtx context.Context) error {
-		if k.GetAuthority() != req.Authority {
-			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-		}
+	if k.GetAuthority() != req.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	}
 
-		params := k.GetParams(innerCtx)
-		params.MaxOrderLife = req.MaxOrderLife
+	params := k.GetParams(ctx)
+	params.MaxOrderLife = req.MaxOrderLife
 
-		if err := k.SetParams(innerCtx, params); err != nil {
-			return err
-		}
+	if err := k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
 
-		return nil
-	})
-
-	return &types.Void{}, err
+	return &types.Void{}, nil
 }
 
 func (k msgServer) UpdateTradeAmountDecay(ctx context.Context, req *types.MsgUpdateTradeAmountDecay) (*types.Void, error) {
-	err := cache.Transact(ctx, func(innerCtx context.Context) error {
-		if k.GetAuthority() != req.Authority {
-			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-		}
+	if k.GetAuthority() != req.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	}
 
-		tradeAmountDecay, err := math.LegacyNewDecFromStr(req.TradeAmountDecay)
-		if err != nil {
-			return err
-		}
+	tradeAmountDecay, err := math.LegacyNewDecFromStr(req.TradeAmountDecay)
+	if err != nil {
+		return nil, err
+	}
 
-		params := k.GetParams(innerCtx)
-		params.TradeAmountDecay = tradeAmountDecay
+	params := k.GetParams(ctx)
+	params.TradeAmountDecay = tradeAmountDecay
 
-		if err = k.SetParams(innerCtx, params); err != nil {
-			return err
-		}
+	if err = k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
 
-		return nil
-	})
-
-	return &types.Void{}, err
+	return &types.Void{}, nil
 }
 
 func (k msgServer) UpdateDiscountLevels(ctx context.Context, req *types.MsgUpdateDiscountLevels) (*types.Void, error) {
-	err := cache.Transact(ctx, func(innerCtx context.Context) error {
-		if k.GetAuthority() != req.Authority {
-			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-		}
+	if k.GetAuthority() != req.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	}
 
-		params := k.GetParams(innerCtx)
-		params.DiscountLevels = req.DiscountLevels
+	params := k.GetParams(ctx)
+	params.DiscountLevels = req.DiscountLevels
 
-		if err := k.SetParams(innerCtx, params); err != nil {
-			return err
-		}
+	if err := k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
 
-		return nil
-	})
-
-	return &types.Void{}, err
+	return &types.Void{}, nil
 }
 
 func (k msgServer) UpdateTradeBaseValue(ctx context.Context, req *types.MsgUpdateTradeBaseValue) (*types.Void, error) {
-	err := cache.Transact(ctx, func(innerCtx context.Context) error {
-		if k.GetAuthority() != req.Authority {
-			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-		}
+	if k.GetAuthority() != req.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	}
 
-		tradeBaseValue, err := math.LegacyNewDecFromStr(req.TradeBaseValue)
-		if err != nil {
-			return fmt.Errorf("convert from string: %w", err)
-		}
+	tradeBaseValue, err := math.LegacyNewDecFromStr(req.TradeBaseValue)
+	if err != nil {
+		return nil, fmt.Errorf("convert from string: %w", err)
+	}
 
-		params := k.GetParams(innerCtx)
-		params.TradeBaseValue = tradeBaseValue
+	params := k.GetParams(ctx)
+	params.TradeBaseValue = tradeBaseValue
 
-		if err = k.SetParams(innerCtx, params); err != nil {
-			return err
-		}
-
-		return nil
-	})
+	if err = k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
 
 	return &types.Void{}, err
 }
 
 func (k msgServer) RemoveDexDenom(ctx context.Context, req *types.MsgRemoveDexDenom) (*types.Void, error) {
-	err := cache.Transact(ctx, func(innerCtx context.Context) error {
-		if k.GetAuthority() != req.Authority {
-			return errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
-		}
+	if k.GetAuthority() != req.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	}
 
-		if !k.DenomKeeper.IsValidDenom(innerCtx, req.Name) {
-			return types.ErrDenomNotFound
-		}
+	if !k.DenomKeeper.IsValidDenom(ctx, req.Name) {
+		return nil, types.ErrDenomNotFound
+	}
 
-		if k.DenomKeeper.IsCollateralDenom(innerCtx, req.Name) {
-			return types.ErrCannotRemoveCollateralDenom
-		}
+	if k.DenomKeeper.IsCollateralDenom(ctx, req.Name) {
+		return nil, types.ErrCannotRemoveCollateralDenom
+	}
 
-		if err := k.Keeper.RemoveAllLiquidityForDenom(innerCtx, req.Name); err != nil {
-			return fmt.Errorf("remove liquidity from denom: %w", err)
-		}
+	if err := k.Keeper.RemoveAllLiquidityForDenom(ctx, req.Name); err != nil {
+		return nil, fmt.Errorf("remove liquidity from denom: %w", err)
+	}
 
-		if err := k.RemoveDenomOrders(innerCtx, req.Name); err != nil {
-			return fmt.Errorf("remove orders: %w", err)
-		}
+	if err := k.RemoveDenomOrders(ctx, req.Name); err != nil {
+		return nil, fmt.Errorf("remove orders: %w", err)
+	}
 
-		if err := k.DenomKeeper.RemoveDenom(innerCtx, req.Name); err != nil {
-			return fmt.Errorf("remove denom: %w", err)
-		}
+	if err := k.DenomKeeper.RemoveDenom(ctx, req.Name); err != nil {
+		return nil, fmt.Errorf("remove denom: %w", err)
+	}
 
-		return nil
-	})
-
-	return &types.Void{}, err
+	return &types.Void{}, nil
 }
 
 func (k Keeper) RemoveDenomOrders(ctx context.Context, denom string) error {

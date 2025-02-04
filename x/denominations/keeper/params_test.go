@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 
 	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 

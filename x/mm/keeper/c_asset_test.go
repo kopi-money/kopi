@@ -7,7 +7,7 @@ import (
 
 	"github.com/kopi-money/kopi/constants"
 
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 	mmkeeper "github.com/kopi-money/kopi/x/mm/keeper"
 
 	"cosmossdk.io/math"

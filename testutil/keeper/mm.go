@@ -6,7 +6,7 @@ import (
 
 	"github.com/kopi-money/kopi/constants"
 
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/math"

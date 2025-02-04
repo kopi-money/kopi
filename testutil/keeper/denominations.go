@@ -9,7 +9,7 @@ import (
 	tokenfactorytypes "github.com/kopi-money/kopi/x/tokenfactory/types"
 
 	"cosmossdk.io/math"
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 
 	"cosmossdk.io/log"
 	"cosmossdk.io/store"

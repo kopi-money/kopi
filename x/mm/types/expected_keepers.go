@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"cosmossdk.io/math"
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 

@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
+	"github.com/cosmos/cosmos-sdk/cache"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/kopi-money/kopi/cache"
 	"github.com/kopi-money/kopi/x/strategies/types"
 )
 

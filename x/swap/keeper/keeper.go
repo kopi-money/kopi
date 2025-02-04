@@ -6,7 +6,7 @@ import (
 
 	"cosmossdk.io/collections"
 
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"

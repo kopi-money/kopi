@@ -9,7 +9,7 @@ import (
 	"cosmossdk.io/math"
 	tokenfactorytypes "github.com/kopi-money/kopi/x/tokenfactory/types"
 
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 
 	"cosmossdk.io/log"
 	addresscodec "github.com/cosmos/cosmos-sdk/codec/address"

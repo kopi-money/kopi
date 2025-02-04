@@ -9,7 +9,7 @@ import (
 	"github.com/kopi-money/kopi/constants"
 
 	"cosmossdk.io/math"
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 	"github.com/stretchr/testify/require"

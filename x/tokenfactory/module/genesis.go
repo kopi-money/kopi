@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 
 	"github.com/kopi-money/kopi/x/tokenfactory/keeper"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"

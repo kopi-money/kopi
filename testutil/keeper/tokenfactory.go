@@ -6,8 +6,8 @@ import (
 
 	"cosmossdk.io/math"
 
+	"github.com/cosmos/cosmos-sdk/cache"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	"github.com/kopi-money/kopi/cache"
 
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/runtime"

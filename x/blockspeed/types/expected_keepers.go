@@ -23,3 +23,7 @@ type ParamSubspace interface {
 	Get(context.Context, []byte, interface{})
 	Set(context.Context, []byte, interface{})
 }
+
+type CapabilityKeeper interface {
+	GetLatestIndex(ctx sdk.Context) uint64
+}

@@ -3,7 +3,7 @@ package mm
 import (
 	"context"
 
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 
 	"github.com/kopi-money/kopi/x/mm/keeper"
 	"github.com/kopi-money/kopi/x/mm/types"

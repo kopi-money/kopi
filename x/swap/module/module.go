@@ -6,7 +6,7 @@ import (
 	"fmt"
 	blockspeedkeeper "github.com/kopi-money/kopi/x/blockspeed/keeper"
 
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 

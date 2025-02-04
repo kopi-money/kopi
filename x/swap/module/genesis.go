@@ -3,7 +3,7 @@ package swap
 import (
 	"context"
 
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 
 	"github.com/kopi-money/kopi/x/swap/keeper"
 	"github.com/kopi-money/kopi/x/swap/types"

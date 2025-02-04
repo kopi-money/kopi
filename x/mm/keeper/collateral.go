@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"cosmossdk.io/collections"
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/constants"

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 	blockspeedkeeper "github.com/kopi-money/kopi/x/blockspeed/keeper"
 	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"

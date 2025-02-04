@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 
 	"cosmossdk.io/core/appmodule"

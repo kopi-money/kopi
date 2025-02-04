@@ -3,7 +3,7 @@ package dex
 import (
 	"context"
 
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 
 	"github.com/kopi-money/kopi/x/dex/keeper"
 	"github.com/kopi-money/kopi/x/dex/types"

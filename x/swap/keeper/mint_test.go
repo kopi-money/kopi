@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 

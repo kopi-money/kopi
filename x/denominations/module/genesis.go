@@ -3,7 +3,7 @@ package denominations
 import (
 	"context"
 
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 
 	"github.com/kopi-money/kopi/x/denominations/keeper"
 	"github.com/kopi-money/kopi/x/denominations/types"

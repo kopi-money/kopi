@@ -2,7 +2,7 @@ package reserve
 
 import (
 	"context"
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 
 	"github.com/kopi-money/kopi/x/reserve/keeper"
 	"github.com/kopi-money/kopi/x/reserve/types"

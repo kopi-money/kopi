@@ -19,7 +19,7 @@ import (
 	"github.com/kopi-money/kopi/x/strategies/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 
 	"cosmossdk.io/log"
 	sdk "github.com/cosmos/cosmos-sdk/types"

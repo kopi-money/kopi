@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 
 	"github.com/stretchr/testify/require"
 

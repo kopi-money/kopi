@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 	"github.com/kopi-money/kopi/constants"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	"github.com/kopi-money/kopi/x/dex/types"

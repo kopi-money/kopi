@@ -8,7 +8,7 @@ import (
 	mmtypes "github.com/kopi-money/kopi/x/mm/types"
 
 	"cosmossdk.io/math"
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 	"github.com/kopi-money/kopi/constants"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"

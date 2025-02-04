@@ -87,7 +87,7 @@ import (
 	tokenfactorymodulekeeper "github.com/kopi-money/kopi/x/tokenfactory/keeper"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
-	"github.com/kopi-money/kopi/cache"
+	"github.com/cosmos/cosmos-sdk/cache"
 	"github.com/kopi-money/kopi/docs"
 
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
@@ -316,7 +316,6 @@ func New(
 	}
 
 	return app, app.WasmKeeper.InitializePinnedCodes(app.NewUncachedContext(true, tmproto.Header{}))
-
 }
 
 func (app *App) registerCacheHandling() {
