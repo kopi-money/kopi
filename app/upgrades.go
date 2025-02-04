@@ -2,7 +2,6 @@ package app
 
 import (
 	"fmt"
-	v12 "github.com/kopi-money/kopi/app/upgrades/v12"
 
 	storetypes "cosmossdk.io/store/types"
 	"cosmossdk.io/x/upgrade/types"
@@ -20,6 +19,8 @@ import (
 	"github.com/kopi-money/kopi/app/upgrades/v0_6_5_1"
 	"github.com/kopi-money/kopi/app/upgrades/v0_6_5_2"
 	"github.com/kopi-money/kopi/app/upgrades/v11"
+	"github.com/kopi-money/kopi/app/upgrades/v12"
+	"github.com/kopi-money/kopi/app/upgrades/v13"
 	"github.com/kopi-money/kopi/app/upgrades/v7"
 	"github.com/kopi-money/kopi/app/upgrades/v8"
 	"github.com/kopi-money/kopi/app/upgrades/v9"
@@ -119,6 +120,12 @@ func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
 		{
 			UpgradeName:          v12.UpgradeName,
 			CreateUpgradeHandler: v12.CreateUpgradeHandler,
+		},
+		{
+			UpgradeName: v13.UpgradeName,
+			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
+				return v13.CreateUpgradeHandler(manager, configurator, app.IBCKeeper, app.CapabilityKeeper)
+			},
 		},
 	}
 
