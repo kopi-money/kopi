@@ -124,7 +124,7 @@ func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
 		{
 			UpgradeName: v13.UpgradeName,
 			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
-				return v13.CreateUpgradeHandler(manager, configurator, app.IBCKeeper, app.CapabilityKeeper)
+				return v13.CreateUpgradeHandler(manager, configurator, app.IBCKeeper)
 			},
 		},
 	}
