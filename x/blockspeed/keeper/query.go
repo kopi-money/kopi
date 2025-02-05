@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/x/blockspeed/types"
