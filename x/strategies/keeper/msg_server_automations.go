@@ -290,4 +290,5 @@ func resetStatistics(ctx context.Context, automation *types.Automation) {
 	automation.PeriodTimesExecuted = 0
 	automation.PeriodConditionFeesConsumed = 0
 	automation.PeriodActionFeesConsumed = 0
+	automation.InactiveReason = nil
 }
