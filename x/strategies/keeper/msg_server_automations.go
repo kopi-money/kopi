@@ -233,15 +233,6 @@ func (k Keeper) removeAutomation(ctx context.Context, address string, index uint
 	return nil
 }
 
-func (k Keeper) getAutomationActive(ctx context.Context, index uint64) bool {
-	automation, exists := k.automations.Get(ctx, index)
-	if exists {
-		return automation.Active
-	}
-
-	return true
-}
-
 func (k msgServer) AutomationsActive(ctx context.Context, msg *types.MsgAutomationsActive) (*types.Void, error) {
 	err := k.setAutomationActiveStatus(ctx, msg.Creator, msg.Index, msg.Active)
 	return &types.Void{}, err
