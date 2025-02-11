@@ -49,42 +49,33 @@ func (k Keeper) Sell(ctx context.Context, tradeData TradeData) (*types.MsgTradeR
 		return nil, fmt.Errorf("could not parse amount: %w", err)
 	}
 
-	if tradeData.maxPrice != "" {
-		var maxPrice math.LegacyDec
-		maxPrice, err = getMaxPrice(tradeData.maxPrice)
-		if err != nil {
-			return nil, err
-		}
-
-		var priceTradeAmount math.Int
-		priceTradeAmount, err = k.calculateMaxAmount(ctx, pool, tradeData.denomGiving, maxPrice, pool.PoolFee, constant_product.CalculateMaximumGiving)
-		if err != nil {
-			return nil, err
-		}
-
-		if priceTradeAmount.LT(amountToGiveGross) {
-			if priceTradeAmount.IsNegative() || !tradeData.allowIncomplete {
-				return nil, types.ErrMarketPriceTooHigh
-			}
-
-			amountToGiveGross = priceTradeAmount
-		}
-
-		if amountToGiveGross.LTE(math.ZeroInt()) {
-			return nil, types.ErrEmptyTrade
-		}
-	}
-
 	if k.BankKeeper.SpendableCoin(ctx, acc, tradeData.denomGiving).Amount.LT(amountToGiveGross) {
 		return nil, types.ErrInsufficientFunds
 	}
 
-	feesGiving, err := k.applyFees(ctx, &pool, acc, amountToGiveGross, tradeData.denomGiving)
+	var (
+		adjustPrice      AdjustMaxPrice
+		feeDataReceiving = newFeeData()
+		feeDataGiving    = newFeeData()
+	)
+
+	if tradeData.denomGiving == pool.KCoin {
+		adjustPrice = DecreaseMaxPrice
+	} else {
+		adjustPrice = IncreaseMaxPrice
+	}
+
+	amountToGiveGross, _, err = k.HandleMaxPrice(ctx, tradeData, pool, amountToGiveGross, adjustPrice, constant_product.CalculateMaximumGiving)
 	if err != nil {
 		return nil, err
 	}
 
-	amountToGiveNet := amountToGiveGross.Sub(feesGiving.Fee())
+	// If the trade is to sell a kCoin, the trade fee is subtracted from the amount to be sold.
+	amountToGiveNet := amountToGiveGross
+	if tradeData.denomGiving == pool.KCoin {
+		feeDataGiving = k.calculateFees(ctx, pool, amountToGiveGross)
+		amountToGiveNet = amountToGiveGross.Sub(feeDataGiving.Fee())
+	}
 
 	if amountToGiveNet.LT(math.NewInt(1000)) {
 		return nil, types.ErrTradeAmountTooSmall
@@ -95,27 +86,30 @@ func (k Keeper) Sell(ctx context.Context, tradeData TradeData) (*types.MsgTradeR
 		return nil, fmt.Errorf("could not send coins from account to liquidity pool: %w", err)
 	}
 
+	// If the trade is to sell a factory token, i.e. to buy a kCoin, the trade fee is subtracted from the amount to be received.
 	amountToReceiveGross := constantProductSell(pool, tradeData.denomGiving, amountToGiveNet)
-	feesReceiving, err := k.applyFees(ctx, &pool, acc, amountToReceiveGross, tradeData.denomReceiving)
-	if err != nil {
-		return nil, err
+	amountToReceiveNet := amountToReceiveGross
+	if tradeData.denomReceiving == pool.KCoin {
+		feeDataReceiving = k.calculateFees(ctx, pool, amountToReceiveGross)
+		amountToReceiveNet = amountToReceiveGross.Sub(feeDataReceiving.Fee())
 	}
-	amountToReceiveNet := amountToReceiveGross.Sub(feesReceiving.Fee())
+
+	feeData := getFeeData(feeDataGiving, feeDataReceiving)
+	if feeData.feeReserve.IsPositive() {
+		coins = sdk.NewCoins(sdk.NewCoin(pool.KCoin, feeData.feeReserve))
+		if err = k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolFactoryLiquidity, dextypes.PoolReserve, coins); err != nil {
+			return nil, fmt.Errorf("could not send reserve fee to module: %w", err)
+		}
+	}
 
 	pool.FactoryDenomAmount = getNewFactoryAmount(pool, tradeData.denomGiving, amountToGiveNet, amountToReceiveNet)
 	pool.KCoinAmount = getNewKCoinAmount(pool, tradeData.denomGiving, amountToGiveNet, amountToReceiveNet)
+	pool.KCoinAmount = pool.KCoinAmount.Add(feeData.feePool)
 	k.liquidityPools.Set(ctx, factoryDenom.FullName, pool)
 
 	coins = sdk.NewCoins(sdk.NewCoin(tradeData.denomReceiving, amountToReceiveNet))
 	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolFactoryLiquidity, acc, coins); err != nil {
 		return nil, fmt.Errorf("could not send coins from liquidity pool to account: %w", err)
-	}
-
-	var feeData FeeData
-	if tradeData.denomGiving == pool.KCoin {
-		feeData = feesGiving
-	} else {
-		feeData = feesReceiving
 	}
 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
@@ -130,14 +124,22 @@ func (k Keeper) Sell(ctx context.Context, tradeData TradeData) (*types.MsgTradeR
 		),
 	)
 
+	var price math.LegacyDec
+	if tradeData.denomReceiving == pool.KCoin {
+		price = amountToReceiveNet.ToLegacyDec().Quo(amountToGiveGross.ToLegacyDec()) // C
+	} else {
+		price = amountToGiveGross.ToLegacyDec().Quo(amountToReceiveNet.ToLegacyDec()) // C
+	}
+
 	return &types.MsgTradeResponse{
 		AmountGivenGross:    amountToGiveGross.String(),
-		AmountGivenNet:      amountToGiveGross.Sub(feesGiving.Fee()).String(),
-		AmountReceivedGross: amountToReceiveNet.Add(feesReceiving.Fee()).String(),
+		AmountGivenNet:      amountToGiveGross.Sub(feeDataGiving.Fee()).String(),
+		AmountReceivedGross: amountToReceiveNet.Add(feeDataReceiving.Fee()).String(),
 		AmountReceivedNet:   amountToReceiveNet.String(),
 		Fee:                 feeData.Fee().String(),
 		FeePool:             feeData.feePool.String(),
 		FeeReserve:          feeData.feeReserve.String(),
+		Price:               price.String(),
 	}, nil
 }
 
@@ -175,43 +177,37 @@ func (k Keeper) Buy(ctx context.Context, tradeData TradeData) (*types.MsgTradeRe
 		return nil, fmt.Errorf("could not parse amount: %w", err)
 	}
 
-	feesGiving, err := k.applyFees(ctx, &pool, acc, amountToReceiveNet, tradeData.denomGiving)
+	var (
+		adjustPrice      AdjustMaxPrice
+		feeDataReceiving = newFeeData()
+		feeDataGiving    = newFeeData()
+		amountChanged    bool
+	)
+
+	// If the trade is to buy a kCoin, the amount to be bought has to be larger than requested because the amount used
+	// for the trade fee has to be bought as well.
+	amountToReceiveGross := amountToReceiveNet
+	if tradeData.denomReceiving == pool.KCoin {
+		feeDataReceiving = k.calculateFees(ctx, pool, amountToReceiveNet)
+		amountToReceiveGross = amountToReceiveNet.Add(feeDataReceiving.Fee())
+	}
+
+	if tradeData.denomGiving == pool.KCoin {
+		adjustPrice = IncreaseMaxPrice
+	} else {
+		adjustPrice = DecreaseMaxPrice
+	}
+
+	amountToReceiveGross, amountChanged, err = k.HandleMaxPrice(ctx, tradeData, pool, amountToReceiveGross, adjustPrice, constant_product.CalculateMaximumReceiving)
 	if err != nil {
 		return nil, err
 	}
 
-	amountToReceiveGross := amountToReceiveNet.Add(feesGiving.Fee())
-
-	if tradeData.maxPrice != "" {
-		var maxPrice math.LegacyDec
-		maxPrice, err = getMaxPrice(tradeData.maxPrice)
-		if err != nil {
-			return nil, err
-		}
-
-		if !maxPrice.IsPositive() {
-			return nil, fmt.Errorf("max price is not positive")
-		}
-
-		maxPrice = math.LegacyOneDec().Quo(maxPrice) // C
-
-		var priceTradeAmount math.Int
-		priceTradeAmount, err = k.calculateMaxAmount(ctx, pool, tradeData.denomGiving, maxPrice, pool.PoolFee, constant_product.CalculateMaximumReceiving)
-		if err != nil {
-			return nil, err
-		}
-
-		if priceTradeAmount.LT(amountToReceiveGross) {
-			if priceTradeAmount.IsNegative() || !tradeData.allowIncomplete {
-				return nil, types.ErrMarketPriceTooHigh
-			}
-
-			amountToReceiveGross = priceTradeAmount
-		}
-
-		if amountToReceiveGross.LTE(math.ZeroInt()) {
-			return nil, types.ErrEmptyTrade
-		}
+	// If the trade amount has changed given the max price, the calculated amount is used as gross amount. The trade fee
+	// is subtracted to determine the net amount that will be received by the user.
+	if amountChanged && tradeData.denomReceiving == pool.KCoin {
+		feeDataReceiving = k.calculateFees(ctx, pool, amountToReceiveGross)
+		amountToReceiveNet = amountToReceiveGross.Sub(feeDataReceiving.Fee())
 	}
 
 	if amountToReceiveGross.LT(math.NewInt(1000)) {
@@ -223,12 +219,13 @@ func (k Keeper) Buy(ctx context.Context, tradeData TradeData) (*types.MsgTradeRe
 		return nil, err
 	}
 
-	feesReceiving, err := k.applyFees(ctx, &pool, acc, amountToReceiveGross, tradeData.denomReceiving)
-	if err != nil {
-		return nil, err
+	// If the trade is to buy a factory token, the amount to give has to be larger than the calculated amount as to
+	// cover the trade we.
+	amountToGiveGross := amountToGiveNet
+	if tradeData.denomGiving == pool.KCoin {
+		feeDataGiving = k.calculateFees(ctx, pool, amountToGiveNet)
+		amountToGiveGross = amountToGiveNet.Add(feeDataGiving.Fee())
 	}
-
-	amountToGiveGross := amountToGiveNet.Add(feesReceiving.Fee())
 
 	if k.BankKeeper.SpendableCoin(ctx, acc, tradeData.denomGiving).Amount.LT(amountToGiveGross) {
 		return nil, types.ErrInsufficientFunds
@@ -236,23 +233,25 @@ func (k Keeper) Buy(ctx context.Context, tradeData TradeData) (*types.MsgTradeRe
 
 	coins := sdk.NewCoins(sdk.NewCoin(tradeData.denomGiving, amountToGiveGross))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolFactoryLiquidity, coins); err != nil {
-		return nil, fmt.Errorf("could not send coins from account to liquidity pool: %w", err)
+		return nil, fmt.Errorf("send coins from account to liquidity pool: %w", err)
+	}
+
+	feeData := getFeeData(feeDataGiving, feeDataReceiving)
+	if feeData.feeReserve.IsPositive() {
+		coins = sdk.NewCoins(sdk.NewCoin(pool.KCoin, feeData.feeReserve))
+		if err = k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolFactoryLiquidity, dextypes.PoolReserve, coins); err != nil {
+			return nil, fmt.Errorf("could not send reserve fee to module: %w", err)
+		}
 	}
 
 	pool.FactoryDenomAmount = getNewFactoryAmount(pool, tradeData.denomGiving, amountToGiveNet, amountToReceiveNet)
 	pool.KCoinAmount = getNewKCoinAmount(pool, tradeData.denomGiving, amountToGiveNet, amountToReceiveNet)
+	pool.KCoinAmount = pool.KCoinAmount.Add(feeData.feePool)
 	k.liquidityPools.Set(ctx, factoryDenom.FullName, pool)
 
 	coins = sdk.NewCoins(sdk.NewCoin(tradeData.denomReceiving, amountToReceiveNet))
 	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolFactoryLiquidity, acc, coins); err != nil {
-		return nil, fmt.Errorf("could not send coins from liquidity pool to account: %w", err)
-	}
-
-	var feeData FeeData
-	if tradeData.denomGiving == pool.KCoin {
-		feeData = feesGiving
-	} else {
-		feeData = feesReceiving
+		return nil, fmt.Errorf("send coins from liquidity pool to account: %w", err)
 	}
 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
@@ -267,15 +266,71 @@ func (k Keeper) Buy(ctx context.Context, tradeData TradeData) (*types.MsgTradeRe
 		),
 	)
 
+	var price math.LegacyDec
+	if tradeData.denomReceiving == pool.KCoin {
+		price = amountToReceiveNet.ToLegacyDec().Quo(amountToGiveGross.ToLegacyDec()) // C
+	} else {
+		price = amountToGiveGross.ToLegacyDec().Quo(amountToReceiveNet.ToLegacyDec()) // C
+	}
+
 	return &types.MsgTradeResponse{
 		AmountGivenGross:    amountToGiveGross.String(),
-		AmountGivenNet:      amountToGiveGross.Sub(feesGiving.Fee()).String(),
-		AmountReceivedGross: amountToReceiveNet.Add(feesReceiving.Fee()).String(),
+		AmountGivenNet:      amountToGiveGross.Sub(feeDataGiving.Fee()).String(),
+		AmountReceivedGross: amountToReceiveNet.Add(feeDataReceiving.Fee()).String(),
 		AmountReceivedNet:   amountToReceiveNet.String(),
 		Fee:                 feeData.Fee().String(),
 		FeePool:             feeData.feePool.String(),
 		FeeReserve:          feeData.feeReserve.String(),
+		Price:               price.String(),
 	}, nil
+}
+
+func (k Keeper) HandleMaxPrice(ctx context.Context, tradeData TradeData, pool types.LiquidityPool, amount math.Int, adjustMaxPrice AdjustMaxPrice, calculate constant_product.CalculateMaximumAmount) (math.Int, bool, error) {
+	if tradeData.maxPrice == "" {
+		return amount, false, nil
+	}
+
+	maxPrice, err := getMaxPrice(tradeData.maxPrice)
+	if err != nil {
+		return math.Int{}, false, err
+	}
+
+	var (
+		priceTradeAmount math.Int
+		amountChanged    bool
+	)
+
+	if tradeData.denomGiving != pool.KCoin {
+		maxPrice = math.LegacyOneDec().Quo(maxPrice)
+	}
+
+	priceTradeAmount, err = k.calculateMaxAmount(ctx, pool, tradeData.denomGiving, maxPrice, pool.PoolFee, adjustMaxPrice, calculate)
+	if err != nil {
+		return math.Int{}, false, err
+	}
+
+	if priceTradeAmount.LT(amount) {
+		if priceTradeAmount.IsNegative() || !tradeData.allowIncomplete {
+			return math.Int{}, false, types.ErrMarketPriceTooHigh
+		}
+
+		amountChanged = true
+		amount = priceTradeAmount
+	}
+
+	if !amount.IsPositive() {
+		return math.Int{}, false, types.ErrEmptyTrade
+	}
+
+	return amount, amountChanged, nil
+}
+
+func getFeeData(feeDataGiving, feeDataReceiving FeeData) FeeData {
+	if feeDataGiving.Fee().IsPositive() {
+		return feeDataGiving
+	} else {
+		return feeDataReceiving
+	}
 }
 
 type TradeData struct {
@@ -291,23 +346,37 @@ type TradeData struct {
 	calcAmountToReceive CalcAmount
 }
 
+func NewTradeData(factoryDenom, creator, denomGiving, denomReceiving, maxPrice, tradeAmount string, allowIncomplete bool) TradeData {
+	return TradeData{
+		factoryDenom:        factoryDenom,
+		creator:             creator,
+		denomGiving:         denomGiving,
+		denomReceiving:      denomReceiving,
+		maxPrice:            maxPrice,
+		tradeAmount:         tradeAmount,
+		allowIncomplete:     allowIncomplete,
+		calcAmountToGive:    nil,
+		calcAmountToReceive: nil,
+	}
+}
+
 type FeeData struct {
 	feePool    math.Int
 	feeReserve math.Int
+}
+
+func newFeeData() FeeData {
+	return FeeData{
+		feePool:    math.ZeroInt(),
+		feeReserve: math.ZeroInt(),
+	}
 }
 
 func (fd FeeData) Fee() math.Int {
 	return fd.feePool.Add(fd.feeReserve)
 }
 
-func (k Keeper) calculateFees(ctx context.Context, pool types.LiquidityPool, tradeAmount math.Int, kCoin string) FeeData {
-	if !k.DenomKeeper.IsKCoin(ctx, kCoin) {
-		return FeeData{
-			feePool:    math.ZeroInt(),
-			feeReserve: math.ZeroInt(),
-		}
-	}
-
+func (k Keeper) calculateFees(ctx context.Context, pool types.LiquidityPool, tradeAmount math.Int) FeeData {
 	reserveFeeAmount := k.GetParams(ctx).ReserveFee.Mul(tradeAmount.ToLegacyDec()).TruncateInt()
 	poolFeeAmount := pool.PoolFee.Mul(tradeAmount.ToLegacyDec()).TruncateInt()
 
@@ -315,40 +384,6 @@ func (k Keeper) calculateFees(ctx context.Context, pool types.LiquidityPool, tra
 		feePool:    poolFeeAmount,
 		feeReserve: reserveFeeAmount,
 	}
-}
-
-func (k Keeper) applyFees(ctx context.Context, pool *types.LiquidityPool, acc sdk.AccAddress, tradeAmount math.Int, kCoin string) (FeeData, error) {
-	feeData := k.calculateFees(ctx, *pool, tradeAmount, kCoin)
-	applyPoolFee(pool, feeData.feePool)
-
-	if err := k.applyReserveFee(ctx, acc, feeData.feeReserve, kCoin); err != nil {
-		return FeeData{}, err
-	}
-
-	return feeData, nil
-}
-
-func applyPoolFee(pool *types.LiquidityPool, poolFeeAmount math.Int) {
-	if poolFeeAmount.IsPositive() {
-		pool.KCoinAmount = pool.KCoinAmount.Add(poolFeeAmount)
-	}
-}
-
-func (k Keeper) applyReserveFee(ctx context.Context, acc sdk.AccAddress, reserveFee math.Int, kCoin string) error {
-	if !k.DenomKeeper.IsKCoin(ctx, kCoin) {
-		return nil
-	}
-
-	if !reserveFee.IsPositive() {
-		return nil
-	}
-
-	coins := sdk.NewCoins(sdk.NewCoin(kCoin, reserveFee))
-	if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, dextypes.PoolReserve, coins); err != nil {
-		return fmt.Errorf("could not send reserve fee to module: %w", err)
-	}
-
-	return nil
 }
 
 func getNewFactoryAmount(pool types.LiquidityPool, denomFrom string, tradeAmountGross, amountToReceive math.Int) math.Int {
@@ -387,10 +422,20 @@ func constantProductBuy(pool types.LiquidityPool, denomGiving string, amount mat
 	return amountDec.TruncateInt(), nil
 }
 
-func (k Keeper) calculateMaxAmount(ctx context.Context, pool types.LiquidityPool, denomFrom string, maxPrice, poolFee math.LegacyDec, calculate constant_product.CalculateMaximumAmount) (math.Int, error) {
+type AdjustMaxPrice func(math.LegacyDec, math.LegacyDec) math.LegacyDec
+
+func IncreaseMaxPrice(maxPrice, tradeFee math.LegacyDec) math.LegacyDec {
+	return maxPrice.Quo(math.LegacyOneDec().Sub(tradeFee))
+}
+
+func DecreaseMaxPrice(maxPrice, tradeFee math.LegacyDec) math.LegacyDec {
+	return maxPrice.Mul(math.LegacyOneDec().Sub(tradeFee))
+}
+
+func (k Keeper) calculateMaxAmount(ctx context.Context, pool types.LiquidityPool, denomFrom string, maxPrice, poolFee math.LegacyDec, adjustMaxPrice AdjustMaxPrice, calculate constant_product.CalculateMaximumAmount) (math.Int, error) {
 	liqFrom, liqTo := getLiquidity(pool, denomFrom)
 	tradeFee := k.getTradeFee(ctx, poolFee)
-	maxPrice = maxPrice.Mul(math.LegacyOneDec().Sub(tradeFee))
+	maxPrice = adjustMaxPrice(maxPrice, tradeFee)
 
 	priceTradeAmount, err := calculate(liqFrom, liqTo, maxPrice)
 	if err != nil {
@@ -417,6 +462,10 @@ func getMaxPrice(maxPriceString string) (math.LegacyDec, error) {
 	maxPrice, err := math.LegacyNewDecFromStr(maxPriceString)
 	if err != nil {
 		return math.LegacyDec{}, types.ErrInvalidPriceFormat
+	}
+
+	if !maxPrice.IsPositive() {
+		return math.LegacyDec{}, fmt.Errorf("max price is not positive")
 	}
 
 	return maxPrice, nil

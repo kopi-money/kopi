@@ -26,7 +26,7 @@ func TestBuyback1(t *testing.T) {
 
 	pool, _ = k.GetLiquidityPool(ctx, factoryDenomHash)
 	require.Equal(t, int64(1009990), pool.KCoinAmount.Int64())
-	require.Equal(t, int64(991099), pool.FactoryDenomAmount.Int64())
+	require.Equal(t, int64(991091), pool.FactoryDenomAmount.Int64())
 
 	supply2 := k.BankKeeper.GetSupply(ctx, factoryDenomHash).Amount
 	require.Less(t, supply2.Int64(), supply1.Int64())

@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 	"fmt"
-	"github.com/kopi-money/kopi/constants"
 
 	"cosmossdk.io/math"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
@@ -25,41 +24,40 @@ func (k Keeper) QuerySimulateSell(ctx context.Context, req *types.QuerySimulateT
 		return nil, types.ErrPoolDoesNotExist
 	}
 
-	amountToSell, err := dexkeeper.ParseAmount(req.Amount)
+	amountToGiveGross, err := dexkeeper.ParseAmount(req.Amount)
 	if err != nil {
 		return nil, fmt.Errorf("could not parse amount: %w", err)
 	}
 
-	var feeData FeeData
-	if req.DenomGiving == constants.KUSD {
-		feeData = k.calculateFees(ctx, pool, amountToSell, req.DenomGiving)
-		amountToSell = amountToSell.Sub(feeData.Fee())
+	var (
+		feeDataReceiving = newFeeData()
+		feeDataGiving    = newFeeData()
+	)
+
+	amountToGiveNet := amountToGiveGross
+	if req.DenomGiving == pool.KCoin {
+		feeDataGiving = k.calculateFees(ctx, pool, amountToGiveGross)
+		amountToGiveNet = amountToGiveGross.Sub(feeDataGiving.Fee())
 	}
 
-	amountToReceive := constantProductSell(pool, req.DenomGiving, amountToSell)
-	if !amountToReceive.IsPositive() {
-		return nil, fmt.Errorf("amount to receive not positive")
-	}
-
-	if req.DenomReceiving == constants.KUSD {
-		feeData = k.calculateFees(ctx, pool, amountToReceive, req.DenomGiving)
-		amountToReceive = amountToReceive.Sub(feeData.Fee())
-	}
-
-	if !amountToSell.IsPositive() {
-		return nil, fmt.Errorf("amount to sell not positive")
+	amountToReceiveGross := constantProductSell(pool, req.DenomGiving, amountToGiveNet)
+	amountToReceiveNet := amountToReceiveGross
+	if req.DenomReceiving == pool.KCoin {
+		feeDataReceiving = k.calculateFees(ctx, pool, amountToReceiveGross)
+		amountToReceiveNet = amountToReceiveGross.Sub(feeDataReceiving.Fee())
 	}
 
 	var price math.LegacyDec
-	if req.DenomReceiving == constants.KUSD {
-		price = amountToSell.ToLegacyDec().Quo(amountToReceive.ToLegacyDec()) // C
+	if req.DenomReceiving == pool.KCoin {
+		price = amountToReceiveNet.ToLegacyDec().Quo(amountToGiveGross.ToLegacyDec()) // C
 	} else {
-		price = amountToReceive.ToLegacyDec().Quo(amountToSell.ToLegacyDec()) // C
+		price = amountToGiveGross.ToLegacyDec().Quo(amountToReceiveNet.ToLegacyDec()) // C
 	}
 
+	feeData := getFeeData(feeDataGiving, feeDataReceiving)
 	return &types.QuerySimulateTradeResponse{
-		AmountGiven:    amountToSell.String(),
-		AmountReceived: amountToReceive.String(),
+		AmountGiven:    amountToGiveGross.String(),
+		AmountReceived: amountToReceiveNet.String(),
 		Fee:            feeData.Fee().String(),
 		Price:          price.String(),
 	}, nil
@@ -80,45 +78,48 @@ func (k Keeper) QuerySimulateBuy(ctx context.Context, req *types.QuerySimulateTr
 		return nil, types.ErrPoolDoesNotExist
 	}
 
-	amountToReceive, err := dexkeeper.ParseAmount(req.Amount)
+	amountToReceiveNet, err := dexkeeper.ParseAmount(req.Amount)
 	if err != nil {
 		return nil, fmt.Errorf("could not parse amount: %w", err)
 	}
 
-	var feeData FeeData
-	if req.DenomGiving == constants.KUSD {
-		feeData = k.calculateFees(ctx, pool, amountToReceive, req.DenomGiving)
-		amountToReceive = amountToReceive.Add(feeData.Fee())
+	var (
+		feeDataReceiving = newFeeData()
+		feeDataGiving    = newFeeData()
+	)
+
+	// If the trade is to buy a kCoin, the amount to be bought has to be larger than requested because the amount used
+	// for the trade fee has to be bought as well.
+	amountToReceiveGross := amountToReceiveNet
+	if req.DenomReceiving == pool.KCoin {
+		feeDataReceiving = k.calculateFees(ctx, pool, amountToReceiveNet)
+		amountToReceiveGross = amountToReceiveNet.Add(feeDataReceiving.Fee())
 	}
 
-	amountToGive, err := constantProductBuy(pool, req.DenomGiving, amountToReceive)
+	amountToGiveNet, err := constantProductBuy(pool, req.DenomGiving, amountToReceiveGross)
 	if err != nil {
 		return nil, err
 	}
 
-	if !amountToReceive.IsPositive() {
-		return nil, fmt.Errorf("amount to receive not positive")
-	}
-
-	if req.DenomReceiving == constants.KUSD {
-		feeData = k.calculateFees(ctx, pool, amountToGive, req.DenomGiving)
-		amountToGive = amountToGive.Add(feeData.Fee())
-	}
-
-	if !amountToGive.IsPositive() {
-		return nil, fmt.Errorf("amount to sell not positive")
+	// If the trade is to buy a factory token, the amount to give has to be larger than the calculated amount as to
+	// cover the trade we.
+	amountToGiveGross := amountToGiveNet
+	if req.DenomGiving == pool.KCoin {
+		feeDataGiving = k.calculateFees(ctx, pool, amountToGiveNet)
+		amountToGiveGross = amountToGiveNet.Add(feeDataGiving.Fee())
 	}
 
 	var price math.LegacyDec
-	if req.DenomReceiving == constants.KUSD {
-		price = amountToGive.ToLegacyDec().Quo(amountToReceive.ToLegacyDec()) // C
+	if req.DenomReceiving == pool.KCoin {
+		price = amountToReceiveNet.ToLegacyDec().Quo(amountToGiveGross.ToLegacyDec()) // C
 	} else {
-		price = amountToReceive.ToLegacyDec().Quo(amountToGive.ToLegacyDec()) // C
+		price = amountToGiveGross.ToLegacyDec().Quo(amountToReceiveNet.ToLegacyDec()) // C
 	}
 
+	feeData := getFeeData(feeDataGiving, feeDataReceiving)
 	return &types.QuerySimulateTradeResponse{
-		AmountGiven:    amountToGive.String(),
-		AmountReceived: amountToReceive.String(),
+		AmountGiven:    amountToGiveGross.String(),
+		AmountReceived: amountToReceiveNet.String(),
 		Fee:            feeData.Fee().String(),
 		Price:          price.String(),
 	}, nil

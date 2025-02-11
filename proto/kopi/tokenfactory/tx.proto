@@ -82,6 +82,7 @@ message MsgTradeResponse {
   string fee = 5;
   string fee_pool = 6;
   string fee_reserve = 7;
+  string price = 8;
 }
 
 message MsgUpdateDescription {
