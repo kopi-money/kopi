@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -40,7 +41,20 @@ func (k Keeper) ExecuteSell(ctx types.TradeContext) (types.TradeResult, error) {
 		return types.TradeResult{}, err
 	}
 
-	return result.Get(types.TradeTypeSell), nil
+	tradeResult := result.Get(types.TradeTypeSell)
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
+		sdk.NewEvent("trade_executed",
+			sdk.Attribute{Key: "address", Value: ctx.CoinTarget},
+			sdk.Attribute{Key: "denom_giving", Value: ctx.TradeDenomGiving},
+			sdk.Attribute{Key: "denom_receiving", Value: ctx.TradeDenomReceiving},
+			sdk.Attribute{Key: "amount_intermediate_base_currency", Value: tradeResult.AmountIntermediate.String()},
+			sdk.Attribute{Key: "amount_given", Value: tradeResult.AmountGiven.String()},
+			sdk.Attribute{Key: "amount_received", Value: tradeResult.AmountReceived.String()},
+			sdk.Attribute{Key: "protocol_trade", Value: strconv.FormatBool(ctx.ProtocolTrade)},
+		),
+	)
+
+	return tradeResult, nil
 }
 
 func (k Keeper) ExecuteBuy(ctx types.TradeContext) (types.TradeResult, error) {
@@ -91,7 +105,20 @@ func (k Keeper) ExecuteBuy(ctx types.TradeContext) (types.TradeResult, error) {
 		return types.TradeResult{}, err
 	}
 
-	return result.Get(types.TradeTypeBuy), nil
+	tradeResult := result.Get(types.TradeTypeBuy)
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
+		sdk.NewEvent("trade_executed",
+			sdk.Attribute{Key: "address", Value: ctx.CoinTarget},
+			sdk.Attribute{Key: "denom_giving", Value: ctx.TradeDenomGiving},
+			sdk.Attribute{Key: "denom_receiving", Value: ctx.TradeDenomReceiving},
+			sdk.Attribute{Key: "amount_intermediate_base_currency", Value: tradeResult.AmountIntermediate.String()},
+			sdk.Attribute{Key: "amount_given", Value: tradeResult.AmountGiven.String()},
+			sdk.Attribute{Key: "amount_received", Value: tradeResult.AmountReceived.String()},
+			sdk.Attribute{Key: "protocol_trade", Value: strconv.FormatBool(ctx.ProtocolTrade)},
+		),
+	)
+
+	return tradeResult, nil
 }
 
 func (k Keeper) executeTrade(ctx *types.TradeContext) (types.TradeResults, error) {

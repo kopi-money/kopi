@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/kopi-money/kopi/constants"
@@ -77,18 +76,6 @@ func (k msgServer) trade(ctx context.Context, creator, denomGiving, denomReceivi
 	if err = tradeCtx.TradeBalances.Settle(ctx, k.BankKeeper); err != nil {
 		return nil, fmt.Errorf("could not settle balances: %w", err)
 	}
-
-	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
-		sdk.NewEvent("trade_executed",
-			sdk.Attribute{Key: "address", Value: tradeCtx.CoinTarget},
-			sdk.Attribute{Key: "denom_giving", Value: tradeCtx.TradeDenomGiving},
-			sdk.Attribute{Key: "denom_receiving", Value: tradeCtx.TradeDenomReceiving},
-			sdk.Attribute{Key: "amount_intermediate_base_currency", Value: tradeResult.AmountIntermediate.String()},
-			sdk.Attribute{Key: "amount_given", Value: tradeResult.AmountGiven.String()},
-			sdk.Attribute{Key: "amount_received", Value: tradeResult.AmountReceived.String()},
-			sdk.Attribute{Key: "protocol_trade", Value: strconv.FormatBool(tradeCtx.ProtocolTrade)},
-		),
-	)
 
 	return &types.MsgTradeResponse{
 		AmountGiven:    tradeResult.AmountGiven.String(),
