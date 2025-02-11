@@ -301,6 +301,8 @@ require (
 
 replace (
 	github.com/cosmos/cosmos-sdk => github.com/kopi-money/cosmos-sdk v0.50.11-0.2
+
+	github.com/cosmos/ibc-go/v8 => github.com/kopi-money/ibc-go/v8 v8.5.2-0.2
 	// replace broken goleveldb
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 )
