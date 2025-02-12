@@ -848,8 +848,8 @@ github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxv
 github.com/konsorten/go-windows-terminal-sequences v1.0.3/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/kopi-money/cosmos-sdk v0.50.11-0.2 h1:jP1pMRQ6SMXDbYU93piEisYZ9tysCRsEaNXpomxJLiM=
 github.com/kopi-money/cosmos-sdk v0.50.11-0.2/go.mod h1:gt14Meok2IDCjbDtjwkbUcgVNEpUBDN/4hg9cCUtLgw=
-github.com/kopi-money/ibc-go/v8 v8.5.2-0.1 h1:rDCjK+CR1Aygnm/crtnXWNgQdYW79kdyss9e6QzhVxM=
-github.com/kopi-money/ibc-go/v8 v8.5.2-0.1/go.mod h1:P5hkAvq0Qbg0h18uLxDVA9q1kOJ0l36htMsskiNwXbo=
+github.com/kopi-money/ibc-go/v8 v8.5.2-0.2 h1:pnAY+LV6CS0QISwA95sYcsUPFeseaf4wnFFvBy28Ak4=
+github.com/kopi-money/ibc-go/v8 v8.5.2-0.2/go.mod h1:P5hkAvq0Qbg0h18uLxDVA9q1kOJ0l36htMsskiNwXbo=
 github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515/go.mod h1:+0opPa2QZZtGFBFZlji/RkVcI2GknAs/DXo4wKdlNEc=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
 github.com/kr/pretty v0.3.1 h1:flRD4NNwYAUpkphVc1HcthR4KEIFJ65n8Mw5qdRn3LE=
