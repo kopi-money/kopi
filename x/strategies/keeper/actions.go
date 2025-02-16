@@ -512,6 +512,10 @@ func (k Keeper) executeAction(
 }
 
 func (k Keeper) getAmountBorrowable(ctx context.Context, address sdk.AccAddress, denom string, amount string) (math.Int, error) {
+	if !k.DenomKeeper.IsBorrowableDenom(ctx, denom) {
+		return math.Int{}, denomtypes.ErrInvalidBorrowableDenom
+	}
+
 	integer, ok := math.NewIntFromString(amount)
 	if ok {
 		return integer, nil
@@ -526,6 +530,10 @@ func (k Keeper) getAmountBorrowable(ctx context.Context, address sdk.AccAddress,
 }
 
 func (k Keeper) getAmountWithdrawableCollateral(ctx context.Context, address sdk.AccAddress, denom string, amount string) (math.Int, error) {
+	if !k.DenomKeeper.IsCollateralDenom(ctx, denom) {
+		return math.Int{}, denomtypes.ErrInvalidCollateralDenom
+	}
+
 	integer, ok := math.NewIntFromString(amount)
 	if ok {
 		return integer, nil
@@ -540,6 +548,10 @@ func (k Keeper) getAmountWithdrawableCollateral(ctx context.Context, address sdk
 }
 
 func (k Keeper) getAmountWallet(ctx context.Context, address sdk.AccAddress, denom, amountString string) (math.Int, error) {
+	if !k.DenomKeeper.IsValidDenom(ctx, denom) {
+		return math.Int{}, denomtypes.ErrInvalidDexAsset
+	}
+
 	spendable := k.BankKeeper.SpendableCoin(ctx, address, denom).Amount
 	if spendable.LTE(math.ZeroInt()) {
 		return math.Int{}, types.ErrNoFunds

@@ -293,7 +293,7 @@ func (k Keeper) handleAutomation(ctx context.Context, params types.Params, autom
 
 				return err
 			}); err != nil {
-				if errorIsOf(err, types.InactiveErrors) {
+				if !errorIsOf(err, types.ValidErrors) {
 					automation.InactiveReason = inactiveReason(InactiveReasonError)
 					automation.Active = false
 				}

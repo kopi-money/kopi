@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"strconv"
 
 	"cosmossdk.io/math"
@@ -10,13 +11,13 @@ import (
 	"github.com/kopi-money/kopi/x/strategies/types"
 )
 
-func (k Keeper) CheckConditions(ctx context.Context, conditions []types.Condition) error {
+func (k Keeper) ValidateConditions(ctx context.Context, conditions []types.Condition) error {
 	if len(conditions) == 0 {
 		return types.ErrEmptyConditions
 	}
 
 	for conditionIndex, condition := range conditions {
-		if err := k.CheckCondition(ctx, condition); err != nil {
+		if err := k.ValidateCondition(ctx, condition); err != nil {
 			return fmt.Errorf("could not convert condition[%d]: %w", conditionIndex, err)
 		}
 	}
@@ -24,7 +25,7 @@ func (k Keeper) CheckConditions(ctx context.Context, conditions []types.Conditio
 	return nil
 }
 
-func (k Keeper) CheckCondition(ctx context.Context, condition types.Condition) error {
+func (k Keeper) ValidateCondition(ctx context.Context, condition types.Condition) error {
 	if !types.IsValidComparison(condition.ConditionType, condition.Comparison) {
 		return fmt.Errorf("invalid comparison: %v", condition.Comparison)
 	}
@@ -52,11 +53,11 @@ func (k Keeper) CheckCondition(ctx context.Context, condition types.Condition) e
 
 	case types.ConditionPrice, types.ConditionWalletValue, types.ConditionLiquidityValue:
 		if !k.DenomKeeper.IsValidDenom(ctx, condition.String1) {
-			return fmt.Errorf("invalid string1: %v", condition.String1)
+			return denomtypes.ErrInvalidDexAsset
 		}
 
 		if !k.DenomKeeper.IsValidDenom(ctx, condition.String2) {
-			return fmt.Errorf("invalid string2: %v", condition.String2)
+			return denomtypes.ErrInvalidDexAsset
 		}
 
 		if condition.String1 == condition.String2 {
@@ -69,16 +70,16 @@ func (k Keeper) CheckCondition(ctx context.Context, condition types.Condition) e
 		}
 
 		if !k.DenomKeeper.IsCollateralDenom(ctx, condition.String1) {
-			return fmt.Errorf("string1 is no collateral denom")
+			return denomtypes.ErrInvalidCollateralDenom
 		}
 
 	case types.ConditionCollateralValue:
 		if !k.DenomKeeper.IsCollateralDenom(ctx, condition.String1) {
-			return fmt.Errorf("string1 is no collateral denom")
+			return denomtypes.ErrInvalidCollateralDenom
 		}
 
 		if !k.DenomKeeper.IsValidDenom(ctx, condition.String2) {
-			return fmt.Errorf("string2 is no valid denom")
+			return denomtypes.ErrInvalidDexAsset
 		}
 
 	case types.ConditionLoanAmount, types.ConditionBorrowableAmount:
@@ -87,16 +88,16 @@ func (k Keeper) CheckCondition(ctx context.Context, condition types.Condition) e
 		}
 
 		if !k.DenomKeeper.IsBorrowableDenom(ctx, condition.String1) {
-			return fmt.Errorf("string1 is no borrowable denom")
+			return denomtypes.ErrInvalidBorrowableDenom
 		}
 
 	case types.ConditionLoanValue:
 		if !k.DenomKeeper.IsBorrowableDenom(ctx, condition.String1) {
-			return fmt.Errorf("string1 is no borrowable denom")
+			return denomtypes.ErrInvalidBorrowableDenom
 		}
 
 		if !k.DenomKeeper.IsValidDenom(ctx, condition.String2) {
-			return fmt.Errorf("string2 is no valid denom")
+			return denomtypes.ErrInvalidDexAsset
 		}
 
 	case types.ConditionInterestRate:
@@ -105,12 +106,12 @@ func (k Keeper) CheckCondition(ctx context.Context, condition types.Condition) e
 		}
 
 		if _, err := k.DenomKeeper.GetCAsset(ctx, condition.String1); err != nil {
-			return fmt.Errorf("string1 is no borrowable denom")
+			return denomtypes.ErrInvalidCAsset
 		}
 
 	case types.ConditionWalletAmount, types.ConditionLiquidityAmount:
 		if !k.DenomKeeper.IsValidDenom(ctx, condition.String1) {
-			return fmt.Errorf("string1 is no valid denom")
+			return denomtypes.ErrInvalidDexAsset
 		}
 
 	case types.ConditionCreditLineUsage:
@@ -138,7 +139,7 @@ func (k Keeper) CheckCondition(ctx context.Context, condition types.Condition) e
 		fallthrough
 	case types.ConditionPriceChangeAmount:
 		if !k.DenomKeeper.IsValidDenom(ctx, condition.String1) {
-			return fmt.Errorf("string1 is no valid denom")
+			return denomtypes.ErrInvalidDexAsset
 		}
 
 		if condition.ReferencePrice == nil || condition.ReferencePrice.IsNil() {
@@ -179,6 +180,12 @@ func (k Keeper) CheckIfConditionsMet(ctx context.Context, acc sdk.AccAddress, co
 }
 
 func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress, condition types.Condition, automationIndex, conditionIndex int) (bool, error) {
+	// It could have happened that a denom that is part of the condition has been changed. For example, a denom could
+	// be used for price comparison and have been de-listed in the meantime.
+	if err := k.ValidateCondition(ctx, condition); err != nil {
+		return false, err
+	}
+
 	var (
 		conditionValue      = condition.Value
 		conditionComparison = condition.Comparison

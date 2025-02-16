@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"context"
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/cache"
@@ -143,12 +144,26 @@ func TestActions2(t *testing.T) {
 		Amount:     "1000",
 	}))
 
+	require.ErrorIs(t, executeAction(ctx, k, acc, types.Action{
+		ActionType: types.ActionDeposit,
+		String1:    "unknown",
+		String2:    "",
+		Amount:     "1000",
+	}), denomtypes.ErrInvalidDexAsset)
+
 	require.NoError(t, executeAction(ctx, k, acc, types.Action{
 		ActionType: types.ActionRedeem,
 		String1:    "uckusd",
 		String2:    "",
 		Amount:     "1000",
 	}))
+
+	require.ErrorIs(t, executeAction(ctx, k, acc, types.Action{
+		ActionType: types.ActionRedeem,
+		String1:    "unknown",
+		String2:    "",
+		Amount:     "1000",
+	}), denomtypes.ErrInvalidDexAsset)
 
 	require.NoError(t, executeAction(ctx, k, acc, types.Action{
 		ActionType: types.ActionCollateralAdd,
@@ -157,12 +172,26 @@ func TestActions2(t *testing.T) {
 		Amount:     "1000",
 	}))
 
+	require.ErrorIs(t, executeAction(ctx, k, acc, types.Action{
+		ActionType: types.ActionCollateralAdd,
+		String1:    "uknown",
+		String2:    "",
+		Amount:     "1000",
+	}), denomtypes.ErrInvalidDexAsset)
+
 	require.NoError(t, executeAction(ctx, k, acc, types.Action{
 		ActionType: types.ActionCollateralWithdraw,
 		String1:    constants.KUSD,
 		String2:    "",
 		Amount:     "1000",
 	}))
+
+	require.ErrorIs(t, executeAction(ctx, k, acc, types.Action{
+		ActionType: types.ActionCollateralWithdraw,
+		String1:    "unknown",
+		String2:    "",
+		Amount:     "1000",
+	}), denomtypes.ErrInvalidCollateralDenom)
 
 	require.NoError(t, executeAction(ctx, k, acc, types.Action{
 		ActionType: types.ActionLiquidityAdd,
@@ -171,11 +200,32 @@ func TestActions2(t *testing.T) {
 		Amount:     "1000",
 	}))
 
+	require.ErrorIs(t, executeAction(ctx, k, acc, types.Action{
+		ActionType: types.ActionLiquidityAdd,
+		String1:    "uknown",
+		String2:    "",
+		Amount:     "1000",
+	}), denomtypes.ErrInvalidCollateralDenom)
+
 	require.NoError(t, executeAction(ctx, k, acc, types.Action{
 		ActionType: types.ActionLiquidityWithdraw,
 		String1:    constants.BaseCurrency,
 		String2:    "",
 		Amount:     "1000",
+	}))
+
+	require.ErrorIs(t, executeAction(ctx, k, acc, types.Action{
+		ActionType: types.ActionLiquidityWithdraw,
+		String1:    "uknown",
+		String2:    "",
+		Amount:     "1000",
+	}), denomtypes.ErrInvalidCollateralDenom)
+
+	require.Error(t, executeAction(ctx, k, acc, types.Action{
+		ActionType: types.ActionLoanBorrow,
+		String1:    constants.KUSD,
+		String2:    "",
+		Amount:     "1",
 	}))
 }
 

@@ -168,7 +168,7 @@ func (k Keeper) checkAutomationMessage(ctx context.Context, address string, am t
 		return nil, nil, fmt.Errorf("could not convert conditions: %w", err)
 	}
 
-	if err = k.CheckConditions(ctx, conditions); err != nil {
+	if err = k.ValidateConditions(ctx, conditions); err != nil {
 		return nil, nil, fmt.Errorf("invalid conditions: %w", err)
 	}
 
