@@ -42,7 +42,7 @@ func (k Keeper) SetLiquidityEntryNextIndex(ctx context.Context, nextIndex uint64
 // has added how much.
 func (k Keeper) AddLiquidity(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int) (math.Int, error) {
 	if !k.DenomKeeper.IsValidDenom(ctx, denom) {
-		return math.Int{}, types.ErrDenomNotFound
+		return math.Int{}, denomtypes.ErrInvalidDexAsset
 	}
 
 	if k.BankKeeper.SpendableCoin(ctx, address, denom).Amount.LT(amount) {

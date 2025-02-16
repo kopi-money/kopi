@@ -662,7 +662,7 @@ func (k Keeper) SimulateWithFee(ctx types.TradeContext, fee math.LegacyDec, cpTr
 	}
 
 	if !k.DenomKeeper.IsValidDenom(ctx, ctx.TradeDenomGiving) || !k.DenomKeeper.IsValidDenom(ctx, ctx.TradeDenomReceiving) {
-		return types.TradeSimulationResult{}, types.ErrDenomNotFound
+		return types.TradeSimulationResult{}, denomtypes.ErrInvalidDexAsset
 	}
 
 	ctx.OrdersCaches = k.NewOrdersCaches(ctx)
@@ -766,11 +766,11 @@ func (k Keeper) validateTradeOptions(ctx *types.TradeContext) error {
 	}
 
 	if !k.DenomKeeper.IsValidDenom(ctx, ctx.TradeDenomGiving) {
-		return types.ErrDenomNotFound
+		return denomtypes.ErrInvalidDexAsset
 	}
 
 	if !k.DenomKeeper.IsValidDenom(ctx, ctx.TradeDenomReceiving) {
-		return types.ErrDenomNotFound
+		return denomtypes.ErrInvalidDexAsset
 	}
 
 	return nil

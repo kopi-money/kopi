@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 
 	"cosmossdk.io/math"
 
@@ -166,7 +167,7 @@ func (k msgServer) RemoveDexDenom(ctx context.Context, req *types.MsgRemoveDexDe
 	}
 
 	if !k.DenomKeeper.IsValidDenom(ctx, req.Name) {
-		return nil, types.ErrDenomNotFound
+		return nil, denomtypes.ErrInvalidDexAsset
 	}
 
 	if k.DenomKeeper.IsCollateralDenom(ctx, req.Name) {

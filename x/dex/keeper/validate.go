@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"strings"
 
 	"cosmossdk.io/math"
@@ -20,7 +21,7 @@ func (k Keeper) precheckTradeWithBalance(ctx context.Context, creator, denom str
 	}
 
 	if !k.DenomKeeper.IsValidDenom(ctx, denom) {
-		return types.ErrDenomNotFound
+		return denomtypes.ErrInvalidDexAsset
 	}
 
 	address, err := sdk.AccAddressFromBech32(creator)

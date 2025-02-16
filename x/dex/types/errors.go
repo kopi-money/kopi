@@ -9,7 +9,6 @@ import (
 // x/dex module sentinel errors
 var (
 	ErrInvalidSigner               = sdkerrors.Register(ModuleName, 1100, "expected gov account as only signer for proposal message")
-	ErrDenomNotFound               = sdkerrors.Register(ModuleName, 1101, "denom not found")
 	ErrNotEnoughFunds              = sdkerrors.Register(ModuleName, 1102, "not enough funds")
 	ErrNegativePrice               = sdkerrors.Register(ModuleName, 1103, "negative price")
 	ErrNotEnoughLiquidity          = sdkerrors.Register(ModuleName, 1104, "not enough liquidity")
