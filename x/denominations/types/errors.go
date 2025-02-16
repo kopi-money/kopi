@@ -16,4 +16,5 @@ var (
 	ErrInvalidArbitrageDenom  = sdkerrors.Register(ModuleName, 1105, "given denom is no arbitrage denom")
 	ErrInvalidAmount          = sdkerrors.Register(ModuleName, 1106, "invalid amount")
 	ErrInvalidFactor          = sdkerrors.Register(ModuleName, 1108, "invalid factor")
+	ErrInvalidBorrowableDenom = sdkerrors.Register(ModuleName, 1109, "given denom is no borrowable denom")
 )
