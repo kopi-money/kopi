@@ -90,10 +90,10 @@ func (k Keeper) calculateRedemptionAmount(ctx context.Context, arbitrageDenom de
 	}
 
 	redeemAmount := math.MinInt(redemptionValue, available)
-	requestedShare := redeemAmount.Quo(redemptionValue) // C
+	requestedShare := redeemAmount.ToLegacyDec().Quo(redemptionValue.ToLegacyDec()) // C
 
 	// how much of the given cAssets have been used
-	usedTokens := requestedAAssetAmount.Mul(requestedShare)
+	usedTokens := requestedAAssetAmount.ToLegacyDec().Mul(requestedShare).TruncateInt()
 	return redeemAmount, usedTokens, nil
 }
 
