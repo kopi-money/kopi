@@ -56,7 +56,7 @@ func (k Keeper) SetLoan(ctx context.Context, denom, address string, loan types.L
 	change := 0
 
 	// If loan is empty, delete it
-	if loan.Weight.LTE(math.LegacyZeroDec()) {
+	if !loan.Weight.IsPositive() {
 		if has := k.loans.Has(ctx, denom, address); has {
 			k.loans.Remove(ctx, denom, address)
 			change = -1
@@ -188,8 +188,7 @@ func (k Keeper) CalcAvailableToBorrow(ctx context.Context, address, denom string
 	}
 
 	acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault)
-	vault := k.BankKeeper.SpendableCoins(ctx, acc.GetAddress())
-	available := vault.AmountOf(denom)
+	available := k.BankKeeper.SpendableCoin(ctx, acc.GetAddress(), denom).Amount
 
 	return math.MinInt(available, borrowable.TruncateInt()), nil
 }
@@ -233,7 +232,7 @@ func (k Keeper) updateLoan(ctx context.Context, denom, address string, valueChan
 		loanSum.NumLoans = 0
 	}
 
-	k.loansSum.Set(ctx, denom, loanSum)
+	k.SetLoanSum(ctx, loanSum)
 	return loanIndex, numLoanChange == -1
 }
 

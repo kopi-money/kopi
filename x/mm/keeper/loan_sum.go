@@ -22,5 +22,8 @@ func (k Keeper) GetLoanSumWithDefault(ctx context.Context, denom string) types.L
 }
 
 func (k Keeper) SetLoanSum(ctx context.Context, sum types.LoanSum) {
+	sum.LoanSum = math.LegacyMaxDec(sum.LoanSum, math.LegacyZeroDec())
+	sum.WeightSum = math.LegacyMaxDec(sum.WeightSum, math.LegacyZeroDec())
+
 	k.loansSum.Set(ctx, sum.Denom, sum)
 }

@@ -128,7 +128,7 @@ func (k msgServer) PartiallyRepayLoan(ctx context.Context, msg *types.MsgPartial
 		return nil, types.ErrInvalidAmountFormat
 	}
 
-	if repayAmount.LT(math.ZeroInt()) {
+	if repayAmount.IsNegative() {
 		return nil, types.ErrNegativeAmount
 	}
 
