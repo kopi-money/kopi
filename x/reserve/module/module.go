@@ -173,6 +173,10 @@ func (am AppModule) EndBlock(ctx context.Context) error {
 			return fmt.Errorf("error buying k coins: %w", err)
 		}
 
+		if err := am.keeper.Burn(innerCtx); err != nil {
+			return fmt.Errorf("error burning coins: %w", err)
+		}
+
 		return nil
 	})
 }

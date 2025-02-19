@@ -16,6 +16,16 @@ service Msg {
   rpc UpdateKCoinBurnShare (MsgUpdateKCoinBurnShare) returns (Void);
   rpc UpdateBuyThreshold   (MsgUpdateBuyThreshold)   returns (Void);
   rpc UpdateSellThreshold  (MsgUpdateSellThreshold)  returns (Void);
+
+  rpc Burn(MsgBurn) returns (Void);
+}
+
+message MsgBurn {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string denom = 2;
+  string amount = 3;
 }
 
 message MsgUpdateBuyThreshold {

@@ -22,6 +22,7 @@ const (
 	Msg_UpdateKCoinBurnShare_FullMethodName = "/kopi.reserve.Msg/UpdateKCoinBurnShare"
 	Msg_UpdateBuyThreshold_FullMethodName   = "/kopi.reserve.Msg/UpdateBuyThreshold"
 	Msg_UpdateSellThreshold_FullMethodName  = "/kopi.reserve.Msg/UpdateSellThreshold"
+	Msg_Burn_FullMethodName                 = "/kopi.reserve.Msg/Burn"
 )
 
 // MsgClient is the client API for Msg service.
@@ -31,6 +32,7 @@ type MsgClient interface {
 	UpdateKCoinBurnShare(ctx context.Context, in *MsgUpdateKCoinBurnShare, opts ...grpc.CallOption) (*Void, error)
 	UpdateBuyThreshold(ctx context.Context, in *MsgUpdateBuyThreshold, opts ...grpc.CallOption) (*Void, error)
 	UpdateSellThreshold(ctx context.Context, in *MsgUpdateSellThreshold, opts ...grpc.CallOption) (*Void, error)
+	Burn(ctx context.Context, in *MsgBurn, opts ...grpc.CallOption) (*Void, error)
 }
 
 type msgClient struct {
@@ -68,6 +70,15 @@ func (c *msgClient) UpdateSellThreshold(ctx context.Context, in *MsgUpdateSellTh
 	return out, nil
 }
 
+func (c *msgClient) Burn(ctx context.Context, in *MsgBurn, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_Burn_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -75,6 +86,7 @@ type MsgServer interface {
 	UpdateKCoinBurnShare(context.Context, *MsgUpdateKCoinBurnShare) (*Void, error)
 	UpdateBuyThreshold(context.Context, *MsgUpdateBuyThreshold) (*Void, error)
 	UpdateSellThreshold(context.Context, *MsgUpdateSellThreshold) (*Void, error)
+	Burn(context.Context, *MsgBurn) (*Void, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -90,6 +102,9 @@ func (UnimplementedMsgServer) UpdateBuyThreshold(context.Context, *MsgUpdateBuyT
 }
 func (UnimplementedMsgServer) UpdateSellThreshold(context.Context, *MsgUpdateSellThreshold) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateSellThreshold not implemented")
+}
+func (UnimplementedMsgServer) Burn(context.Context, *MsgBurn) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Burn not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -158,6 +173,24 @@ func _Msg_UpdateSellThreshold_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_Burn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgBurn)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).Burn(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_Burn_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).Burn(ctx, req.(*MsgBurn))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -176,6 +209,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateSellThreshold",
 			Handler:    _Msg_UpdateSellThreshold_Handler,
+		},
+		{
+			MethodName: "Burn",
+			Handler:    _Msg_Burn_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -3,6 +3,7 @@ package types
 const (
 	// ModuleName defines the module name
 	ModuleName = "reserve"
+	Burner     = "burner"
 
 	// StoreKey defines the primary module store key
 	StoreKey = ModuleName
