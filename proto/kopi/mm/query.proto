@@ -153,6 +153,7 @@ message SimulateRedemptionResponse {
   string redemption_amount = 1;
   string amount_received = 2;
   string vault_size = 3;
+  string maximum_redemption_amount = 4;
 }
 
 message GetRedemptionsQuery {

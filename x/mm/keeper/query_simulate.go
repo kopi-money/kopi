@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"github.com/kopi-money/kopi/x/mm/types"
 )
 
@@ -37,7 +38,7 @@ func (k Keeper) SimulateDeposit(ctx context.Context, req *types.SimulateDepositQ
 func (k Keeper) SimulateRedemption(ctx context.Context, req *types.SimulateRedemptionQuery) (*types.SimulateRedemptionResponse, error) {
 	cAsset, err := k.DenomKeeper.GetCAssetByBaseName(ctx, req.RedemptionDenom)
 	if err != nil {
-		return nil, types.ErrInvalidDepositDenom
+		return nil, denomtypes.ErrInvalidCAsset
 	}
 
 	amount, ok := math.NewIntFromString(req.RedemptionAmount)
@@ -49,10 +50,12 @@ func (k Keeper) SimulateRedemption(ctx context.Context, req *types.SimulateRedem
 	available := k.BankKeeper.SpendableCoins(ctx, moduleAccount.GetAddress()).AmountOf(cAsset.BaseDexDenom)
 
 	grossRedemptionAmountBase, redemptionAmountCAsset := k.CalculateAvailableRedemptionAmount(ctx, cAsset, amount.ToLegacyDec(), available.ToLegacyDec())
+	maximumRedemptionAmount := k.CalculateRedemptionAmount(ctx, cAsset, amount.ToLegacyDec())
 
 	return &types.SimulateRedemptionResponse{
-		VaultSize:        available.String(),
-		RedemptionAmount: redemptionAmountCAsset.String(),
-		AmountReceived:   grossRedemptionAmountBase.String(),
+		VaultSize:               available.String(),
+		RedemptionAmount:        redemptionAmountCAsset.String(),
+		AmountReceived:          grossRedemptionAmountBase.String(),
+		MaximumRedemptionAmount: maximumRedemptionAmount.String(),
 	}, nil
 }
