@@ -650,6 +650,8 @@ func TestLoans17(t *testing.T) {
 		Amount:  "1",
 	}))
 
+	require.NoError(t, checkLoanSum(k.GetLoanSumWithDefault(ctx, constants.KUSD)))
+
 	// Setting the collateral amount this way makes it possible to withdraw more collateral than otherwise would be allowed
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		acc, _ := sdk.AccAddressFromBech32(keepertest.Alice)
@@ -665,6 +667,38 @@ func TestLoans17(t *testing.T) {
 
 	require.NoError(t, k.HandleLiquidations(ctx))
 	require.Equal(t, 0, k.GetLoansNum(ctx))
+	require.NoError(t, checkLoanSum(k.GetLoanSumWithDefault(ctx, constants.KUSD)))
+}
+
+func TestLoans18(t *testing.T) {
+	k, _, msg, ctx := keepertest.SetupMMMsgServer(t)
+
+	require.NoError(t, keepertest.AddCollateral(ctx, msg, &types.MsgAddCollateral{
+		Creator: keepertest.Alice,
+		Denom:   constants.KUSD,
+		Amount:  "20_000000",
+	}))
+
+	_, err := msg.AddDeposit(ctx, &types.MsgAddDeposit{
+		Creator: keepertest.Alice,
+		Denom:   constants.KUSD,
+		Amount:  "20_000000",
+	})
+	require.NoError(t, err)
+
+	require.NoError(t, keepertest.Borrow(ctx, msg, &types.MsgBorrow{
+		Creator: keepertest.Alice,
+		Denom:   constants.KUSD,
+		Amount:  "10_000000",
+	}))
+
+	require.NoError(t, keepertest.PartiallyRepayLoan(ctx, msg, &types.MsgPartiallyRepayLoan{
+		Creator: keepertest.Alice,
+		Denom:   constants.KUSD,
+		Amount:  "20_000000",
+	}))
+
+	require.NoError(t, checkLoanSum(k.GetLoanSumWithDefault(ctx, constants.KUSD)))
 }
 
 func checkLoanSum(loanSum types.LoanSum) error {

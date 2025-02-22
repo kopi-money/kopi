@@ -243,3 +243,175 @@ func TestArbitrage5(t *testing.T) {
 	balance2 := k.BankKeeper.SpendableCoins(ctx, acc).AmountOf("ucwusdc").Int64()
 	require.Less(t, balance2, balance1)
 }
+
+func TestArbitrage6(t *testing.T) {
+	k, msg, _, _, ctx := keepertest.SetupStrategiesMsgServer(t)
+	userAcc, _ := sdk.AccAddressFromBech32(keepertest.Alice)
+
+	require.NoError(t, keepertest.AddArbitrageDeposit(ctx, msg, &types.MsgArbitrageDeposit{
+		Creator: keepertest.Alice,
+		Denom:   "uwusdc",
+		Amount:  "1000",
+	}))
+
+	supply := k.BankKeeper.GetSupply(ctx, "uawusdc")
+	require.Equal(t, int64(1000), supply.Amount.Int64())
+
+	require.NoError(t, keepertest.Redeem(ctx, msg, &types.MsgArbitrageRedeem{
+		Creator: keepertest.Alice,
+		Denom:   "uawusdc",
+		Amount:  "1000",
+	}))
+
+	supply = k.BankKeeper.GetSupply(ctx, "uawusdc")
+	require.Equal(t, int64(0), supply.Amount.Int64())
+
+	balance := k.BankKeeper.SpendableCoins(ctx, userAcc)
+	require.Equal(t, int64(990), balance.AmountOf("ucwusdc").Int64())
+	require.Equal(t, int64(0), balance.AmountOf("uawusdc").Int64())
+}
+
+func TestArbitrage7(t *testing.T) {
+	k, msg, _, _, ctx := keepertest.SetupStrategiesMsgServer(t)
+	userAcc, _ := sdk.AccAddressFromBech32(keepertest.Alice)
+
+	require.NoError(t, keepertest.AddArbitrageDeposit(ctx, msg, &types.MsgArbitrageDeposit{
+		Creator: keepertest.Alice,
+		Denom:   "uwusdc",
+		Amount:  "1000",
+	}))
+
+	supply := k.BankKeeper.GetSupply(ctx, "uawusdc")
+	require.Equal(t, int64(1000), supply.Amount.Int64())
+
+	coins := sdk.NewCoins(sdk.NewCoin("ucwusdc", math.NewInt(500)))
+	require.NoError(t, k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolArbitrage, dextypes.PoolReserve, coins))
+	coins = sdk.NewCoins(sdk.NewCoin(constants.KUSD, math.NewInt(500)))
+	require.NoError(t, k.BankKeeper.SendCoinsFromAccountToModule(ctx, userAcc, types.PoolArbitrage, coins))
+
+	require.ErrorIs(t, keepertest.Redeem(ctx, msg, &types.MsgArbitrageRedeem{
+		Creator: keepertest.Alice,
+		Denom:   "uawusdc",
+		Amount:  "1000",
+	}), types.ErrNotEnoughVault)
+}
+
+func TestArbitrage8(t *testing.T) {
+	k, msg, _, _, ctx := keepertest.SetupStrategiesMsgServer(t)
+	userAcc, _ := sdk.AccAddressFromBech32(keepertest.Alice)
+
+	require.NoError(t, keepertest.AddArbitrageDeposit(ctx, msg, &types.MsgArbitrageDeposit{
+		Creator: keepertest.Alice,
+		Denom:   "uwusdc",
+		Amount:  "1000",
+	}))
+
+	supply := k.BankKeeper.GetSupply(ctx, "uawusdc")
+	require.Equal(t, int64(1000), supply.Amount.Int64())
+
+	coins := sdk.NewCoins(sdk.NewCoin("ucwusdc", math.NewInt(500)))
+	require.NoError(t, k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolArbitrage, dextypes.PoolReserve, coins))
+	coins = sdk.NewCoins(sdk.NewCoin(constants.KUSD, math.NewInt(500)))
+	require.NoError(t, k.BankKeeper.SendCoinsFromAccountToModule(ctx, userAcc, types.PoolArbitrage, coins))
+
+	require.NoError(t, keepertest.Redeem(ctx, msg, &types.MsgArbitrageRedeem{
+		Creator:         keepertest.Alice,
+		Denom:           "uawusdc",
+		Amount:          "1000",
+		AllowIncomplete: true,
+	}))
+
+	balance := k.BankKeeper.SpendableCoins(ctx, userAcc)
+	require.Equal(t, int64(495), balance.AmountOf("ucwusdc").Int64())
+	require.Equal(t, int64(500), balance.AmountOf("uawusdc").Int64())
+
+	supply = k.BankKeeper.GetSupply(ctx, "uawusdc")
+	require.Equal(t, int64(500), supply.Amount.Int64())
+}
+
+func TestArbitrage9(t *testing.T) {
+	k, msg, _, _, ctx := keepertest.SetupStrategiesMsgServer(t)
+	userAcc, _ := sdk.AccAddressFromBech32(keepertest.Alice)
+
+	require.NoError(t, keepertest.AddArbitrageDeposit(ctx, msg, &types.MsgArbitrageDeposit{
+		Creator: keepertest.Alice,
+		Denom:   "uwusdc",
+		Amount:  "1000",
+	}))
+
+	supply := k.BankKeeper.GetSupply(ctx, "uawusdc")
+	require.Equal(t, int64(1000), supply.Amount.Int64())
+
+	coins := sdk.NewCoins(sdk.NewCoin("ucwusdc", math.NewInt(100)))
+	require.NoError(t, k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolArbitrage, dextypes.PoolReserve, coins))
+	coins = sdk.NewCoins(sdk.NewCoin(constants.KUSD, math.NewInt(100)))
+	require.NoError(t, k.BankKeeper.SendCoinsFromAccountToModule(ctx, userAcc, types.PoolArbitrage, coins))
+
+	require.NoError(t, keepertest.Redeem(ctx, msg, &types.MsgArbitrageRedeem{
+		Creator:         keepertest.Alice,
+		Denom:           "uawusdc",
+		Amount:          "1000",
+		AllowIncomplete: true,
+	}))
+
+	balance := k.BankKeeper.SpendableCoins(ctx, userAcc)
+	require.Equal(t, int64(891), balance.AmountOf("ucwusdc").Int64())
+	require.Equal(t, int64(100), balance.AmountOf("uawusdc").Int64())
+
+	supply = k.BankKeeper.GetSupply(ctx, "uawusdc")
+	require.Equal(t, int64(100), supply.Amount.Int64())
+}
+
+func TestArbitrage10(t *testing.T) {
+	k, msg, _, _, ctx := keepertest.SetupStrategiesMsgServer(t)
+	userAcc1, _ := sdk.AccAddressFromBech32(keepertest.Alice)
+	userAcc2, _ := sdk.AccAddressFromBech32(keepertest.Bob)
+
+	require.NoError(t, keepertest.AddArbitrageDeposit(ctx, msg, &types.MsgArbitrageDeposit{
+		Creator: keepertest.Bob,
+		Denom:   "uwusdc",
+		Amount:  "1000",
+	}))
+
+	require.NoError(t, keepertest.AddArbitrageDeposit(ctx, msg, &types.MsgArbitrageDeposit{
+		Creator: keepertest.Alice,
+		Denom:   "uwusdc",
+		Amount:  "1000",
+	}))
+
+	supply := k.BankKeeper.GetSupply(ctx, "uawusdc")
+	require.Equal(t, int64(2000), supply.Amount.Int64())
+
+	coins := sdk.NewCoins(sdk.NewCoin("ucwusdc", math.NewInt(100)))
+	require.NoError(t, k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolArbitrage, dextypes.PoolReserve, coins))
+	coins = sdk.NewCoins(sdk.NewCoin(constants.KUSD, math.NewInt(100)))
+	require.NoError(t, k.BankKeeper.SendCoinsFromAccountToModule(ctx, userAcc1, types.PoolArbitrage, coins))
+
+	require.NoError(t, keepertest.Redeem(ctx, msg, &types.MsgArbitrageRedeem{
+		Creator:         keepertest.Alice,
+		Denom:           "uawusdc",
+		Amount:          "1000",
+		AllowIncomplete: true,
+	}))
+
+	balance := k.BankKeeper.SpendableCoins(ctx, userAcc1)
+	require.Equal(t, int64(990), balance.AmountOf("ucwusdc").Int64())
+	require.Equal(t, int64(0), balance.AmountOf("uawusdc").Int64())
+
+	supply = k.BankKeeper.GetSupply(ctx, "uawusdc")
+	require.Equal(t, int64(1000), supply.Amount.Int64())
+
+	require.NoError(t, keepertest.Redeem(ctx, msg, &types.MsgArbitrageRedeem{
+		Creator:         keepertest.Bob,
+		Denom:           "uawusdc",
+		Amount:          "1000",
+		AllowIncomplete: true,
+	}))
+
+	balance = k.BankKeeper.SpendableCoins(ctx, userAcc2)
+	require.Equal(t, int64(896), balance.AmountOf("ucwusdc").Int64())
+	require.Equal(t, int64(100), balance.AmountOf("uawusdc").Int64())
+
+	supply = k.BankKeeper.GetSupply(ctx, "uawusdc")
+	require.Equal(t, int64(100), supply.Amount.Int64())
+}
