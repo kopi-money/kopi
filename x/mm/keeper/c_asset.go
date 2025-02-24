@@ -75,8 +75,8 @@ func (k Keeper) CalculateNewCAssetAmountWithShare(ctx context.Context, cAsset de
 	return newTokens, nil
 }
 
-// CalculateCAssetValue calculates the total underlying of an CAsset. This includes funds lying in the vault as well as
-// funds in outstanding loans.
+// CalculateCAssetValue calculates the total underlying of an cAsset. This includes funds lying in the vault as well as
+// funds in outstanding loans. The amount is expressed in the cAsset's base denom.
 func (k Keeper) CalculateCAssetValue(ctx context.Context, cAsset denomtypes.CAsset) math.LegacyDec {
 	loanSum := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom).LoanSum
 	vaultSize := k.GetVaultAmount(ctx, cAsset).ToLegacyDec()

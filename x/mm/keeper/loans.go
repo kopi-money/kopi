@@ -181,14 +181,21 @@ func (k Keeper) getBorrowers(ctx context.Context) (borrowers []string) {
 	return rankMapStringInt(borrowersMap)
 }
 
+// CalcAvailableToBorrow returns the amount of funds available for borrowing given an address and borrowable denom. It
+// checks the theoretical amount given the provided collateral as well as what is available for borrowing given the
+// borrow denom's available funds and borrow limit. The smaller value of the two is returned.
 func (k Keeper) CalcAvailableToBorrow(ctx context.Context, address, denom string) (math.Int, error) {
 	borrowable, err := k.CalculateBorrowableAmount(ctx, address, denom)
 	if err != nil {
 		return math.Int{}, fmt.Errorf("could not calculate borrowable amount: %w", err)
 	}
 
-	acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault)
-	available := k.BankKeeper.SpendableCoin(ctx, acc.GetAddress(), denom).Amount
+	cAsset, err := k.DenomKeeper.GetCAssetByBaseName(ctx, denom)
+	if err != nil {
+		return math.Int{}, fmt.Errorf("could not get c asset asset: %w", err)
+	}
+
+	available := k.availableToBorrowForDenom(ctx, cAsset)
 
 	return math.MinInt(available, borrowable.TruncateInt()), nil
 }
@@ -203,6 +210,18 @@ func (k Keeper) checkBorrowLimitExceeded(ctx context.Context, cAsset denomtypes.
 
 	borrowLimit := deposited.Mul(cAsset.BorrowLimit)
 	return borrowLimit.LT(borrowed.Add(amount.ToLegacyDec()))
+}
+
+// availableToBorrowForDenom returns the amount of funds that are available to borrow for a denom given its borrow
+// limit. It multiplies the cAsset value, ie the loans and the funds in the vault, with the borrow limit to get the
+// theoretical limit. Then it substracts the amount of loans taken out to get the amount of funds below the borrow limit.
+func (k Keeper) availableToBorrowForDenom(ctx context.Context, cAsset denomtypes.CAsset) math.Int {
+	borrowed := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom).LoanSum
+	cAssetValue := k.CalculateCAssetValue(ctx, cAsset)
+	borrowLimit := cAssetValue.Mul(cAsset.BorrowLimit)
+	availableToBorrw := borrowLimit.Sub(borrowed)
+	availableToBorrw = math.LegacyMaxDec(math.LegacyZeroDec(), availableToBorrw)
+	return availableToBorrw.TruncateInt()
 }
 
 func (k Keeper) updateLoan(ctx context.Context, denom, address string, valueChange math.LegacyDec) (uint64, bool) {
