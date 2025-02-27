@@ -251,10 +251,11 @@ message DenomLoanStat {
   string denom = 1;
   string utility_rate = 2;
   string interest_rate = 3;
-  string available_to_borrow = 4;
-  string available_to_borrow_usd = 5;
-  string loan_sum = 6;
-  string loan_sum_usd = 7;
+  string borrow_limit_rate = 4;
+  string available_to_borrow = 5;
+  string available_to_borrow_usd = 6;
+  string loan_sum = 7;
+  string loan_sum_usd = 8;
 }
 
 message GetLoanStatsResponse {
@@ -271,6 +272,10 @@ message GetAvailableToBorrowRequest {
 message GetAvailableToBorrowResponse {
   string amount = 1;
   string amount_usd = 2;
+
+  string available_in_vault = 3;
+  string available_by_borrow_limit = 4;
+  string available_by_collateral = 5;
 }
 
 message GetWithdrawableCollateralQuery {
@@ -503,6 +508,8 @@ message UserLoanStat {
   string amount_available = 4;
   string amount_available_usd = 5;
   string interest_rate = 6;
+  string borrow_limit_rate = 7;
+  string utility_rate = 8;
 }
 
 message GetUserLoansResponse {

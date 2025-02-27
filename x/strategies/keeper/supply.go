@@ -9,7 +9,7 @@ import (
 	"github.com/kopi-money/kopi/x/strategies/types"
 )
 
-var minimumAmount = math.NewInt(100_000_000) // i.e. 100
+var minimumAmount = math.NewInt(500_000_000) // i.e. 500
 type CalculateValue []func() (math.LegacyDec, error)
 
 func (cv CalculateValue) get() (math.LegacyDec, error) {

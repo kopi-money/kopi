@@ -16,6 +16,8 @@ import (
 	"github.com/kopi-money/kopi/x/mm/types"
 )
 
+var minimumLoanFactor = math.LegacyNewDecWithPrec(1, 3) // 0.1 %
+
 func (k Keeper) HandleLiquidations(ctx context.Context) error {
 	collateralDenomValues, err := k.getCollateralDenomsByValue(ctx)
 	if err != nil {
@@ -144,7 +146,8 @@ func loanUnderMinimumThreshold(cAsset denomtypes.CAsset, loanValue math.LegacyDe
 		return false
 	}
 
-	return cAsset.MinimumLoanSize.IsPositive() && loanValue.LT(cAsset.MinimumLoanSize.ToLegacyDec())
+	minimumLoanSize := cAsset.MinimumLoanSize.ToLegacyDec().Mul(minimumLoanFactor)
+	return cAsset.MinimumLoanSize.IsPositive() && loanValue.LT(minimumLoanSize)
 }
 
 // liquidateCollateral calculates for each collateral denom how much collateral to sell such as to repay the loan and lower

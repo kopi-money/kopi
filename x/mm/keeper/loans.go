@@ -219,9 +219,9 @@ func (k Keeper) availableToBorrowForDenom(ctx context.Context, cAsset denomtypes
 	borrowed := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom).LoanSum
 	cAssetValue := k.CalculateCAssetValue(ctx, cAsset)
 	borrowLimit := cAssetValue.Mul(cAsset.BorrowLimit)
-	availableToBorrw := borrowLimit.Sub(borrowed)
-	availableToBorrw = math.LegacyMaxDec(math.LegacyZeroDec(), availableToBorrw)
-	return availableToBorrw.TruncateInt()
+	availableToBorrow := borrowLimit.Sub(borrowed)
+	availableToBorrow = math.LegacyMaxDec(math.LegacyZeroDec(), availableToBorrow)
+	return availableToBorrow.TruncateInt()
 }
 
 func (k Keeper) updateLoan(ctx context.Context, denom, address string, valueChange math.LegacyDec) (uint64, bool) {

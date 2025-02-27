@@ -2,9 +2,8 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-
 	"cosmossdk.io/math"
+	"fmt"
 
 	"github.com/kopi-money/kopi/x/mm/types"
 	"google.golang.org/grpc/codes"
@@ -100,6 +99,7 @@ func (k Keeper) GetLoansStats(ctx context.Context, _ *types.GetLoanStatsQuery) (
 		loanStats = append(loanStats, &types.DenomLoanStat{
 			Denom:                cAsset.BaseDexDenom,
 			UtilityRate:          utilityRate.String(),
+			BorrowLimitRate:      cAsset.BorrowLimit.String(),
 			InterestRate:         interestRate.String(),
 			AvailableToBorrow:    amountAvailable.String(),
 			AvailableToBorrowUsd: amountAvailableUSD.String(),
@@ -172,6 +172,8 @@ func (k Keeper) GetUserLoans(ctx context.Context, req *types.GetUserLoansQuery) 
 			AmountAvailable:    amountAvailable.String(),
 			AmountAvailableUsd: amountAvailableUSD.String(),
 			InterestRate:       interestRate.String(),
+			BorrowLimitRate:    cAsset.BorrowLimit.String(),
+			UtilityRate:        utilityRate.String(),
 		})
 	}
 
@@ -247,18 +249,33 @@ func (k Keeper) GetAvailableToBorrow(ctx context.Context, req *types.GetAvailabl
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	amount, err := k.CalcAvailableToBorrow(ctx, req.Address, req.Denom)
+	cAsset, err := k.DenomKeeper.GetCAssetByBaseName(ctx, req.Denom)
 	if err != nil {
-		return nil, fmt.Errorf("could not calculate available amount to borrow: %w", err)
+		return nil, fmt.Errorf("could not get c asset asset: %w", err)
 	}
 
-	amountUSD, err := k.DexKeeper.GetValueInUSD(ctx, req.Denom, amount.ToLegacyDec())
+	availableByCollateral, err := k.CalculateBorrowableAmount(ctx, req.Address, req.Denom)
 	if err != nil {
-		return nil, fmt.Errorf("could not convert amount to usd: %w", err)
+		return nil, fmt.Errorf("could not calculate borrowable amount: %w", err)
+	}
+
+	availableBorrowLimit := k.availableToBorrowForDenom(ctx, cAsset)
+	availableInVault := k.GetVaultAmount(ctx, cAsset)
+
+	amount := math.MinInt(availableByCollateral.TruncateInt(), availableBorrowLimit)
+	amount = math.MinInt(amount, availableInVault)
+
+	amountUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDexDenom, amount.ToLegacyDec())
+	if err != nil {
+		return nil, fmt.Errorf("value in usd: %w", err)
 	}
 
 	return &types.GetAvailableToBorrowResponse{
 		Amount:    amount.String(),
 		AmountUsd: amountUSD.String(),
+
+		AvailableByBorrowLimit: availableBorrowLimit.String(),
+		AvailableInVault:       availableInVault.String(),
+		AvailableByCollateral:  availableByCollateral.String(),
 	}, nil
 }
