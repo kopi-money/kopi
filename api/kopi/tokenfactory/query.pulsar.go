@@ -17,6 +17,4218 @@ import (
 )
 
 var (
+	md_QuerySimulateAddingLiquidityRequest        protoreflect.MessageDescriptor
+	fd_QuerySimulateAddingLiquidityRequest_token  protoreflect.FieldDescriptor
+	fd_QuerySimulateAddingLiquidityRequest_amount protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_kopi_tokenfactory_query_proto_init()
+	md_QuerySimulateAddingLiquidityRequest = File_kopi_tokenfactory_query_proto.Messages().ByName("QuerySimulateAddingLiquidityRequest")
+	fd_QuerySimulateAddingLiquidityRequest_token = md_QuerySimulateAddingLiquidityRequest.Fields().ByName("token")
+	fd_QuerySimulateAddingLiquidityRequest_amount = md_QuerySimulateAddingLiquidityRequest.Fields().ByName("amount")
+}
+
+var _ protoreflect.Message = (*fastReflection_QuerySimulateAddingLiquidityRequest)(nil)
+
+type fastReflection_QuerySimulateAddingLiquidityRequest QuerySimulateAddingLiquidityRequest
+
+func (x *QuerySimulateAddingLiquidityRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QuerySimulateAddingLiquidityRequest)(x)
+}
+
+func (x *QuerySimulateAddingLiquidityRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_kopi_tokenfactory_query_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QuerySimulateAddingLiquidityRequest_messageType fastReflection_QuerySimulateAddingLiquidityRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QuerySimulateAddingLiquidityRequest_messageType{}
+
+type fastReflection_QuerySimulateAddingLiquidityRequest_messageType struct{}
+
+func (x fastReflection_QuerySimulateAddingLiquidityRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QuerySimulateAddingLiquidityRequest)(nil)
+}
+func (x fastReflection_QuerySimulateAddingLiquidityRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QuerySimulateAddingLiquidityRequest)
+}
+func (x fastReflection_QuerySimulateAddingLiquidityRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QuerySimulateAddingLiquidityRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QuerySimulateAddingLiquidityRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QuerySimulateAddingLiquidityRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QuerySimulateAddingLiquidityRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QuerySimulateAddingLiquidityRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QuerySimulateAddingLiquidityRequest) New() protoreflect.Message {
+	return new(fastReflection_QuerySimulateAddingLiquidityRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QuerySimulateAddingLiquidityRequest) Interface() protoreflect.ProtoMessage {
+	return (*QuerySimulateAddingLiquidityRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QuerySimulateAddingLiquidityRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Token != "" {
+		value := protoreflect.ValueOfString(x.Token)
+		if !f(fd_QuerySimulateAddingLiquidityRequest_token, value) {
+			return
+		}
+	}
+	if x.Amount != "" {
+		value := protoreflect.ValueOfString(x.Amount)
+		if !f(fd_QuerySimulateAddingLiquidityRequest_amount, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QuerySimulateAddingLiquidityRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityRequest.token":
+		return x.Token != ""
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityRequest.amount":
+		return x.Amount != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QuerySimulateAddingLiquidityRequest"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QuerySimulateAddingLiquidityRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuerySimulateAddingLiquidityRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityRequest.token":
+		x.Token = ""
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityRequest.amount":
+		x.Amount = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QuerySimulateAddingLiquidityRequest"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QuerySimulateAddingLiquidityRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QuerySimulateAddingLiquidityRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityRequest.token":
+		value := x.Token
+		return protoreflect.ValueOfString(value)
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityRequest.amount":
+		value := x.Amount
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QuerySimulateAddingLiquidityRequest"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QuerySimulateAddingLiquidityRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuerySimulateAddingLiquidityRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityRequest.token":
+		x.Token = value.Interface().(string)
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityRequest.amount":
+		x.Amount = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QuerySimulateAddingLiquidityRequest"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QuerySimulateAddingLiquidityRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuerySimulateAddingLiquidityRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityRequest.token":
+		panic(fmt.Errorf("field token of message kopi.tokenfactory.QuerySimulateAddingLiquidityRequest is not mutable"))
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityRequest.amount":
+		panic(fmt.Errorf("field amount of message kopi.tokenfactory.QuerySimulateAddingLiquidityRequest is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QuerySimulateAddingLiquidityRequest"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QuerySimulateAddingLiquidityRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QuerySimulateAddingLiquidityRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityRequest.token":
+		return protoreflect.ValueOfString("")
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityRequest.amount":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QuerySimulateAddingLiquidityRequest"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QuerySimulateAddingLiquidityRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QuerySimulateAddingLiquidityRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in kopi.tokenfactory.QuerySimulateAddingLiquidityRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QuerySimulateAddingLiquidityRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuerySimulateAddingLiquidityRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QuerySimulateAddingLiquidityRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QuerySimulateAddingLiquidityRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QuerySimulateAddingLiquidityRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Token)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Amount)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QuerySimulateAddingLiquidityRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Amount) > 0 {
+			i -= len(x.Amount)
+			copy(dAtA[i:], x.Amount)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Amount)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.Token) > 0 {
+			i -= len(x.Token)
+			copy(dAtA[i:], x.Token)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Token)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QuerySimulateAddingLiquidityRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QuerySimulateAddingLiquidityRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QuerySimulateAddingLiquidityRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Token", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Token = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Amount = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QuerySimulateAddingLiquidityResponse                      protoreflect.MessageDescriptor
+	fd_QuerySimulateAddingLiquidityResponse_amount_kcoin         protoreflect.FieldDescriptor
+	fd_QuerySimulateAddingLiquidityResponse_amount_factory_token protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_kopi_tokenfactory_query_proto_init()
+	md_QuerySimulateAddingLiquidityResponse = File_kopi_tokenfactory_query_proto.Messages().ByName("QuerySimulateAddingLiquidityResponse")
+	fd_QuerySimulateAddingLiquidityResponse_amount_kcoin = md_QuerySimulateAddingLiquidityResponse.Fields().ByName("amount_kcoin")
+	fd_QuerySimulateAddingLiquidityResponse_amount_factory_token = md_QuerySimulateAddingLiquidityResponse.Fields().ByName("amount_factory_token")
+}
+
+var _ protoreflect.Message = (*fastReflection_QuerySimulateAddingLiquidityResponse)(nil)
+
+type fastReflection_QuerySimulateAddingLiquidityResponse QuerySimulateAddingLiquidityResponse
+
+func (x *QuerySimulateAddingLiquidityResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QuerySimulateAddingLiquidityResponse)(x)
+}
+
+func (x *QuerySimulateAddingLiquidityResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_kopi_tokenfactory_query_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QuerySimulateAddingLiquidityResponse_messageType fastReflection_QuerySimulateAddingLiquidityResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QuerySimulateAddingLiquidityResponse_messageType{}
+
+type fastReflection_QuerySimulateAddingLiquidityResponse_messageType struct{}
+
+func (x fastReflection_QuerySimulateAddingLiquidityResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QuerySimulateAddingLiquidityResponse)(nil)
+}
+func (x fastReflection_QuerySimulateAddingLiquidityResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QuerySimulateAddingLiquidityResponse)
+}
+func (x fastReflection_QuerySimulateAddingLiquidityResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QuerySimulateAddingLiquidityResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QuerySimulateAddingLiquidityResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QuerySimulateAddingLiquidityResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QuerySimulateAddingLiquidityResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QuerySimulateAddingLiquidityResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QuerySimulateAddingLiquidityResponse) New() protoreflect.Message {
+	return new(fastReflection_QuerySimulateAddingLiquidityResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QuerySimulateAddingLiquidityResponse) Interface() protoreflect.ProtoMessage {
+	return (*QuerySimulateAddingLiquidityResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QuerySimulateAddingLiquidityResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.AmountKcoin != "" {
+		value := protoreflect.ValueOfString(x.AmountKcoin)
+		if !f(fd_QuerySimulateAddingLiquidityResponse_amount_kcoin, value) {
+			return
+		}
+	}
+	if x.AmountFactoryToken != "" {
+		value := protoreflect.ValueOfString(x.AmountFactoryToken)
+		if !f(fd_QuerySimulateAddingLiquidityResponse_amount_factory_token, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QuerySimulateAddingLiquidityResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityResponse.amount_kcoin":
+		return x.AmountKcoin != ""
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityResponse.amount_factory_token":
+		return x.AmountFactoryToken != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QuerySimulateAddingLiquidityResponse"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QuerySimulateAddingLiquidityResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuerySimulateAddingLiquidityResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityResponse.amount_kcoin":
+		x.AmountKcoin = ""
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityResponse.amount_factory_token":
+		x.AmountFactoryToken = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QuerySimulateAddingLiquidityResponse"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QuerySimulateAddingLiquidityResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QuerySimulateAddingLiquidityResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityResponse.amount_kcoin":
+		value := x.AmountKcoin
+		return protoreflect.ValueOfString(value)
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityResponse.amount_factory_token":
+		value := x.AmountFactoryToken
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QuerySimulateAddingLiquidityResponse"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QuerySimulateAddingLiquidityResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuerySimulateAddingLiquidityResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityResponse.amount_kcoin":
+		x.AmountKcoin = value.Interface().(string)
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityResponse.amount_factory_token":
+		x.AmountFactoryToken = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QuerySimulateAddingLiquidityResponse"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QuerySimulateAddingLiquidityResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuerySimulateAddingLiquidityResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityResponse.amount_kcoin":
+		panic(fmt.Errorf("field amount_kcoin of message kopi.tokenfactory.QuerySimulateAddingLiquidityResponse is not mutable"))
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityResponse.amount_factory_token":
+		panic(fmt.Errorf("field amount_factory_token of message kopi.tokenfactory.QuerySimulateAddingLiquidityResponse is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QuerySimulateAddingLiquidityResponse"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QuerySimulateAddingLiquidityResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QuerySimulateAddingLiquidityResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityResponse.amount_kcoin":
+		return protoreflect.ValueOfString("")
+	case "kopi.tokenfactory.QuerySimulateAddingLiquidityResponse.amount_factory_token":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QuerySimulateAddingLiquidityResponse"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QuerySimulateAddingLiquidityResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QuerySimulateAddingLiquidityResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in kopi.tokenfactory.QuerySimulateAddingLiquidityResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QuerySimulateAddingLiquidityResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QuerySimulateAddingLiquidityResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QuerySimulateAddingLiquidityResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QuerySimulateAddingLiquidityResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QuerySimulateAddingLiquidityResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.AmountKcoin)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.AmountFactoryToken)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QuerySimulateAddingLiquidityResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.AmountFactoryToken) > 0 {
+			i -= len(x.AmountFactoryToken)
+			copy(dAtA[i:], x.AmountFactoryToken)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountFactoryToken)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.AmountKcoin) > 0 {
+			i -= len(x.AmountKcoin)
+			copy(dAtA[i:], x.AmountKcoin)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountKcoin)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QuerySimulateAddingLiquidityResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QuerySimulateAddingLiquidityResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QuerySimulateAddingLiquidityResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountKcoin", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AmountKcoin = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountFactoryToken", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AmountFactoryToken = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_FactoryTokenBalance                                  protoreflect.MessageDescriptor
+	fd_FactoryTokenBalance_factory_denom_hash               protoreflect.FieldDescriptor
+	fd_FactoryTokenBalance_amount_wallet                    protoreflect.FieldDescriptor
+	fd_FactoryTokenBalance_amount_wallet_usd                protoreflect.FieldDescriptor
+	fd_FactoryTokenBalance_pool_liquidity_kcoin             protoreflect.FieldDescriptor
+	fd_FactoryTokenBalance_pool_liquidity_kcoin_usd         protoreflect.FieldDescriptor
+	fd_FactoryTokenBalance_pool_liquidity_factory_token     protoreflect.FieldDescriptor
+	fd_FactoryTokenBalance_pool_liquidity_factory_token_usd protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_kopi_tokenfactory_query_proto_init()
+	md_FactoryTokenBalance = File_kopi_tokenfactory_query_proto.Messages().ByName("FactoryTokenBalance")
+	fd_FactoryTokenBalance_factory_denom_hash = md_FactoryTokenBalance.Fields().ByName("factory_denom_hash")
+	fd_FactoryTokenBalance_amount_wallet = md_FactoryTokenBalance.Fields().ByName("amount_wallet")
+	fd_FactoryTokenBalance_amount_wallet_usd = md_FactoryTokenBalance.Fields().ByName("amount_wallet_usd")
+	fd_FactoryTokenBalance_pool_liquidity_kcoin = md_FactoryTokenBalance.Fields().ByName("pool_liquidity_kcoin")
+	fd_FactoryTokenBalance_pool_liquidity_kcoin_usd = md_FactoryTokenBalance.Fields().ByName("pool_liquidity_kcoin_usd")
+	fd_FactoryTokenBalance_pool_liquidity_factory_token = md_FactoryTokenBalance.Fields().ByName("pool_liquidity_factory_token")
+	fd_FactoryTokenBalance_pool_liquidity_factory_token_usd = md_FactoryTokenBalance.Fields().ByName("pool_liquidity_factory_token_usd")
+}
+
+var _ protoreflect.Message = (*fastReflection_FactoryTokenBalance)(nil)
+
+type fastReflection_FactoryTokenBalance FactoryTokenBalance
+
+func (x *FactoryTokenBalance) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_FactoryTokenBalance)(x)
+}
+
+func (x *FactoryTokenBalance) slowProtoReflect() protoreflect.Message {
+	mi := &file_kopi_tokenfactory_query_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_FactoryTokenBalance_messageType fastReflection_FactoryTokenBalance_messageType
+var _ protoreflect.MessageType = fastReflection_FactoryTokenBalance_messageType{}
+
+type fastReflection_FactoryTokenBalance_messageType struct{}
+
+func (x fastReflection_FactoryTokenBalance_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_FactoryTokenBalance)(nil)
+}
+func (x fastReflection_FactoryTokenBalance_messageType) New() protoreflect.Message {
+	return new(fastReflection_FactoryTokenBalance)
+}
+func (x fastReflection_FactoryTokenBalance_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_FactoryTokenBalance
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_FactoryTokenBalance) Descriptor() protoreflect.MessageDescriptor {
+	return md_FactoryTokenBalance
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_FactoryTokenBalance) Type() protoreflect.MessageType {
+	return _fastReflection_FactoryTokenBalance_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_FactoryTokenBalance) New() protoreflect.Message {
+	return new(fastReflection_FactoryTokenBalance)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_FactoryTokenBalance) Interface() protoreflect.ProtoMessage {
+	return (*FactoryTokenBalance)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_FactoryTokenBalance) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.FactoryDenomHash != "" {
+		value := protoreflect.ValueOfString(x.FactoryDenomHash)
+		if !f(fd_FactoryTokenBalance_factory_denom_hash, value) {
+			return
+		}
+	}
+	if x.AmountWallet != "" {
+		value := protoreflect.ValueOfString(x.AmountWallet)
+		if !f(fd_FactoryTokenBalance_amount_wallet, value) {
+			return
+		}
+	}
+	if x.AmountWalletUsd != "" {
+		value := protoreflect.ValueOfString(x.AmountWalletUsd)
+		if !f(fd_FactoryTokenBalance_amount_wallet_usd, value) {
+			return
+		}
+	}
+	if x.PoolLiquidityKcoin != "" {
+		value := protoreflect.ValueOfString(x.PoolLiquidityKcoin)
+		if !f(fd_FactoryTokenBalance_pool_liquidity_kcoin, value) {
+			return
+		}
+	}
+	if x.PoolLiquidityKcoinUsd != "" {
+		value := protoreflect.ValueOfString(x.PoolLiquidityKcoinUsd)
+		if !f(fd_FactoryTokenBalance_pool_liquidity_kcoin_usd, value) {
+			return
+		}
+	}
+	if x.PoolLiquidityFactoryToken != "" {
+		value := protoreflect.ValueOfString(x.PoolLiquidityFactoryToken)
+		if !f(fd_FactoryTokenBalance_pool_liquidity_factory_token, value) {
+			return
+		}
+	}
+	if x.PoolLiquidityFactoryTokenUsd != "" {
+		value := protoreflect.ValueOfString(x.PoolLiquidityFactoryTokenUsd)
+		if !f(fd_FactoryTokenBalance_pool_liquidity_factory_token_usd, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_FactoryTokenBalance) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.FactoryTokenBalance.factory_denom_hash":
+		return x.FactoryDenomHash != ""
+	case "kopi.tokenfactory.FactoryTokenBalance.amount_wallet":
+		return x.AmountWallet != ""
+	case "kopi.tokenfactory.FactoryTokenBalance.amount_wallet_usd":
+		return x.AmountWalletUsd != ""
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_kcoin":
+		return x.PoolLiquidityKcoin != ""
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_kcoin_usd":
+		return x.PoolLiquidityKcoinUsd != ""
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_factory_token":
+		return x.PoolLiquidityFactoryToken != ""
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_factory_token_usd":
+		return x.PoolLiquidityFactoryTokenUsd != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.FactoryTokenBalance"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.FactoryTokenBalance does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_FactoryTokenBalance) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.FactoryTokenBalance.factory_denom_hash":
+		x.FactoryDenomHash = ""
+	case "kopi.tokenfactory.FactoryTokenBalance.amount_wallet":
+		x.AmountWallet = ""
+	case "kopi.tokenfactory.FactoryTokenBalance.amount_wallet_usd":
+		x.AmountWalletUsd = ""
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_kcoin":
+		x.PoolLiquidityKcoin = ""
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_kcoin_usd":
+		x.PoolLiquidityKcoinUsd = ""
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_factory_token":
+		x.PoolLiquidityFactoryToken = ""
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_factory_token_usd":
+		x.PoolLiquidityFactoryTokenUsd = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.FactoryTokenBalance"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.FactoryTokenBalance does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_FactoryTokenBalance) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "kopi.tokenfactory.FactoryTokenBalance.factory_denom_hash":
+		value := x.FactoryDenomHash
+		return protoreflect.ValueOfString(value)
+	case "kopi.tokenfactory.FactoryTokenBalance.amount_wallet":
+		value := x.AmountWallet
+		return protoreflect.ValueOfString(value)
+	case "kopi.tokenfactory.FactoryTokenBalance.amount_wallet_usd":
+		value := x.AmountWalletUsd
+		return protoreflect.ValueOfString(value)
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_kcoin":
+		value := x.PoolLiquidityKcoin
+		return protoreflect.ValueOfString(value)
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_kcoin_usd":
+		value := x.PoolLiquidityKcoinUsd
+		return protoreflect.ValueOfString(value)
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_factory_token":
+		value := x.PoolLiquidityFactoryToken
+		return protoreflect.ValueOfString(value)
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_factory_token_usd":
+		value := x.PoolLiquidityFactoryTokenUsd
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.FactoryTokenBalance"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.FactoryTokenBalance does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_FactoryTokenBalance) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.FactoryTokenBalance.factory_denom_hash":
+		x.FactoryDenomHash = value.Interface().(string)
+	case "kopi.tokenfactory.FactoryTokenBalance.amount_wallet":
+		x.AmountWallet = value.Interface().(string)
+	case "kopi.tokenfactory.FactoryTokenBalance.amount_wallet_usd":
+		x.AmountWalletUsd = value.Interface().(string)
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_kcoin":
+		x.PoolLiquidityKcoin = value.Interface().(string)
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_kcoin_usd":
+		x.PoolLiquidityKcoinUsd = value.Interface().(string)
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_factory_token":
+		x.PoolLiquidityFactoryToken = value.Interface().(string)
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_factory_token_usd":
+		x.PoolLiquidityFactoryTokenUsd = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.FactoryTokenBalance"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.FactoryTokenBalance does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_FactoryTokenBalance) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.FactoryTokenBalance.factory_denom_hash":
+		panic(fmt.Errorf("field factory_denom_hash of message kopi.tokenfactory.FactoryTokenBalance is not mutable"))
+	case "kopi.tokenfactory.FactoryTokenBalance.amount_wallet":
+		panic(fmt.Errorf("field amount_wallet of message kopi.tokenfactory.FactoryTokenBalance is not mutable"))
+	case "kopi.tokenfactory.FactoryTokenBalance.amount_wallet_usd":
+		panic(fmt.Errorf("field amount_wallet_usd of message kopi.tokenfactory.FactoryTokenBalance is not mutable"))
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_kcoin":
+		panic(fmt.Errorf("field pool_liquidity_kcoin of message kopi.tokenfactory.FactoryTokenBalance is not mutable"))
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_kcoin_usd":
+		panic(fmt.Errorf("field pool_liquidity_kcoin_usd of message kopi.tokenfactory.FactoryTokenBalance is not mutable"))
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_factory_token":
+		panic(fmt.Errorf("field pool_liquidity_factory_token of message kopi.tokenfactory.FactoryTokenBalance is not mutable"))
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_factory_token_usd":
+		panic(fmt.Errorf("field pool_liquidity_factory_token_usd of message kopi.tokenfactory.FactoryTokenBalance is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.FactoryTokenBalance"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.FactoryTokenBalance does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_FactoryTokenBalance) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.FactoryTokenBalance.factory_denom_hash":
+		return protoreflect.ValueOfString("")
+	case "kopi.tokenfactory.FactoryTokenBalance.amount_wallet":
+		return protoreflect.ValueOfString("")
+	case "kopi.tokenfactory.FactoryTokenBalance.amount_wallet_usd":
+		return protoreflect.ValueOfString("")
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_kcoin":
+		return protoreflect.ValueOfString("")
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_kcoin_usd":
+		return protoreflect.ValueOfString("")
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_factory_token":
+		return protoreflect.ValueOfString("")
+	case "kopi.tokenfactory.FactoryTokenBalance.pool_liquidity_factory_token_usd":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.FactoryTokenBalance"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.FactoryTokenBalance does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_FactoryTokenBalance) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in kopi.tokenfactory.FactoryTokenBalance", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_FactoryTokenBalance) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_FactoryTokenBalance) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_FactoryTokenBalance) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_FactoryTokenBalance) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*FactoryTokenBalance)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.FactoryDenomHash)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.AmountWallet)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.AmountWalletUsd)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.PoolLiquidityKcoin)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.PoolLiquidityKcoinUsd)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.PoolLiquidityFactoryToken)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.PoolLiquidityFactoryTokenUsd)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*FactoryTokenBalance)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.PoolLiquidityFactoryTokenUsd) > 0 {
+			i -= len(x.PoolLiquidityFactoryTokenUsd)
+			copy(dAtA[i:], x.PoolLiquidityFactoryTokenUsd)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.PoolLiquidityFactoryTokenUsd)))
+			i--
+			dAtA[i] = 0x3a
+		}
+		if len(x.PoolLiquidityFactoryToken) > 0 {
+			i -= len(x.PoolLiquidityFactoryToken)
+			copy(dAtA[i:], x.PoolLiquidityFactoryToken)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.PoolLiquidityFactoryToken)))
+			i--
+			dAtA[i] = 0x32
+		}
+		if len(x.PoolLiquidityKcoinUsd) > 0 {
+			i -= len(x.PoolLiquidityKcoinUsd)
+			copy(dAtA[i:], x.PoolLiquidityKcoinUsd)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.PoolLiquidityKcoinUsd)))
+			i--
+			dAtA[i] = 0x2a
+		}
+		if len(x.PoolLiquidityKcoin) > 0 {
+			i -= len(x.PoolLiquidityKcoin)
+			copy(dAtA[i:], x.PoolLiquidityKcoin)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.PoolLiquidityKcoin)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.AmountWalletUsd) > 0 {
+			i -= len(x.AmountWalletUsd)
+			copy(dAtA[i:], x.AmountWalletUsd)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountWalletUsd)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.AmountWallet) > 0 {
+			i -= len(x.AmountWallet)
+			copy(dAtA[i:], x.AmountWallet)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountWallet)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.FactoryDenomHash) > 0 {
+			i -= len(x.FactoryDenomHash)
+			copy(dAtA[i:], x.FactoryDenomHash)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.FactoryDenomHash)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*FactoryTokenBalance)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: FactoryTokenBalance: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: FactoryTokenBalance: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FactoryDenomHash", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.FactoryDenomHash = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountWallet", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AmountWallet = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountWalletUsd", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AmountWalletUsd = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolLiquidityKcoin", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.PoolLiquidityKcoin = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolLiquidityKcoinUsd", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.PoolLiquidityKcoinUsd = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolLiquidityFactoryToken", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.PoolLiquidityFactoryToken = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 7:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PoolLiquidityFactoryTokenUsd", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.PoolLiquidityFactoryTokenUsd = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var _ protoreflect.List = (*_GetFactoryTokenBalanceResponse_1_list)(nil)
+
+type _GetFactoryTokenBalanceResponse_1_list struct {
+	list *[]*FactoryTokenBalance
+}
+
+func (x *_GetFactoryTokenBalanceResponse_1_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GetFactoryTokenBalanceResponse_1_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GetFactoryTokenBalanceResponse_1_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*FactoryTokenBalance)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GetFactoryTokenBalanceResponse_1_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*FactoryTokenBalance)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GetFactoryTokenBalanceResponse_1_list) AppendMutable() protoreflect.Value {
+	v := new(FactoryTokenBalance)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GetFactoryTokenBalanceResponse_1_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GetFactoryTokenBalanceResponse_1_list) NewElement() protoreflect.Value {
+	v := new(FactoryTokenBalance)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GetFactoryTokenBalanceResponse_1_list) IsValid() bool {
+	return x.list != nil
+}
+
+var (
+	md_GetFactoryTokenBalanceResponse          protoreflect.MessageDescriptor
+	fd_GetFactoryTokenBalanceResponse_balances protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_kopi_tokenfactory_query_proto_init()
+	md_GetFactoryTokenBalanceResponse = File_kopi_tokenfactory_query_proto.Messages().ByName("GetFactoryTokenBalanceResponse")
+	fd_GetFactoryTokenBalanceResponse_balances = md_GetFactoryTokenBalanceResponse.Fields().ByName("balances")
+}
+
+var _ protoreflect.Message = (*fastReflection_GetFactoryTokenBalanceResponse)(nil)
+
+type fastReflection_GetFactoryTokenBalanceResponse GetFactoryTokenBalanceResponse
+
+func (x *GetFactoryTokenBalanceResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_GetFactoryTokenBalanceResponse)(x)
+}
+
+func (x *GetFactoryTokenBalanceResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_kopi_tokenfactory_query_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_GetFactoryTokenBalanceResponse_messageType fastReflection_GetFactoryTokenBalanceResponse_messageType
+var _ protoreflect.MessageType = fastReflection_GetFactoryTokenBalanceResponse_messageType{}
+
+type fastReflection_GetFactoryTokenBalanceResponse_messageType struct{}
+
+func (x fastReflection_GetFactoryTokenBalanceResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_GetFactoryTokenBalanceResponse)(nil)
+}
+func (x fastReflection_GetFactoryTokenBalanceResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_GetFactoryTokenBalanceResponse)
+}
+func (x fastReflection_GetFactoryTokenBalanceResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_GetFactoryTokenBalanceResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_GetFactoryTokenBalanceResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_GetFactoryTokenBalanceResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_GetFactoryTokenBalanceResponse) Type() protoreflect.MessageType {
+	return _fastReflection_GetFactoryTokenBalanceResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_GetFactoryTokenBalanceResponse) New() protoreflect.Message {
+	return new(fastReflection_GetFactoryTokenBalanceResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_GetFactoryTokenBalanceResponse) Interface() protoreflect.ProtoMessage {
+	return (*GetFactoryTokenBalanceResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_GetFactoryTokenBalanceResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if len(x.Balances) != 0 {
+		value := protoreflect.ValueOfList(&_GetFactoryTokenBalanceResponse_1_list{list: &x.Balances})
+		if !f(fd_GetFactoryTokenBalanceResponse_balances, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_GetFactoryTokenBalanceResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.GetFactoryTokenBalanceResponse.balances":
+		return len(x.Balances) != 0
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.GetFactoryTokenBalanceResponse"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.GetFactoryTokenBalanceResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GetFactoryTokenBalanceResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.GetFactoryTokenBalanceResponse.balances":
+		x.Balances = nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.GetFactoryTokenBalanceResponse"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.GetFactoryTokenBalanceResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_GetFactoryTokenBalanceResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "kopi.tokenfactory.GetFactoryTokenBalanceResponse.balances":
+		if len(x.Balances) == 0 {
+			return protoreflect.ValueOfList(&_GetFactoryTokenBalanceResponse_1_list{})
+		}
+		listValue := &_GetFactoryTokenBalanceResponse_1_list{list: &x.Balances}
+		return protoreflect.ValueOfList(listValue)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.GetFactoryTokenBalanceResponse"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.GetFactoryTokenBalanceResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GetFactoryTokenBalanceResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.GetFactoryTokenBalanceResponse.balances":
+		lv := value.List()
+		clv := lv.(*_GetFactoryTokenBalanceResponse_1_list)
+		x.Balances = *clv.list
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.GetFactoryTokenBalanceResponse"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.GetFactoryTokenBalanceResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GetFactoryTokenBalanceResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.GetFactoryTokenBalanceResponse.balances":
+		if x.Balances == nil {
+			x.Balances = []*FactoryTokenBalance{}
+		}
+		value := &_GetFactoryTokenBalanceResponse_1_list{list: &x.Balances}
+		return protoreflect.ValueOfList(value)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.GetFactoryTokenBalanceResponse"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.GetFactoryTokenBalanceResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_GetFactoryTokenBalanceResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.GetFactoryTokenBalanceResponse.balances":
+		list := []*FactoryTokenBalance{}
+		return protoreflect.ValueOfList(&_GetFactoryTokenBalanceResponse_1_list{list: &list})
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.GetFactoryTokenBalanceResponse"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.GetFactoryTokenBalanceResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_GetFactoryTokenBalanceResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in kopi.tokenfactory.GetFactoryTokenBalanceResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_GetFactoryTokenBalanceResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GetFactoryTokenBalanceResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_GetFactoryTokenBalanceResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_GetFactoryTokenBalanceResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*GetFactoryTokenBalanceResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if len(x.Balances) > 0 {
+			for _, e := range x.Balances {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*GetFactoryTokenBalanceResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Balances) > 0 {
+			for iNdEx := len(x.Balances) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.Balances[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0xa
+			}
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*GetFactoryTokenBalanceResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GetFactoryTokenBalanceResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GetFactoryTokenBalanceResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Balances", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Balances = append(x.Balances, &FactoryTokenBalance{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Balances[len(x.Balances)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_GetFactoryTokenBalanceRequest         protoreflect.MessageDescriptor
+	fd_GetFactoryTokenBalanceRequest_address protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_kopi_tokenfactory_query_proto_init()
+	md_GetFactoryTokenBalanceRequest = File_kopi_tokenfactory_query_proto.Messages().ByName("GetFactoryTokenBalanceRequest")
+	fd_GetFactoryTokenBalanceRequest_address = md_GetFactoryTokenBalanceRequest.Fields().ByName("address")
+}
+
+var _ protoreflect.Message = (*fastReflection_GetFactoryTokenBalanceRequest)(nil)
+
+type fastReflection_GetFactoryTokenBalanceRequest GetFactoryTokenBalanceRequest
+
+func (x *GetFactoryTokenBalanceRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_GetFactoryTokenBalanceRequest)(x)
+}
+
+func (x *GetFactoryTokenBalanceRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_kopi_tokenfactory_query_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_GetFactoryTokenBalanceRequest_messageType fastReflection_GetFactoryTokenBalanceRequest_messageType
+var _ protoreflect.MessageType = fastReflection_GetFactoryTokenBalanceRequest_messageType{}
+
+type fastReflection_GetFactoryTokenBalanceRequest_messageType struct{}
+
+func (x fastReflection_GetFactoryTokenBalanceRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_GetFactoryTokenBalanceRequest)(nil)
+}
+func (x fastReflection_GetFactoryTokenBalanceRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_GetFactoryTokenBalanceRequest)
+}
+func (x fastReflection_GetFactoryTokenBalanceRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_GetFactoryTokenBalanceRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_GetFactoryTokenBalanceRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_GetFactoryTokenBalanceRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_GetFactoryTokenBalanceRequest) Type() protoreflect.MessageType {
+	return _fastReflection_GetFactoryTokenBalanceRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_GetFactoryTokenBalanceRequest) New() protoreflect.Message {
+	return new(fastReflection_GetFactoryTokenBalanceRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_GetFactoryTokenBalanceRequest) Interface() protoreflect.ProtoMessage {
+	return (*GetFactoryTokenBalanceRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_GetFactoryTokenBalanceRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Address != "" {
+		value := protoreflect.ValueOfString(x.Address)
+		if !f(fd_GetFactoryTokenBalanceRequest_address, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_GetFactoryTokenBalanceRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.GetFactoryTokenBalanceRequest.address":
+		return x.Address != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.GetFactoryTokenBalanceRequest"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.GetFactoryTokenBalanceRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GetFactoryTokenBalanceRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.GetFactoryTokenBalanceRequest.address":
+		x.Address = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.GetFactoryTokenBalanceRequest"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.GetFactoryTokenBalanceRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_GetFactoryTokenBalanceRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "kopi.tokenfactory.GetFactoryTokenBalanceRequest.address":
+		value := x.Address
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.GetFactoryTokenBalanceRequest"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.GetFactoryTokenBalanceRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GetFactoryTokenBalanceRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.GetFactoryTokenBalanceRequest.address":
+		x.Address = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.GetFactoryTokenBalanceRequest"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.GetFactoryTokenBalanceRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GetFactoryTokenBalanceRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.GetFactoryTokenBalanceRequest.address":
+		panic(fmt.Errorf("field address of message kopi.tokenfactory.GetFactoryTokenBalanceRequest is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.GetFactoryTokenBalanceRequest"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.GetFactoryTokenBalanceRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_GetFactoryTokenBalanceRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.GetFactoryTokenBalanceRequest.address":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.GetFactoryTokenBalanceRequest"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.GetFactoryTokenBalanceRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_GetFactoryTokenBalanceRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in kopi.tokenfactory.GetFactoryTokenBalanceRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_GetFactoryTokenBalanceRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GetFactoryTokenBalanceRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_GetFactoryTokenBalanceRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_GetFactoryTokenBalanceRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*GetFactoryTokenBalanceRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Address)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*GetFactoryTokenBalanceRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Address) > 0 {
+			i -= len(x.Address)
+			copy(dAtA[i:], x.Address)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Address)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*GetFactoryTokenBalanceRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GetFactoryTokenBalanceRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GetFactoryTokenBalanceRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Address = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_PoolLiquidityAddress                      protoreflect.MessageDescriptor
+	fd_PoolLiquidityAddress_factory_denom_hash   protoreflect.FieldDescriptor
+	fd_PoolLiquidityAddress_amount_kcoin         protoreflect.FieldDescriptor
+	fd_PoolLiquidityAddress_amount_factory_token protoreflect.FieldDescriptor
+	fd_PoolLiquidityAddress_liquidity_value      protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_kopi_tokenfactory_query_proto_init()
+	md_PoolLiquidityAddress = File_kopi_tokenfactory_query_proto.Messages().ByName("PoolLiquidityAddress")
+	fd_PoolLiquidityAddress_factory_denom_hash = md_PoolLiquidityAddress.Fields().ByName("factory_denom_hash")
+	fd_PoolLiquidityAddress_amount_kcoin = md_PoolLiquidityAddress.Fields().ByName("amount_kcoin")
+	fd_PoolLiquidityAddress_amount_factory_token = md_PoolLiquidityAddress.Fields().ByName("amount_factory_token")
+	fd_PoolLiquidityAddress_liquidity_value = md_PoolLiquidityAddress.Fields().ByName("liquidity_value")
+}
+
+var _ protoreflect.Message = (*fastReflection_PoolLiquidityAddress)(nil)
+
+type fastReflection_PoolLiquidityAddress PoolLiquidityAddress
+
+func (x *PoolLiquidityAddress) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_PoolLiquidityAddress)(x)
+}
+
+func (x *PoolLiquidityAddress) slowProtoReflect() protoreflect.Message {
+	mi := &file_kopi_tokenfactory_query_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_PoolLiquidityAddress_messageType fastReflection_PoolLiquidityAddress_messageType
+var _ protoreflect.MessageType = fastReflection_PoolLiquidityAddress_messageType{}
+
+type fastReflection_PoolLiquidityAddress_messageType struct{}
+
+func (x fastReflection_PoolLiquidityAddress_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_PoolLiquidityAddress)(nil)
+}
+func (x fastReflection_PoolLiquidityAddress_messageType) New() protoreflect.Message {
+	return new(fastReflection_PoolLiquidityAddress)
+}
+func (x fastReflection_PoolLiquidityAddress_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_PoolLiquidityAddress
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_PoolLiquidityAddress) Descriptor() protoreflect.MessageDescriptor {
+	return md_PoolLiquidityAddress
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_PoolLiquidityAddress) Type() protoreflect.MessageType {
+	return _fastReflection_PoolLiquidityAddress_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_PoolLiquidityAddress) New() protoreflect.Message {
+	return new(fastReflection_PoolLiquidityAddress)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_PoolLiquidityAddress) Interface() protoreflect.ProtoMessage {
+	return (*PoolLiquidityAddress)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_PoolLiquidityAddress) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.FactoryDenomHash != "" {
+		value := protoreflect.ValueOfString(x.FactoryDenomHash)
+		if !f(fd_PoolLiquidityAddress_factory_denom_hash, value) {
+			return
+		}
+	}
+	if x.AmountKcoin != "" {
+		value := protoreflect.ValueOfString(x.AmountKcoin)
+		if !f(fd_PoolLiquidityAddress_amount_kcoin, value) {
+			return
+		}
+	}
+	if x.AmountFactoryToken != "" {
+		value := protoreflect.ValueOfString(x.AmountFactoryToken)
+		if !f(fd_PoolLiquidityAddress_amount_factory_token, value) {
+			return
+		}
+	}
+	if x.LiquidityValue != "" {
+		value := protoreflect.ValueOfString(x.LiquidityValue)
+		if !f(fd_PoolLiquidityAddress_liquidity_value, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_PoolLiquidityAddress) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.PoolLiquidityAddress.factory_denom_hash":
+		return x.FactoryDenomHash != ""
+	case "kopi.tokenfactory.PoolLiquidityAddress.amount_kcoin":
+		return x.AmountKcoin != ""
+	case "kopi.tokenfactory.PoolLiquidityAddress.amount_factory_token":
+		return x.AmountFactoryToken != ""
+	case "kopi.tokenfactory.PoolLiquidityAddress.liquidity_value":
+		return x.LiquidityValue != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.PoolLiquidityAddress"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.PoolLiquidityAddress does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PoolLiquidityAddress) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.PoolLiquidityAddress.factory_denom_hash":
+		x.FactoryDenomHash = ""
+	case "kopi.tokenfactory.PoolLiquidityAddress.amount_kcoin":
+		x.AmountKcoin = ""
+	case "kopi.tokenfactory.PoolLiquidityAddress.amount_factory_token":
+		x.AmountFactoryToken = ""
+	case "kopi.tokenfactory.PoolLiquidityAddress.liquidity_value":
+		x.LiquidityValue = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.PoolLiquidityAddress"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.PoolLiquidityAddress does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_PoolLiquidityAddress) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "kopi.tokenfactory.PoolLiquidityAddress.factory_denom_hash":
+		value := x.FactoryDenomHash
+		return protoreflect.ValueOfString(value)
+	case "kopi.tokenfactory.PoolLiquidityAddress.amount_kcoin":
+		value := x.AmountKcoin
+		return protoreflect.ValueOfString(value)
+	case "kopi.tokenfactory.PoolLiquidityAddress.amount_factory_token":
+		value := x.AmountFactoryToken
+		return protoreflect.ValueOfString(value)
+	case "kopi.tokenfactory.PoolLiquidityAddress.liquidity_value":
+		value := x.LiquidityValue
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.PoolLiquidityAddress"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.PoolLiquidityAddress does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PoolLiquidityAddress) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.PoolLiquidityAddress.factory_denom_hash":
+		x.FactoryDenomHash = value.Interface().(string)
+	case "kopi.tokenfactory.PoolLiquidityAddress.amount_kcoin":
+		x.AmountKcoin = value.Interface().(string)
+	case "kopi.tokenfactory.PoolLiquidityAddress.amount_factory_token":
+		x.AmountFactoryToken = value.Interface().(string)
+	case "kopi.tokenfactory.PoolLiquidityAddress.liquidity_value":
+		x.LiquidityValue = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.PoolLiquidityAddress"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.PoolLiquidityAddress does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PoolLiquidityAddress) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.PoolLiquidityAddress.factory_denom_hash":
+		panic(fmt.Errorf("field factory_denom_hash of message kopi.tokenfactory.PoolLiquidityAddress is not mutable"))
+	case "kopi.tokenfactory.PoolLiquidityAddress.amount_kcoin":
+		panic(fmt.Errorf("field amount_kcoin of message kopi.tokenfactory.PoolLiquidityAddress is not mutable"))
+	case "kopi.tokenfactory.PoolLiquidityAddress.amount_factory_token":
+		panic(fmt.Errorf("field amount_factory_token of message kopi.tokenfactory.PoolLiquidityAddress is not mutable"))
+	case "kopi.tokenfactory.PoolLiquidityAddress.liquidity_value":
+		panic(fmt.Errorf("field liquidity_value of message kopi.tokenfactory.PoolLiquidityAddress is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.PoolLiquidityAddress"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.PoolLiquidityAddress does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_PoolLiquidityAddress) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.PoolLiquidityAddress.factory_denom_hash":
+		return protoreflect.ValueOfString("")
+	case "kopi.tokenfactory.PoolLiquidityAddress.amount_kcoin":
+		return protoreflect.ValueOfString("")
+	case "kopi.tokenfactory.PoolLiquidityAddress.amount_factory_token":
+		return protoreflect.ValueOfString("")
+	case "kopi.tokenfactory.PoolLiquidityAddress.liquidity_value":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.PoolLiquidityAddress"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.PoolLiquidityAddress does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_PoolLiquidityAddress) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in kopi.tokenfactory.PoolLiquidityAddress", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_PoolLiquidityAddress) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_PoolLiquidityAddress) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_PoolLiquidityAddress) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_PoolLiquidityAddress) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*PoolLiquidityAddress)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.FactoryDenomHash)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.AmountKcoin)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.AmountFactoryToken)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.LiquidityValue)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*PoolLiquidityAddress)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.LiquidityValue) > 0 {
+			i -= len(x.LiquidityValue)
+			copy(dAtA[i:], x.LiquidityValue)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LiquidityValue)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.AmountFactoryToken) > 0 {
+			i -= len(x.AmountFactoryToken)
+			copy(dAtA[i:], x.AmountFactoryToken)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountFactoryToken)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.AmountKcoin) > 0 {
+			i -= len(x.AmountKcoin)
+			copy(dAtA[i:], x.AmountKcoin)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AmountKcoin)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.FactoryDenomHash) > 0 {
+			i -= len(x.FactoryDenomHash)
+			copy(dAtA[i:], x.FactoryDenomHash)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.FactoryDenomHash)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*PoolLiquidityAddress)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PoolLiquidityAddress: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: PoolLiquidityAddress: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field FactoryDenomHash", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.FactoryDenomHash = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountKcoin", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AmountKcoin = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AmountFactoryToken", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AmountFactoryToken = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LiquidityValue", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.LiquidityValue = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var _ protoreflect.List = (*_QueryPoolLiquidityAddressResponse_1_list)(nil)
+
+type _QueryPoolLiquidityAddressResponse_1_list struct {
+	list *[]*PoolLiquidityAddress
+}
+
+func (x *_QueryPoolLiquidityAddressResponse_1_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_QueryPoolLiquidityAddressResponse_1_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_QueryPoolLiquidityAddressResponse_1_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*PoolLiquidityAddress)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_QueryPoolLiquidityAddressResponse_1_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*PoolLiquidityAddress)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_QueryPoolLiquidityAddressResponse_1_list) AppendMutable() protoreflect.Value {
+	v := new(PoolLiquidityAddress)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_QueryPoolLiquidityAddressResponse_1_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_QueryPoolLiquidityAddressResponse_1_list) NewElement() protoreflect.Value {
+	v := new(PoolLiquidityAddress)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_QueryPoolLiquidityAddressResponse_1_list) IsValid() bool {
+	return x.list != nil
+}
+
+var (
+	md_QueryPoolLiquidityAddressResponse       protoreflect.MessageDescriptor
+	fd_QueryPoolLiquidityAddressResponse_pools protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_kopi_tokenfactory_query_proto_init()
+	md_QueryPoolLiquidityAddressResponse = File_kopi_tokenfactory_query_proto.Messages().ByName("QueryPoolLiquidityAddressResponse")
+	fd_QueryPoolLiquidityAddressResponse_pools = md_QueryPoolLiquidityAddressResponse.Fields().ByName("pools")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryPoolLiquidityAddressResponse)(nil)
+
+type fastReflection_QueryPoolLiquidityAddressResponse QueryPoolLiquidityAddressResponse
+
+func (x *QueryPoolLiquidityAddressResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryPoolLiquidityAddressResponse)(x)
+}
+
+func (x *QueryPoolLiquidityAddressResponse) slowProtoReflect() protoreflect.Message {
+	mi := &file_kopi_tokenfactory_query_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryPoolLiquidityAddressResponse_messageType fastReflection_QueryPoolLiquidityAddressResponse_messageType
+var _ protoreflect.MessageType = fastReflection_QueryPoolLiquidityAddressResponse_messageType{}
+
+type fastReflection_QueryPoolLiquidityAddressResponse_messageType struct{}
+
+func (x fastReflection_QueryPoolLiquidityAddressResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryPoolLiquidityAddressResponse)(nil)
+}
+func (x fastReflection_QueryPoolLiquidityAddressResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryPoolLiquidityAddressResponse)
+}
+func (x fastReflection_QueryPoolLiquidityAddressResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryPoolLiquidityAddressResponse
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryPoolLiquidityAddressResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryPoolLiquidityAddressResponse
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryPoolLiquidityAddressResponse) Type() protoreflect.MessageType {
+	return _fastReflection_QueryPoolLiquidityAddressResponse_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryPoolLiquidityAddressResponse) New() protoreflect.Message {
+	return new(fastReflection_QueryPoolLiquidityAddressResponse)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryPoolLiquidityAddressResponse) Interface() protoreflect.ProtoMessage {
+	return (*QueryPoolLiquidityAddressResponse)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryPoolLiquidityAddressResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if len(x.Pools) != 0 {
+		value := protoreflect.ValueOfList(&_QueryPoolLiquidityAddressResponse_1_list{list: &x.Pools})
+		if !f(fd_QueryPoolLiquidityAddressResponse_pools, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryPoolLiquidityAddressResponse) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QueryPoolLiquidityAddressResponse.pools":
+		return len(x.Pools) != 0
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QueryPoolLiquidityAddressResponse"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QueryPoolLiquidityAddressResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPoolLiquidityAddressResponse) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QueryPoolLiquidityAddressResponse.pools":
+		x.Pools = nil
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QueryPoolLiquidityAddressResponse"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QueryPoolLiquidityAddressResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryPoolLiquidityAddressResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "kopi.tokenfactory.QueryPoolLiquidityAddressResponse.pools":
+		if len(x.Pools) == 0 {
+			return protoreflect.ValueOfList(&_QueryPoolLiquidityAddressResponse_1_list{})
+		}
+		listValue := &_QueryPoolLiquidityAddressResponse_1_list{list: &x.Pools}
+		return protoreflect.ValueOfList(listValue)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QueryPoolLiquidityAddressResponse"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QueryPoolLiquidityAddressResponse does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPoolLiquidityAddressResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QueryPoolLiquidityAddressResponse.pools":
+		lv := value.List()
+		clv := lv.(*_QueryPoolLiquidityAddressResponse_1_list)
+		x.Pools = *clv.list
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QueryPoolLiquidityAddressResponse"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QueryPoolLiquidityAddressResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPoolLiquidityAddressResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QueryPoolLiquidityAddressResponse.pools":
+		if x.Pools == nil {
+			x.Pools = []*PoolLiquidityAddress{}
+		}
+		value := &_QueryPoolLiquidityAddressResponse_1_list{list: &x.Pools}
+		return protoreflect.ValueOfList(value)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QueryPoolLiquidityAddressResponse"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QueryPoolLiquidityAddressResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryPoolLiquidityAddressResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QueryPoolLiquidityAddressResponse.pools":
+		list := []*PoolLiquidityAddress{}
+		return protoreflect.ValueOfList(&_QueryPoolLiquidityAddressResponse_1_list{list: &list})
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QueryPoolLiquidityAddressResponse"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QueryPoolLiquidityAddressResponse does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryPoolLiquidityAddressResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in kopi.tokenfactory.QueryPoolLiquidityAddressResponse", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryPoolLiquidityAddressResponse) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPoolLiquidityAddressResponse) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryPoolLiquidityAddressResponse) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryPoolLiquidityAddressResponse) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryPoolLiquidityAddressResponse)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if len(x.Pools) > 0 {
+			for _, e := range x.Pools {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryPoolLiquidityAddressResponse)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Pools) > 0 {
+			for iNdEx := len(x.Pools) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.Pools[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0xa
+			}
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryPoolLiquidityAddressResponse)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryPoolLiquidityAddressResponse: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryPoolLiquidityAddressResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Pools", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Pools = append(x.Pools, &PoolLiquidityAddress{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Pools[len(x.Pools)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_QueryPoolLiquidityAddressRequest         protoreflect.MessageDescriptor
+	fd_QueryPoolLiquidityAddressRequest_address protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_kopi_tokenfactory_query_proto_init()
+	md_QueryPoolLiquidityAddressRequest = File_kopi_tokenfactory_query_proto.Messages().ByName("QueryPoolLiquidityAddressRequest")
+	fd_QueryPoolLiquidityAddressRequest_address = md_QueryPoolLiquidityAddressRequest.Fields().ByName("address")
+}
+
+var _ protoreflect.Message = (*fastReflection_QueryPoolLiquidityAddressRequest)(nil)
+
+type fastReflection_QueryPoolLiquidityAddressRequest QueryPoolLiquidityAddressRequest
+
+func (x *QueryPoolLiquidityAddressRequest) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_QueryPoolLiquidityAddressRequest)(x)
+}
+
+func (x *QueryPoolLiquidityAddressRequest) slowProtoReflect() protoreflect.Message {
+	mi := &file_kopi_tokenfactory_query_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_QueryPoolLiquidityAddressRequest_messageType fastReflection_QueryPoolLiquidityAddressRequest_messageType
+var _ protoreflect.MessageType = fastReflection_QueryPoolLiquidityAddressRequest_messageType{}
+
+type fastReflection_QueryPoolLiquidityAddressRequest_messageType struct{}
+
+func (x fastReflection_QueryPoolLiquidityAddressRequest_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_QueryPoolLiquidityAddressRequest)(nil)
+}
+func (x fastReflection_QueryPoolLiquidityAddressRequest_messageType) New() protoreflect.Message {
+	return new(fastReflection_QueryPoolLiquidityAddressRequest)
+}
+func (x fastReflection_QueryPoolLiquidityAddressRequest_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryPoolLiquidityAddressRequest
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_QueryPoolLiquidityAddressRequest) Descriptor() protoreflect.MessageDescriptor {
+	return md_QueryPoolLiquidityAddressRequest
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_QueryPoolLiquidityAddressRequest) Type() protoreflect.MessageType {
+	return _fastReflection_QueryPoolLiquidityAddressRequest_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_QueryPoolLiquidityAddressRequest) New() protoreflect.Message {
+	return new(fastReflection_QueryPoolLiquidityAddressRequest)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_QueryPoolLiquidityAddressRequest) Interface() protoreflect.ProtoMessage {
+	return (*QueryPoolLiquidityAddressRequest)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_QueryPoolLiquidityAddressRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Address != "" {
+		value := protoreflect.ValueOfString(x.Address)
+		if !f(fd_QueryPoolLiquidityAddressRequest_address, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_QueryPoolLiquidityAddressRequest) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QueryPoolLiquidityAddressRequest.address":
+		return x.Address != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QueryPoolLiquidityAddressRequest"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QueryPoolLiquidityAddressRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPoolLiquidityAddressRequest) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QueryPoolLiquidityAddressRequest.address":
+		x.Address = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QueryPoolLiquidityAddressRequest"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QueryPoolLiquidityAddressRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_QueryPoolLiquidityAddressRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "kopi.tokenfactory.QueryPoolLiquidityAddressRequest.address":
+		value := x.Address
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QueryPoolLiquidityAddressRequest"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QueryPoolLiquidityAddressRequest does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPoolLiquidityAddressRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QueryPoolLiquidityAddressRequest.address":
+		x.Address = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QueryPoolLiquidityAddressRequest"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QueryPoolLiquidityAddressRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPoolLiquidityAddressRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QueryPoolLiquidityAddressRequest.address":
+		panic(fmt.Errorf("field address of message kopi.tokenfactory.QueryPoolLiquidityAddressRequest is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QueryPoolLiquidityAddressRequest"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QueryPoolLiquidityAddressRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_QueryPoolLiquidityAddressRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.tokenfactory.QueryPoolLiquidityAddressRequest.address":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.QueryPoolLiquidityAddressRequest"))
+		}
+		panic(fmt.Errorf("message kopi.tokenfactory.QueryPoolLiquidityAddressRequest does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_QueryPoolLiquidityAddressRequest) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in kopi.tokenfactory.QueryPoolLiquidityAddressRequest", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_QueryPoolLiquidityAddressRequest) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_QueryPoolLiquidityAddressRequest) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_QueryPoolLiquidityAddressRequest) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_QueryPoolLiquidityAddressRequest) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*QueryPoolLiquidityAddressRequest)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Address)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*QueryPoolLiquidityAddressRequest)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Address) > 0 {
+			i -= len(x.Address)
+			copy(dAtA[i:], x.Address)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Address)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*QueryPoolLiquidityAddressRequest)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryPoolLiquidityAddressRequest: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: QueryPoolLiquidityAddressRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Address = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
 	md_QuerySimulateTradeRequest                 protoreflect.MessageDescriptor
 	fd_QuerySimulateTradeRequest_denom_giving    protoreflect.FieldDescriptor
 	fd_QuerySimulateTradeRequest_denom_receiving protoreflect.FieldDescriptor
@@ -42,7 +4254,7 @@ func (x *QuerySimulateTradeRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QuerySimulateTradeRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_tokenfactory_query_proto_msgTypes[0]
+	mi := &file_kopi_tokenfactory_query_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -654,7 +4866,7 @@ func (x *QuerySimulateTradeResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QuerySimulateTradeResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_tokenfactory_query_proto_msgTypes[1]
+	mi := &file_kopi_tokenfactory_query_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1262,7 +5474,7 @@ func (x *QueryPoolRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryPoolRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_tokenfactory_query_proto_msgTypes[2]
+	mi := &file_kopi_tokenfactory_query_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1756,7 +5968,7 @@ func (x *QueryPoolResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryPoolResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_tokenfactory_query_proto_msgTypes[3]
+	mi := &file_kopi_tokenfactory_query_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2532,7 +6744,7 @@ func (x *QueryDenomsRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryDenomsRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_tokenfactory_query_proto_msgTypes[4]
+	mi := &file_kopi_tokenfactory_query_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2985,7 +7197,7 @@ func (x *FactoryDenomData) ProtoReflect() protoreflect.Message {
 }
 
 func (x *FactoryDenomData) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_tokenfactory_query_proto_msgTypes[5]
+	mi := &file_kopi_tokenfactory_query_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3996,7 +8208,7 @@ func (x *QueryDenomsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryDenomsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_tokenfactory_query_proto_msgTypes[6]
+	mi := &file_kopi_tokenfactory_query_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4514,7 +8726,7 @@ func (x *QueryParamsRequest) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryParamsRequest) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_tokenfactory_query_proto_msgTypes[7]
+	mi := &file_kopi_tokenfactory_query_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4872,7 +9084,7 @@ func (x *QueryParamsResponse) ProtoReflect() protoreflect.Message {
 }
 
 func (x *QueryParamsResponse) slowProtoReflect() protoreflect.Message {
-	mi := &file_kopi_tokenfactory_query_proto_msgTypes[8]
+	mi := &file_kopi_tokenfactory_query_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5300,6 +9512,374 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type QuerySimulateAddingLiquidityRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Token  string `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	Amount string `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount,omitempty"`
+}
+
+func (x *QuerySimulateAddingLiquidityRequest) Reset() {
+	*x = QuerySimulateAddingLiquidityRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_kopi_tokenfactory_query_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QuerySimulateAddingLiquidityRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QuerySimulateAddingLiquidityRequest) ProtoMessage() {}
+
+// Deprecated: Use QuerySimulateAddingLiquidityRequest.ProtoReflect.Descriptor instead.
+func (*QuerySimulateAddingLiquidityRequest) Descriptor() ([]byte, []int) {
+	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *QuerySimulateAddingLiquidityRequest) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+func (x *QuerySimulateAddingLiquidityRequest) GetAmount() string {
+	if x != nil {
+		return x.Amount
+	}
+	return ""
+}
+
+type QuerySimulateAddingLiquidityResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AmountKcoin        string `protobuf:"bytes,1,opt,name=amount_kcoin,json=amountKcoin,proto3" json:"amount_kcoin,omitempty"`
+	AmountFactoryToken string `protobuf:"bytes,2,opt,name=amount_factory_token,json=amountFactoryToken,proto3" json:"amount_factory_token,omitempty"`
+}
+
+func (x *QuerySimulateAddingLiquidityResponse) Reset() {
+	*x = QuerySimulateAddingLiquidityResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_kopi_tokenfactory_query_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QuerySimulateAddingLiquidityResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QuerySimulateAddingLiquidityResponse) ProtoMessage() {}
+
+// Deprecated: Use QuerySimulateAddingLiquidityResponse.ProtoReflect.Descriptor instead.
+func (*QuerySimulateAddingLiquidityResponse) Descriptor() ([]byte, []int) {
+	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *QuerySimulateAddingLiquidityResponse) GetAmountKcoin() string {
+	if x != nil {
+		return x.AmountKcoin
+	}
+	return ""
+}
+
+func (x *QuerySimulateAddingLiquidityResponse) GetAmountFactoryToken() string {
+	if x != nil {
+		return x.AmountFactoryToken
+	}
+	return ""
+}
+
+type FactoryTokenBalance struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	FactoryDenomHash             string `protobuf:"bytes,1,opt,name=factory_denom_hash,json=factoryDenomHash,proto3" json:"factory_denom_hash,omitempty"`
+	AmountWallet                 string `protobuf:"bytes,2,opt,name=amount_wallet,json=amountWallet,proto3" json:"amount_wallet,omitempty"`
+	AmountWalletUsd              string `protobuf:"bytes,3,opt,name=amount_wallet_usd,json=amountWalletUsd,proto3" json:"amount_wallet_usd,omitempty"`
+	PoolLiquidityKcoin           string `protobuf:"bytes,4,opt,name=pool_liquidity_kcoin,json=poolLiquidityKcoin,proto3" json:"pool_liquidity_kcoin,omitempty"`
+	PoolLiquidityKcoinUsd        string `protobuf:"bytes,5,opt,name=pool_liquidity_kcoin_usd,json=poolLiquidityKcoinUsd,proto3" json:"pool_liquidity_kcoin_usd,omitempty"`
+	PoolLiquidityFactoryToken    string `protobuf:"bytes,6,opt,name=pool_liquidity_factory_token,json=poolLiquidityFactoryToken,proto3" json:"pool_liquidity_factory_token,omitempty"`
+	PoolLiquidityFactoryTokenUsd string `protobuf:"bytes,7,opt,name=pool_liquidity_factory_token_usd,json=poolLiquidityFactoryTokenUsd,proto3" json:"pool_liquidity_factory_token_usd,omitempty"`
+}
+
+func (x *FactoryTokenBalance) Reset() {
+	*x = FactoryTokenBalance{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_kopi_tokenfactory_query_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FactoryTokenBalance) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FactoryTokenBalance) ProtoMessage() {}
+
+// Deprecated: Use FactoryTokenBalance.ProtoReflect.Descriptor instead.
+func (*FactoryTokenBalance) Descriptor() ([]byte, []int) {
+	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *FactoryTokenBalance) GetFactoryDenomHash() string {
+	if x != nil {
+		return x.FactoryDenomHash
+	}
+	return ""
+}
+
+func (x *FactoryTokenBalance) GetAmountWallet() string {
+	if x != nil {
+		return x.AmountWallet
+	}
+	return ""
+}
+
+func (x *FactoryTokenBalance) GetAmountWalletUsd() string {
+	if x != nil {
+		return x.AmountWalletUsd
+	}
+	return ""
+}
+
+func (x *FactoryTokenBalance) GetPoolLiquidityKcoin() string {
+	if x != nil {
+		return x.PoolLiquidityKcoin
+	}
+	return ""
+}
+
+func (x *FactoryTokenBalance) GetPoolLiquidityKcoinUsd() string {
+	if x != nil {
+		return x.PoolLiquidityKcoinUsd
+	}
+	return ""
+}
+
+func (x *FactoryTokenBalance) GetPoolLiquidityFactoryToken() string {
+	if x != nil {
+		return x.PoolLiquidityFactoryToken
+	}
+	return ""
+}
+
+func (x *FactoryTokenBalance) GetPoolLiquidityFactoryTokenUsd() string {
+	if x != nil {
+		return x.PoolLiquidityFactoryTokenUsd
+	}
+	return ""
+}
+
+type GetFactoryTokenBalanceResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Balances []*FactoryTokenBalance `protobuf:"bytes,1,rep,name=balances,proto3" json:"balances,omitempty"`
+}
+
+func (x *GetFactoryTokenBalanceResponse) Reset() {
+	*x = GetFactoryTokenBalanceResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_kopi_tokenfactory_query_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetFactoryTokenBalanceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFactoryTokenBalanceResponse) ProtoMessage() {}
+
+// Deprecated: Use GetFactoryTokenBalanceResponse.ProtoReflect.Descriptor instead.
+func (*GetFactoryTokenBalanceResponse) Descriptor() ([]byte, []int) {
+	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetFactoryTokenBalanceResponse) GetBalances() []*FactoryTokenBalance {
+	if x != nil {
+		return x.Balances
+	}
+	return nil
+}
+
+type GetFactoryTokenBalanceRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (x *GetFactoryTokenBalanceRequest) Reset() {
+	*x = GetFactoryTokenBalanceRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_kopi_tokenfactory_query_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetFactoryTokenBalanceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFactoryTokenBalanceRequest) ProtoMessage() {}
+
+// Deprecated: Use GetFactoryTokenBalanceRequest.ProtoReflect.Descriptor instead.
+func (*GetFactoryTokenBalanceRequest) Descriptor() ([]byte, []int) {
+	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetFactoryTokenBalanceRequest) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
+}
+
+type PoolLiquidityAddress struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	FactoryDenomHash   string `protobuf:"bytes,1,opt,name=factory_denom_hash,json=factoryDenomHash,proto3" json:"factory_denom_hash,omitempty"`
+	AmountKcoin        string `protobuf:"bytes,2,opt,name=amount_kcoin,json=amountKcoin,proto3" json:"amount_kcoin,omitempty"`
+	AmountFactoryToken string `protobuf:"bytes,3,opt,name=amount_factory_token,json=amountFactoryToken,proto3" json:"amount_factory_token,omitempty"`
+	LiquidityValue     string `protobuf:"bytes,4,opt,name=liquidity_value,json=liquidityValue,proto3" json:"liquidity_value,omitempty"`
+}
+
+func (x *PoolLiquidityAddress) Reset() {
+	*x = PoolLiquidityAddress{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_kopi_tokenfactory_query_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PoolLiquidityAddress) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PoolLiquidityAddress) ProtoMessage() {}
+
+// Deprecated: Use PoolLiquidityAddress.ProtoReflect.Descriptor instead.
+func (*PoolLiquidityAddress) Descriptor() ([]byte, []int) {
+	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *PoolLiquidityAddress) GetFactoryDenomHash() string {
+	if x != nil {
+		return x.FactoryDenomHash
+	}
+	return ""
+}
+
+func (x *PoolLiquidityAddress) GetAmountKcoin() string {
+	if x != nil {
+		return x.AmountKcoin
+	}
+	return ""
+}
+
+func (x *PoolLiquidityAddress) GetAmountFactoryToken() string {
+	if x != nil {
+		return x.AmountFactoryToken
+	}
+	return ""
+}
+
+func (x *PoolLiquidityAddress) GetLiquidityValue() string {
+	if x != nil {
+		return x.LiquidityValue
+	}
+	return ""
+}
+
+type QueryPoolLiquidityAddressResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Pools []*PoolLiquidityAddress `protobuf:"bytes,1,rep,name=pools,proto3" json:"pools,omitempty"`
+}
+
+func (x *QueryPoolLiquidityAddressResponse) Reset() {
+	*x = QueryPoolLiquidityAddressResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_kopi_tokenfactory_query_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryPoolLiquidityAddressResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryPoolLiquidityAddressResponse) ProtoMessage() {}
+
+// Deprecated: Use QueryPoolLiquidityAddressResponse.ProtoReflect.Descriptor instead.
+func (*QueryPoolLiquidityAddressResponse) Descriptor() ([]byte, []int) {
+	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *QueryPoolLiquidityAddressResponse) GetPools() []*PoolLiquidityAddress {
+	if x != nil {
+		return x.Pools
+	}
+	return nil
+}
+
+type QueryPoolLiquidityAddressRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (x *QueryPoolLiquidityAddressRequest) Reset() {
+	*x = QueryPoolLiquidityAddressRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_kopi_tokenfactory_query_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *QueryPoolLiquidityAddressRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryPoolLiquidityAddressRequest) ProtoMessage() {}
+
+// Deprecated: Use QueryPoolLiquidityAddressRequest.ProtoReflect.Descriptor instead.
+func (*QueryPoolLiquidityAddressRequest) Descriptor() ([]byte, []int) {
+	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *QueryPoolLiquidityAddressRequest) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
+}
+
 type QuerySimulateTradeRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -5314,7 +9894,7 @@ type QuerySimulateTradeRequest struct {
 func (x *QuerySimulateTradeRequest) Reset() {
 	*x = QuerySimulateTradeRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_tokenfactory_query_proto_msgTypes[0]
+		mi := &file_kopi_tokenfactory_query_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5328,7 +9908,7 @@ func (*QuerySimulateTradeRequest) ProtoMessage() {}
 
 // Deprecated: Use QuerySimulateTradeRequest.ProtoReflect.Descriptor instead.
 func (*QuerySimulateTradeRequest) Descriptor() ([]byte, []int) {
-	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{0}
+	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *QuerySimulateTradeRequest) GetDenomGiving() string {
@@ -5373,7 +9953,7 @@ type QuerySimulateTradeResponse struct {
 func (x *QuerySimulateTradeResponse) Reset() {
 	*x = QuerySimulateTradeResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_tokenfactory_query_proto_msgTypes[1]
+		mi := &file_kopi_tokenfactory_query_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5387,7 +9967,7 @@ func (*QuerySimulateTradeResponse) ProtoMessage() {}
 
 // Deprecated: Use QuerySimulateTradeResponse.ProtoReflect.Descriptor instead.
 func (*QuerySimulateTradeResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{1}
+	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *QuerySimulateTradeResponse) GetAmountGiven() string {
@@ -5430,7 +10010,7 @@ type QueryPoolRequest struct {
 func (x *QueryPoolRequest) Reset() {
 	*x = QueryPoolRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_tokenfactory_query_proto_msgTypes[2]
+		mi := &file_kopi_tokenfactory_query_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5444,7 +10024,7 @@ func (*QueryPoolRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryPoolRequest.ProtoReflect.Descriptor instead.
 func (*QueryPoolRequest) Descriptor() ([]byte, []int) {
-	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{2}
+	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *QueryPoolRequest) GetFullName() string {
@@ -5478,7 +10058,7 @@ type QueryPoolResponse struct {
 func (x *QueryPoolResponse) Reset() {
 	*x = QueryPoolResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_tokenfactory_query_proto_msgTypes[3]
+		mi := &file_kopi_tokenfactory_query_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5492,7 +10072,7 @@ func (*QueryPoolResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryPoolResponse.ProtoReflect.Descriptor instead.
 func (*QueryPoolResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{3}
+	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *QueryPoolResponse) GetKcoinDenom() string {
@@ -5555,7 +10135,7 @@ type QueryDenomsRequest struct {
 func (x *QueryDenomsRequest) Reset() {
 	*x = QueryDenomsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_tokenfactory_query_proto_msgTypes[4]
+		mi := &file_kopi_tokenfactory_query_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5569,7 +10149,7 @@ func (*QueryDenomsRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryDenomsRequest.ProtoReflect.Descriptor instead.
 func (*QueryDenomsRequest) Descriptor() ([]byte, []int) {
-	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{4}
+	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *QueryDenomsRequest) GetPagination() *v1beta1.PageRequest {
@@ -5599,7 +10179,7 @@ type FactoryDenomData struct {
 func (x *FactoryDenomData) Reset() {
 	*x = FactoryDenomData{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_tokenfactory_query_proto_msgTypes[5]
+		mi := &file_kopi_tokenfactory_query_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5613,7 +10193,7 @@ func (*FactoryDenomData) ProtoMessage() {}
 
 // Deprecated: Use FactoryDenomData.ProtoReflect.Descriptor instead.
 func (*FactoryDenomData) Descriptor() ([]byte, []int) {
-	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{5}
+	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *FactoryDenomData) GetAdmin() string {
@@ -5698,7 +10278,7 @@ type QueryDenomsResponse struct {
 func (x *QueryDenomsResponse) Reset() {
 	*x = QueryDenomsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_tokenfactory_query_proto_msgTypes[6]
+		mi := &file_kopi_tokenfactory_query_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5712,7 +10292,7 @@ func (*QueryDenomsResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryDenomsResponse.ProtoReflect.Descriptor instead.
 func (*QueryDenomsResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{6}
+	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *QueryDenomsResponse) GetDenoms() []*FactoryDenomData {
@@ -5738,7 +10318,7 @@ type QueryParamsRequest struct {
 func (x *QueryParamsRequest) Reset() {
 	*x = QueryParamsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_tokenfactory_query_proto_msgTypes[7]
+		mi := &file_kopi_tokenfactory_query_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5752,7 +10332,7 @@ func (*QueryParamsRequest) ProtoMessage() {}
 
 // Deprecated: Use QueryParamsRequest.ProtoReflect.Descriptor instead.
 func (*QueryParamsRequest) Descriptor() ([]byte, []int) {
-	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{7}
+	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{15}
 }
 
 type QueryParamsResponse struct {
@@ -5766,7 +10346,7 @@ type QueryParamsResponse struct {
 func (x *QueryParamsResponse) Reset() {
 	*x = QueryParamsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_kopi_tokenfactory_query_proto_msgTypes[8]
+		mi := &file_kopi_tokenfactory_query_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -5780,7 +10360,7 @@ func (*QueryParamsResponse) ProtoMessage() {}
 
 // Deprecated: Use QueryParamsResponse.ProtoReflect.Descriptor instead.
 func (*QueryParamsResponse) Descriptor() ([]byte, []int) {
-	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{8}
+	return file_kopi_tokenfactory_query_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *QueryParamsResponse) GetParams() *Params {
@@ -5807,144 +10387,263 @@ var file_kopi_tokenfactory_query_proto_rawDesc = []byte{
 	0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x2e,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1e, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b, 0x65,
 	0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x99, 0x01, 0x0a, 0x19, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53,
-	0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x54, 0x72, 0x61, 0x64, 0x65, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x12, 0x21, 0x0a, 0x0c, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x67, 0x69, 0x76,
-	0x69, 0x6e, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
-	0x47, 0x69, 0x76, 0x69, 0x6e, 0x67, 0x12, 0x27, 0x0a, 0x0f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f,
-	0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x69, 0x6e, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x0e, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x69, 0x6e, 0x67, 0x12,
-	0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f,
-	0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e,
-	0x74, 0x22, 0x90, 0x01, 0x0a, 0x1a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x69, 0x6d, 0x75, 0x6c,
-	0x61, 0x74, 0x65, 0x54, 0x72, 0x61, 0x64, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
-	0x12, 0x21, 0x0a, 0x0c, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x67, 0x69, 0x76, 0x65, 0x6e,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x47, 0x69,
-	0x76, 0x65, 0x6e, 0x12, 0x27, 0x0a, 0x0f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x72, 0x65,
-	0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x61, 0x6d,
-	0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x12, 0x10, 0x0a, 0x03,
-	0x66, 0x65, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x66, 0x65, 0x65, 0x12, 0x14,
-	0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x70,
-	0x72, 0x69, 0x63, 0x65, 0x22, 0x49, 0x0a, 0x10, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f,
-	0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x66, 0x75, 0x6c, 0x6c,
-	0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x66, 0x75, 0x6c,
-	0x6c, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22,
-	0x8f, 0x02, 0x0a, 0x11, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73,
-	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x6b, 0x63, 0x6f, 0x69, 0x6e, 0x5f, 0x64,
-	0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x6b, 0x63, 0x6f, 0x69,
-	0x6e, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x21, 0x0a, 0x0c, 0x6b, 0x63, 0x6f, 0x69, 0x6e, 0x5f,
-	0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x6b, 0x63,
-	0x6f, 0x69, 0x6e, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x25, 0x0a, 0x0e, 0x66, 0x61, 0x63,
-	0x74, 0x6f, 0x72, 0x79, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x0d, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
-	0x12, 0x2a, 0x0a, 0x11, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x6b, 0x63, 0x6f, 0x69, 0x6e, 0x5f, 0x61,
-	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0f, 0x75, 0x73, 0x65,
-	0x72, 0x4b, 0x63, 0x6f, 0x69, 0x6e, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x2e, 0x0a, 0x13,
-	0x75, 0x73, 0x65, 0x72, 0x5f, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x5f, 0x61, 0x6d, 0x6f,
-	0x75, 0x6e, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11, 0x75, 0x73, 0x65, 0x72, 0x46,
-	0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x14, 0x0a, 0x05,
-	0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x70, 0x72, 0x69,
-	0x63, 0x65, 0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74,
-	0x18, 0x07, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x41,
-	0x74, 0x22, 0x5c, 0x0a, 0x12, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x73,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x46, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e,
-	0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22,
-	0xaa, 0x02, 0x0a, 0x10, 0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d,
-	0x44, 0x61, 0x74, 0x61, 0x12, 0x14, 0x0a, 0x05, 0x61, 0x64, 0x6d, 0x69, 0x6e, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x05, 0x61, 0x64, 0x6d, 0x69, 0x6e, 0x12, 0x21, 0x0a, 0x0c, 0x64, 0x69,
-	0x73, 0x70, 0x6c, 0x61, 0x79, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x0b, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1b, 0x0a,
-	0x09, 0x66, 0x75, 0x6c, 0x6c, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x08, 0x66, 0x75, 0x6c, 0x6c, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65,
-	0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1b, 0x0a, 0x09,
-	0x69, 0x63, 0x6f, 0x6e, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x08, 0x69, 0x63, 0x6f, 0x6e, 0x48, 0x61, 0x73, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x79, 0x6d,
-	0x62, 0x6f, 0x6c, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x79, 0x6d, 0x62, 0x6f,
-	0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x65, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x18, 0x07, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x08, 0x65, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x12, 0x16, 0x0a,
-	0x06, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73,
-	0x75, 0x70, 0x70, 0x6c, 0x79, 0x12, 0x19, 0x0a, 0x08, 0x68, 0x61, 0x73, 0x5f, 0x70, 0x6f, 0x6f,
-	0x6c, 0x18, 0x09, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x68, 0x61, 0x73, 0x50, 0x6f, 0x6f, 0x6c,
-	0x12, 0x1a, 0x0a, 0x08, 0x6d, 0x69, 0x6e, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x18, 0x0a, 0x20, 0x01,
-	0x28, 0x08, 0x52, 0x08, 0x6d, 0x69, 0x6e, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x22, 0x9b, 0x01, 0x0a,
-	0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3b, 0x0a, 0x06, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x18, 0x01,
-	0x20, 0x03, 0x28, 0x0b, 0x32, 0x23, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65,
-	0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79,
-	0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x44, 0x61, 0x74, 0x61, 0x52, 0x06, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
-	0x73, 0x12, 0x47, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62,
-	0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61,
-	0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52, 0x0a,
-	0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x14, 0x0a, 0x12, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x22, 0x53, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3c, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d,
-	0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74,
-	0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x50, 0x61, 0x72, 0x61,
-	0x6d, 0x73, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x06, 0x70,
-	0x61, 0x72, 0x61, 0x6d, 0x73, 0x32, 0xb5, 0x05, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12,
-	0x7a, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x25, 0x2e, 0x6b, 0x6f, 0x70, 0x69,
-	0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x26, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63,
-	0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x21, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1b,
-	0x12, 0x19, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63,
-	0x74, 0x6f, 0x72, 0x79, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x7a, 0x0a, 0x06, 0x44,
-	0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x12, 0x25, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b,
-	0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44,
-	0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e, 0x6b,
-	0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79,
-	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x21, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1b, 0x12, 0x19, 0x2f, 0x6b,
-	0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79,
-	0x2f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x12, 0x7c, 0x0a, 0x07, 0x47, 0x65, 0x74, 0x50, 0x6f,
-	0x6f, 0x6c, 0x12, 0x23, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66,
-	0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74,
-	0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x26, 0x82,
-	0xd3, 0xe4, 0x93, 0x02, 0x20, 0x12, 0x1e, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b,
-	0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x73,
-	0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x12, 0x9a, 0x01, 0x0a, 0x11, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53,
-	0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x53, 0x65, 0x6c, 0x6c, 0x12, 0x2c, 0x2e, 0x6b, 0x6f,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x53, 0x0a, 0x23, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x69,
+	0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x41, 0x64, 0x64, 0x69, 0x6e, 0x67, 0x4c, 0x69, 0x71, 0x75,
+	0x69, 0x64, 0x69, 0x74, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05,
+	0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74, 0x6f, 0x6b,
+	0x65, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x7b, 0x0a, 0x24, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x41, 0x64, 0x64, 0x69, 0x6e,
+	0x67, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x21, 0x0a, 0x0c, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x6b, 0x63, 0x6f,
+	0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
+	0x4b, 0x63, 0x6f, 0x69, 0x6e, 0x12, 0x30, 0x0a, 0x14, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f,
+	0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x12, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x46, 0x61, 0x63, 0x74, 0x6f,
+	0x72, 0x79, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x22, 0x88, 0x03, 0x0a, 0x13, 0x46, 0x61, 0x63, 0x74,
+	0x6f, 0x72, 0x79, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x12,
+	0x2c, 0x0a, 0x12, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x5f, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
+	0x5f, 0x68, 0x61, 0x73, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x10, 0x66, 0x61, 0x63,
+	0x74, 0x6f, 0x72, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x48, 0x61, 0x73, 0x68, 0x12, 0x23, 0x0a,
+	0x0d, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x57, 0x61, 0x6c, 0x6c,
+	0x65, 0x74, 0x12, 0x2a, 0x0a, 0x11, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x77, 0x61, 0x6c,
+	0x6c, 0x65, 0x74, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0f, 0x61,
+	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x57, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x55, 0x73, 0x64, 0x12, 0x30,
+	0x0a, 0x14, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79,
+	0x5f, 0x6b, 0x63, 0x6f, 0x69, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x12, 0x70, 0x6f,
+	0x6f, 0x6c, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x4b, 0x63, 0x6f, 0x69, 0x6e,
+	0x12, 0x37, 0x0a, 0x18, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69,
+	0x74, 0x79, 0x5f, 0x6b, 0x63, 0x6f, 0x69, 0x6e, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x05, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x15, 0x70, 0x6f, 0x6f, 0x6c, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74,
+	0x79, 0x4b, 0x63, 0x6f, 0x69, 0x6e, 0x55, 0x73, 0x64, 0x12, 0x3f, 0x0a, 0x1c, 0x70, 0x6f, 0x6f,
+	0x6c, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x66, 0x61, 0x63, 0x74,
+	0x6f, 0x72, 0x79, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x19, 0x70, 0x6f, 0x6f, 0x6c, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x46, 0x61,
+	0x63, 0x74, 0x6f, 0x72, 0x79, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x46, 0x0a, 0x20, 0x70, 0x6f,
+	0x6f, 0x6c, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x66, 0x61, 0x63,
+	0x74, 0x6f, 0x72, 0x79, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x5f, 0x75, 0x73, 0x64, 0x18, 0x07,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x1c, 0x70, 0x6f, 0x6f, 0x6c, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64,
+	0x69, 0x74, 0x79, 0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x55,
+	0x73, 0x64, 0x22, 0x6a, 0x0a, 0x1e, 0x47, 0x65, 0x74, 0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79,
+	0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x48, 0x0a, 0x08, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x73,
+	0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x46, 0x61, 0x63, 0x74, 0x6f,
+	0x72, 0x79, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x42, 0x04,
+	0xc8, 0xde, 0x1f, 0x00, 0x52, 0x08, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x73, 0x22, 0x39,
+	0x0a, 0x1d, 0x47, 0x65, 0x74, 0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x54, 0x6f, 0x6b, 0x65,
+	0x6e, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
+	0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0xc2, 0x01, 0x0a, 0x14, 0x50, 0x6f,
+	0x6f, 0x6c, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x41, 0x64, 0x64, 0x72, 0x65,
+	0x73, 0x73, 0x12, 0x2c, 0x0a, 0x12, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x5f, 0x64, 0x65,
+	0x6e, 0x6f, 0x6d, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x10,
+	0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x48, 0x61, 0x73, 0x68,
+	0x12, 0x21, 0x0a, 0x0c, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x6b, 0x63, 0x6f, 0x69, 0x6e,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x4b, 0x63,
+	0x6f, 0x69, 0x6e, 0x12, 0x30, 0x0a, 0x14, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x66, 0x61,
+	0x63, 0x74, 0x6f, 0x72, 0x79, 0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x12, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79,
+	0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x27, 0x0a, 0x0f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69,
+	0x74, 0x79, 0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e,
+	0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x68,
+	0x0a, 0x21, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x4c, 0x69, 0x71, 0x75, 0x69,
+	0x64, 0x69, 0x74, 0x79, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x43, 0x0a, 0x05, 0x70, 0x6f, 0x6f, 0x6c, 0x73, 0x18, 0x01, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x27, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66,
+	0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x50, 0x6f, 0x6f, 0x6c, 0x4c, 0x69, 0x71, 0x75, 0x69,
+	0x64, 0x69, 0x74, 0x79, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x42, 0x04, 0xc8, 0xde, 0x1f,
+	0x00, 0x52, 0x05, 0x70, 0x6f, 0x6f, 0x6c, 0x73, 0x22, 0x3c, 0x0a, 0x20, 0x51, 0x75, 0x65, 0x72,
+	0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x41, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x18, 0x0a, 0x07,
+	0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61,
+	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x22, 0x99, 0x01, 0x0a, 0x19, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x54, 0x72, 0x61, 0x64, 0x65, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x21, 0x0a, 0x0c, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x5f, 0x67, 0x69,
+	0x76, 0x69, 0x6e, 0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x6e, 0x6f,
+	0x6d, 0x47, 0x69, 0x76, 0x69, 0x6e, 0x67, 0x12, 0x27, 0x0a, 0x0f, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
+	0x5f, 0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x69, 0x6e, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x0e, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x69, 0x6e, 0x67,
+	0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d,
+	0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75,
+	0x6e, 0x74, 0x22, 0x90, 0x01, 0x0a, 0x1a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x69, 0x6d, 0x75,
+	0x6c, 0x61, 0x74, 0x65, 0x54, 0x72, 0x61, 0x64, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x21, 0x0a, 0x0c, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x67, 0x69, 0x76, 0x65,
+	0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x47,
+	0x69, 0x76, 0x65, 0x6e, 0x12, 0x27, 0x0a, 0x0f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x72,
+	0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x61,
+	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x64, 0x12, 0x10, 0x0a,
+	0x03, 0x66, 0x65, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x66, 0x65, 0x65, 0x12,
+	0x14, 0x0a, 0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
+	0x70, 0x72, 0x69, 0x63, 0x65, 0x22, 0x49, 0x0a, 0x10, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f,
+	0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x66, 0x75, 0x6c,
+	0x6c, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x66, 0x75,
+	0x6c, 0x6c, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73,
+	0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
+	0x22, 0x8f, 0x02, 0x0a, 0x11, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x6b, 0x63, 0x6f, 0x69, 0x6e, 0x5f,
+	0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x6b, 0x63, 0x6f,
+	0x69, 0x6e, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x21, 0x0a, 0x0c, 0x6b, 0x63, 0x6f, 0x69, 0x6e,
+	0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x6b,
+	0x63, 0x6f, 0x69, 0x6e, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x25, 0x0a, 0x0e, 0x66, 0x61,
+	0x63, 0x74, 0x6f, 0x72, 0x79, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0d, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x41, 0x6d, 0x6f, 0x75, 0x6e,
+	0x74, 0x12, 0x2a, 0x0a, 0x11, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x6b, 0x63, 0x6f, 0x69, 0x6e, 0x5f,
+	0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0f, 0x75, 0x73,
+	0x65, 0x72, 0x4b, 0x63, 0x6f, 0x69, 0x6e, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x2e, 0x0a,
+	0x13, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x5f, 0x61, 0x6d,
+	0x6f, 0x75, 0x6e, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11, 0x75, 0x73, 0x65, 0x72,
+	0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x14, 0x0a,
+	0x05, 0x70, 0x72, 0x69, 0x63, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x70, 0x72,
+	0x69, 0x63, 0x65, 0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x61,
+	0x74, 0x18, 0x07, 0x20, 0x01, 0x28, 0x03, 0x52, 0x09, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64,
+	0x41, 0x74, 0x22, 0x5c, 0x0a, 0x12, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d,
+	0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x46, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69,
+	0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x63,
+	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79,
+	0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x22, 0xaa, 0x02, 0x0a, 0x10, 0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x44, 0x65, 0x6e, 0x6f,
+	0x6d, 0x44, 0x61, 0x74, 0x61, 0x12, 0x14, 0x0a, 0x05, 0x61, 0x64, 0x6d, 0x69, 0x6e, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x61, 0x64, 0x6d, 0x69, 0x6e, 0x12, 0x21, 0x0a, 0x0c, 0x64,
+	0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0b, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1b,
+	0x0a, 0x09, 0x66, 0x75, 0x6c, 0x6c, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x08, 0x66, 0x75, 0x6c, 0x6c, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64,
+	0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1b, 0x0a,
+	0x09, 0x69, 0x63, 0x6f, 0x6e, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x08, 0x69, 0x63, 0x6f, 0x6e, 0x48, 0x61, 0x73, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x79,
+	0x6d, 0x62, 0x6f, 0x6c, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x79, 0x6d, 0x62,
+	0x6f, 0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x65, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x18, 0x07,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x65, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x12, 0x16,
+	0x0a, 0x06, 0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
+	0x73, 0x75, 0x70, 0x70, 0x6c, 0x79, 0x12, 0x19, 0x0a, 0x08, 0x68, 0x61, 0x73, 0x5f, 0x70, 0x6f,
+	0x6f, 0x6c, 0x18, 0x09, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x68, 0x61, 0x73, 0x50, 0x6f, 0x6f,
+	0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x6d, 0x69, 0x6e, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x18, 0x0a, 0x20,
+	0x01, 0x28, 0x08, 0x52, 0x08, 0x6d, 0x69, 0x6e, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x22, 0x9b, 0x01,
+	0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3b, 0x0a, 0x06, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x18,
+	0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x23, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b,
+	0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x46, 0x61, 0x63, 0x74, 0x6f, 0x72,
+	0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x44, 0x61, 0x74, 0x61, 0x52, 0x06, 0x64, 0x65, 0x6e, 0x6f,
+	0x6d, 0x73, 0x12, 0x47, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
+	0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74,
+	0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52,
+	0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x14, 0x0a, 0x12, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x22, 0x53, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x3c, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61,
+	0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e,
+	0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x50, 0x61, 0x72,
+	0x61, 0x6d, 0x73, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x06,
+	0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x32, 0xb7, 0x0b, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x12, 0x7a, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x25, 0x2e, 0x6b, 0x6f, 0x70,
+	0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x26, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61,
+	0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x21, 0x82, 0xd3, 0xe4, 0x93, 0x02,
+	0x1b, 0x12, 0x19, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61,
+	0x63, 0x74, 0x6f, 0x72, 0x79, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x7a, 0x0a, 0x06,
+	0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x12, 0x25, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e,
+	0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72,
+	0x79, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x21, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1b, 0x12, 0x19, 0x2f,
+	0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72,
+	0x79, 0x2f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x12, 0x7c, 0x0a, 0x07, 0x47, 0x65, 0x74, 0x50,
+	0x6f, 0x6f, 0x6c, 0x12, 0x23, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
+	0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f,
+	0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x24, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e,
+	0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x26,
+	0x82, 0xd3, 0xe4, 0x93, 0x02, 0x20, 0x12, 0x1e, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2f, 0x64, 0x65, 0x6e, 0x6f, 0x6d,
+	0x73, 0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x12, 0xab, 0x01, 0x0a, 0x16, 0x47, 0x65, 0x74, 0x46, 0x61,
+	0x63, 0x74, 0x6f, 0x72, 0x79, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63,
+	0x65, 0x12, 0x30, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61,
+	0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x47, 0x65, 0x74, 0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79,
+	0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x31, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
+	0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x47, 0x65, 0x74, 0x46, 0x61, 0x63, 0x74, 0x6f,
+	0x72, 0x79, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x42, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x2c, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x26, 0x12, 0x24,
+	0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f,
+	0x72, 0x79, 0x2f, 0x62, 0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x2f, 0x7b, 0x61, 0x64, 0x64, 0x72,
+	0x65, 0x73, 0x73, 0x7d, 0x12, 0xb6, 0x01, 0x0a, 0x17, 0x47, 0x65, 0x74, 0x50, 0x6f, 0x6f, 0x6c,
+	0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
+	0x12, 0x33, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63,
+	0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x6f, 0x6f, 0x6c, 0x4c, 0x69,
+	0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x34, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b,
+	0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50,
+	0x6f, 0x6f, 0x6c, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x41, 0x64, 0x64, 0x72,
+	0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x30, 0x82, 0xd3, 0xe4,
+	0x93, 0x02, 0x2a, 0x12, 0x28, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
+	0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x2f, 0x70,
+	0x6f, 0x6f, 0x6c, 0x2f, 0x7b, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x7d, 0x12, 0xc6, 0x01,
+	0x0a, 0x21, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x41,
+	0x64, 0x64, 0x69, 0x6e, 0x67, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x4b, 0x43,
+	0x6f, 0x69, 0x6e, 0x12, 0x36, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
+	0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x69, 0x6d,
+	0x75, 0x6c, 0x61, 0x74, 0x65, 0x41, 0x64, 0x64, 0x69, 0x6e, 0x67, 0x4c, 0x69, 0x71, 0x75, 0x69,
+	0x64, 0x69, 0x74, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x37, 0x2e, 0x6b, 0x6f,
 	0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e,
-	0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x54, 0x72, 0x61,
-	0x64, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2d, 0x2e, 0x6b, 0x6f, 0x70, 0x69,
-	0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x54, 0x72, 0x61, 0x64, 0x65,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x28, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x22,
-	0x12, 0x20, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63,
-	0x74, 0x6f, 0x72, 0x79, 0x2f, 0x73, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x2f, 0x73, 0x65,
-	0x6c, 0x6c, 0x12, 0x98, 0x01, 0x0a, 0x10, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x69, 0x6d, 0x75,
-	0x6c, 0x61, 0x74, 0x65, 0x42, 0x75, 0x79, 0x12, 0x2c, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74,
-	0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51, 0x75, 0x65, 0x72,
-	0x79, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x54, 0x72, 0x61, 0x64, 0x65, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b,
-	0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53,
-	0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x54, 0x72, 0x61, 0x64, 0x65, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x27, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x21, 0x12, 0x1f, 0x2f, 0x6b,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x41, 0x64, 0x64,
+	0x69, 0x6e, 0x67, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x30, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2a, 0x12, 0x28, 0x2f, 0x6b,
 	0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79,
-	0x2f, 0x73, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x2f, 0x62, 0x75, 0x79, 0x42, 0xac, 0x01,
-	0x0a, 0x15, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
-	0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x42, 0x0a, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x72,
-	0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x22, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
-	0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b,
-	0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0xa2, 0x02, 0x03, 0x4b, 0x54, 0x58, 0xaa,
-	0x02, 0x11, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74,
-	0x6f, 0x72, 0x79, 0xca, 0x02, 0x11, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x54, 0x6f, 0x6b, 0x65, 0x6e,
-	0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0xe2, 0x02, 0x1d, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x54,
-	0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x5c, 0x47, 0x50, 0x42, 0x4d,
-	0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x12, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a,
-	0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x2f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x2f, 0x61, 0x64, 0x64,
+	0x2f, 0x6b, 0x63, 0x6f, 0x69, 0x6e, 0x12, 0xcf, 0x01, 0x0a, 0x28, 0x51, 0x75, 0x65, 0x72, 0x79,
+	0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x41, 0x64, 0x64, 0x69, 0x6e, 0x67, 0x4c, 0x69,
+	0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x54, 0x6f,
+	0x6b, 0x65, 0x6e, 0x12, 0x36, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
+	0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x69, 0x6d,
+	0x75, 0x6c, 0x61, 0x74, 0x65, 0x41, 0x64, 0x64, 0x69, 0x6e, 0x67, 0x4c, 0x69, 0x71, 0x75, 0x69,
+	0x64, 0x69, 0x74, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x37, 0x2e, 0x6b, 0x6f,
+	0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e,
+	0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x41, 0x64, 0x64,
+	0x69, 0x6e, 0x67, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x32, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x2c, 0x12, 0x2a, 0x2f, 0x6b,
+	0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79,
+	0x2f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x2f, 0x70, 0x6f, 0x6f, 0x6c, 0x2f, 0x61, 0x64, 0x64,
+	0x2f, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x12, 0x9a, 0x01, 0x0a, 0x11, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x53, 0x65, 0x6c, 0x6c, 0x12, 0x2c,
+	0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f,
+	0x72, 0x79, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65,
+	0x54, 0x72, 0x61, 0x64, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2d, 0x2e, 0x6b,
+	0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79,
+	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x54, 0x72,
+	0x61, 0x64, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x28, 0x82, 0xd3, 0xe4,
+	0x93, 0x02, 0x22, 0x12, 0x20, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
+	0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2f, 0x73, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65,
+	0x2f, 0x73, 0x65, 0x6c, 0x6c, 0x12, 0x98, 0x01, 0x0a, 0x10, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53,
+	0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x42, 0x75, 0x79, 0x12, 0x2c, 0x2e, 0x6b, 0x6f, 0x70,
+	0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x54, 0x72, 0x61, 0x64,
+	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e,
+	0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2e, 0x51, 0x75, 0x65,
+	0x72, 0x79, 0x53, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x54, 0x72, 0x61, 0x64, 0x65, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x27, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x21, 0x12,
+	0x1f, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74,
+	0x6f, 0x72, 0x79, 0x2f, 0x73, 0x69, 0x6d, 0x75, 0x6c, 0x61, 0x74, 0x65, 0x2f, 0x62, 0x75, 0x79,
+	0x42, 0xac, 0x01, 0x0a, 0x15, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f,
+	0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x42, 0x0a, 0x51, 0x75, 0x65, 0x72,
+	0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x22, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f,
+	0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0xa2, 0x02, 0x03, 0x4b,
+	0x54, 0x58, 0xaa, 0x02, 0x11, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x66,
+	0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0xca, 0x02, 0x11, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x54, 0x6f,
+	0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0xe2, 0x02, 0x1d, 0x4b, 0x6f, 0x70,
+	0x69, 0x5c, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x5c, 0x47,
+	0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x12, 0x4b, 0x6f, 0x70,
+	0x69, 0x3a, 0x3a, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -5959,41 +10658,59 @@ func file_kopi_tokenfactory_query_proto_rawDescGZIP() []byte {
 	return file_kopi_tokenfactory_query_proto_rawDescData
 }
 
-var file_kopi_tokenfactory_query_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_kopi_tokenfactory_query_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
 var file_kopi_tokenfactory_query_proto_goTypes = []interface{}{
-	(*QuerySimulateTradeRequest)(nil),  // 0: kopi.tokenfactory.QuerySimulateTradeRequest
-	(*QuerySimulateTradeResponse)(nil), // 1: kopi.tokenfactory.QuerySimulateTradeResponse
-	(*QueryPoolRequest)(nil),           // 2: kopi.tokenfactory.QueryPoolRequest
-	(*QueryPoolResponse)(nil),          // 3: kopi.tokenfactory.QueryPoolResponse
-	(*QueryDenomsRequest)(nil),         // 4: kopi.tokenfactory.QueryDenomsRequest
-	(*FactoryDenomData)(nil),           // 5: kopi.tokenfactory.FactoryDenomData
-	(*QueryDenomsResponse)(nil),        // 6: kopi.tokenfactory.QueryDenomsResponse
-	(*QueryParamsRequest)(nil),         // 7: kopi.tokenfactory.QueryParamsRequest
-	(*QueryParamsResponse)(nil),        // 8: kopi.tokenfactory.QueryParamsResponse
-	(*v1beta1.PageRequest)(nil),        // 9: cosmos.base.query.v1beta1.PageRequest
-	(*v1beta1.PageResponse)(nil),       // 10: cosmos.base.query.v1beta1.PageResponse
-	(*Params)(nil),                     // 11: kopi.tokenfactory.Params
+	(*QuerySimulateAddingLiquidityRequest)(nil),  // 0: kopi.tokenfactory.QuerySimulateAddingLiquidityRequest
+	(*QuerySimulateAddingLiquidityResponse)(nil), // 1: kopi.tokenfactory.QuerySimulateAddingLiquidityResponse
+	(*FactoryTokenBalance)(nil),                  // 2: kopi.tokenfactory.FactoryTokenBalance
+	(*GetFactoryTokenBalanceResponse)(nil),       // 3: kopi.tokenfactory.GetFactoryTokenBalanceResponse
+	(*GetFactoryTokenBalanceRequest)(nil),        // 4: kopi.tokenfactory.GetFactoryTokenBalanceRequest
+	(*PoolLiquidityAddress)(nil),                 // 5: kopi.tokenfactory.PoolLiquidityAddress
+	(*QueryPoolLiquidityAddressResponse)(nil),    // 6: kopi.tokenfactory.QueryPoolLiquidityAddressResponse
+	(*QueryPoolLiquidityAddressRequest)(nil),     // 7: kopi.tokenfactory.QueryPoolLiquidityAddressRequest
+	(*QuerySimulateTradeRequest)(nil),            // 8: kopi.tokenfactory.QuerySimulateTradeRequest
+	(*QuerySimulateTradeResponse)(nil),           // 9: kopi.tokenfactory.QuerySimulateTradeResponse
+	(*QueryPoolRequest)(nil),                     // 10: kopi.tokenfactory.QueryPoolRequest
+	(*QueryPoolResponse)(nil),                    // 11: kopi.tokenfactory.QueryPoolResponse
+	(*QueryDenomsRequest)(nil),                   // 12: kopi.tokenfactory.QueryDenomsRequest
+	(*FactoryDenomData)(nil),                     // 13: kopi.tokenfactory.FactoryDenomData
+	(*QueryDenomsResponse)(nil),                  // 14: kopi.tokenfactory.QueryDenomsResponse
+	(*QueryParamsRequest)(nil),                   // 15: kopi.tokenfactory.QueryParamsRequest
+	(*QueryParamsResponse)(nil),                  // 16: kopi.tokenfactory.QueryParamsResponse
+	(*v1beta1.PageRequest)(nil),                  // 17: cosmos.base.query.v1beta1.PageRequest
+	(*v1beta1.PageResponse)(nil),                 // 18: cosmos.base.query.v1beta1.PageResponse
+	(*Params)(nil),                               // 19: kopi.tokenfactory.Params
 }
 var file_kopi_tokenfactory_query_proto_depIdxs = []int32{
-	9,  // 0: kopi.tokenfactory.QueryDenomsRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
-	5,  // 1: kopi.tokenfactory.QueryDenomsResponse.denoms:type_name -> kopi.tokenfactory.FactoryDenomData
-	10, // 2: kopi.tokenfactory.QueryDenomsResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
-	11, // 3: kopi.tokenfactory.QueryParamsResponse.params:type_name -> kopi.tokenfactory.Params
-	7,  // 4: kopi.tokenfactory.Query.Params:input_type -> kopi.tokenfactory.QueryParamsRequest
-	4,  // 5: kopi.tokenfactory.Query.Denoms:input_type -> kopi.tokenfactory.QueryDenomsRequest
-	2,  // 6: kopi.tokenfactory.Query.GetPool:input_type -> kopi.tokenfactory.QueryPoolRequest
-	0,  // 7: kopi.tokenfactory.Query.QuerySimulateSell:input_type -> kopi.tokenfactory.QuerySimulateTradeRequest
-	0,  // 8: kopi.tokenfactory.Query.QuerySimulateBuy:input_type -> kopi.tokenfactory.QuerySimulateTradeRequest
-	8,  // 9: kopi.tokenfactory.Query.Params:output_type -> kopi.tokenfactory.QueryParamsResponse
-	6,  // 10: kopi.tokenfactory.Query.Denoms:output_type -> kopi.tokenfactory.QueryDenomsResponse
-	3,  // 11: kopi.tokenfactory.Query.GetPool:output_type -> kopi.tokenfactory.QueryPoolResponse
-	1,  // 12: kopi.tokenfactory.Query.QuerySimulateSell:output_type -> kopi.tokenfactory.QuerySimulateTradeResponse
-	1,  // 13: kopi.tokenfactory.Query.QuerySimulateBuy:output_type -> kopi.tokenfactory.QuerySimulateTradeResponse
-	9,  // [9:14] is the sub-list for method output_type
-	4,  // [4:9] is the sub-list for method input_type
-	4,  // [4:4] is the sub-list for extension type_name
-	4,  // [4:4] is the sub-list for extension extendee
-	0,  // [0:4] is the sub-list for field type_name
+	2,  // 0: kopi.tokenfactory.GetFactoryTokenBalanceResponse.balances:type_name -> kopi.tokenfactory.FactoryTokenBalance
+	5,  // 1: kopi.tokenfactory.QueryPoolLiquidityAddressResponse.pools:type_name -> kopi.tokenfactory.PoolLiquidityAddress
+	17, // 2: kopi.tokenfactory.QueryDenomsRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	13, // 3: kopi.tokenfactory.QueryDenomsResponse.denoms:type_name -> kopi.tokenfactory.FactoryDenomData
+	18, // 4: kopi.tokenfactory.QueryDenomsResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
+	19, // 5: kopi.tokenfactory.QueryParamsResponse.params:type_name -> kopi.tokenfactory.Params
+	15, // 6: kopi.tokenfactory.Query.Params:input_type -> kopi.tokenfactory.QueryParamsRequest
+	12, // 7: kopi.tokenfactory.Query.Denoms:input_type -> kopi.tokenfactory.QueryDenomsRequest
+	10, // 8: kopi.tokenfactory.Query.GetPool:input_type -> kopi.tokenfactory.QueryPoolRequest
+	4,  // 9: kopi.tokenfactory.Query.GetFactoryTokenBalance:input_type -> kopi.tokenfactory.GetFactoryTokenBalanceRequest
+	7,  // 10: kopi.tokenfactory.Query.GetPoolLiquidityAddress:input_type -> kopi.tokenfactory.QueryPoolLiquidityAddressRequest
+	0,  // 11: kopi.tokenfactory.Query.QuerySimulateAddingLiquidityKCoin:input_type -> kopi.tokenfactory.QuerySimulateAddingLiquidityRequest
+	0,  // 12: kopi.tokenfactory.Query.QuerySimulateAddingLiquidityFactoryToken:input_type -> kopi.tokenfactory.QuerySimulateAddingLiquidityRequest
+	8,  // 13: kopi.tokenfactory.Query.QuerySimulateSell:input_type -> kopi.tokenfactory.QuerySimulateTradeRequest
+	8,  // 14: kopi.tokenfactory.Query.QuerySimulateBuy:input_type -> kopi.tokenfactory.QuerySimulateTradeRequest
+	16, // 15: kopi.tokenfactory.Query.Params:output_type -> kopi.tokenfactory.QueryParamsResponse
+	14, // 16: kopi.tokenfactory.Query.Denoms:output_type -> kopi.tokenfactory.QueryDenomsResponse
+	11, // 17: kopi.tokenfactory.Query.GetPool:output_type -> kopi.tokenfactory.QueryPoolResponse
+	3,  // 18: kopi.tokenfactory.Query.GetFactoryTokenBalance:output_type -> kopi.tokenfactory.GetFactoryTokenBalanceResponse
+	6,  // 19: kopi.tokenfactory.Query.GetPoolLiquidityAddress:output_type -> kopi.tokenfactory.QueryPoolLiquidityAddressResponse
+	1,  // 20: kopi.tokenfactory.Query.QuerySimulateAddingLiquidityKCoin:output_type -> kopi.tokenfactory.QuerySimulateAddingLiquidityResponse
+	1,  // 21: kopi.tokenfactory.Query.QuerySimulateAddingLiquidityFactoryToken:output_type -> kopi.tokenfactory.QuerySimulateAddingLiquidityResponse
+	9,  // 22: kopi.tokenfactory.Query.QuerySimulateSell:output_type -> kopi.tokenfactory.QuerySimulateTradeResponse
+	9,  // 23: kopi.tokenfactory.Query.QuerySimulateBuy:output_type -> kopi.tokenfactory.QuerySimulateTradeResponse
+	15, // [15:24] is the sub-list for method output_type
+	6,  // [6:15] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_kopi_tokenfactory_query_proto_init() }
@@ -6005,7 +10722,7 @@ func file_kopi_tokenfactory_query_proto_init() {
 	file_kopi_tokenfactory_denoms_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_kopi_tokenfactory_query_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QuerySimulateTradeRequest); i {
+			switch v := v.(*QuerySimulateAddingLiquidityRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -6017,7 +10734,7 @@ func file_kopi_tokenfactory_query_proto_init() {
 			}
 		}
 		file_kopi_tokenfactory_query_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QuerySimulateTradeResponse); i {
+			switch v := v.(*QuerySimulateAddingLiquidityResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -6029,7 +10746,7 @@ func file_kopi_tokenfactory_query_proto_init() {
 			}
 		}
 		file_kopi_tokenfactory_query_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryPoolRequest); i {
+			switch v := v.(*FactoryTokenBalance); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -6041,7 +10758,7 @@ func file_kopi_tokenfactory_query_proto_init() {
 			}
 		}
 		file_kopi_tokenfactory_query_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryPoolResponse); i {
+			switch v := v.(*GetFactoryTokenBalanceResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -6053,7 +10770,7 @@ func file_kopi_tokenfactory_query_proto_init() {
 			}
 		}
 		file_kopi_tokenfactory_query_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryDenomsRequest); i {
+			switch v := v.(*GetFactoryTokenBalanceRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -6065,7 +10782,7 @@ func file_kopi_tokenfactory_query_proto_init() {
 			}
 		}
 		file_kopi_tokenfactory_query_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FactoryDenomData); i {
+			switch v := v.(*PoolLiquidityAddress); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -6077,7 +10794,7 @@ func file_kopi_tokenfactory_query_proto_init() {
 			}
 		}
 		file_kopi_tokenfactory_query_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryDenomsResponse); i {
+			switch v := v.(*QueryPoolLiquidityAddressResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -6089,7 +10806,7 @@ func file_kopi_tokenfactory_query_proto_init() {
 			}
 		}
 		file_kopi_tokenfactory_query_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*QueryParamsRequest); i {
+			switch v := v.(*QueryPoolLiquidityAddressRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -6101,6 +10818,102 @@ func file_kopi_tokenfactory_query_proto_init() {
 			}
 		}
 		file_kopi_tokenfactory_query_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QuerySimulateTradeRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_kopi_tokenfactory_query_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QuerySimulateTradeResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_kopi_tokenfactory_query_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryPoolRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_kopi_tokenfactory_query_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryPoolResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_kopi_tokenfactory_query_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryDenomsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_kopi_tokenfactory_query_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FactoryDenomData); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_kopi_tokenfactory_query_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryDenomsResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_kopi_tokenfactory_query_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*QueryParamsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_kopi_tokenfactory_query_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*QueryParamsResponse); i {
 			case 0:
 				return &v.state
@@ -6119,7 +10932,7 @@ func file_kopi_tokenfactory_query_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_kopi_tokenfactory_query_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   17,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

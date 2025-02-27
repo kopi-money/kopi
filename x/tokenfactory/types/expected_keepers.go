@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -41,4 +42,9 @@ type ParamSubspace interface {
 
 type DenomKeeper interface {
 	IsKCoin(ctx context.Context, denom string) bool
+}
+
+type DexKeeper interface {
+	GetHighestUSDReference(context.Context) (string, error)
+	GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.LegacyDec) (math.LegacyDec, error)
 }

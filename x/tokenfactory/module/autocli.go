@@ -56,6 +56,30 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 						},
 					},
 				},
+				{
+					RpcMethod: "CreatePool",
+					Use:       "create-pool [full_factory_denom_name] [k_coin] [factory_denom_amount] [k_coin_amount] [pool_fee] [unlock_in_seconds]",
+					PositionalArgs: []*autocliv1.PositionalArgDescriptor{
+						{
+							ProtoField: "full_factory_denom_name",
+						},
+						{
+							ProtoField: "k_coin",
+						},
+						{
+							ProtoField: "factory_denom_amount",
+						},
+						{
+							ProtoField: "k_coin_amount",
+						},
+						{
+							ProtoField: "pool_fee",
+						},
+						{
+							ProtoField: "unlock_in_seconds",
+						},
+					},
+				},
 			},
 		},
 	}

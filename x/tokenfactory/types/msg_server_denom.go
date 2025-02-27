@@ -34,7 +34,11 @@ func (msg *MsgCreateDenom) ValidateBasic() error {
 	}
 
 	if err := isValidSymbol(msg.Symbol); err != nil {
-		return err
+		return fmt.Errorf("invalid symbol: %w", err)
+	}
+
+	if err := isValidDisplayName(msg.Name); err != nil {
+		return fmt.Errorf("invalid name: %w", err)
 	}
 
 	if len(msg.Description) > constants.MaxDescriptionLength {
@@ -97,17 +101,25 @@ func validateHash(hash string) bool {
 }
 
 func isValidSymbol(symbol string) error {
-	if len(symbol) < 3 {
-		return fmt.Errorf("symbol must contain at least 3 characters")
+	return isValidName(symbol, 6)
+}
+
+func isValidDisplayName(displayName string) error {
+	return isValidName(displayName, 12)
+}
+
+func isValidName(text string, maxLength int) error {
+	if len(text) < 3 {
+		return fmt.Errorf("must contain at least 3 characters")
 	}
 
-	if len(symbol) > 6 {
-		return fmt.Errorf("symbol must not contain more than 6 characters")
+	if len(text) > maxLength {
+		return fmt.Errorf("must not contain more than %v characters", maxLength)
 	}
 
-	for _, char := range symbol {
+	for _, char := range text {
 		if !unicode.IsLetter(char) {
-			return fmt.Errorf("symbol must only contain letters")
+			return fmt.Errorf("must only contain letters")
 		}
 	}
 

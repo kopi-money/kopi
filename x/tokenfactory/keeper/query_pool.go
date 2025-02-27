@@ -5,6 +5,7 @@ import (
 	"cosmossdk.io/math"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -57,4 +58,107 @@ func (k Keeper) GetPool(ctx context.Context, req *types.QueryPoolRequest) (*type
 
 func adjustToNormal(amount math.LegacyDec, exponent uint64) math.LegacyDec {
 	return amount.Quo(math.LegacyNewDec(10).Power(exponent)) // C
+}
+
+func (k Keeper) GetPoolLiquidityAddress(ctx context.Context, req *types.QueryPoolLiquidityAddressRequest) (*types.QueryPoolLiquidityAddressResponse, error) {
+	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("could not get highest usd reference: %w", err)
+	}
+
+	var (
+		response           types.QueryPoolLiquidityAddressResponse
+		amountKCoin        math.Int
+		amountFactoryToken math.Int
+		liquidityValue     math.LegacyDec
+	)
+
+	iterator := k.liquidityPools.Iterator(ctx, nil)
+	for iterator.Valid() {
+		keyValue := iterator.GetNextKeyValue()
+		pool := keyValue.Value().Value()
+
+		amountKCoin, amountFactoryToken, err = k.getLiquidity(ctx, keyValue.Key(), req.Address)
+		if err != nil {
+			return nil, fmt.Errorf("get liquidity for address: %w", err)
+		}
+
+		liquidityValue, err = k.DexKeeper.GetValueIn(ctx, pool.KCoin, referenceDenom, amountKCoin.ToLegacyDec())
+		if err != nil {
+			return nil, fmt.Errorf("kcoin amount in usd: %w", err)
+		}
+
+		response.Pools = append(response.Pools, types.PoolLiquidityAddress{
+			FactoryDenomHash:   keyValue.Key(),
+			AmountKcoin:        amountKCoin.String(),
+			AmountFactoryToken: amountFactoryToken.String(),
+			LiquidityValue:     liquidityValue.Mul(math.LegacyNewDec(2)).String(),
+		})
+	}
+
+	return &response, nil
+}
+
+func (k Keeper) QuerySimulateAddingLiquidityKCoin(ctx context.Context, req *types.QuerySimulateAddingLiquidityRequest) (*types.QuerySimulateAddingLiquidityResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	factoryDenom, has := k.factoryDenoms.Get(ctx, req.Token)
+	if !has {
+		return nil, types.ErrDenomDoesNotExists
+	}
+
+	amount, err := dexkeeper.ParseAmount(req.Amount)
+	if err != nil {
+		return nil, fmt.Errorf("parse amount: %w", err)
+	}
+
+	pool, has := k.liquidityPools.Get(ctx, factoryDenom.FullName)
+	if !has {
+		return nil, types.ErrPoolDoesNotExist
+	}
+
+	ratio, err := pool.GetPoolRatio()
+	if err != nil {
+		return nil, fmt.Errorf("pool ratio: %w", err)
+	}
+
+	amountFactory := amount.ToLegacyDec().Quo(ratio)
+	return &types.QuerySimulateAddingLiquidityResponse{
+		AmountKcoin:        amount.String(),
+		AmountFactoryToken: amountFactory.Ceil().TruncateInt().String(),
+	}, nil
+}
+
+func (k Keeper) QuerySimulateAddingLiquidityFactoryToken(ctx context.Context, req *types.QuerySimulateAddingLiquidityRequest) (*types.QuerySimulateAddingLiquidityResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	factoryDenom, has := k.factoryDenoms.Get(ctx, req.Token)
+	if !has {
+		return nil, types.ErrDenomDoesNotExists
+	}
+
+	amount, err := dexkeeper.ParseAmount(req.Amount)
+	if err != nil {
+		return nil, fmt.Errorf("parse amount: %w", err)
+	}
+
+	pool, has := k.liquidityPools.Get(ctx, factoryDenom.FullName)
+	if !has {
+		return nil, types.ErrPoolDoesNotExist
+	}
+
+	ratio, err := pool.GetPoolRatio()
+	if err != nil {
+		return nil, fmt.Errorf("pool ratio: %w", err)
+	}
+
+	amountKCoin := amount.ToLegacyDec().Mul(ratio)
+	return &types.QuerySimulateAddingLiquidityResponse{
+		AmountKcoin:        amountKCoin.Ceil().TruncateInt().String(),
+		AmountFactoryToken: amount.String(),
+	}, nil
 }

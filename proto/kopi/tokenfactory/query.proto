@@ -25,12 +25,76 @@ service Query {
     option (google.api.http).get = "/kopi/tokenfactory/denoms/pool";
   }
 
+  rpc GetFactoryTokenBalance (GetFactoryTokenBalanceRequest) returns (GetFactoryTokenBalanceResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/balance/{address}";
+  }
+
+  rpc GetPoolLiquidityAddress (QueryPoolLiquidityAddressRequest) returns (QueryPoolLiquidityAddressResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/denoms/pool/{address}";
+  }
+
+  rpc QuerySimulateAddingLiquidityKCoin (QuerySimulateAddingLiquidityRequest) returns (QuerySimulateAddingLiquidityResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/denoms/pool/add/kcoin";
+  }
+
+  rpc QuerySimulateAddingLiquidityFactoryToken (QuerySimulateAddingLiquidityRequest) returns (QuerySimulateAddingLiquidityResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/denoms/pool/add/factory";
+  }
+
   rpc QuerySimulateSell (QuerySimulateTradeRequest) returns (QuerySimulateTradeResponse) {
     option (google.api.http).get = "/kopi/tokenfactory/simulate/sell";
   }
+
   rpc QuerySimulateBuy (QuerySimulateTradeRequest) returns (QuerySimulateTradeResponse) {
     option (google.api.http).get = "/kopi/tokenfactory/simulate/buy";
   }
+}
+
+message QuerySimulateAddingLiquidityRequest {
+  string token = 1;
+  string amount = 2;
+}
+
+message QuerySimulateAddingLiquidityResponse {
+  string amount_kcoin = 1;
+  string amount_factory_token = 2;
+}
+
+message FactoryTokenBalance {
+  string factory_denom_hash = 1;
+  string amount_wallet = 2;
+  string amount_wallet_usd = 3;
+  string pool_liquidity_kcoin = 4;
+  string pool_liquidity_kcoin_usd = 5;
+  string pool_liquidity_factory_token = 6;
+  string pool_liquidity_factory_token_usd = 7;
+}
+
+message GetFactoryTokenBalanceResponse {
+  repeated FactoryTokenBalance balances = 1 [
+    (gogoproto.nullable) = false
+  ];
+}
+
+message GetFactoryTokenBalanceRequest {
+  string address = 1;
+}
+
+message PoolLiquidityAddress {
+  string factory_denom_hash = 1;
+  string amount_kcoin = 2;
+  string amount_factory_token = 3;
+  string liquidity_value = 4;
+}
+
+message QueryPoolLiquidityAddressResponse {
+  repeated PoolLiquidityAddress pools = 1 [
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryPoolLiquidityAddressRequest {
+  string address = 1;
 }
 
 message QuerySimulateTradeRequest {

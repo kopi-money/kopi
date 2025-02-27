@@ -100,6 +100,7 @@ type AppModule struct {
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
 	denomKeeper   types.DenomKeeper
+	dexKeeper     types.DexKeeper
 }
 
 func NewAppModule(
@@ -108,6 +109,7 @@ func NewAppModule(
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	denomKeeper types.DenomKeeper,
+	dexKeeper types.DexKeeper,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
@@ -115,6 +117,7 @@ func NewAppModule(
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
 		denomKeeper:    denomKeeper,
+		dexKeeper:      dexKeeper,
 	}
 }
 
@@ -149,7 +152,11 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 
 // BeginBlock contains the logic that is automatically triggered at the beginning of each block.
 // The begin block implementation is optional.
-func (am AppModule) BeginBlock(_ context.Context) error {
+func (am AppModule) BeginBlock(ctx context.Context) error {
+	if err := am.keeper.Initialize(ctx); err != nil {
+		return fmt.Errorf("could not initialize tokenfactory module: %w", err)
+	}
+
 	return nil
 }
 
@@ -190,7 +197,7 @@ type ModuleInputs struct {
 	AccountKeeper types.AccountKeeper
 	BankKeeper    types.BankKeeper
 	DenomKeeper   types.DenomKeeper
-	//DexKeeper     types.DexKeeper
+	DexKeeper     types.DexKeeper
 }
 
 type ModuleOutputs struct {
@@ -213,7 +220,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.AccountKeeper,
 		in.BankKeeper,
 		in.DenomKeeper,
-		//in.DexKeeper,
+		in.DexKeeper,
 		authority.String(),
 	)
 	m := NewAppModule(
@@ -222,7 +229,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.AccountKeeper,
 		in.BankKeeper,
 		in.DenomKeeper,
-		//in.DexKeeper,
+		in.DexKeeper,
 	)
 
 	return ModuleOutputs{TokenfactoryKeeper: k, Module: m}

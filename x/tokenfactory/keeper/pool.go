@@ -74,15 +74,6 @@ func (k Keeper) SetLiquidityPool(ctx context.Context, factoryDenomHash string, l
 	k.liquidityPools.Set(ctx, factoryDenomHash, liquidityPool)
 }
 
-// getPoolRatio returns the ratio in the form of "One factory denom unit represents x kcoin denom units"
-func getPoolRatio(pool types.LiquidityPool) (math.LegacyDec, error) {
-	if !pool.FactoryDenomAmount.IsPositive() {
-		return math.LegacyDec{}, fmt.Errorf("factory denom is not positive")
-	}
-
-	return pool.KCoinAmount.ToLegacyDec().Quo(pool.FactoryDenomAmount.ToLegacyDec()), nil // C
-}
-
 func (k Keeper) LiquidityShareIterator(ctx context.Context, denom string) cache.Iterator[string, types.ProviderShare] {
 	rng := collections.NewPrefixedPairRange[string, string](denom)
 	return k.liquidityProviderShares.Iterator(ctx, rng, denom)

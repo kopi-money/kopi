@@ -31,6 +31,7 @@ func TokenfactoryKeeper(t *testing.T) (keeper.Keeper, context.Context) {
 		dexKeeper.AccountKeeper,
 		dexKeeper.BankKeeper.(types.BankKeeper),
 		dexKeeper.DenomKeeper,
+		dexKeeper,
 		authority.String(),
 	)
 	cache.AddCache(k)

@@ -86,7 +86,7 @@ func (k msgServer) CreatePool(ctx context.Context, msg *types.MsgCreatePool) (*t
 	return &types.Void{}, nil
 }
 
-func (k Keeper) getLiquidityForAddress(ctx context.Context, fullName, amount string) (types.FactoryDenom, types.LiquidityPool, math.Int, math.Int, error) {
+func (k Keeper) getBothSideAmounts(ctx context.Context, fullName, factoryAmountString string) (types.FactoryDenom, types.LiquidityPool, math.Int, math.Int, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, fullName)
 	if !has {
 		return types.FactoryDenom{}, types.LiquidityPool{}, math.Int{}, math.Int{}, types.ErrDenomDoesNotExists
@@ -97,12 +97,12 @@ func (k Keeper) getLiquidityForAddress(ctx context.Context, fullName, amount str
 		return types.FactoryDenom{}, types.LiquidityPool{}, math.Int{}, math.Int{}, types.ErrPoolDoesNotExist
 	}
 
-	amountFactory, ok := math.NewIntFromString(amount)
+	amountFactory, ok := math.NewIntFromString(factoryAmountString)
 	if !ok {
-		return types.FactoryDenom{}, types.LiquidityPool{}, math.Int{}, math.Int{}, fmt.Errorf("invalid factory denom amount: %v", amount)
+		return types.FactoryDenom{}, types.LiquidityPool{}, math.Int{}, math.Int{}, fmt.Errorf("invalid factory denom amount: %v", factoryAmountString)
 	}
 
-	poolRatio, err := getPoolRatio(pool)
+	poolRatio, err := pool.GetPoolRatio()
 	if err != nil {
 		return types.FactoryDenom{}, types.LiquidityPool{}, math.Int{}, math.Int{}, err
 	}
@@ -113,9 +113,9 @@ func (k Keeper) getLiquidityForAddress(ctx context.Context, fullName, amount str
 }
 
 func (k msgServer) AddLiquidity(ctx context.Context, msg *types.MsgAddLiquidity) (*types.Void, error) {
-	factoryDenom, pool, amountFactory, amountKCoin, err := k.getLiquidityForAddress(ctx, msg.FullFactoryDenomName, msg.FactoryDenomAmount)
+	factoryDenom, pool, amountFactory, amountKCoin, err := k.getBothSideAmounts(ctx, msg.FullFactoryDenomName, msg.FactoryDenomAmount)
 	if err != nil {
-		return nil, fmt.Errorf("could not check liquidity: %w", err)
+		return nil, fmt.Errorf("both side amounts: %w", err)
 	}
 
 	acc, _ := sdk.AccAddressFromBech32(msg.Creator)
@@ -138,7 +138,7 @@ func (k msgServer) AddLiquidity(ctx context.Context, msg *types.MsgAddLiquidity)
 }
 
 func (k msgServer) UnlockLiquidity(ctx context.Context, msg *types.MsgUnlockLiquidity) (*types.Void, error) {
-	factoryDenom, pool, amountFactory, amountKCoin, err := k.getLiquidityForAddress(ctx, msg.FullFactoryDenomName, msg.FactoryDenomAmount)
+	factoryDenom, pool, amountFactory, amountKCoin, err := k.getBothSideAmounts(ctx, msg.FullFactoryDenomName, msg.FactoryDenomAmount)
 	if err != nil {
 		return nil, fmt.Errorf("could not check liquidity: %w", err)
 	}
@@ -278,7 +278,7 @@ func (k Keeper) payoutLiquidityUnlockins(ctx context.Context, factoryDenom types
 }
 
 func (k Keeper) payoutLiquidityProviders(ctx context.Context, factoryDenom types.FactoryDenom, pool types.LiquidityPool) error {
-	ratio, err := getPoolRatio(pool)
+	ratio, err := pool.GetPoolRatio()
 	if err != nil {
 		return err
 	}

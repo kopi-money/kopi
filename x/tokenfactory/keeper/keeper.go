@@ -33,7 +33,7 @@ type (
 		AccountKeeper types.AccountKeeper
 		BankKeeper    types.BankKeeper
 		DenomKeeper   types.DenomKeeper
-		//DexKeeper     types.DexKeeper
+		DexKeeper     types.DexKeeper
 
 		// the address capable of executing a MsgUpdateParams message. Typically, this
 		// should be the x/gov module account.
@@ -58,7 +58,7 @@ func NewKeeper(
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	denomKeeper types.DenomKeeper,
-	//dexKeeper types.DexKeeper,
+	dexKeeper types.DexKeeper,
 	authority string,
 
 ) Keeper {
@@ -77,7 +77,7 @@ func NewKeeper(
 		AccountKeeper: accountKeeper,
 		BankKeeper:    bankKeeper,
 		DenomKeeper:   denomKeeper,
-		//DexKeeper:     dexKeeper,
+		DexKeeper:     dexKeeper,
 
 		caches: caches,
 
