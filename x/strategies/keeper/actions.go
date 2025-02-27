@@ -415,11 +415,17 @@ func (k Keeper) executeAction(
 		amount2, err = k.DexKeeper.AddLiquidity(ctx, address, action.String1, amount1)
 
 	case types.ActionLiquidityWithdraw:
-		amount1 = k.getAmountLiquidity(ctx, address, action.String1, action.Amount)
-		err = k.DexKeeper.RemoveLiquidityForAddress(ctx, address, action.String1, amount1)
+		if !k.DenomKeeper.IsValidDenom(ctx, action.String1) {
+			err = denomtypes.ErrInvalidDexAsset
+		}
 
 		if err == nil {
-			amount2 = k.DexKeeper.GetLiquidityByAddress(ctx, action.String1, address.String())
+			amount1 = k.getAmountLiquidity(ctx, address, action.String1, action.Amount)
+			err = k.DexKeeper.RemoveLiquidityForAddress(ctx, address, action.String1, amount1)
+
+			if err == nil {
+				amount2 = k.DexKeeper.GetLiquidityByAddress(ctx, action.String1, address.String())
+			}
 		}
 
 	case types.ActionSendCoins:

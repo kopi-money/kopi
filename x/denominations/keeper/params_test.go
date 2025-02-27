@@ -44,28 +44,32 @@ func TestSetParams(t *testing.T) {
 	params := k.GetParams(ctx)
 	numDenoms1 := len(params.DexDenoms)
 
-	_, err := msg.DexAddDenom(ctx, &types.MsgDexAddDenom{
-		Authority:    k.GetAuthority(),
-		Name:         "ukusd2",
-		Factor:       "10",
-		MinLiquidity: "1000",
-		MinOrderSize: "1000",
-		Exponent:     6,
-	})
-	require.NoError(t, err)
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := msg.DexAddDenom(innerCtx, &types.MsgDexAddDenom{
+			Authority:    k.GetAuthority(),
+			Name:         "ukusd2",
+			Factor:       "10",
+			MinLiquidity: "1000",
+			MinOrderSize: "1000",
+			Exponent:     6,
+		})
+		return err
+	}))
 
 	params = k.GetParams(ctx)
 	numDenoms2 := len(params.DexDenoms)
 	require.Equal(t, numDenoms1+1, numDenoms2)
 
-	_, err = msg.DexAddDenom(ctx, &types.MsgDexAddDenom{
-		Authority:    k.GetAuthority(),
-		Name:         "ukusd2",
-		Factor:       "10",
-		MinLiquidity: "1000",
-		MinOrderSize: "1000",
-	})
-	require.Error(t, err)
+	require.Error(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := msg.DexAddDenom(innerCtx, &types.MsgDexAddDenom{
+			Authority:    k.GetAuthority(),
+			Name:         "ukusd2",
+			Factor:       "10",
+			MinLiquidity: "1000",
+			MinOrderSize: "1000",
+		})
+		return err
+	}))
 
 	params = k.GetParams(ctx)
 	numDenoms3 := len(params.DexDenoms)

@@ -205,7 +205,7 @@ func TestActions2(t *testing.T) {
 		String1:    "uknown",
 		String2:    "",
 		Amount:     "1000",
-	}), denomtypes.ErrInvalidCollateralDenom)
+	}), denomtypes.ErrInvalidDexAsset)
 
 	require.NoError(t, executeAction(ctx, k, acc, types.Action{
 		ActionType: types.ActionLiquidityWithdraw,
@@ -219,7 +219,7 @@ func TestActions2(t *testing.T) {
 		String1:    "uknown",
 		String2:    "",
 		Amount:     "1000",
-	}), denomtypes.ErrInvalidCollateralDenom)
+	}), denomtypes.ErrInvalidDexAsset)
 
 	require.Error(t, executeAction(ctx, k, acc, types.Action{
 		ActionType: types.ActionLoanBorrow,
