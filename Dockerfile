@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG GO_VERSION="1.23.4"
+ARG GO_VERSION="1.23.6"
 ARG BUILDPLATFORM="linux/amd64"
 ARG BASE_IMAGE="golang:${GO_VERSION}-alpine"
 ARG WASMVM_VERSION="v2.2.1"
