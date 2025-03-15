@@ -61,7 +61,7 @@ func adjustToNormal(amount math.LegacyDec, exponent uint64) math.LegacyDec {
 }
 
 func (k Keeper) GetPoolLiquidityAddress(ctx context.Context, req *types.QueryPoolLiquidityAddressRequest) (*types.QueryPoolLiquidityAddressResponse, error) {
-	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get highest usd reference: %w", err)
 	}
@@ -83,7 +83,7 @@ func (k Keeper) GetPoolLiquidityAddress(ctx context.Context, req *types.QueryPoo
 			return nil, fmt.Errorf("get liquidity for address: %w", err)
 		}
 
-		liquidityValue, err = k.DexKeeper.GetValueIn(ctx, pool.KCoin, referenceDenom, amountKCoin.ToLegacyDec())
+		liquidityValue, err = k.DenomKeeper.GetValueIn(ctx, pool.KCoin, referenceDenom, amountKCoin.ToLegacyDec())
 		if err != nil {
 			return nil, fmt.Errorf("kcoin amount in usd: %w", err)
 		}

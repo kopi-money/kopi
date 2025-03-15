@@ -51,7 +51,7 @@ type DexKeeper interface {
 	CalculateParity(ctx context.Context, kCoin string) (*math.LegacyDec, string, error)
 	ExecuteSell(ctx dextypes.TradeContext) (dextypes.TradeResult, error)
 	GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int
-	RemoveLiquidityForAddress(ctx context.Context, accAddr sdk.AccAddress, denom string, amount math.Int) error
+	RemoveLiquidityForAddress(ctx context.Context, accAddr sdk.AccAddress, denom string, amount math.Int, positionIndex *uint64) (math.Int, error)
 }
 
 type MMKeeper interface {

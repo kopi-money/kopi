@@ -29,7 +29,7 @@ func (k Keeper) ArbitrageDenomBalance(ctx context.Context, req *types.QueryArbit
 }
 
 func (k Keeper) ArbitrageBalance(ctx context.Context, _ *types.QueryArbitrageBalancesRequest) (*types.QueryArbitrageBalancesResponse, error) {
-	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -60,7 +60,7 @@ func (k Keeper) ArbitrageBalance(ctx context.Context, _ *types.QueryArbitrageBal
 		redemptionValue := k.MMKeeper.CalculateCAssetRedemptionValue(ctx, cAsset)
 		baseValue := tokenValue.Mul(redemptionValue)
 
-		tokenValueUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, baseValue)
+		tokenValueUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, baseValue)
 		if err != nil {
 			return nil, fmt.Errorf("could not get usd value of %v: %w", arbitrageDenom.DexDenom, err)
 		}
@@ -102,7 +102,7 @@ func (k Keeper) ArbitrageBalanceAddress(ctx context.Context, req *types.QueryArb
 		return nil, err
 	}
 
-	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -160,20 +160,20 @@ func (k Keeper) ArbitrageBalanceAddress(ctx context.Context, req *types.QueryArb
 		}
 
 		userBalanceCAsset = userCoins.AmountOf(arbitrageDenom.CAsset)
-		userBalanceCAssetUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.DexDenom, referenceDenom, userBalanceCAsset.ToLegacyDec())
+		userBalanceCAssetUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.DexDenom, referenceDenom, userBalanceCAsset.ToLegacyDec())
 		if err != nil {
 			return nil, fmt.Errorf("could not get usd value of c asset balance: %w", err)
 		}
 
 		userBalanceBase = userCoins.AmountOf(cAsset.BaseDexDenom)
-		userBalanceBaseUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.DexDenom, referenceDenom, userBalanceBase.ToLegacyDec())
+		userBalanceBaseUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.DexDenom, referenceDenom, userBalanceBase.ToLegacyDec())
 		if err != nil {
 			return nil, fmt.Errorf("could not get usd value of base: %w", err)
 		}
 
 		userBalanceArbitrage = userCoins.AmountOf(arbitrageDenom.DexDenom)
 		userBalanceBaseArbRedeemed = k.arbitrageUserBaseValue(ctx, cAsset, userShareCAssetValue)
-		userBalanceBaseArbRedeemedUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, userBalanceBaseArbRedeemed.ToLegacyDec())
+		userBalanceBaseArbRedeemedUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, userBalanceBaseArbRedeemed.ToLegacyDec())
 		if err != nil {
 			return nil, fmt.Errorf("could not get usd value of base arb redeemed: %w", err)
 		}

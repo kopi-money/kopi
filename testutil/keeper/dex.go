@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	blockspeedkeeper "github.com/kopi-money/kopi/x/blockspeed/keeper"
 	reservetypes "github.com/kopi-money/kopi/x/reserve/types"
 	"strconv"
 	"testing"
@@ -45,6 +46,8 @@ func DexKeeper(t *testing.T) (dexkeeper.Keeper, context.Context, *Keys) {
 		dextypes.PoolTrade:                     nil,
 		dextypes.PoolOrders:                    nil,
 		dextypes.PoolReserve:                   nil,
+		dextypes.PoolFeeIncome:                 nil,
+		dextypes.PoolFeeLeftovers:              nil,
 		denomtypes.ModuleName:                  nil,
 		minttypes.ModuleName:                   nil,
 		mmtypes.PoolCollateral:                 nil,
@@ -79,6 +82,13 @@ func DexKeeper(t *testing.T) (dexkeeper.Keeper, context.Context, *Keys) {
 		authority.String(),
 	)
 
+	blockspeedKeeper := blockspeedkeeper.NewKeeper(
+		keys.cdc,
+		runtime.NewKVStoreService(keys.spd),
+		log.NewNopLogger(),
+		authority.String(),
+	)
+
 	authtypes.RegisterInterfaces(keys.registry)
 	denomtypes.RegisterInterfaces(keys.registry)
 	dextypes.RegisterInterfaces(keys.registry)
@@ -97,6 +107,7 @@ func DexKeeper(t *testing.T) (dexkeeper.Keeper, context.Context, *Keys) {
 		runtime.NewKVStoreService(keys.dex),
 		log.NewNopLogger(),
 		accountKeeper,
+		blockspeedKeeper,
 		bankKeeper,
 		denomKeeper,
 		authority.String(),
@@ -133,12 +144,21 @@ func AddLiquidity(ctx context.Context, k dextypes.MsgServer, address, denom stri
 	return AddLiquidityString(ctx, k, address, denom, strconv.Itoa(int(amount)))
 }
 
+func AddLiquidityCompound(ctx context.Context, k dextypes.MsgServer, address, denom string, amount int64, autoCompound bool) error {
+	return AddLiquidityStringCompound(ctx, k, address, denom, strconv.Itoa(int(amount)), autoCompound)
+}
+
 func AddLiquidityString(ctx context.Context, k dextypes.MsgServer, address, denom, amount string) error {
+	return AddLiquidityStringCompound(ctx, k, address, denom, amount, false)
+}
+
+func AddLiquidityStringCompound(ctx context.Context, k dextypes.MsgServer, address, denom, amount string, autoCompound bool) error {
 	return cache.Transact(ctx, func(innerCtx context.Context) error {
 		_, err := k.AddLiquidity(innerCtx, &dextypes.MsgAddLiquidity{
-			Creator: address,
-			Denom:   denom,
-			Amount:  amount,
+			Creator:      address,
+			Denom:        denom,
+			Amount:       amount,
+			AutoCompound: autoCompound,
 		})
 		return err
 	})
@@ -246,11 +266,16 @@ func Buy(ctx context.Context, k dextypes.MsgServer, msgTrade *dextypes.MsgBuy) (
 }
 
 func RemoveLiquidity(ctx context.Context, k dextypes.MsgServer, address, denom string, amount int64) error {
+	return RemoveLiquidityWithPayout(ctx, k, address, denom, denom, amount)
+}
+
+func RemoveLiquidityWithPayout(ctx context.Context, k dextypes.MsgServer, address, withdrawDenom, payoutDenom string, amount int64) error {
 	return cache.Transact(ctx, func(innerCtx context.Context) error {
 		_, err := k.RemoveLiquidity(innerCtx, &dextypes.MsgRemoveLiquidity{
-			Creator: address,
-			Denom:   denom,
-			Amount:  strconv.Itoa(int(amount)),
+			Creator:       address,
+			WithdrawDenom: withdrawDenom,
+			PayoutDenom:   payoutDenom,
+			Amount:        strconv.Itoa(int(amount)),
 		})
 
 		return err

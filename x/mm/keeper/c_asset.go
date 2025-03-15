@@ -9,7 +9,7 @@ import (
 	"github.com/kopi-money/kopi/x/mm/types"
 )
 
-var minimumAmount = math.NewInt(500_000_000) // i.e. 500
+var minimumAmount = math.NewInt(100_000_000) // i.e. 100
 
 // GetVaultAmount return the amount of funds held in the base denom of an CAsset. For example, when akUSD is the CAsset,
 // this functions return the amount of available kUSD

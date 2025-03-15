@@ -13,7 +13,7 @@ import (
 )
 
 func (k Keeper) GetMarketStats(ctx context.Context, _ *types.GetMarketStatsQuery) (*types.GetMarketStatsResponse, error) {
-	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -35,19 +35,19 @@ func (k Keeper) GetMarketStats(ctx context.Context, _ *types.GetMarketStatsQuery
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		available := vault.AmountOf(cAsset.BaseDexDenom)
-		availableUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, available.ToLegacyDec())
+		availableUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, available.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
 
 		borrowed := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom).LoanSum
-		borrowedUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, borrowed)
+		borrowedUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, borrowed)
 		if err != nil {
 			return nil, err
 		}
 
 		redeeming := k.GetRedemptionSum(ctx, cAsset.BaseDexDenom)
-		redeemingUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, redeeming.ToLegacyDec())
+		redeemingUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, redeeming.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
@@ -64,7 +64,7 @@ func (k Keeper) GetMarketStats(ctx context.Context, _ *types.GetMarketStatsQuery
 	var providedUSD math.LegacyDec
 	for _, denom := range k.DenomKeeper.GetCollateralDenoms(ctx) {
 		provided := k.getCollateralSum(ctx, denom.DexDenom)
-		providedUSD, err = k.DexKeeper.GetValueIn(ctx, denom.DexDenom, referenceDenom, provided.ToLegacyDec())
+		providedUSD, err = k.DenomKeeper.GetValueIn(ctx, denom.DexDenom, referenceDenom, provided.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
@@ -137,7 +137,7 @@ func (k Keeper) getDepositUserStats(ctx context.Context, address string) (math.L
 		return math.LegacyDec{}, math.LegacyDec{}, types.ErrInvalidAddress
 	}
 
-	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -159,12 +159,12 @@ func (k Keeper) getDepositUserStats(ctx context.Context, address string) (math.L
 		}
 
 		amountBase := k.ConvertToBaseAmount(ctx, cAsset, amountCAsset.ToLegacyDec())
-		cAssetUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, amountBase)
+		cAssetUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, amountBase)
 		if err != nil {
 			return totalDeposited, totalRedeeming, err
 		}
 
-		redeemingUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.DexDenom, referenceDenom, redeeming.Amount.ToLegacyDec())
+		redeemingUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.DexDenom, referenceDenom, redeeming.Amount.ToLegacyDec())
 		if err != nil {
 			return totalDeposited, totalRedeeming, err
 		}
@@ -181,7 +181,7 @@ func (k Keeper) getUserLoansSumBase(ctx context.Context, address string) (math.L
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		loanValue := k.GetLoanValue(ctx, cAsset.BaseDexDenom, address)
-		valueBase, err := k.DexKeeper.GetValueInBase(ctx, cAsset.BaseDexDenom, loanValue)
+		valueBase, err := k.DenomKeeper.GetValueInBase(ctx, cAsset.BaseDexDenom, loanValue)
 		if err != nil {
 			return sum, err
 		}
@@ -193,7 +193,7 @@ func (k Keeper) getUserLoansSumBase(ctx context.Context, address string) (math.L
 }
 
 func (k Keeper) getUserLoansSumUSD(ctx context.Context, address string) (math.LegacyDec, math.LegacyDec, error) {
-	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -206,7 +206,7 @@ func (k Keeper) getUserLoansSumUSD(ctx context.Context, address string) (math.Le
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		loanValue := k.GetLoanValue(ctx, cAsset.BaseDexDenom, address)
-		valueUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, loanValue)
+		valueUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, loanValue)
 		if err != nil {
 			return sum, interestRateSum, err
 		}
@@ -226,7 +226,7 @@ func (k Keeper) getUserLoansSumUSD(ctx context.Context, address string) (math.Le
 }
 
 func (k Keeper) getCollateralUserSumUSD(ctx context.Context, address string) (math.LegacyDec, math.LegacyDec, error) {
-	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -245,13 +245,13 @@ func (k Keeper) getCollateralUserSumUSD(ctx context.Context, address string) (ma
 			continue
 		}
 
-		valueDepositUSD, err = k.DexKeeper.GetValueIn(ctx, denom.DexDenom, referenceDenom, amount.Amount.ToLegacyDec())
+		valueDepositUSD, err = k.DenomKeeper.GetValueIn(ctx, denom.DexDenom, referenceDenom, amount.Amount.ToLegacyDec())
 		if err != nil {
 			return sumDeposit, sumBorrowable, err
 		}
 
 		collateralLTV := amount.Amount.ToLegacyDec().Mul(denom.Ltv)
-		valueBorrowableUSD, err = k.DexKeeper.GetValueIn(ctx, denom.DexDenom, referenceDenom, collateralLTV)
+		valueBorrowableUSD, err = k.DenomKeeper.GetValueIn(ctx, denom.DexDenom, referenceDenom, collateralLTV)
 		if err != nil {
 			return sumDeposit, sumBorrowable, err
 		}

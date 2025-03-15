@@ -22,7 +22,7 @@ func (k Keeper) FullBalance(ctx context.Context, req *types.QueryFullBalanceRequ
 		return nil, types.ErrInvalidAddress
 	}
 
-	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -40,11 +40,11 @@ func (k Keeper) FullBalance(ctx context.Context, req *types.QueryFullBalanceRequ
 		col := k.getProvidedCollateral(ctx, req.Address, denom)
 		sum := liq.Add(ord).Add(wal).Add(col)
 
-		liqUSD, _ := k.DexKeeper.GetValueIn(ctx, denom, referenceDenom, liq.ToLegacyDec())
-		ordUSD, _ := k.DexKeeper.GetValueIn(ctx, denom, referenceDenom, ord.ToLegacyDec())
-		walUSD, _ := k.DexKeeper.GetValueIn(ctx, denom, referenceDenom, wal.ToLegacyDec())
-		colUSD, _ := k.DexKeeper.GetValueIn(ctx, denom, referenceDenom, col.ToLegacyDec())
-		sumUSD, _ := k.DexKeeper.GetValueIn(ctx, denom, referenceDenom, sum.ToLegacyDec())
+		liqUSD, _ := k.DenomKeeper.GetValueIn(ctx, denom, referenceDenom, liq.ToLegacyDec())
+		ordUSD, _ := k.DenomKeeper.GetValueIn(ctx, denom, referenceDenom, ord.ToLegacyDec())
+		walUSD, _ := k.DenomKeeper.GetValueIn(ctx, denom, referenceDenom, wal.ToLegacyDec())
+		colUSD, _ := k.DenomKeeper.GetValueIn(ctx, denom, referenceDenom, col.ToLegacyDec())
+		sumUSD, _ := k.DenomKeeper.GetValueIn(ctx, denom, referenceDenom, sum.ToLegacyDec())
 
 		entries = append(entries, &types.FullDenomBalance{
 			Denom:         denom,

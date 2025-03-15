@@ -13,7 +13,7 @@ import (
 )
 
 func (k Keeper) GetDepositStats(ctx context.Context, _ *types.GetDepositStatsQuery) (*types.GetDepositStatsResponse, error) {
-	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -38,26 +38,26 @@ func (k Keeper) GetDepositStats(ctx context.Context, _ *types.GetDepositStatsQue
 	var stats []*types.DepositDenomStats
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		supply := k.BankKeeper.GetSupply(ctx, cAsset.DexDenom).Amount
-		supplyUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.DexDenom, referenceDenom, supply.ToLegacyDec())
+		supplyUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.DexDenom, referenceDenom, supply.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
 
 		available := vault.AmountOf(cAsset.BaseDexDenom)
-		availableUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, available.ToLegacyDec())
+		availableUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, available.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
 
 		borrowed := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom).LoanSum
-		borrowedUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, borrowed)
+		borrowedUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, borrowed)
 		if err != nil {
 			return nil, err
 		}
 
 		deposited := k.CalculateCAssetValue(ctx, cAsset)
 		borrowLimit := deposited.Mul(cAsset.BorrowLimit)
-		borrowLimitUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, borrowLimit)
+		borrowLimitUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, borrowLimit)
 		if err != nil {
 			return nil, err
 		}
@@ -68,7 +68,7 @@ func (k Keeper) GetDepositStats(ctx context.Context, _ *types.GetDepositStatsQue
 		}
 
 		redeeming := k.GetRedemptionSum(ctx, cAsset.BaseDexDenom)
-		redeemingUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, redeeming.ToLegacyDec())
+		redeemingUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, redeeming.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
@@ -80,12 +80,12 @@ func (k Keeper) GetDepositStats(ctx context.Context, _ *types.GetDepositStatsQue
 		utilityRate := k.getUtilityRate(ctx, cAsset)
 		interestRate := k.calculateInterestRate(ctx, utilityRate)
 
-		priceBaseUSD, err = k.DexKeeper.CalculatePrice(ctx, cAsset.BaseDexDenom, referenceDenom)
+		priceBaseUSD, err = k.DenomKeeper.CalculatePrice(ctx, cAsset.BaseDexDenom, referenceDenom)
 		if err != nil {
 			return nil, err
 		}
 
-		priceCAssetUSD, err = k.DexKeeper.CalculatePrice(ctx, cAsset.DexDenom, referenceDenom)
+		priceCAssetUSD, err = k.DenomKeeper.CalculatePrice(ctx, cAsset.DexDenom, referenceDenom)
 		if err != nil {
 			return nil, err
 		}
@@ -133,7 +133,7 @@ func (k Keeper) GetDepositUserStats(goCtx context.Context, req *types.GetDeposit
 		return nil, types.ErrInvalidAddress
 	}
 
-	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -164,22 +164,22 @@ func (k Keeper) GetDepositUserStats(goCtx context.Context, req *types.GetDeposit
 
 		amountCAsset := math.LegacyNewDecFromInt(coin)
 		amountBase := convertToBaseAmount(cAssetSupply.ToLegacyDec(), cAssetValue, amountCAsset)
-		cAssetUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, amountBase)
+		cAssetUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, amountBase)
 		if err != nil {
 			return nil, err
 		}
 
-		redeemingUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.DexDenom, referenceDenom, redeeming.Amount.ToLegacyDec())
+		redeemingUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.DexDenom, referenceDenom, redeeming.Amount.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
 
-		basePrice, err = k.DexKeeper.CalculatePrice(ctx, cAsset.BaseDexDenom, referenceDenom)
+		basePrice, err = k.DenomKeeper.CalculatePrice(ctx, cAsset.BaseDexDenom, referenceDenom)
 		if err != nil {
 			return nil, err
 		}
 
-		cAssetPrice, err = k.DexKeeper.CalculatePrice(ctx, cAsset.DexDenom, referenceDenom)
+		cAssetPrice, err = k.DenomKeeper.CalculatePrice(ctx, cAsset.DexDenom, referenceDenom)
 		if err != nil {
 			return nil, err
 		}
@@ -224,7 +224,7 @@ func (k Keeper) GetDepositUserDenomStats(ctx context.Context, req *types.GetDepo
 
 	coins := k.BankKeeper.SpendableCoins(ctx, acc)
 
-	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -244,22 +244,22 @@ func (k Keeper) GetDepositUserDenomStats(ctx context.Context, req *types.GetDepo
 
 	amountCAsset := coins.AmountOf(cAsset.DexDenom)
 	amountBase := k.ConvertToBaseAmount(ctx, cAsset, amountCAsset.ToLegacyDec())
-	cAssetUSD, err := k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, amountBase)
+	cAssetUSD, err := k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, amountBase)
 	if err != nil {
 		return nil, err
 	}
 
-	redeemingUSD, err := k.DexKeeper.GetValueIn(ctx, cAsset.DexDenom, referenceDenom, redeeming.Amount.ToLegacyDec())
+	redeemingUSD, err := k.DenomKeeper.GetValueIn(ctx, cAsset.DexDenom, referenceDenom, redeeming.Amount.ToLegacyDec())
 	if err != nil {
 		return nil, err
 	}
 
-	basePrice, err := k.DexKeeper.CalculatePrice(ctx, cAsset.BaseDexDenom, referenceDenom)
+	basePrice, err := k.DenomKeeper.CalculatePrice(ctx, cAsset.BaseDexDenom, referenceDenom)
 	if err != nil {
 		return nil, err
 	}
 
-	cAssetPrice, err := k.DexKeeper.CalculatePrice(ctx, cAsset.DexDenom, referenceDenom)
+	cAssetPrice, err := k.DenomKeeper.CalculatePrice(ctx, cAsset.DexDenom, referenceDenom)
 	if err != nil {
 		return nil, err
 	}

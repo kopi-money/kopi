@@ -24,6 +24,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	blockspeedtypes "github.com/kopi-money/kopi/x/blockspeed/types"
 	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
@@ -39,6 +40,7 @@ type Keys struct {
 	registry codectypes.InterfaceRegistry
 
 	acc *storetypes.KVStoreKey
+	spd *storetypes.KVStoreKey
 	dex *storetypes.KVStoreKey
 	bnk *storetypes.KVStoreKey
 	dnm *storetypes.KVStoreKey
@@ -58,6 +60,7 @@ func DenomKeeper(t *testing.T) (denomkeeper.Keeper, context.Context, *Keys) {
 
 	keys := Keys{
 		acc: storetypes.NewKVStoreKey(authtypes.StoreKey),
+		spd: storetypes.NewKVStoreKey(blockspeedtypes.StoreKey),
 		bnk: storetypes.NewKVStoreKey(banktypes.StoreKey),
 		dex: storetypes.NewKVStoreKey(dextypes.StoreKey),
 		dnm: storetypes.NewKVStoreKey(denomtypes.StoreKey),
@@ -282,22 +285,25 @@ func createDefaultDexDenoms() []denomtypes.DexDenom {
 			Exponent:     6,
 		},
 		{
-			Name:         "uwusdc",
-			MinLiquidity: math.NewInt(10_000_000),
-			MinOrderSize: math.NewInt(1),
-			Exponent:     6,
+			Name:                  "uwusdc",
+			MinLiquidity:          math.NewInt(10_000_000),
+			ExtraVirtualLiquidity: mathIntToPtr(math.NewInt(10_000_000)),
+			MinOrderSize:          math.NewInt(1),
+			Exponent:              6,
 		},
 		{
-			Name:         "uwusdt",
-			MinLiquidity: math.NewInt(10_000_000),
-			MinOrderSize: math.NewInt(1_000_000),
-			Exponent:     6,
+			Name:                  "uwusdt",
+			MinLiquidity:          math.NewInt(10_000_000),
+			ExtraVirtualLiquidity: mathIntToPtr(math.NewInt(10_000_000)),
+			MinOrderSize:          math.NewInt(1_000_000),
+			Exponent:              6,
 		},
 		{
-			Name:         constants.KUSD,
-			MinLiquidity: math.NewInt(10_000_000),
-			MinOrderSize: math.NewInt(1),
-			Exponent:     6,
+			Name:                  constants.KUSD,
+			MinLiquidity:          math.NewInt(10_000_000),
+			ExtraVirtualLiquidity: mathIntToPtr(math.NewInt(10_000_000)),
+			MinOrderSize:          math.NewInt(1),
+			Exponent:              6,
 		},
 		{
 			Name:         "uckusd",
@@ -332,9 +338,15 @@ func createDefaultDexDenoms() []denomtypes.DexDenom {
 	}
 }
 
+func mathIntToPtr(i math.Int) *math.Int {
+	return &i
+}
+
 func AddDexDenom(ctx context.Context, k denomtypes.MsgServer, msg *denomtypes.MsgDexAddDenom) error {
-	_, err := k.DexAddDenom(ctx, msg)
-	return err
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := k.DexAddDenom(innerCtx, msg)
+		return err
+	})
 }
 
 func createDefaultKCoins() []denomtypes.KCoin {

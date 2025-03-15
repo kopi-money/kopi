@@ -433,7 +433,7 @@ func TestMaxPrice1(t *testing.T) {
 	require.True(t, has)
 
 	tradeData := keeper.NewTradeData(factoryDenomHash, keepertest.Alice, factoryDenomHash, constants.KUSD, "0.25", "1", false)
-	_, _, err = k.HandleMaxPrice(ctx, tradeData, pool, math.NewInt(1), keeper.DecreaseMaxPrice, constant_product.CalculateMaximumGiving)
+	_, _, err = k.HandleMaxPrice(ctx, tradeData, pool, math.NewInt(1), keeper.DecreaseMaxPrice, constant_product.CalculateMaximumGivingOneStep)
 	require.Error(t, err)
 }
 
@@ -460,11 +460,11 @@ func TestMaxPrice2(t *testing.T) {
 	fmt.Println(res.Price)
 
 	tradeData := keeper.NewTradeData(factoryDenomHash, keepertest.Alice, constants.KUSD, factoryDenomHash, "69000", "1", false)
-	_, _, err = k.HandleMaxPrice(ctx, tradeData, pool, math.NewInt(1), keeper.DecreaseMaxPrice, constant_product.CalculateMaximumGiving)
+	_, _, err = k.HandleMaxPrice(ctx, tradeData, pool, math.NewInt(1), keeper.DecreaseMaxPrice, constant_product.CalculateMaximumGivingOneStep)
 	require.Error(t, err)
 
 	tradeData = keeper.NewTradeData(factoryDenomHash, keepertest.Alice, constants.KUSD, factoryDenomHash, "70000", "1", false)
-	_, _, err = k.HandleMaxPrice(ctx, tradeData, pool, math.NewInt(1), keeper.DecreaseMaxPrice, constant_product.CalculateMaximumGiving)
+	_, _, err = k.HandleMaxPrice(ctx, tradeData, pool, math.NewInt(1), keeper.DecreaseMaxPrice, constant_product.CalculateMaximumGivingOneStep)
 	require.NoError(t, err)
 }
 
@@ -483,11 +483,11 @@ func TestMaxPrice3(t *testing.T) {
 	require.True(t, has)
 
 	tradeData := keeper.NewTradeData(factoryDenomHash, keepertest.Alice, factoryDenomHash, constants.KUSD, "69000", "1", false)
-	_, _, err = k.HandleMaxPrice(ctx, tradeData, pool, math.NewInt(1), keeper.IncreaseMaxPrice, constant_product.CalculateMaximumGiving)
+	_, _, err = k.HandleMaxPrice(ctx, tradeData, pool, math.NewInt(1), keeper.IncreaseMaxPrice, constant_product.CalculateMaximumGivingOneStep)
 	require.NoError(t, err)
 
 	tradeData = keeper.NewTradeData(factoryDenomHash, keepertest.Alice, factoryDenomHash, constants.KUSD, "70000", "1", false)
-	_, _, err = k.HandleMaxPrice(ctx, tradeData, pool, math.NewInt(1), keeper.IncreaseMaxPrice, constant_product.CalculateMaximumGiving)
+	_, _, err = k.HandleMaxPrice(ctx, tradeData, pool, math.NewInt(1), keeper.IncreaseMaxPrice, constant_product.CalculateMaximumGivingOneStep)
 	require.Error(t, err)
 }
 

@@ -110,10 +110,6 @@ func (k Keeper) getLoanValue(loanSum types.LoanSum, loan types.Loan) math.Legacy
 		return math.LegacyZeroDec()
 	}
 
-	if loan.Weight.IsNil() || !loan.Weight.IsPositive() {
-		return math.LegacyZeroDec()
-	}
-
 	loanValue := loan.Weight.Quo(loanSum.WeightSum).Mul(loanSum.LoanSum) // C
 	return loanValue
 }

@@ -16,8 +16,6 @@ import (
 	"github.com/kopi-money/kopi/x/mm/types"
 )
 
-var minimumLoanFactor = math.LegacyNewDecWithPrec(1, 3) // 0.1 %
-
 func (k Keeper) HandleLiquidations(ctx context.Context) error {
 	collateralDenomValues, err := k.getCollateralDenomsByValue(ctx)
 	if err != nil {
@@ -146,8 +144,7 @@ func loanUnderMinimumThreshold(cAsset denomtypes.CAsset, loanValue math.LegacyDe
 		return false
 	}
 
-	minimumLoanSize := cAsset.MinimumLoanSize.ToLegacyDec().Mul(minimumLoanFactor)
-	return cAsset.MinimumLoanSize.IsPositive() && loanValue.LT(minimumLoanSize)
+	return cAsset.MinimumLoanSize.IsPositive() && loanValue.LT(cAsset.MinimumLoanSize.ToLegacyDec())
 }
 
 // liquidateCollateral calculates for each collateral denom how much collateral to sell such as to repay the loan and lower
@@ -156,7 +153,7 @@ func (k Keeper) liquidateCollateral(ctx context.Context, tradeBalances dextypes.
 	addr, _ := sdk.AccAddressFromBech32(borrower)
 	repayAmount := math.LegacyZeroDec()
 
-	excessAmount, err := k.DexKeeper.GetValueIn(ctx, constants.BaseCurrency, cAsset.BaseDexDenom, *excessAmountBase)
+	excessAmount, err := k.DenomKeeper.GetValueIn(ctx, constants.BaseCurrency, cAsset.BaseDexDenom, *excessAmountBase)
 	if err != nil {
 		return err
 	}
@@ -191,7 +188,7 @@ func (k Keeper) liquidateCollateral(ctx context.Context, tradeBalances dextypes.
 
 	k.updateLoan(ctx, cAsset.BaseDexDenom, borrower, repayAmount.Neg())
 
-	repayAmountBase, err := k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, constants.BaseCurrency, repayAmount)
+	repayAmountBase, err := k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, constants.BaseCurrency, repayAmount)
 	if err != nil {
 		return fmt.Errorf("could not convert repay amount to base currency: %w", err)
 	}

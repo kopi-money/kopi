@@ -44,7 +44,7 @@ func (k Keeper) CheckBurn(ctx context.Context, kCoin string, maxBurnAmount math.
 		return nil
 	}
 
-	mintAmountBase, err := k.DexKeeper.GetValueInBase(ctx, referenceDenom, maxBurnAmount.ToLegacyDec())
+	mintAmountBase, err := k.DenomKeeper.GetValueInBase(ctx, referenceDenom, maxBurnAmount.ToLegacyDec())
 	if err != nil {
 		return fmt.Errorf("could not convert to mintAmountBase: %w", err)
 	}

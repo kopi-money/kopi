@@ -41,19 +41,19 @@ type DexKeeper interface {
 
 	AddLiquidity(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int) (math.Int, error)
 	CalculateParity(ctx context.Context, kCoin string) (*math.LegacyDec, string, error)
-	CalculatePrice(ctx context.Context, denomFrom, denomTo string) (math.LegacyDec, error)
 	ExecuteSell(ctx dextypes.TradeContext) (dextypes.TradeResult, error)
 	GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int
 	GetFullLiquidityBase(ctx context.Context, denomOther string) math.LegacyDec
 	GetFullLiquidityOther(ctx context.Context, denomOther string) math.LegacyDec
 	GetLiquiditySum(ctx context.Context, denom string) math.Int
-	GetValueInBase(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
-	RemoveLiquidityForAddress(ctx context.Context, accAddress sdk.AccAddress, denom string, amount math.Int) error
+	RemoveLiquidityForAddress(ctx context.Context, accAddress sdk.AccAddress, denom string, amount math.Int, positionIndex *uint64) (math.Int, error)
 }
 
 type DenomKeeper interface {
+	CalculatePrice(ctx context.Context, denomFrom, denomTo string) (math.LegacyDec, error)
 	GetArbitrageDenoms(ctx context.Context) []denomtypes.ArbitrageDenom
 	GetRatio(ctx context.Context, denom string) (denomtypes.Ratio, error)
+	GetValueInBase(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
 	IsKCoin(ctx context.Context, denom string) bool
 	KCoins(ctx context.Context) []string
 	MaxSupply(ctx context.Context, kCoin string) math.Int

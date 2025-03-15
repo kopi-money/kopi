@@ -24,7 +24,7 @@ import (
 	"github.com/kopi-money/kopi/x/blockspeed/types"
 )
 
-func BlocktimeKeeper(t testing.TB) (keeper.Keeper, context.Context) {
+func NewBlockspeedKeeper(t testing.TB) (keeper.Keeper, context.Context) {
 	storeKey := storetypes.NewKVStoreKey(types.StoreKey)
 
 	db := dbm.NewMemDB()

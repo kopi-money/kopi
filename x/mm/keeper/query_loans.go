@@ -20,7 +20,7 @@ func (k Keeper) GetLoansByDenom(ctx context.Context, req *types.GetLoansByDenomQ
 		return nil, err
 	}
 
-	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -40,7 +40,7 @@ func (k Keeper) GetLoansByDenom(ctx context.Context, req *types.GetLoansByDenomQ
 		loan := keyValue.Value().Value()
 		loanValue := k.getLoanValue(loanSum, *loan)
 
-		amountBorrowedUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, loanValue)
+		amountBorrowedUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, loanValue)
 		if err != nil {
 			return nil, err
 		}
@@ -60,7 +60,7 @@ func (k Keeper) GetLoansByDenom(ctx context.Context, req *types.GetLoansByDenomQ
 }
 
 func (k Keeper) GetLoansStats(ctx context.Context, _ *types.GetLoanStatsQuery) (*types.GetLoanStatsResponse, error) {
-	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -82,13 +82,13 @@ func (k Keeper) GetLoansStats(ctx context.Context, _ *types.GetLoanStatsQuery) (
 		interestRate := k.calculateInterestRate(ctx, utilityRate)
 
 		amountAvailable = vault.AmountOf(cAsset.BaseDexDenom)
-		amountAvailableUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, amountAvailable.ToLegacyDec())
+		amountAvailableUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, amountAvailable.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
 
 		loanSum := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom).LoanSum
-		loanSumUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, loanSum)
+		loanSumUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, loanSum)
 		if err != nil {
 			return nil, err
 		}
@@ -120,7 +120,7 @@ func (k Keeper) GetUserLoans(ctx context.Context, req *types.GetUserLoansQuery) 
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -155,12 +155,12 @@ func (k Keeper) GetUserLoans(ctx context.Context, req *types.GetUserLoansQuery) 
 
 		amountAvailable = math.LegacyMinDec(vaultAmount.ToLegacyDec(), amountAvailable)
 
-		amountAvailableUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, amountAvailable)
+		amountAvailableUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, amountAvailable)
 		if err != nil {
 			return nil, err
 		}
 
-		amountBorrowedUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, loanValue)
+		amountBorrowedUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, loanValue)
 		if err != nil {
 			return nil, err
 		}
@@ -193,7 +193,7 @@ func (k Keeper) GetUserDenomLoan(ctx context.Context, req *types.GetUserDenomLoa
 	}
 
 	loanValue := k.GetLoanValue(ctx, cAsset.BaseDexDenom, req.Address)
-	amountUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDexDenom, loanValue)
+	amountUSD, err := k.DenomKeeper.GetValueInUSD(ctx, cAsset.BaseDexDenom, loanValue)
 	if err != nil {
 		return nil, err
 	}
@@ -211,7 +211,7 @@ func (k Keeper) GetNumLoans(ctx context.Context, _ *types.GetNumLoansQuery) (*ty
 }
 
 func (k Keeper) GetValueLoans(ctx context.Context, _ *types.GetValueLoansQuery) (*types.GetValueLoansResponse, error) {
-	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -221,7 +221,7 @@ func (k Keeper) GetValueLoans(ctx context.Context, _ *types.GetValueLoansQuery) 
 		loanSum := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom)
 
 		var value math.LegacyDec
-		value, err = k.DexKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, loanSum.LoanSum)
+		value, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, loanSum.LoanSum)
 		if err != nil {
 			return nil, fmt.Errorf("could not get value in usd: %w", err)
 		}
@@ -265,7 +265,7 @@ func (k Keeper) GetAvailableToBorrow(ctx context.Context, req *types.GetAvailabl
 	amount := math.MinInt(availableByCollateral.TruncateInt(), availableBorrowLimit)
 	amount = math.MinInt(amount, availableInVault)
 
-	amountUSD, err := k.DexKeeper.GetValueInUSD(ctx, cAsset.BaseDexDenom, amount.ToLegacyDec())
+	amountUSD, err := k.DenomKeeper.GetValueInUSD(ctx, cAsset.BaseDexDenom, amount.ToLegacyDec())
 	if err != nil {
 		return nil, fmt.Errorf("value in usd: %w", err)
 	}

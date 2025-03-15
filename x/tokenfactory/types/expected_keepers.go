@@ -42,9 +42,6 @@ type ParamSubspace interface {
 
 type DenomKeeper interface {
 	IsKCoin(ctx context.Context, denom string) bool
-}
-
-type DexKeeper interface {
 	GetHighestUSDReference(context.Context) (string, error)
 	GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.LegacyDec) (math.LegacyDec, error)
 }

@@ -30,7 +30,7 @@ func (k Keeper) GetRedemptionRequest(ctx context.Context, req *types.GetRedempti
 }
 
 func (k Keeper) GetRedemptionStatsRequest(ctx context.Context, _ *types.GetRedemptionStatsRequestQuery) (*types.GetRedemptionStatsRequestResponse, error) {
-	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -43,7 +43,7 @@ func (k Keeper) GetRedemptionStatsRequest(ctx context.Context, _ *types.GetRedem
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		denomRequestSum, _, denomNumRequests := k.getRedemptionDenomStats(ctx, cAsset.DexDenom)
-		requestSumUSD, err = k.DexKeeper.GetValueIn(ctx, cAsset.DexDenom, referenceDenom, denomRequestSum.ToLegacyDec())
+		requestSumUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.DexDenom, referenceDenom, denomRequestSum.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}

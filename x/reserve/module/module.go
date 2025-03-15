@@ -165,14 +165,6 @@ func (am AppModule) EndBlock(ctx context.Context) error {
 			return fmt.Errorf("error checking reserve at beginning of block: %w", err)
 		}
 
-		if err := am.keeper.SellKCoins(innerCtx); err != nil {
-			return fmt.Errorf("error selling k coins: %w", err)
-		}
-
-		if err := am.keeper.BuyKCoins(innerCtx); err != nil {
-			return fmt.Errorf("error buying k coins: %w", err)
-		}
-
 		if err := am.keeper.Burn(innerCtx); err != nil {
 			return fmt.Errorf("error burning coins: %w", err)
 		}

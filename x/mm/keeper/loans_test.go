@@ -328,7 +328,7 @@ func TestLoans10(t *testing.T) {
 
 	withdrawable, err := k.CalcAvailableToBorrow(ctx, keepertest.Alice, constants.KUSD)
 	require.NoError(t, err)
-	require.Equal(t, int64(9900), withdrawable.Int64())
+	require.Equal(t, int64(9_900), withdrawable.Int64())
 }
 
 func TestLoans11(t *testing.T) {
@@ -666,7 +666,7 @@ func TestLoans17(t *testing.T) {
 	}))
 
 	require.NoError(t, k.HandleLiquidations(ctx))
-	require.Equal(t, 1, k.GetLoansNum(ctx))
+	require.Equal(t, 0, k.GetLoansNum(ctx))
 	require.NoError(t, checkLoanSum(k.GetLoanSumWithDefault(ctx, constants.KUSD)))
 }
 

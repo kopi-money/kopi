@@ -13,7 +13,7 @@ func (k Keeper) GetFactoryTokenBalance(ctx context.Context, req *types.GetFactor
 	addr, _ := sdk.AccAddressFromBech32(req.Address)
 	spendableCoins := k.BankKeeper.SpendableCoins(ctx, addr)
 
-	referenceDenom, err := k.DexKeeper.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get highest usd reference: %w", err)
 	}
@@ -59,7 +59,7 @@ func (k Keeper) GetFactoryTokenBalance(ctx context.Context, req *types.GetFactor
 				return nil, err
 			}
 
-			poolLiquidityKCoinUSD, err = k.DexKeeper.GetValueIn(ctx, pool.KCoin, referenceDenom, poolAmountKCoin.ToLegacyDec())
+			poolLiquidityKCoinUSD, err = k.DenomKeeper.GetValueIn(ctx, pool.KCoin, referenceDenom, poolAmountKCoin.ToLegacyDec())
 			if err != nil {
 				return nil, err
 			}
@@ -83,7 +83,7 @@ func (k Keeper) convertToUSD(ctx context.Context, pool types.LiquidityPool, fact
 		return math.LegacyDec{}, err
 	}
 
-	valueInUSD, err := k.DexKeeper.GetValueIn(ctx, pool.KCoin, referenceDenom, valueInKCoin)
+	valueInUSD, err := k.DenomKeeper.GetValueIn(ctx, pool.KCoin, referenceDenom, valueInKCoin)
 	if err != nil {
 		return math.LegacyDec{}, err
 	}

@@ -159,7 +159,7 @@ func (k Keeper) calculateArbitrageTokenValue(ctx context.Context, arbitrageDenom
 		},
 		func() (math.LegacyDec, error) {
 			amountKCoin := k.BankKeeper.SpendableCoins(ctx, acc.GetAddress()).AmountOf(arbitrageDenom.KCoin)
-			valueKCoin, err := k.DexKeeper.GetValueIn(ctx, arbitrageDenom.KCoin, arbitrageDenom.CAsset, amountKCoin.ToLegacyDec())
+			valueKCoin, err := k.DenomKeeper.GetValueIn(ctx, arbitrageDenom.KCoin, arbitrageDenom.CAsset, amountKCoin.ToLegacyDec())
 			if err != nil {
 				return math.LegacyDec{}, fmt.Errorf("could not convert kcoin value to casset value: %w", err)
 			}

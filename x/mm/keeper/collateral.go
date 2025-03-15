@@ -91,7 +91,7 @@ func (k Keeper) calcCollateralValueBase(ctx context.Context, address string) (ma
 		}
 
 		value := amount.ToLegacyDec().Mul(collateralDenom.Ltv)
-		valueBase, err := k.DexKeeper.GetValueInBase(ctx, collateralDenom.DexDenom, value)
+		valueBase, err := k.DenomKeeper.GetValueInBase(ctx, collateralDenom.DexDenom, value)
 		if err != nil {
 			return math.LegacyDec{}, fmt.Errorf("could not convert collateral amount to base: %w", err)
 		}
@@ -129,7 +129,7 @@ func (k Keeper) CalcWithdrawableCollateralAmount(ctx context.Context, address, d
 	}
 
 	excessAmountBase := collateralSumBase.Sub(loanSumBase)
-	excessAmount, err := k.DexKeeper.GetValueIn(ctx, constants.BaseCurrency, denom, excessAmountBase)
+	excessAmount, err := k.DenomKeeper.GetValueIn(ctx, constants.BaseCurrency, denom, excessAmountBase)
 	if err != nil {
 		return math.LegacyDec{}, fmt.Errorf("could not convert back to denom currency: %w", err)
 	}

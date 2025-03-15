@@ -65,7 +65,7 @@ func (k Keeper) Sell(ctx context.Context, tradeData TradeData) (*types.MsgTradeR
 		adjustPrice = IncreaseMaxPrice
 	}
 
-	amountToGiveGross, _, err = k.HandleMaxPrice(ctx, tradeData, pool, amountToGiveGross, adjustPrice, constant_product.CalculateMaximumGiving)
+	amountToGiveGross, _, err = k.HandleMaxPrice(ctx, tradeData, pool, amountToGiveGross, adjustPrice, constant_product.CalculateMaximumGivingOneStep)
 	if err != nil {
 		return nil, err
 	}
@@ -285,7 +285,7 @@ func (k Keeper) Buy(ctx context.Context, tradeData TradeData) (*types.MsgTradeRe
 	}, nil
 }
 
-func (k Keeper) HandleMaxPrice(ctx context.Context, tradeData TradeData, pool types.LiquidityPool, amount math.Int, adjustMaxPrice AdjustMaxPrice, calculate constant_product.CalculateMaximumAmount) (math.Int, bool, error) {
+func (k Keeper) HandleMaxPrice(ctx context.Context, tradeData TradeData, pool types.LiquidityPool, amount math.Int, adjustMaxPrice AdjustMaxPrice, calculate constant_product.CalculateMaximumAmountOneStep) (math.Int, bool, error) {
 	if tradeData.maxPrice == "" {
 		return amount, false, nil
 	}
@@ -432,7 +432,7 @@ func DecreaseMaxPrice(maxPrice, tradeFee math.LegacyDec) math.LegacyDec {
 	return maxPrice.Mul(math.LegacyOneDec().Sub(tradeFee))
 }
 
-func (k Keeper) calculateMaxAmount(ctx context.Context, pool types.LiquidityPool, denomFrom string, maxPrice, poolFee math.LegacyDec, adjustMaxPrice AdjustMaxPrice, calculate constant_product.CalculateMaximumAmount) (math.Int, error) {
+func (k Keeper) calculateMaxAmount(ctx context.Context, pool types.LiquidityPool, denomFrom string, maxPrice, poolFee math.LegacyDec, adjustMaxPrice AdjustMaxPrice, calculate constant_product.CalculateMaximumAmountOneStep) (math.Int, error) {
 	liqFrom, liqTo := getLiquidity(pool, denomFrom)
 	tradeFee := k.getTradeFee(ctx, poolFee)
 	maxPrice = adjustMaxPrice(maxPrice, tradeFee)

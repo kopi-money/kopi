@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"context"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
+	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/cache"
@@ -219,7 +220,7 @@ func TestActions2(t *testing.T) {
 		String1:    "uknown",
 		String2:    "",
 		Amount:     "1000",
-	}), denomtypes.ErrInvalidDexAsset)
+	}), dextypes.ErrNotEnoughFunds)
 
 	require.Error(t, executeAction(ctx, k, acc, types.Action{
 		ActionType: types.ActionLoanBorrow,

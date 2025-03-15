@@ -195,7 +195,7 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 
 	switch condition.ConditionType {
 	case types.ConditionPrice:
-		value, err = k.DexKeeper.CalculatePrice(ctx, condition.String1, condition.String2)
+		value, err = k.DenomKeeper.CalculatePrice(ctx, condition.String1, condition.String2)
 		if err != nil {
 			return false, fmt.Errorf("could not calculate price: %w", err)
 		}
@@ -209,7 +209,7 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 			conditionComparison = types.ComparisonLessThan
 		}
 
-		value, err = k.DexKeeper.GetPriceInUSD(ctx, condition.String1)
+		value, err = k.DenomKeeper.GetPriceInUSD(ctx, condition.String1)
 		if err != nil {
 			return false, fmt.Errorf("could not calculate price: %w", err)
 		}
@@ -232,7 +232,7 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 
 		conditionValue = condition.ReferencePrice.Mul(factor)
 
-		value, err = k.DexKeeper.GetPriceInUSD(ctx, condition.String1)
+		value, err = k.DenomKeeper.GetPriceInUSD(ctx, condition.String1)
 		if err != nil {
 			return false, fmt.Errorf("could not calculate price: %w", err)
 		}
@@ -248,7 +248,7 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 
 	case types.ConditionWalletValue:
 		coins := k.BankKeeper.SpendableCoin(ctx, accAddr, condition.String1)
-		value, err = k.DexKeeper.GetValueIn(ctx, condition.String1, condition.String2, coins.Amount.ToLegacyDec())
+		value, err = k.DenomKeeper.GetValueIn(ctx, condition.String1, condition.String2, coins.Amount.ToLegacyDec())
 		if err != nil {
 			return false, fmt.Errorf("could not calculate value of wallet amount: %w", err)
 		}
@@ -258,7 +258,7 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 
 	case types.ConditionCollateralValue:
 		amount := k.MMKeeper.GetCollateralForDenomForAddressWithDefault(ctx, condition.String1, accAddr.String()).ToLegacyDec()
-		value, err = k.DexKeeper.GetValueIn(ctx, condition.String1, condition.String2, amount)
+		value, err = k.DenomKeeper.GetValueIn(ctx, condition.String1, condition.String2, amount)
 		if err != nil {
 			return false, fmt.Errorf("could not calculate value of collateral amount: %w", err)
 		}
@@ -268,7 +268,7 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 
 	case types.ConditionLiquidityValue:
 		amount := k.DexKeeper.GetLiquidityByAddress(ctx, condition.String1, accAddr.String()).ToLegacyDec()
-		value, err = k.DexKeeper.GetValueIn(ctx, condition.String1, condition.String2, amount)
+		value, err = k.DenomKeeper.GetValueIn(ctx, condition.String1, condition.String2, amount)
 		if err != nil {
 			return false, fmt.Errorf("could not calculate value of liquidity amount: %w", err)
 		}
@@ -281,7 +281,7 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 
 	case types.ConditionLoanValue:
 		amount := k.MMKeeper.GetLoanValue(ctx, condition.String1, accAddr.String())
-		value, err = k.DexKeeper.GetValueIn(ctx, condition.String1, condition.String2, amount)
+		value, err = k.DenomKeeper.GetValueIn(ctx, condition.String1, condition.String2, amount)
 		if err != nil {
 			return false, fmt.Errorf("could not calculate value of loan: %w", err)
 		}

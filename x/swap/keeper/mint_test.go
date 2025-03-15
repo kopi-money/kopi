@@ -46,7 +46,7 @@ func TestMint1(t *testing.T) {
 
 	require.True(t, tradeResult.AmountGiven.GT(math.ZeroInt()))
 
-	price1, err := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
+	price1, err := k.DenomKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 	require.NoError(t, err)
 	require.True(t, price1.LT(math.LegacyOneDec()))
 
@@ -55,7 +55,7 @@ func TestMint1(t *testing.T) {
 		return k.CheckMint(innerCtx, constants.KUSD, maxMintAmount)
 	}))
 
-	price2, err := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
+	price2, err := k.DenomKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 
 	require.NoError(t, err)
 	require.True(t, price2.GT(price1))
@@ -101,7 +101,7 @@ func mintScenario(t *testing.T, buyAmount int64) int64 {
 
 	require.True(t, tradeResult.AmountGiven.GT(math.ZeroInt()))
 
-	price1, err := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
+	price1, err := k.DenomKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 	require.NoError(t, err)
 	require.True(t, price1.LT(math.LegacyOneDec()))
 
@@ -110,7 +110,7 @@ func mintScenario(t *testing.T, buyAmount int64) int64 {
 		return k.CheckMint(innerCtx, constants.KUSD, maxMintAmount)
 	}))
 
-	price2, err := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
+	price2, err := k.DenomKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 
 	require.NoError(t, err)
 	require.True(t, price2.GT(price1))
@@ -127,6 +127,10 @@ func TestMint3(t *testing.T) {
 
 	addr, err := sdk.AccAddressFromBech32(keepertest.Alice)
 	require.NoError(t, err)
+
+	parity1, _, err := k.DexKeeper.CalculateParity(ctx, constants.KUSD)
+	require.NoError(t, err)
+	require.NotNil(t, parity1)
 
 	tradeCtx := dextypes.TradeContext{
 		CoinSource:          addr.String(),
@@ -146,6 +150,12 @@ func TestMint3(t *testing.T) {
 	require.NoError(t, tradeCtx.TradeBalances.Settle(ctx, k.BankKeeper))
 
 	supply1 := k.BankKeeper.GetSupply(ctx, constants.KUSD).Amount
+
+	parity2, _, err := k.DexKeeper.CalculateParity(ctx, constants.KUSD)
+	require.NoError(t, err)
+	require.NotNil(t, parity2)
+
+	require.Equal(t, parity1, parity2)
 
 	maxMintAmount := k.DenomKeeper.MaxMintAmount(ctx, constants.KUSD)
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {

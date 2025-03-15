@@ -212,7 +212,11 @@ func TestLiquidate4(t *testing.T) {
 }
 
 func TestLiquidate5(t *testing.T) {
-	k, _, mmMsg, ctx := keepertest.SetupMMMsgServer(t)
+	k, dexMsg, mmMsg, ctx := keepertest.SetupMMMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, constants.BaseCurrency, 100_000000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, constants.KUSD, 100_000000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, "uwusdc", 100_000000))
 
 	require.NoError(t, keepertest.AddDeposit(ctx, mmMsg, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,
@@ -243,7 +247,7 @@ func TestLiquidate5(t *testing.T) {
 	require.NoError(t, k.HandleLiquidations(ctx))
 
 	value := k.GetLoanValue(ctx, constants.KUSD, keepertest.Bob)
-	require.Equal(t, int64(8500126), value.TruncateInt().Int64())
+	require.Equal(t, int64(8221154), value.TruncateInt().Int64())
 }
 
 func TestLiquidate6(t *testing.T) {

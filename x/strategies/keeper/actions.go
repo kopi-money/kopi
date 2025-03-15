@@ -337,7 +337,7 @@ func (k Keeper) executeAction(
 			amount1 = tradeResult.AmountReceived
 		}
 
-		volume, err = k.DexKeeper.GetValueInUSD(ctx, denomReceiving, amount2.ToLegacyDec())
+		volume, err = k.DenomKeeper.GetValueInUSD(ctx, denomReceiving, amount2.ToLegacyDec())
 
 	case types.ActionDeposit:
 		amount1, err = k.getAmountWallet(ctx, address, action.String1, action.Amount)
@@ -415,17 +415,11 @@ func (k Keeper) executeAction(
 		amount2, err = k.DexKeeper.AddLiquidity(ctx, address, action.String1, amount1)
 
 	case types.ActionLiquidityWithdraw:
-		if !k.DenomKeeper.IsValidDenom(ctx, action.String1) {
-			err = denomtypes.ErrInvalidDexAsset
-		}
+		amount1 = k.getAmountLiquidity(ctx, address, action.String1, action.Amount)
+		_, err = k.DexKeeper.RemoveLiquidityForAddress(ctx, address, action.String1, amount1, nil)
 
 		if err == nil {
-			amount1 = k.getAmountLiquidity(ctx, address, action.String1, action.Amount)
-			err = k.DexKeeper.RemoveLiquidityForAddress(ctx, address, action.String1, amount1)
-
-			if err == nil {
-				amount2 = k.DexKeeper.GetLiquidityByAddress(ctx, action.String1, address.String())
-			}
+			amount2 = k.DexKeeper.GetLiquidityByAddress(ctx, action.String1, address.String())
 		}
 
 	case types.ActionSendCoins:

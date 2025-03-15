@@ -67,24 +67,24 @@ type BlockspeedKeeper interface {
 type DexKeeper interface {
 	AddLiquidity(context.Context, sdk.AccAddress, string, math.Int) (math.Int, error)
 	CalculateParity(context.Context, string) (*math.LegacyDec, string, error)
-	CalculatePrice(context.Context, string, string) (math.LegacyDec, error)
 	ExecuteBuy(dextypes.TradeContext) (dextypes.TradeResult, error)
 	ExecuteSell(dextypes.TradeContext) (dextypes.TradeResult, error)
-	GetHighestUSDReference(ctx context.Context) (string, error)
 	GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int
-	GetPriceInUSD(ctx context.Context, denom string) (math.LegacyDec, error)
-	GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.LegacyDec) (math.LegacyDec, error)
-	GetValueInUSD(ctx context.Context, denomFrom string, amount math.LegacyDec) (math.LegacyDec, error)
 	NewOrdersCaches(ctx context.Context) *dextypes.OrdersCaches
-	RemoveLiquidityForAddress(context.Context, sdk.AccAddress, string, math.Int) error
+	RemoveLiquidityForAddress(context.Context, sdk.AccAddress, string, math.Int, *uint64) (math.Int, error)
 }
 
 type DenomKeeper interface {
+	CalculatePrice(context.Context, string, string) (math.LegacyDec, error)
 	GetArbitrageDenoms(context.Context) []denomtypes.ArbitrageDenom
 	GetCAsset(context.Context, string) (denomtypes.CAsset, error)
 	GetCAssetByBaseName(context.Context, string) (denomtypes.CAsset, error)
 	GetArbitrageDenomByCAsset(context.Context, string) (denomtypes.ArbitrageDenom, error)
 	GetArbitrageDenomByName(context.Context, string) (denomtypes.ArbitrageDenom, error)
+	GetHighestUSDReference(ctx context.Context) (string, error)
+	GetPriceInUSD(ctx context.Context, denom string) (math.LegacyDec, error)
+	GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.LegacyDec) (math.LegacyDec, error)
+	GetValueInUSD(ctx context.Context, denomFrom string, amount math.LegacyDec) (math.LegacyDec, error)
 	IsBorrowableDenom(context.Context, string) bool
 	IsCAsset(context.Context, string) bool
 	IsCollateralDenom(context.Context, string) bool

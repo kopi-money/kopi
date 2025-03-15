@@ -100,7 +100,6 @@ type AppModule struct {
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
 	denomKeeper   types.DenomKeeper
-	dexKeeper     types.DexKeeper
 }
 
 func NewAppModule(
@@ -109,7 +108,6 @@ func NewAppModule(
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	denomKeeper types.DenomKeeper,
-	dexKeeper types.DexKeeper,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
@@ -117,7 +115,6 @@ func NewAppModule(
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
 		denomKeeper:    denomKeeper,
-		dexKeeper:      dexKeeper,
 	}
 }
 
@@ -197,7 +194,6 @@ type ModuleInputs struct {
 	AccountKeeper types.AccountKeeper
 	BankKeeper    types.BankKeeper
 	DenomKeeper   types.DenomKeeper
-	DexKeeper     types.DexKeeper
 }
 
 type ModuleOutputs struct {
@@ -220,7 +216,6 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.AccountKeeper,
 		in.BankKeeper,
 		in.DenomKeeper,
-		in.DexKeeper,
 		authority.String(),
 	)
 	m := NewAppModule(
@@ -229,7 +224,6 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.AccountKeeper,
 		in.BankKeeper,
 		in.DenomKeeper,
-		in.DexKeeper,
 	)
 
 	return ModuleOutputs{TokenfactoryKeeper: k, Module: m}

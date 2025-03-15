@@ -39,6 +39,7 @@ type BlockspeedKeeper interface {
 }
 
 type DenomKeeper interface {
+	CalculatePrice(ctx context.Context, denomFrom, denomTo string) (math.LegacyDec, error)
 	Denoms(ctx context.Context) []string
 	GetCAssets(context.Context) []denomtypes.CAsset
 	GetCAssetByBaseName(context.Context, string) (denomtypes.CAsset, error)
@@ -46,6 +47,10 @@ type DenomKeeper interface {
 	GetCollateralDenom(context.Context, string) (denomtypes.CollateralDenom, error)
 	GetCollateralDenoms(context.Context) []denomtypes.CollateralDenom
 	GetDepositCap(context.Context, string) (math.Int, error)
+	GetValueInUSD(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
+	GetHighestUSDReference(ctx context.Context) (string, error)
+	GetValueInBase(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
+	GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.LegacyDec) (math.LegacyDec, error)
 	GetLTV(ctx context.Context, denom string) (math.LegacyDec, error)
 	IsValidCollateralDenom(context.Context, string) bool
 	RemoveCollateralDenom(ctx context.Context, denom string) error
@@ -53,15 +58,10 @@ type DenomKeeper interface {
 type DexKeeper interface {
 	cache.Cache
 
-	CalculatePrice(ctx context.Context, denomFrom, denomTo string) (math.LegacyDec, error)
 	ExecuteBuy(cctx dextypes.TradeContext) (dextypes.TradeResult, error)
 	GetDenomValue(ctx context.Context, denom string) (math.LegacyDec, error)
 	GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int
 	GetAllOrdersByAddress(ctx context.Context, address string) []dextypes.Order
-	GetValueInUSD(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
-	GetHighestUSDReference(ctx context.Context) (string, error)
-	GetValueInBase(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
-	GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.LegacyDec) (math.LegacyDec, error)
 	NewOrdersCaches(ctx context.Context) *dextypes.OrdersCaches
 	SimulateSell(ctx dextypes.TradeContext) (dextypes.TradeSimulationResult, error)
 }

@@ -36,7 +36,7 @@ func TestBurn1(t *testing.T) {
 	err := k.BankKeeper.SendCoins(ctx, addr, acc, reserveCoins)
 	require.NoError(t, err)
 
-	price1, err := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
+	price1, err := k.DenomKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 	require.NoError(t, err)
 
 	_, err = keepertest.Sell(ctx, msg, &dextypes.MsgSell{
@@ -47,7 +47,7 @@ func TestBurn1(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	price2, err := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
+	price2, err := k.DenomKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 	require.NoError(t, err)
 	require.True(t, price2.GT(price1))
 
@@ -55,7 +55,7 @@ func TestBurn1(t *testing.T) {
 		return reserveK.BeginBlockCheckReserve(innerCtx)
 	}))
 
-	priceBase, err := k.DexKeeper.CalculatePrice(ctx, constants.BaseCurrency, "uwusdc")
+	priceBase, err := k.DenomKeeper.CalculatePrice(ctx, constants.BaseCurrency, "uwusdc")
 	require.NoError(t, err)
 	require.False(t, priceBase.IsNil())
 
@@ -65,7 +65,7 @@ func TestBurn1(t *testing.T) {
 	}))
 	require.True(t, liquidityBalanced(ctx, dexK))
 
-	price3, err := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
+	price3, err := k.DenomKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 	require.NoError(t, err)
 
 	price2F, _ := price2.Float64()
@@ -91,7 +91,7 @@ func TestBurn2(t *testing.T) {
 	err := k.BankKeeper.SendCoins(ctx, addr, acc, reserveCoins)
 	require.NoError(t, err)
 
-	price1, _ := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
+	price1, _ := k.DenomKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 
 	_, err = keepertest.Sell(ctx, msg, &dextypes.MsgSell{
 		Creator:        keepertest.Bob,
@@ -101,11 +101,11 @@ func TestBurn2(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	price2, err := k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
+	price2, err := k.DenomKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 	require.NoError(t, err)
 	require.True(t, price2.GT(price1))
 
-	priceBase, err := k.DexKeeper.CalculatePrice(ctx, constants.BaseCurrency, "uwusdc")
+	priceBase, err := k.DenomKeeper.CalculatePrice(ctx, constants.BaseCurrency, "uwusdc")
 	require.NoError(t, err)
 	require.False(t, priceBase.IsNil())
 
@@ -120,7 +120,7 @@ func TestBurn2(t *testing.T) {
 		}))
 
 		var price3 math.LegacyDec
-		price3, err = k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
+		price3, err = k.DenomKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 		require.NoError(t, err)
 		require.True(t, price3.LT(price2))
 	}
@@ -199,7 +199,7 @@ func burnScenario(t *testing.T, sellAmount int64) int64 {
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		return k.CheckBurn(innerCtx, constants.KUSD, maxBurnAmount)
 	}))
-	_, err = k.DexKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
+	_, err = k.DenomKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 	require.NoError(t, err)
 	require.True(t, liquidityBalanced(ctx, dexK))
 
