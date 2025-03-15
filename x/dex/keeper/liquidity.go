@@ -3,13 +3,12 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/cache"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"sort"
 	"strconv"
 
-	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
-	"github.com/cosmos/cosmos-sdk/cache"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/constants"
 	"github.com/kopi-money/kopi/x/dex/types"
@@ -38,9 +37,17 @@ func (k Keeper) SetLiquidityEntryNextIndex(ctx context.Context, nextIndex uint64
 	k.liquidityEntriesNextIndex.Set(ctx, nextIndex)
 }
 
+func (k Keeper) LiquidityIterator(ctx context.Context, denom string) cache.Iterator[uint64, types.Liquidity] {
+	return k.liquidityEntries.Iterator(ctx, nil, denom)
+}
+
 // AddLiquidity adds liquidity to the dex for a given amount and address. The address is used to keep track which user
 // has added how much.
 func (k Keeper) AddLiquidity(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int) (math.Int, error) {
+	return k.AddLiquidityWithCompound(ctx, address, denom, amount, false)
+}
+
+func (k Keeper) AddLiquidityWithCompound(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int, autoCompound bool) (math.Int, error) {
 	if !k.DenomKeeper.IsValidDenom(ctx, denom) {
 		return math.Int{}, denomtypes.ErrInvalidDexAsset
 	}
@@ -64,29 +71,51 @@ func (k Keeper) AddLiquidity(ctx context.Context, address sdk.AccAddress, denom 
 		return math.Int{}, types.ErrBaseLiqEmpty
 	}
 
-	_, liq := k.addLiquidity(ctx, denom, address.String(), amount, nil)
+	var positionIndex uint64
+	if !k.addressIsExcluded(ctx, address.String()) {
+		var has bool
+		positionIndex, has = k.liquidityPositionNextIndex.Get(ctx)
+		if !has {
+			positionIndex = 0
+		}
 
-	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
-		sdk.NewEvent(
-			"liquidity_added",
-			sdk.Attribute{Key: "denom", Value: denom},
-			sdk.Attribute{Key: "amount", Value: amount.String()},
-			sdk.Attribute{Key: "address", Value: address.String()},
-			sdk.Attribute{Key: "index", Value: strconv.Itoa(int(liq.Index))},
-		),
-	)
+		positionIndex++
+		k.liquidityPositionNextIndex.Set(ctx, positionIndex)
+	}
+
+	_, liq := k.addLiquidity(ctx, denom, address.String(), amount, nil, positionIndex)
+
+	if positionIndex > 0 {
+		amountUSD, _ := k.DenomKeeper.GetValueInUSD(ctx, denom, amount.ToLegacyDec())
+
+		sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
+			sdk.NewEvent(
+				"liquidity_added",
+				sdk.Attribute{Key: "denom", Value: denom},
+				sdk.Attribute{Key: "amount", Value: amount.String()},
+				sdk.Attribute{Key: "amount_usd", Value: amountUSD.String()},
+				sdk.Attribute{Key: "address", Value: address.String()},
+				sdk.Attribute{Key: "index", Value: strconv.Itoa(int(liq.Index))},
+				sdk.Attribute{Key: "position_index", Value: strconv.Itoa(int(positionIndex))},
+			),
+		)
+
+		k.liquidityPositions.Set(ctx, address.String(), positionIndex, types.LiquidityPosition{
+			AutoCompound: autoCompound,
+		})
+	}
 
 	return liq.Amount, nil
 }
 
-func (k Keeper) addLiquidity(ctx context.Context, denom, address string, amount math.Int, liquidityEntries []types.Liquidity) ([]types.Liquidity, types.Liquidity) {
+func (k Keeper) addLiquidity(ctx context.Context, denom, address string, amount math.Int, liquidityEntries []types.Liquidity, positionIndex uint64) ([]types.Liquidity, types.Liquidity) {
 	if liquidityEntries == nil {
-		liquidityEntries = k.LiquidityIterator(ctx, denom).GetAll()
+		liquidityEntries = k.liquidityEntries.Iterator(ctx, nil, denom).GetAll()
 	}
 
 	seen := false
 	for index, liq := range liquidityEntries {
-		if liq.Address == address {
+		if liq.Address == address && liq.PositionIndex == positionIndex {
 			// if liquidity would be added to the first found occurrence, liquidity added by whales would be used more
 			// often compared to smaller liquidity entries. To make this more fair, liquidity is added to the second
 			// entry of an address or in a new entry at the end
@@ -102,22 +131,17 @@ func (k Keeper) addLiquidity(ctx context.Context, denom, address string, amount 
 		}
 	}
 
-	liq := types.Liquidity{Address: address, Amount: amount}
+	liq := types.Liquidity{Address: address, Amount: amount, PositionIndex: positionIndex}
 	liq = k.SetLiquidity(ctx, denom, liq)
 	liquidityEntries = append(liquidityEntries, liq)
 
 	return liquidityEntries, liq
 }
 
-func (k Keeper) LiquidityIterator(ctx context.Context, denom string) cache.Iterator[uint64, types.Liquidity] {
-	rng := collections.NewPrefixedPairRange[string, uint64](denom)
-	return k.liquidityEntries.Iterator(ctx, rng, denom)
-}
-
 func (k Keeper) GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int {
 	sum := math.ZeroInt()
 
-	iterator := k.LiquidityIterator(ctx, denom)
+	iterator := k.liquidityEntries.Iterator(ctx, nil, denom)
 	for iterator.Valid() {
 		liq := iterator.GetNext()
 
@@ -129,10 +153,25 @@ func (k Keeper) GetLiquidityByAddress(ctx context.Context, denom, address string
 	return sum
 }
 
+func (k Keeper) GetLiquidityByPositionIndex(ctx context.Context, denom string, positionIndex uint64) math.Int {
+	sum := math.ZeroInt()
+
+	iterator := k.liquidityEntries.Iterator(ctx, nil, denom)
+	for iterator.Valid() {
+		liq := iterator.GetNext()
+
+		if liq.PositionIndex == positionIndex {
+			sum = sum.Add(liq.Amount)
+		}
+	}
+
+	return sum
+}
+
 func (k Keeper) GetLiquidityEntriesByAddress(ctx context.Context, denom, address string) int {
 	num := 0
 
-	iterator := k.LiquidityIterator(ctx, denom)
+	iterator := k.liquidityEntries.Iterator(ctx, nil, denom)
 	for iterator.Valid() {
 		liq := iterator.GetNext()
 		if liq.Address == address {
@@ -143,23 +182,25 @@ func (k Keeper) GetLiquidityEntriesByAddress(ctx context.Context, denom, address
 	return num
 }
 
-func (k Keeper) GetAllLiquidity(ctx context.Context) (list []types.DenomLiquidity) {
+func (k Keeper) GetAllLiquidity(ctx context.Context) (list []types.GenesisLiquidity) {
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
-		iterator := k.LiquidityIterator(ctx, denom)
+		iterator := k.liquidityEntries.Iterator(ctx, nil, denom)
 
-		denomLiquidity := types.DenomLiquidity{Denom: denom}
 		for iterator.Valid() {
 			liq := iterator.GetNext()
-			denomLiquidity.Entries = append(denomLiquidity.Entries, liq)
+			list = append(list, types.GenesisLiquidity{
+				Index:         liq.Index,
+				Address:       liq.Address,
+				Amount:        liq.Amount,
+				PositionIndex: liq.GetPositionIndex(),
+				Denom:         denom,
+			})
 		}
 
-		sort.SliceStable(denomLiquidity.Entries, func(i, j int) bool {
-			return denomLiquidity.Entries[i].Index < denomLiquidity.Entries[j].Index
-		})
 	}
 
 	sort.SliceStable(list, func(i, j int) bool {
-		return list[i].Denom < list[j].Denom
+		return list[i].Index < list[j].Index
 	})
 
 	return
@@ -224,7 +265,7 @@ func (k Keeper) GetDenomValue(ctx context.Context, denom string) (math.LegacyDec
 	}
 
 	liq := k.GetFullLiquidityOther(ctx, denom)
-	price, err := k.CalculatePrice(ctx, denom, constants.BaseCurrency)
+	price, err := k.DenomKeeper.CalculatePrice(ctx, denom, constants.BaseCurrency)
 	if err != nil {
 		return math.LegacyDec{}, err
 	}
@@ -232,74 +273,95 @@ func (k Keeper) GetDenomValue(ctx context.Context, denom string) (math.LegacyDec
 	return liq.Mul(price), nil
 }
 
-func (k Keeper) PrepareCutLiquidity(ctx *types.TradeContext) error {
+func (k Keeper) PrepareCutLiquidity(ctx *types.TradeContext) {
 	liqFrom := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomGiving)
 	liqTo := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomReceiving)
 	liqBase := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(constants.BaseCurrency).ToLegacyDec()
 
-	var (
-		ratioFrom denomtypes.Ratio
-		ratioTo   denomtypes.Ratio
-	)
-
-	liqValueFrom := liqFrom.ToLegacyDec()
 	if ctx.TradeDenomGiving != constants.BaseCurrency {
-		ratioFrom, _ = k.DenomKeeper.GetRatio(ctx, ctx.TradeDenomGiving)
-		liqValueFrom = liqFrom.ToLegacyDec().Quo(ratioFrom.Ratio) // C
-	}
+		cutLiquidity := k.createCutLiquidity(ctx, liqBase, liqFrom.ToLegacyDec(), ctx.TradeDenomGiving)
 
-	liqValueTo := liqTo.ToLegacyDec()
-	if ctx.TradeDenomReceiving != constants.BaseCurrency {
-		ratioTo, _ = k.DenomKeeper.GetRatio(ctx, ctx.TradeDenomReceiving)
-		liqValueTo = liqTo.ToLegacyDec().Quo(ratioTo.Ratio) // C
-	}
-
-	tradeValue, err := k.CalcTradeBaseValue(ctx)
-	if err != nil {
-		return fmt.Errorf("calc trade value: %w", err)
-	}
-
-	cutLiqBase := math.LegacyMinDec(tradeValue, liqBase)
-	ctx.CutLiquidity.Set(constants.BaseCurrency, cutLiqBase)
-	if cutLiqBase.LT(tradeValue) {
-		missing := tradeValue.Sub(cutLiqBase)
-		ctx.CutLiquidity.SetVirtual(constants.BaseCurrency, missing)
-	}
-
-	if ctx.TradeDenomGiving != constants.BaseCurrency {
-		cutLiqFrom := tradeValue.Mul(ratioFrom.Ratio)
-		cutLiqFrom = math.LegacyMinDec(cutLiqFrom, liqFrom.ToLegacyDec())
-
-		ctx.CutLiquidity.Set(ctx.TradeDenomGiving, cutLiqFrom)
-		if liqValueFrom.LT(tradeValue) {
-			missing := tradeValue.Sub(liqValueFrom).Mul(ratioFrom.Ratio)
-			ctx.CutLiquidity.SetVirtual(ctx.TradeDenomGiving, missing)
+		switch ctx.TradeType {
+		case types.TradeTypeSell:
+			ctx.CutLiquidities.Step1 = &cutLiquidity
+		case types.TradeTypeBuy:
+			ctx.CutLiquidities.Step2 = &cutLiquidity
+		default:
+			panic("unknown trade type")
 		}
 	}
 
 	if ctx.TradeDenomReceiving != constants.BaseCurrency {
-		cutLiqTo := tradeValue.Mul(ratioTo.Ratio)
-		cutLiqTo = math.LegacyMinDec(cutLiqTo, liqTo.ToLegacyDec())
+		cutLiquidity := k.createCutLiquidity(ctx, liqBase, liqTo.ToLegacyDec(), ctx.TradeDenomReceiving)
 
-		ctx.CutLiquidity.Set(ctx.TradeDenomReceiving, cutLiqTo)
-		if liqValueTo.LT(tradeValue) {
-			missing := tradeValue.Sub(liqValueTo).Mul(ratioTo.Ratio)
-			ctx.CutLiquidity.SetVirtual(ctx.TradeDenomReceiving, missing)
+		switch ctx.TradeType {
+		case types.TradeTypeSell:
+			ctx.CutLiquidities.Step2 = &cutLiquidity
+		case types.TradeTypeBuy:
+			ctx.CutLiquidities.Step1 = &cutLiquidity
+		default:
+			panic("unknown trade type")
 		}
 	}
+}
 
-	ctx.CutLiquidity.BaseValue = tradeValue
-	return err
+func (k Keeper) createCutLiquidity(ctx context.Context, liqBase, liqOther math.LegacyDec, denom string) types.CutLiquidity {
+	ratio, _ := k.DenomKeeper.GetRatio(ctx, denom)
+	liqValue := liqOther.Quo(ratio.Ratio) // C
+
+	tradeValue := math.LegacyMinDec(liqValue, liqBase)
+	unusedLiqBase := liqBase.Sub(tradeValue)
+	tradeValueOther := tradeValue.Mul(ratio.Ratio)
+	unusedLiqOther := liqOther.Sub(tradeValueOther)
+
+	cutLiquidity := types.CutLiquidity{}
+	cutLiquidity.CutBase = math.LegacyMinDec(liqBase, tradeValue)
+	cutLiquidity.CutOther = tradeValue.Mul(ratio.Ratio)
+
+	if liqBase.LT(tradeValue) {
+		cutLiquidity.VirtualBase = tradeValue.Sub(liqBase)
+	}
+
+	if tradeValue.LT(tradeValueOther) {
+		cutLiquidity.VirtualOther = tradeValueOther.Sub(cutLiquidity.CutOther)
+	}
+
+	extraVirtualLiquidity := k.DenomKeeper.ExtraVirtualLiquidity(ctx, denom)
+	if cutLiquidity.VirtualBase.IsNil() {
+		cutLiquidity.VirtualBase = math.LegacyZeroDec()
+	}
+
+	if cutLiquidity.VirtualOther.IsNil() {
+		cutLiquidity.VirtualOther = math.LegacyZeroDec()
+	}
+
+	extraVirtualLiquidityBase := extraVirtualLiquidity.ToLegacyDec().Quo(ratio.Ratio)
+	cutLiquidity.VirtualBase = cutLiquidity.VirtualBase.Add(extraVirtualLiquidityBase)
+	cutLiquidity.VirtualOther = cutLiquidity.VirtualOther.Add(extraVirtualLiquidity.ToLegacyDec())
+
+	if cutLiquidity.VirtualBase.IsPositive() && unusedLiqBase.IsPositive() {
+		usable := math.LegacyMinDec(cutLiquidity.VirtualBase, unusedLiqBase)
+		cutLiquidity.CutBase = cutLiquidity.CutBase.Add(usable)
+		cutLiquidity.VirtualBase = cutLiquidity.VirtualBase.Sub(usable)
+	}
+
+	if cutLiquidity.VirtualOther.IsPositive() && unusedLiqOther.IsPositive() {
+		usable := math.LegacyMinDec(cutLiquidity.VirtualOther, unusedLiqOther)
+		cutLiquidity.CutOther = cutLiquidity.CutOther.Add(usable)
+		cutLiquidity.VirtualOther = cutLiquidity.VirtualOther.Sub(usable)
+	}
+
+	return cutLiquidity
 }
 
 func (k Keeper) CalcTradeBaseValue(ctx context.Context) (math.LegacyDec, error) {
 	tradeBaseValueUSD := k.getTradeBaseValue(ctx)
-	referenceDenom, err := k.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return math.LegacyDec{}, fmt.Errorf("highest USD reference: %w", err)
 	}
 
-	tradeValueBase, err := k.GetValueInBase(ctx, referenceDenom, tradeBaseValueUSD)
+	tradeValueBase, err := k.DenomKeeper.GetValueInBase(ctx, referenceDenom, tradeBaseValueUSD)
 	if err != nil {
 		return math.LegacyDec{}, fmt.Errorf("convert to base: %w", err)
 	}
@@ -308,7 +370,7 @@ func (k Keeper) CalcTradeBaseValue(ctx context.Context) (math.LegacyDec, error) 
 }
 
 func (k Keeper) RemoveAllLiquidityForDenom(ctx context.Context, denom string) error {
-	iterator := k.LiquidityIterator(ctx, denom)
+	iterator := k.liquidityEntries.Iterator(ctx, nil, denom)
 	for iterator.Valid() {
 		liq := iterator.GetNext()
 
@@ -322,4 +384,12 @@ func (k Keeper) RemoveAllLiquidityForDenom(ctx context.Context, denom string) er
 	}
 
 	return nil
+}
+
+func (k Keeper) getLiquidityForAddress(ctx context.Context, address string) (coins sdk.Coins) {
+	for _, denom := range k.DenomKeeper.Denoms(ctx) {
+		coins = coins.Add(sdk.NewCoin(denom, k.GetLiquidityByAddress(ctx, denom, address)))
+	}
+
+	return
 }

@@ -13,7 +13,7 @@ func (k Keeper) Price(ctx context.Context, req *types.QueryPriceRequest) (*types
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	price, err := k.CalculatePrice(ctx, req.DenomGiving, req.DenomReceiving)
+	price, err := k.DenomKeeper.CalculatePrice(ctx, req.DenomGiving, req.DenomReceiving)
 	if err != nil {
 		return nil, err
 	}
@@ -28,7 +28,7 @@ func (k Keeper) PriceUsd(ctx context.Context, req *types.QueryPriceUsdRequest) (
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	price, err := k.GetPriceInUSD(ctx, req.Denom)
+	price, err := k.DenomKeeper.GetPriceInUSD(ctx, req.Denom)
 	if err != nil {
 		return nil, err
 	}

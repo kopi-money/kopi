@@ -63,7 +63,7 @@ func (k Keeper) GetHighestPriceDenom(ctx context.Context, kCoin string) (math.Le
 	)
 
 	for _, reference := range k.DenomKeeper.ReferenceDenoms(ctx, kCoin) {
-		price, err := k.CalculatePrice(ctx, kCoin, reference)
+		price, err := k.DenomKeeper.CalculatePrice(ctx, kCoin, reference)
 		if err != nil {
 			return referencePrice, referenceDenom, fmt.Errorf("could not calculate price: %w", err)
 		}

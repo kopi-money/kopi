@@ -78,3 +78,85 @@ func TestCalculateMaximumReceiving2(t *testing.T) {
 
 	require.True(t, maxPrice.GTE(amountToGive.Quo(maxAmount))) // C
 }
+
+func TestCalculateMaximumGiving1(t *testing.T) {
+	X := math.LegacyNewDec(100)
+	T1 := math.LegacyNewDec(100)
+	T2 := math.LegacyNewDec(100)
+	Y := math.LegacyNewDec(100)
+
+	maxPrice := math.LegacyNewDecWithPrec(11, 1)
+
+	maxAmount, _ := constant_product.CalculateMaximumGivingTwoStep(X, T1, T2, Y, maxPrice)
+
+	out, _, _ := constant_product.ConstantProductTradeSell(X, T1, maxAmount, math.LegacyZeroDec())
+	out, _, _ = constant_product.ConstantProductTradeSell(T2, Y, out, math.LegacyZeroDec())
+
+	paidPrice := maxAmount.Quo(out)
+	require.Equal(t, maxPrice, paidPrice)
+}
+
+func TestCalculateMaximumGiving2(t *testing.T) {
+	X := math.LegacyNewDec(100)
+	T1 := math.LegacyNewDec(100)
+	T2 := math.LegacyNewDec(1000)
+	Y := math.LegacyNewDec(1000)
+
+	maxPrice := math.LegacyNewDecWithPrec(11, 1)
+
+	maxAmount, _ := constant_product.CalculateMaximumGivingTwoStep(X, T1, T2, Y, maxPrice)
+
+	out, _, _ := constant_product.ConstantProductTradeSell(X, T1, maxAmount, math.LegacyZeroDec())
+	out, _, _ = constant_product.ConstantProductTradeSell(T2, Y, out, math.LegacyZeroDec())
+
+	paidPrice := maxAmount.Quo(out)
+	require.Equal(t, maxPrice, paidPrice)
+}
+
+func TestCalculateMaximumGiving3(t *testing.T) {
+	X := math.LegacyNewDec(5000)
+	T1 := math.LegacyNewDec(20000)
+	T2 := math.LegacyNewDec(400)
+	Y := math.LegacyNewDec(100)
+
+	maxPrice := math.LegacyNewDecWithPrec(11, 1)
+
+	maxAmount, _ := constant_product.CalculateMaximumGivingTwoStep(X, T1, T2, Y, maxPrice)
+
+	out, _, _ := constant_product.ConstantProductTradeSell(X, T1, maxAmount, math.LegacyZeroDec())
+	out, _, _ = constant_product.ConstantProductTradeSell(T2, Y, out, math.LegacyZeroDec())
+
+	paidPrice := maxAmount.Quo(out)
+	require.Equal(t, maxPrice, paidPrice)
+}
+
+func TestCalculateMaximumGiving4(t *testing.T) {
+	X := math.LegacyNewDec(5000_000000)
+	T1 := math.LegacyNewDec(20000_000000)
+	T2 := math.LegacyNewDec(280_000000)
+	Y := math.LegacyNewDec(70_000000)
+
+	maxPrice, _ := math.LegacyNewDecFromStr("0.504990023568591386")
+	maxAmount, _ := constant_product.CalculateMaximumGivingTwoStep(X, T1, T2, Y, maxPrice)
+
+	out, _, _ := constant_product.ConstantProductTradeSell(X, T1, maxAmount, math.LegacyZeroDec())
+	out, _, _ = constant_product.ConstantProductTradeSell(T2, Y, out, math.LegacyZeroDec())
+
+	paidPrice := maxAmount.Quo(out)
+	require.Equal(t, maxPrice, paidPrice)
+}
+
+func TestCalculateSingleMaximumSellableAmount1(t *testing.T) {
+	actualFrom := math.LegacyNewDec(1000)
+	virtualFrom := math.LegacyNewDec(0)
+	actualTo := math.LegacyNewDec(500)
+	virtualTo := math.LegacyNewDec(500)
+
+	maximum := constant_product.CalculateSingleMaximumSellableAmount(actualFrom, virtualFrom, actualTo, virtualTo)
+
+	fullFrom := actualFrom.Add(virtualFrom)
+	fullTo := actualTo.Add(virtualTo)
+	amount, _, _ := constant_product.ConstantProductTradeSell(fullFrom, fullTo, maximum.ToLegacyDec(), math.LegacyZeroDec())
+
+	require.Equal(t, actualTo.TruncateInt64(), amount.TruncateInt64())
+}

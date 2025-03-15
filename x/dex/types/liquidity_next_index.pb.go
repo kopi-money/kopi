@@ -66,8 +66,53 @@ func (m *LiquidityNextIndex) GetNext() uint64 {
 	return 0
 }
 
+type LiquidityDepositNextIndex struct {
+	Next uint64 `protobuf:"varint,1,opt,name=next,proto3" json:"next,omitempty"`
+}
+
+func (m *LiquidityDepositNextIndex) Reset()         { *m = LiquidityDepositNextIndex{} }
+func (m *LiquidityDepositNextIndex) String() string { return proto.CompactTextString(m) }
+func (*LiquidityDepositNextIndex) ProtoMessage()    {}
+func (*LiquidityDepositNextIndex) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f80f3fc07402ef27, []int{1}
+}
+func (m *LiquidityDepositNextIndex) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *LiquidityDepositNextIndex) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_LiquidityDepositNextIndex.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *LiquidityDepositNextIndex) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LiquidityDepositNextIndex.Merge(m, src)
+}
+func (m *LiquidityDepositNextIndex) XXX_Size() int {
+	return m.Size()
+}
+func (m *LiquidityDepositNextIndex) XXX_DiscardUnknown() {
+	xxx_messageInfo_LiquidityDepositNextIndex.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LiquidityDepositNextIndex proto.InternalMessageInfo
+
+func (m *LiquidityDepositNextIndex) GetNext() uint64 {
+	if m != nil {
+		return m.Next
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*LiquidityNextIndex)(nil), "kopi.dex.LiquidityNextIndex")
+	proto.RegisterType((*LiquidityDepositNextIndex)(nil), "kopi.dex.LiquidityDepositNextIndex")
 }
 
 func init() {
@@ -75,18 +120,19 @@ func init() {
 }
 
 var fileDescriptor_f80f3fc07402ef27 = []byte{
-	// 163 bytes of a gzipped FileDescriptorProto
+	// 178 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0xce, 0xce, 0x2f, 0xc8,
 	0xd4, 0x4f, 0x49, 0xad, 0xd0, 0xcf, 0xc9, 0x2c, 0x2c, 0xcd, 0x4c, 0xc9, 0x2c, 0xa9, 0x8c, 0xcf,
 	0x4b, 0xad, 0x28, 0x89, 0xcf, 0xcc, 0x4b, 0x49, 0xad, 0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17,
 	0xe2, 0x00, 0x29, 0xd2, 0x4b, 0x49, 0xad, 0x50, 0xd2, 0xe0, 0x12, 0xf2, 0x81, 0xa9, 0xf3, 0x4b,
 	0xad, 0x28, 0xf1, 0x04, 0xa9, 0x12, 0x12, 0xe2, 0x62, 0x01, 0xe9, 0x91, 0x60, 0x54, 0x60, 0xd4,
-	0x60, 0x09, 0x02, 0xb3, 0x9d, 0x1c, 0x4e, 0x3c, 0x92, 0x63, 0xbc, 0xf0, 0x48, 0x8e, 0xf1, 0xc1,
-	0x23, 0x39, 0xc6, 0x09, 0x8f, 0xe5, 0x18, 0x2e, 0x3c, 0x96, 0x63, 0xb8, 0xf1, 0x58, 0x8e, 0x21,
-	0x4a, 0x2d, 0x3d, 0xb3, 0x24, 0xa3, 0x34, 0x49, 0x2f, 0x39, 0x3f, 0x57, 0x1f, 0x64, 0xb0, 0x6e,
-	0x6e, 0x7e, 0x5e, 0x6a, 0x25, 0x98, 0xa9, 0x5f, 0x01, 0x76, 0x4a, 0x49, 0x65, 0x41, 0x6a, 0x71,
-	0x12, 0x1b, 0xd8, 0x72, 0x63, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0xa9, 0x58, 0x93, 0xd6, 0xa3,
-	0x00, 0x00, 0x00,
+	0x60, 0x09, 0x02, 0xb3, 0x95, 0xf4, 0xb9, 0x24, 0xe1, 0x2a, 0x5d, 0x52, 0x0b, 0xf2, 0x8b, 0x33,
+	0x4b, 0xf0, 0x6a, 0x70, 0x72, 0x38, 0xf1, 0x48, 0x8e, 0xf1, 0xc2, 0x23, 0x39, 0xc6, 0x07, 0x8f,
+	0xe4, 0x18, 0x27, 0x3c, 0x96, 0x63, 0xb8, 0xf0, 0x58, 0x8e, 0xe1, 0xc6, 0x63, 0x39, 0x86, 0x28,
+	0xb5, 0xf4, 0xcc, 0x92, 0x8c, 0xd2, 0x24, 0xbd, 0xe4, 0xfc, 0x5c, 0x7d, 0x90, 0x4b, 0x74, 0x73,
+	0xf3, 0xf3, 0x52, 0x2b, 0xc1, 0x4c, 0xfd, 0x0a, 0xb0, 0xdb, 0x4b, 0x2a, 0x0b, 0x52, 0x8b, 0x93,
+	0xd8, 0xc0, 0xae, 0x35, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0x9c, 0xf2, 0xde, 0x0a, 0xd4, 0x00,
+	0x00, 0x00,
 }
 
 func (m *LiquidityNextIndex) Marshal() (dAtA []byte, err error) {
@@ -117,6 +163,34 @@ func (m *LiquidityNextIndex) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *LiquidityDepositNextIndex) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *LiquidityDepositNextIndex) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *LiquidityDepositNextIndex) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Next != 0 {
+		i = encodeVarintLiquidityNextIndex(dAtA, i, uint64(m.Next))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintLiquidityNextIndex(dAtA []byte, offset int, v uint64) int {
 	offset -= sovLiquidityNextIndex(v)
 	base := offset
@@ -129,6 +203,18 @@ func encodeVarintLiquidityNextIndex(dAtA []byte, offset int, v uint64) int {
 	return base
 }
 func (m *LiquidityNextIndex) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Next != 0 {
+		n += 1 + sovLiquidityNextIndex(uint64(m.Next))
+	}
+	return n
+}
+
+func (m *LiquidityDepositNextIndex) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -173,6 +259,75 @@ func (m *LiquidityNextIndex) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: LiquidityNextIndex: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Next", wireType)
+			}
+			m.Next = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowLiquidityNextIndex
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Next |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipLiquidityNextIndex(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthLiquidityNextIndex
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *LiquidityDepositNextIndex) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowLiquidityNextIndex
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: LiquidityDepositNextIndex: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: LiquidityDepositNextIndex: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

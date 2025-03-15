@@ -3,6 +3,8 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"sort"
+	"strconv"
 
 	"github.com/kopi-money/kopi/constants"
 
@@ -13,28 +15,34 @@ import (
 )
 
 func (k Keeper) LiquidityAll(ctx context.Context, _ *types.QueryGetLiquidityAllRequest) (*types.QueryGetLiquidityAllResponse, error) {
-	referenceDenom, err := k.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get highest usd reference: %w", err)
 	}
 
 	var (
-		entries   []*types.QueryGetLiquidityAllResponseEntry
+		entries   []types.QueryGetLiquidityAllResponseEntry
 		amountUSD math.LegacyDec
+		feeAcc    = k.AccountKeeper.GetModuleAccount(ctx, types.PoolFeeIncome).GetAddress()
 	)
 
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
 		val := k.GetLiquiditySum(ctx, denom)
 
-		amountUSD, err = k.GetValueIn(ctx, denom, referenceDenom, val.ToLegacyDec())
+		amountUSD, err = k.DenomKeeper.GetValueIn(ctx, denom, referenceDenom, val.ToLegacyDec())
 		if err != nil {
 			return nil, fmt.Errorf("could not convert value %s > %s: %w", denom, referenceDenom, err)
 		}
 
-		entries = append(entries, &types.QueryGetLiquidityAllResponseEntry{
-			Denom:     denom,
-			Amount:    val.String(),
-			AmountUsd: amountUSD.String(),
+		feeAmount := k.GetLiquidityByAddress(ctx, denom, feeAcc.String())
+		feeAmountUSD, _ := k.DenomKeeper.GetValueInUSD(ctx, denom, feeAmount.ToLegacyDec())
+
+		entries = append(entries, types.QueryGetLiquidityAllResponseEntry{
+			Denom:                 denom,
+			Amount:                val.String(),
+			AmountUsd:             amountUSD.String(),
+			AvailableFeeAmount:    feeAmount.String(),
+			AvailableFeeAmountUsd: feeAmountUSD.String(),
 		})
 	}
 
@@ -44,7 +52,7 @@ func (k Keeper) LiquidityAll(ctx context.Context, _ *types.QueryGetLiquidityAllR
 }
 
 func (k Keeper) LiquiditySum(ctx context.Context, _ *types.QueryGetLiquiditySumRequest) (*types.QueryGetLiquiditySumResponse, error) {
-	referenceDenom, err := k.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get highest usd reference: %w", err)
 	}
@@ -54,7 +62,7 @@ func (k Keeper) LiquiditySum(ctx context.Context, _ *types.QueryGetLiquiditySumR
 		val := k.GetLiquiditySum(ctx, denom)
 
 		var price math.LegacyDec
-		price, err = k.CalculatePrice(ctx, denom, referenceDenom)
+		price, err = k.DenomKeeper.CalculatePrice(ctx, denom, referenceDenom)
 		if err != nil {
 			return nil, fmt.Errorf("calculate price: %w", err)
 		}
@@ -104,7 +112,7 @@ func (k Keeper) Liquidity(ctx context.Context, req *types.QueryGetLiquidityReque
 func (k Keeper) getSummedLiquidity(ctx context.Context, denom string) math.Int {
 	sum := math.ZeroInt()
 
-	iterator := k.LiquidityIterator(ctx, denom)
+	iterator := k.liquidityEntries.Iterator(ctx, nil, denom)
 	for iterator.Valid() {
 		liq := iterator.GetNext()
 		sum = sum.Add(liq.Amount)
@@ -118,15 +126,17 @@ func (k Keeper) LiquidityQueue(ctx context.Context, req *types.QueryGetLiquidity
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	iterator := k.LiquidityIterator(ctx, req.Denom)
+	iterator := k.liquidityEntries.Iterator(ctx, nil, req.Denom)
 
-	var entries []*types.LiquidityEntry
+	var entries []types.LiquidityEntry
 	for iterator.Valid() {
 		liq := iterator.GetNext()
 
-		entries = append(entries, &types.LiquidityEntry{
-			Address: liq.Address,
-			Amount:  liq.Amount.String(),
+		entries = append(entries, types.LiquidityEntry{
+			Address:       liq.Address,
+			Amount:        liq.Amount.String(),
+			Index:         strconv.Itoa(int(liq.Index)),
+			PositionIndex: strconv.Itoa(int(liq.PositionIndex)),
 		})
 	}
 
@@ -135,17 +145,64 @@ func (k Keeper) LiquidityQueue(ctx context.Context, req *types.QueryGetLiquidity
 	}, nil
 }
 
+func (k Keeper) LiquidityGrouped(ctx context.Context, req *types.QueryGetLiquidityQueueRequest) (*types.QueryLiquidityGroupedResponse, error) {
+	type Value struct {
+		sum math.Int
+		num int
+	}
+
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	iterator := k.liquidityEntries.Iterator(ctx, nil, req.Denom)
+
+	entryMap := make(map[string]Value)
+	for iterator.Valid() {
+		liq := iterator.GetNext()
+
+		value, has := entryMap[liq.Address]
+		if !has {
+			value = Value{
+				sum: math.ZeroInt(),
+				num: 0,
+			}
+		}
+
+		value.sum = value.sum.Add(liq.Amount)
+		value.num = value.num + 1
+		entryMap[liq.Address] = value
+	}
+
+	var entries []types.LiquidityGroupedEntry
+	for key, value := range entryMap {
+		entries = append(entries, types.LiquidityGroupedEntry{
+			Address:    key,
+			Sum:        value.sum.String(),
+			NumEntries: int64(value.num),
+		})
+	}
+
+	sort.Slice(entries, func(i, j int) bool {
+		return entries[i].Address < entries[j].Address
+	})
+
+	return &types.QueryLiquidityGroupedResponse{
+		Entries: entries,
+	}, nil
+}
+
 func (k Keeper) LiquidityPool(ctx context.Context, _ *types.QueryLiquidityPoolRequest) (*types.QueryLiquidityPoolResponse, error) {
 	acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
 	coins := k.BankKeeper.SpendableCoins(ctx, acc.GetAddress())
 
-	var entries []*types.LiquidityPoolEntry
+	var entries []types.LiquidityPoolEntry
 
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
 		sum := k.GetLiquiditySum(ctx, denom)
 		entrySum := k.getSummedLiquidity(ctx, denom)
 
-		entries = append(entries, &types.LiquidityPoolEntry{
+		entries = append(entries, types.LiquidityPoolEntry{
 			Denom:        denom,
 			PoolAmount:   coins.AmountOf(denom).String(),
 			LiquiditySum: sum.String(),

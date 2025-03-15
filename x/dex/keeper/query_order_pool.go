@@ -13,9 +13,9 @@ func (k Keeper) OrderPool(ctx context.Context, _ *types.QueryOrderPoolRequest) (
 	addr := k.AccountKeeper.GetModuleAccount(ctx, types.PoolOrders)
 	coins := k.BankKeeper.SpendableCoins(ctx, addr.GetAddress())
 
-	balances := []*types.OrderBalance{}
+	balances := []types.OrderBalance{}
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
-		balance := &types.OrderBalance{}
+		balance := types.OrderBalance{}
 		balance.Denom = denom
 
 		has, coin := coins.Find(denom)

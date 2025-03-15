@@ -25,6 +25,10 @@ func (k Keeper) NewOrdersCaches(ctx context.Context) *types.OrdersCaches {
 			acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolOrders)
 			return acc.GetAddress()
 		},
+		func() sdk.AccAddress {
+			acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolFeeIncome)
+			return acc.GetAddress()
+		},
 		func() math.LegacyDec {
 			return k.GetParams(ctx).TradeFee
 		},
@@ -43,7 +47,7 @@ func (k Keeper) NewOrdersCaches(ctx context.Context) *types.OrdersCaches {
 			return types.NewCoinMap(coins)
 		},
 		func(denom string) []types.Liquidity {
-			return k.LiquidityIterator(ctx, denom).GetAll()
+			return k.liquidityEntries.Iterator(ctx, nil, denom).GetAll()
 		},
 	)
 

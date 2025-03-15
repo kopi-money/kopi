@@ -14,13 +14,18 @@ func (k Keeper) ResetTradeFeeTracker(ctx context.Context) {
 	k.tradeFeeTracker.Set(ctx, 0)
 }
 
-func (k Keeper) addTradeFee(ctx context.Context, denom string, amount math.LegacyDec) {
+func (k Keeper) addTradeFee(ctx context.Context, denom string, amount math.Int) {
+	amountDec := amount.ToLegacyDec()
 	if denom != constants.BaseCurrency {
-		amount, _ = k.GetValueInBase(ctx, denom, amount)
+		amountDec, _ = k.DenomKeeper.GetValueInBase(ctx, denom, amountDec)
 	}
 
-	tracked, _ := k.tradeFeeTracker.Get(ctx)
-	tracked += amount.TruncateInt().Int64()
+	tracked, has := k.tradeFeeTracker.Get(ctx)
+	if !has {
+		tracked = 0
+	}
+
+	tracked += amountDec.TruncateInt().Int64()
 	k.tradeFeeTracker.Set(ctx, tracked)
 }
 
@@ -44,9 +49,18 @@ func (k Keeper) getLiquidityAmountInBase(ctx context.Context) math.Int {
 	poolAcc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
 	balance := k.BankKeeper.SpendableCoins(ctx, poolAcc.GetAddress())
 	for _, coin := range balance {
-		baseAmount, _ := k.GetValueInBase(ctx, coin.Denom, coin.Amount.ToLegacyDec())
+		baseAmount, _ := k.DenomKeeper.GetValueInBase(ctx, coin.Denom, coin.Amount.ToLegacyDec())
 		sum = sum.Add(baseAmount)
 	}
 
 	return sum.TruncateInt()
+}
+
+func (k Keeper) GetTrackedFeeAmount(ctx context.Context) int64 {
+	feeAmount, has := k.tradeFeeTracker.Get(ctx)
+	if !has {
+		return 0
+	}
+
+	return feeAmount
 }

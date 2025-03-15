@@ -37,7 +37,11 @@ func (msg *MsgRemoveAllLiquidityForDenom) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
-	if err := denomtypes.ValidateDenomName(msg.Denom); err != nil {
+	if err := denomtypes.ValidateDenomName(msg.WithdrawDenom); err != nil {
+		return err
+	}
+
+	if err := denomtypes.ValidateDenomName(msg.PayoutDenom); err != nil {
 		return err
 	}
 
@@ -49,7 +53,11 @@ func (msg *MsgRemoveLiquidity) ValidateBasic() error {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
 	}
 
-	if err := denomtypes.ValidateDenomName(msg.Denom); err != nil {
+	if err := denomtypes.ValidateDenomName(msg.WithdrawDenom); err != nil {
+		return err
+	}
+
+	if err := denomtypes.ValidateDenomName(msg.PayoutDenom); err != nil {
 		return err
 	}
 

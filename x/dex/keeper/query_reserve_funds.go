@@ -22,7 +22,7 @@ func (k Keeper) ReserveFunds(ctx context.Context, _ *types.QueryReserveFundsRequ
 			amount = amount.Add(coin.Amount)
 		}
 
-		priceUSD, err := k.GetPriceInUSD(ctx, denom)
+		priceUSD, err := k.DenomKeeper.GetPriceInUSD(ctx, denom)
 		if err != nil {
 			return nil, err
 		}
@@ -63,7 +63,7 @@ func (k Keeper) ReserveFundsPerDenom(ctx context.Context, req *types.QueryReserv
 		amount = amount.Add(coin.Amount)
 	}
 
-	priceUSD, err := k.GetPriceInUSD(ctx, req.Denom)
+	priceUSD, err := k.DenomKeeper.GetPriceInUSD(ctx, req.Denom)
 	if err != nil {
 		return nil, err
 	}

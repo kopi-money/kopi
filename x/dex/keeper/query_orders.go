@@ -23,7 +23,7 @@ func (k Keeper) Order(ctx context.Context, req *types.QueryOrderRequest) (*types
 		return nil, types.ErrOrderNotFound
 	}
 
-	referenceDenom, err := k.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -46,7 +46,7 @@ func (k Keeper) Orders(ctx context.Context, req *types.QueryOrdersRequest) (*typ
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	referenceDenom, err := k.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -58,7 +58,7 @@ func (k Keeper) Orders(ctx context.Context, req *types.QueryOrdersRequest) (*typ
 		ctx,
 		k.orders,
 		req.Pagination,
-		func(_ uint64, order types.Order) (*types.OrderResponse, error) {
+		func(_ uint64, order types.Order) (types.OrderResponse, error) {
 			return k.toOrderResponse(ctx, order, feeFac, referenceDenom)
 		},
 	)
@@ -84,7 +84,7 @@ func (k Keeper) OrdersAddress(goCtx context.Context, req *types.QueryOrdersAddre
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	referenceDenom, err := k.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -111,7 +111,7 @@ func (k Keeper) OrdersAddress(goCtx context.Context, req *types.QueryOrdersAddre
 
 			return true, nil
 		},
-		func(_ uint64, order types.Order) (*types.OrderResponse, error) {
+		func(_ uint64, order types.Order) (types.OrderResponse, error) {
 			return k.toOrderResponse(ctx, order, feeFac, referenceDenom)
 		},
 	)
@@ -122,48 +122,48 @@ func (k Keeper) OrdersAddress(goCtx context.Context, req *types.QueryOrdersAddre
 	}, nil
 }
 
-func (k Keeper) toOrderResponse(ctx context.Context, order types.Order, feeFac math.LegacyDec, referenceDenom string) (*types.OrderResponse, error) {
-	amountLeftUSD, err := k.GetValueIn(ctx, order.DenomGiving, referenceDenom, order.AmountLeft.ToLegacyDec())
+func (k Keeper) toOrderResponse(ctx context.Context, order types.Order, feeFac math.LegacyDec, referenceDenom string) (types.OrderResponse, error) {
+	amountLeftUSD, err := k.DenomKeeper.GetValueIn(ctx, order.DenomGiving, referenceDenom, order.AmountLeft.ToLegacyDec())
 	if err != nil {
-		return nil, fmt.Errorf("amount left in usd: %w", err)
+		return types.OrderResponse{}, fmt.Errorf("amount left in usd: %w", err)
 	}
 
-	amountReceivedUSD, err := k.GetValueIn(ctx, order.DenomReceiving, referenceDenom, order.AmountReceived.ToLegacyDec())
+	amountReceivedUSD, err := k.DenomKeeper.GetValueIn(ctx, order.DenomReceiving, referenceDenom, order.AmountReceived.ToLegacyDec())
 	if err != nil {
-		return nil, fmt.Errorf("amount received in usd: %w", err)
+		return types.OrderResponse{}, fmt.Errorf("amount received in usd: %w", err)
 	}
 
-	maxPriceUSD, err := k.GetValueIn(ctx, order.DenomReceiving, referenceDenom, order.MaxPrice)
+	maxPriceUSD, err := k.DenomKeeper.GetValueIn(ctx, order.DenomReceiving, referenceDenom, order.MaxPrice)
 	if err != nil {
-		return nil, fmt.Errorf("max price usd: %w", err)
+		return types.OrderResponse{}, fmt.Errorf("max price usd: %w", err)
 	}
 
-	currentPrice, err := k.CalculatePrice(ctx, order.DenomGiving, order.DenomReceiving)
+	currentPrice, err := k.DenomKeeper.CalculatePrice(ctx, order.DenomGiving, order.DenomReceiving)
 	if err != nil {
-		return nil, fmt.Errorf("calculate price: %w", err)
+		return types.OrderResponse{}, fmt.Errorf("calculate price: %w", err)
 	}
 
 	if order.IsBuyOrder {
 		currentPrice = currentPrice.Mul(feeFac)
 	} else {
 		if !currentPrice.IsPositive() {
-			return nil, fmt.Errorf("current price is not positive")
+			return types.OrderResponse{}, fmt.Errorf("current price is not positive")
 		}
 
 		if !feeFac.IsPositive() {
-			return nil, fmt.Errorf("feefac is not positive")
+			return types.OrderResponse{}, fmt.Errorf("feefac is not positive")
 		}
 
 		currentPrice = math.LegacyOneDec().Quo(currentPrice) // C
 		currentPrice = currentPrice.Quo(feeFac)              // C
 	}
 
-	currentPriceUSD, err := k.GetValueIn(ctx, order.DenomReceiving, referenceDenom, currentPrice)
+	currentPriceUSD, err := k.DenomKeeper.GetValueIn(ctx, order.DenomReceiving, referenceDenom, currentPrice)
 	if err != nil {
-		return nil, fmt.Errorf("max price usd: %w", err)
+		return types.OrderResponse{}, fmt.Errorf("max price usd: %w", err)
 	}
 
-	return &types.OrderResponse{
+	return types.OrderResponse{
 		Index:             order.Index,
 		Address:           order.Creator,
 		DenomGiving:       order.DenomGiving,
@@ -190,7 +190,7 @@ func (k Keeper) OrdersByPair(ctx context.Context, req *types.OrdersByPairRequest
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	referenceDenom, err := k.GetHighestUSDReference(ctx)
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get reference denom: %w", err)
 	}
@@ -198,14 +198,14 @@ func (k Keeper) OrdersByPair(ctx context.Context, req *types.OrdersByPairRequest
 	feeFac := k.GetJoinedFee(ctx)
 	feeFac = feeFac.Add(math.LegacyOneDec())
 
-	var asks, bids []*types.OrderResponse
+	var asks, bids []types.OrderResponse
 
 	iterator := k.OrderIterator(ctx)
 	for iterator.Valid() {
 		order := iterator.GetNext()
 
 		if order.DenomGiving == req.DenomGiving && order.DenomReceiving == req.DenomReceiving {
-			var orderResponse *types.OrderResponse
+			var orderResponse types.OrderResponse
 			orderResponse, err = k.toOrderResponse(ctx, order, feeFac, referenceDenom)
 			if err != nil {
 				return nil, err
@@ -215,7 +215,7 @@ func (k Keeper) OrdersByPair(ctx context.Context, req *types.OrdersByPairRequest
 		}
 
 		if order.DenomGiving == req.DenomReceiving && order.DenomReceiving == req.DenomGiving {
-			var orderResponse *types.OrderResponse
+			var orderResponse types.OrderResponse
 			orderResponse, err = k.toOrderResponse(ctx, order, feeFac, referenceDenom)
 			if err != nil {
 				return nil, err

@@ -59,9 +59,9 @@ func ConstantProductTradeBuy(poolFrom, poolTo, result, fee math.LegacyDec) (math
 	return amountToGiveGross, feeAmount, nil
 }
 
-type CalculateMaximumAmount func(math.LegacyDec, math.LegacyDec, math.LegacyDec) (math.LegacyDec, error)
+type CalculateMaximumAmountOneStep func(math.LegacyDec, math.LegacyDec, math.LegacyDec) (math.LegacyDec, error)
 
-func CalculateMaximumGiving(poolFrom, poolTo, maxPrice math.LegacyDec) (math.LegacyDec, error) {
+func CalculateMaximumGivingOneStep(poolFrom, poolTo, maxPrice math.LegacyDec) (math.LegacyDec, error) {
 	return poolTo.Mul(maxPrice).Sub(poolFrom), nil
 }
 
@@ -71,4 +71,57 @@ func CalculateMaximumReceiving(poolFrom, poolTo, maxPrice math.LegacyDec) (math.
 	}
 
 	return poolTo.Sub(poolFrom.Quo(maxPrice)), nil // C
+}
+
+type CalculateMaximumAmountTwoStep func(math.LegacyDec, math.LegacyDec, math.LegacyDec, math.LegacyDec, math.LegacyDec) (math.LegacyDec, error)
+
+func CalculateMaximumGivingTwoStep(X, T1, T2, Y, maxPrice math.LegacyDec) (math.LegacyDec, error) {
+	//if T1.Equal(T2) {
+	//	return CalculateMaximumGivingOneStep(X, Y, maxPrice)
+	//}
+
+	p1 := maxPrice.Mul(Y).Mul(T1)
+	p2 := X.Mul(T2)
+	nominator := p1.Sub(p2)
+	denominator := T1.Add(T2)
+	return nominator.Quo(denominator), nil
+}
+
+func CalculateMaximumReceivingTwoStep(X, T1, T2, Y, maxPrice math.LegacyDec) (math.LegacyDec, error) {
+	if T1.Equal(T2) {
+		return CalculateMaximumReceiving(X, Y, maxPrice)
+	}
+
+	A := maxPrice.Mul(X.Add(T2))
+	B := X.Mul(X.Add(T2)).Sub(X.Mul(T1)).Sub(maxPrice.Mul(T2).Mul(T2.Add(X).Sub(Y)))
+	C := X.Mul(T1).Mul(T2).Sub(X.Mul(T2).Mul(T2.Add(X).Sub(Y)))
+
+	tmp := B.Mul(B).Sub(math.LegacyNewDec(4).Mul(A).Mul(C))
+	if tmp.IsNegative() {
+		return math.LegacyDec{}, fmt.Errorf("no solution")
+	}
+
+	if tmp.IsZero() {
+		return B.Quo(math.LegacyNewDec(2).Mul(A)).Neg(), nil
+	}
+
+	root, err := tmp.ApproxSqrt()
+	if err != nil {
+		return math.LegacyDec{}, err
+	}
+
+	nominator := root.Sub(B)
+	denominator := math.LegacyNewDec(2).Mul(A)
+	return nominator.Quo(denominator), nil
+}
+
+func CalculateSingleMaximumSellableAmount(actualFrom, virtualFrom, actualTo, virtualTo math.LegacyDec) *math.Int {
+	if virtualTo.IsNil() || virtualTo.IsZero() {
+		return nil
+	}
+
+	X := actualFrom.Add(virtualFrom)
+	maximum := X.Mul(actualTo.Quo(virtualTo)) // C
+	maximumInt := maximum.TruncateInt()
+	return &maximumInt
 }

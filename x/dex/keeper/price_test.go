@@ -17,15 +17,15 @@ func TestPrice1(t *testing.T) {
 	err = keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 2_000000)
 	require.Nil(t, err)
 
-	price1, err := k.CalculatePrice(ctx, constants.BaseCurrency, constants.KUSD)
+	price1, err := k.DenomKeeper.CalculatePrice(ctx, constants.BaseCurrency, constants.KUSD)
 	require.NoError(t, err)
 	require.Equal(t, math.LegacyNewDec(4), price1)
 
-	price2, err := k.CalculatePrice(ctx, constants.KUSD, constants.BaseCurrency)
+	price2, err := k.DenomKeeper.CalculatePrice(ctx, constants.KUSD, constants.BaseCurrency)
 	require.NoError(t, err)
 	require.Equal(t, math.LegacyNewDecWithPrec(25, 2), price2)
 
-	price3, err := k.CalculatePrice(ctx, constants.KUSD, "uwusdc")
+	price3, err := k.DenomKeeper.CalculatePrice(ctx, constants.KUSD, "uwusdc")
 	require.NoError(t, err)
 	require.Equal(t, math.LegacyNewDec(1), price3)
 }

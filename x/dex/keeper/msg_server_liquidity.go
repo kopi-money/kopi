@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"cosmossdk.io/math"
 
@@ -21,14 +22,26 @@ func (k msgServer) AddLiquidity(ctx context.Context, msg *types.MsgAddLiquidity)
 	}
 
 	acc, _ := sdk.AccAddressFromBech32(msg.Creator)
-	if _, err = k.Keeper.AddLiquidity(ctx, acc, msg.Denom, amount); err != nil {
+	if _, err = k.Keeper.AddLiquidityWithCompound(ctx, acc, msg.Denom, amount, msg.AutoCompound); err != nil {
 		return nil, fmt.Errorf("could not add liquidity: %w", err)
 	}
 
 	return &types.MsgAddLiquidityResponse{}, nil
 }
 
-func (k msgServer) RemoveAllLiquidityForDenom(goCtx context.Context, msg *types.MsgRemoveAllLiquidityForDenom) (*types.Void, error) {
+func (k msgServer) ChangePayout(ctx context.Context, msg *types.MsgChangePayout) (*types.Void, error) {
+	liquidityShares, has := k.liquidityPositions.Get(ctx, msg.Creator, msg.PositionIndex)
+	if !has {
+		return nil, fmt.Errorf("could not find liquidity deposit for %s", msg.Creator)
+	}
+
+	liquidityShares.AutoCompound = msg.AutoCompound
+	k.liquidityPositions.Set(ctx, msg.Creator, msg.PositionIndex, liquidityShares)
+
+	return &types.Void{}, nil
+}
+
+func (k msgServer) RemoveAllLiquidityForDenom(goCtx context.Context, msg *types.MsgRemoveAllLiquidityForDenom) (*types.MsgRemoveLiquidityResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	address, err := sdk.AccAddressFromBech32(msg.Creator)
@@ -36,18 +49,30 @@ func (k msgServer) RemoveAllLiquidityForDenom(goCtx context.Context, msg *types.
 		return nil, types.ErrInvalidAddress
 	}
 
-	liq := k.GetLiquidityByAddress(ctx, msg.Denom, msg.Creator)
-	if err = k.RemoveLiquidityForAddress(ctx, address, msg.Denom, liq); err != nil {
+	liq := k.GetLiquidityByAddress(ctx, msg.WithdrawDenom, msg.Creator)
+	amount, err := k.RemoveLiquidityForAddress(ctx, address, msg.WithdrawDenom, liq, nil)
+	if err != nil {
 		return nil, err
 	}
 
-	return &types.Void{}, nil
+	if msg.WithdrawDenom != msg.PayoutDenom {
+		if _, err = k.Sell(ctx, &types.MsgSell{
+			Creator:        msg.Creator,
+			DenomGiving:    msg.WithdrawDenom,
+			DenomReceiving: msg.PayoutDenom,
+			Amount:         amount.String(),
+		}); err != nil {
+			return nil, fmt.Errorf("could not sell liquidity for address: %w", err)
+		}
+	}
+
+	return &types.MsgRemoveLiquidityResponse{}, nil
 }
 
 func (k Keeper) RemoveAllLiquidityForAddress(ctx context.Context, address, denom string) error {
 	amount := math.ZeroInt()
 
-	iterator := k.LiquidityIterator(ctx, denom)
+	iterator := k.liquidityEntries.Iterator(ctx, nil, denom)
 	for iterator.Valid() {
 		liq := iterator.GetNext()
 		if liq.Address == address {
@@ -75,42 +100,92 @@ func (k msgServer) RemoveLiquidity(ctx context.Context, msg *types.MsgRemoveLiqu
 		return nil, fmt.Errorf("could not parse amount: %w", err)
 	}
 
-	if err = k.precheckTradeWithBalance(ctx, msg.Creator, msg.Denom, &amount, false, false); err != nil {
+	if err = k.precheckTradeWithBalance(ctx, msg.Creator, msg.WithdrawDenom, &amount, false, false); err != nil {
 		return nil, fmt.Errorf("error validating message: %w", err)
 	}
 
-	addedAmount := k.GetLiquidityByAddress(ctx, msg.Denom, msg.Creator)
+	addedAmount := k.GetLiquidityByAddress(ctx, msg.WithdrawDenom, msg.Creator)
 	if addedAmount.LT(amount) {
 		return nil, fmt.Errorf("asked amount (%v) is bigger than added amount (%v)", amount.String(), addedAmount.String())
 	}
 
+	var positionIndex *uint64
+	if msg.PositionIndex != "" {
+		positionIndexInt, err := strconv.Atoi(msg.PositionIndex)
+		if err != nil {
+			return nil, fmt.Errorf("could not parse deposit index: %w", err)
+		}
+
+		_, has := k.liquidityPositions.Get(ctx, msg.Creator, uint64(positionIndexInt))
+		if !has {
+			return nil, fmt.Errorf("liquidity does not exist for given address and deposit index")
+		}
+
+		positionIndex64 := uint64(positionIndexInt)
+		positionIndex = &positionIndex64
+	}
+
 	acc, _ := sdk.AccAddressFromBech32(msg.Creator)
-	if err = k.RemoveLiquidityForAddress(ctx, acc, msg.Denom, amount); err != nil {
+	amount, err = k.RemoveLiquidityForAddress(ctx, acc, msg.WithdrawDenom, amount, positionIndex)
+	if err != nil {
 		return nil, fmt.Errorf("could not remove liquidity for address: %w", err)
+	}
+
+	if msg.WithdrawDenom != msg.PayoutDenom {
+		if _, err = k.Sell(ctx, &types.MsgSell{
+			Creator:        msg.Creator,
+			DenomGiving:    msg.WithdrawDenom,
+			DenomReceiving: msg.PayoutDenom,
+			Amount:         amount.String(),
+		}); err != nil {
+			return nil, fmt.Errorf("could not sell liquidity for address: %w", err)
+		}
 	}
 
 	return &types.MsgRemoveLiquidityResponse{}, nil
 }
 
-func (k Keeper) RemoveLiquidityForAddress(ctx context.Context, accAddr sdk.AccAddress, denom string, amount math.Int) error {
+func (k Keeper) RemoveLiquidityForAddress(ctx context.Context, accAddr sdk.AccAddress, denom string, amount math.Int, positionIndex *uint64) (math.Int, error) {
+	return k.RemoveLiquidityForAddressWithReceiver(ctx, accAddr, accAddr, denom, amount, positionIndex)
+}
+
+func (k Keeper) RemoveLiquidityForAddressWithReceiver(ctx context.Context, accAddr, recAddr sdk.AccAddress, denom string, amount math.Int, positionIndex *uint64) (math.Int, error) {
 	removed := math.ZeroInt()
 	address := accAddr.String()
 
-	iterator := k.LiquidityIterator(ctx, denom)
+	iterator := k.liquidityEntries.Iterator(ctx, nil, denom)
 	for iterator.Valid() {
 		liq := iterator.GetNext()
 
-		if liq.Address == address {
+		if liq.Address == address && (positionIndex == nil || *positionIndex == liq.PositionIndex) {
+			var amountRemovedForPosition math.Int
+
 			if liq.Amount.GT(amount) {
-				removed = removed.Add(amount)
+				amountRemovedForPosition = amount
 				liq.Amount = liq.Amount.Sub(amount)
 				k.SetLiquidity(ctx, denom, liq)
 				amount = math.ZeroInt()
 			} else {
-				removed = removed.Add(liq.Amount)
+				amountRemovedForPosition = liq.Amount
 				amount = amount.Sub(liq.Amount)
 				k.RemoveLiquidity(ctx, denom, liq.Index)
 			}
+
+			amountUSD, _ := k.DenomKeeper.GetValueInUSD(ctx, denom, amountRemovedForPosition.ToLegacyDec())
+
+			sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
+				sdk.NewEvent(
+					"liquidity_removed",
+					sdk.Attribute{Key: "denom", Value: denom},
+					sdk.Attribute{Key: "amount", Value: amountRemovedForPosition.String()},
+					sdk.Attribute{Key: "amount_usd", Value: amountUSD.String()},
+					sdk.Attribute{Key: "address", Value: liq.Address},
+					sdk.Attribute{Key: "index", Value: strconv.Itoa(int(liq.Index))},
+					sdk.Attribute{Key: "position_index", Value: strconv.Itoa(int(liq.PositionIndex))},
+				),
+			)
+
+			removed = removed.Add(amountRemovedForPosition)
 		}
 
 		if amount.IsZero() {
@@ -119,13 +194,13 @@ func (k Keeper) RemoveLiquidityForAddress(ctx context.Context, accAddr sdk.AccAd
 	}
 
 	if amount.IsPositive() {
-		return types.ErrNotEnoughFunds
+		return math.Int{}, types.ErrNotEnoughFunds
 	}
 
 	coins := sdk.NewCoins(sdk.NewCoin(denom, removed))
-	if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolLiquidity, accAddr, coins); err != nil {
-		return fmt.Errorf("could not send coins from module to account: %w", err)
+	if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolLiquidity, recAddr, coins); err != nil {
+		return math.Int{}, fmt.Errorf("could not send coins from module to account: %w", err)
 	}
 
-	return nil
+	return removed, nil
 }

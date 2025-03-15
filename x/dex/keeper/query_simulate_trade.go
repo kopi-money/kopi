@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	"fmt"
 
 	"github.com/kopi-money/kopi/x/dex/types"
@@ -49,12 +50,12 @@ func (k Keeper) querySimulateTrade(ctx context.Context, req *types.QuerySimulate
 		return nil, fmt.Errorf("could not simulate trade: %w", err)
 	}
 
-	priceGivingUSD, err := k.GetPriceInUSD(ctx, req.DenomGiving)
+	priceGivingUSD, err := k.DenomKeeper.GetPriceInUSD(ctx, req.DenomGiving)
 	if err != nil {
 		return nil, fmt.Errorf("could not get price in USD: %w", err)
 	}
 
-	priceReceivingUSD, err := k.GetPriceInUSD(ctx, req.DenomReceiving)
+	priceReceivingUSD, err := k.DenomKeeper.GetPriceInUSD(ctx, req.DenomReceiving)
 	if err != nil {
 		return nil, fmt.Errorf("could not get price in USD: %w", err)
 	}
@@ -64,24 +65,19 @@ func (k Keeper) querySimulateTrade(ctx context.Context, req *types.QuerySimulate
 		price = tradeResult.AmountGiven.ToLegacyDec().Quo(tradeResult.AmountReceived.ToLegacyDec()).String() // C
 	}
 
-	var amountGivenUSD string
-	if priceGivingUSD.IsPositive() {
-		amountGivenUSD = tradeResult.AmountGiven.ToLegacyDec().Quo(priceGivingUSD).RoundInt().String() // C
-	}
-
-	var amountReceivedInUSD string
-	if priceReceivingUSD.IsPositive() {
-		amountReceivedInUSD = tradeResult.AmountReceived.ToLegacyDec().Quo(priceReceivingUSD).RoundInt().String() // C
-	}
+	amountGivenUSD := tradeResult.AmountGiven.ToLegacyDec().Quo(priceGivingUSD)
+	amountReceivedUSD := tradeResult.AmountReceived.ToLegacyDec().Quo(priceReceivingUSD)
+	spread := math.LegacyOneDec().Sub(amountReceivedUSD.Quo(amountGivenUSD))
 
 	return &types.QuerySimulateTradeResponse{
 		AmountGiven:         tradeResult.AmountGiven.String(),
-		AmountGivenInUsd:    amountGivenUSD,
+		AmountGivenInUsd:    amountGivenUSD.RoundInt().String(),
 		AmountReceived:      tradeResult.AmountReceived.String(),
-		AmountReceivedInUsd: amountReceivedInUSD,
+		AmountReceivedInUsd: amountReceivedUSD.RoundInt().String(),
 		Fee:                 tradeResult.FeeGiven.String(),
 		Price:               price,
 		PriceGivenInUsd:     priceGivingUSD.String(),
 		PriceReceivedInUsd:  priceReceivingUSD.String(),
+		Spread:              spread.String(),
 	}, nil
 }

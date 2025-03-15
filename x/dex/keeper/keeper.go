@@ -22,6 +22,13 @@ var (
 	PrefixTradeAmounts       = collections.NewPrefix(5)
 	PrefixBaseTradeFee       = collections.NewPrefix(6)
 	PrefixOrders             = collections.NewPrefix(7)
+
+	PrefixLiquidityShares            = collections.NewPrefix(8)
+	PrefixLiquidityPositionNextIndex = collections.NewPrefix(9)
+	PrefixEpochShares                = collections.NewPrefix(10)
+	PrefixEpochSharesSum             = collections.NewPrefix(11)
+	PrefixEpochPayouts               = collections.NewPrefix(12)
+	PrefixEpochStartTime             = collections.NewPrefix(13)
 )
 
 type (
@@ -30,9 +37,10 @@ type (
 		storeService store.KVStoreService
 		logger       log.Logger
 
-		AccountKeeper types.AccountKeeper
-		DenomKeeper   types.DenomKeeper
-		BankKeeper    types.BankKeeper
+		AccountKeeper    types.AccountKeeper
+		BlockspeedKeeper types.BlockspeedKeeper
+		DenomKeeper      types.DenomKeeper
+		BankKeeper       types.BankKeeper
 
 		// Collections
 		params                    *cache.ItemCache[types.Params]
@@ -43,6 +51,15 @@ type (
 		ordersNextIndex           *cache.ItemCache[uint64]
 		tradeAmounts              *cache.MapCache[string, types.WalletTradeAmount]
 		tradeFeeTracker           *cache.ItemCache[int64]
+
+		liquidityPositionNextIndex *cache.ItemCache[uint64]
+
+		liquidityPositions *cache.NestedMapCache[string, uint64, types.LiquidityPosition]
+
+		epochShares    *cache.NestedMapCache[string, uint64, types.EpochShares]
+		epochSharesSum *cache.ItemCache[types.EpochShares]
+		epochLeftovers *cache.NestedMapCache[string, uint64, types.EpochLeftovers]
+		epochStartTime *cache.ItemCache[types.EpochStartTime]
 
 		caches *cache.Caches
 
@@ -57,6 +74,7 @@ func NewKeeper(
 	storeService store.KVStoreService,
 	logger log.Logger,
 	accountKeeper types.AccountKeeper,
+	blockspeedKeeper types.BlockspeedKeeper,
 	bankKeeper types.BankKeeper,
 	denomKeeper types.DenomKeeper,
 	authority string,
@@ -75,9 +93,10 @@ func NewKeeper(
 		authority:    authority,
 		logger:       logger,
 
-		AccountKeeper: accountKeeper,
-		BankKeeper:    bankKeeper,
-		DenomKeeper:   denomKeeper,
+		AccountKeeper:    accountKeeper,
+		BlockspeedKeeper: blockspeedKeeper,
+		BankKeeper:       bankKeeper,
+		DenomKeeper:      denomKeeper,
 
 		caches: caches,
 
@@ -146,6 +165,57 @@ func NewKeeper(
 			PrefixBaseTradeFee,
 			"trade_fee_tracker",
 			collections.Int64Value,
+			caches,
+		),
+
+		liquidityPositionNextIndex: cache.NewItemCache(
+			sb,
+			PrefixLiquidityPositionNextIndex,
+			"liquidity_position_next_index",
+			collections.Uint64Value,
+			caches,
+		),
+
+		liquidityPositions: cache.NewNestedMapCache(
+			sb,
+			PrefixLiquidityShares,
+			"liquidity_positions",
+			collections.PairKeyCodec(collections.StringKey, collections.Uint64Key),
+			codec.CollValue[types.LiquidityPosition](cdc),
+			caches,
+		),
+
+		epochShares: cache.NewNestedMapCache(
+			sb,
+			PrefixEpochShares,
+			"epoch_shares",
+			collections.PairKeyCodec(collections.StringKey, collections.Uint64Key),
+			codec.CollValue[types.EpochShares](cdc),
+			caches,
+		),
+
+		epochSharesSum: cache.NewItemCache(
+			sb,
+			PrefixEpochSharesSum,
+			"epoch_shares_sum",
+			codec.CollValue[types.EpochShares](cdc),
+			caches,
+		),
+
+		epochLeftovers: cache.NewNestedMapCache(
+			sb,
+			PrefixEpochPayouts,
+			"epoch_leftovers",
+			collections.PairKeyCodec(collections.StringKey, collections.Uint64Key),
+			codec.CollValue[types.EpochLeftovers](cdc),
+			caches,
+		),
+
+		epochStartTime: cache.NewItemCache(
+			sb,
+			PrefixEpochStartTime,
+			"epoch_start_time",
+			codec.CollValue[types.EpochStartTime](cdc),
 			caches,
 		),
 	}

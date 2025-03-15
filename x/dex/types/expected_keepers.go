@@ -40,12 +40,19 @@ type ParamSubspace interface {
 }
 
 type DenomKeeper interface {
+	CalculatePrice(ctx context.Context, denomGiving, denomReceiving string) (math.LegacyDec, error)
 	ConvertToExponent(ctx context.Context, denom string, amount math.LegacyDec, targetExponent uint64) (math.LegacyDec, error)
 	Denoms(ctx context.Context) []string
+	ExtraVirtualLiquidity(ctx context.Context, denom string) math.Int
 	GetAllRatios(ctx context.Context) []denomtypes.Ratio
 	GetAuthority() string
 	GetCAssetByBaseName(ctx context.Context, baseDenom string) (denomtypes.CAsset, error)
+	GetHighestUSDReference(ctx context.Context) (string, error)
 	GetRatio(ctx context.Context, denom string) (denomtypes.Ratio, error)
+	GetPriceInUSD(ctx context.Context, denom string) (math.LegacyDec, error)
+	GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.LegacyDec) (math.LegacyDec, error)
+	GetValueInBase(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
+	GetValueInUSD(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
 	IsCollateralDenom(ctx context.Context, denom string) bool
 	IsKCoin(ctx context.Context, denom string) bool
 	IsNativeDenom(ctx context.Context, denom string) bool
@@ -58,4 +65,8 @@ type DenomKeeper interface {
 	ReferenceDenoms(ctx context.Context, kCoin string) []string
 	RemoveDenom(ctx context.Context, denom string) error
 	SetRatio(ctx context.Context, ratio denomtypes.Ratio)
+}
+
+type BlockspeedKeeper interface {
+	GetSecondsPerBlock(context.Context) math.LegacyDec
 }

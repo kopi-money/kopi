@@ -20,6 +20,7 @@ import (
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	blockspeedkeeper "github.com/kopi-money/kopi/x/blockspeed/keeper"
 	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 
 	// this line is used by starport scaffolding # 1
@@ -40,9 +41,10 @@ var (
 	_ appmodule.HasBeginBlocker = (*AppModule)(nil)
 	_ appmodule.HasEndBlocker   = (*AppModule)(nil)
 
-	_ types.AccountKeeper = (*authkeeper.AccountKeeper)(nil)
-	_ types.BankKeeper    = (bankkeeper.Keeper)(nil)
-	_ types.DenomKeeper   = (*denomkeeper.Keeper)(nil)
+	_ types.AccountKeeper    = (*authkeeper.AccountKeeper)(nil)
+	_ types.BlockspeedKeeper = (*blockspeedkeeper.Keeper)(nil)
+	_ types.BankKeeper       = (bankkeeper.Keeper)(nil)
+	_ types.DenomKeeper      = (*denomkeeper.Keeper)(nil)
 )
 
 // ----------------------------------------------------------------------------
@@ -195,6 +197,10 @@ func (am AppModule) EndBlock(ctx context.Context) error {
 			am.keeper.TradeAmountDecay(innerCtx)
 		}
 
+		if err := am.keeper.CheckEpoch(innerCtx); err != nil {
+			return fmt.Errorf("error checking epoch: %w", err)
+		}
+		
 		am.keeper.EmitTradeFeeEvent(innerCtx)
 
 		return nil
@@ -226,9 +232,10 @@ type ModuleInputs struct {
 	Config       *modulev1.Module
 	Logger       log.Logger
 
-	AccountKeeper types.AccountKeeper
-	BankKeeper    types.BankKeeper
-	DenomKeeper   types.DenomKeeper
+	AccountKeeper    types.AccountKeeper
+	BlockspeedKeeper types.BlockspeedKeeper
+	BankKeeper       types.BankKeeper
+	DenomKeeper      types.DenomKeeper
 }
 
 type ModuleOutputs struct {
@@ -249,6 +256,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.StoreService,
 		in.Logger,
 		in.AccountKeeper,
+		in.BlockspeedKeeper,
 		in.BankKeeper,
 		in.DenomKeeper,
 		authority.String(),

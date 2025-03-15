@@ -2,7 +2,6 @@ package dex
 
 import (
 	"context"
-
 	"github.com/cosmos/cosmos-sdk/cache"
 
 	"github.com/kopi-money/kopi/x/dex/keeper"
@@ -13,10 +12,13 @@ import (
 func InitGenesis(ctx context.Context, k keeper.Keeper, genState types.GenesisState) {
 	if err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		// Set all the liquidity
-		for _, denomLiquidity := range genState.LiquidityList {
-			for _, entry := range denomLiquidity.Entries {
-				k.SetLiquidity(innerCtx, denomLiquidity.Denom, entry)
-			}
+		for _, genesisLiquidity := range genState.LiquidityList {
+			k.SetLiquidity(innerCtx, genesisLiquidity.Denom, types.Liquidity{
+				Index:         genesisLiquidity.Index,
+				Address:       genesisLiquidity.Address,
+				Amount:        genesisLiquidity.Amount,
+				PositionIndex: genesisLiquidity.PositionIndex,
+			})
 		}
 
 		// Set all the order

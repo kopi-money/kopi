@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
+	"strconv"
 
 	"cosmossdk.io/math"
 
@@ -141,18 +142,18 @@ func (k msgServer) UpdateDiscountLevels(ctx context.Context, req *types.MsgUpdat
 	return &types.Void{}, nil
 }
 
-func (k msgServer) UpdateTradeBaseValue(ctx context.Context, req *types.MsgUpdateTradeBaseValue) (*types.Void, error) {
+func (k msgServer) UpdateEpochLength(ctx context.Context, req *types.MsgUpdateEpochLength) (*types.Void, error) {
 	if k.GetAuthority() != req.Authority {
 		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 	}
 
-	tradeBaseValue, err := math.LegacyNewDecFromStr(req.TradeBaseValue)
+	epochLength, err := strconv.ParseUint(req.EpochLength, 10, 64)
 	if err != nil {
-		return nil, fmt.Errorf("convert from string: %w", err)
+		return nil, fmt.Errorf("invalid epoch length: %v", req.EpochLength)
 	}
 
 	params := k.GetParams(ctx)
-	params.TradeBaseValue = tradeBaseValue
+	params.EpochLength = epochLength
 
 	if err = k.SetParams(ctx, params); err != nil {
 		return nil, err

@@ -14,12 +14,13 @@ type LoadPoolBalance func() *CoinMap
 type LoadLiquidityPair func(denom string) LiquidityPair
 type LoadLiquidity func(denom string) []Liquidity
 
-func NewOrderCaches(lat, lar, lal, lao LoadAccAddress, ltf, lrfs, lof, lpf LoadFee, lpbl LoadPoolBalance, ll LoadLiquidity) *OrdersCaches {
+func NewOrderCaches(lat, lar, lal, lao, lafi LoadAccAddress, ltf, lrfs, lof, lpf LoadFee, lpbl LoadPoolBalance, ll LoadLiquidity) *OrdersCaches {
 	return &OrdersCaches{
 		AccPoolTrade:     newItemCache(lat),
 		AccPoolReserve:   newItemCache(lar),
 		AccPoolLiquidity: newItemCache(lal),
 		AccPoolOrders:    newItemCache(lao),
+		AccPoolFeeIncome: newItemCache(lafi),
 		TradeFee:         newItemCache(ltf),
 		ReserveFeeShare:  newItemCache(lrfs),
 		OrderFee:         newItemCache(lof),
@@ -112,6 +113,7 @@ type OrdersCaches struct {
 	AccPoolTrade          *ItemCache[sdk.AccAddress]
 	AccPoolLiquidity      *ItemCache[sdk.AccAddress]
 	AccPoolOrders         *ItemCache[sdk.AccAddress]
+	AccPoolFeeIncome      *ItemCache[sdk.AccAddress]
 	TradeFee              *ItemCache[math.LegacyDec]
 	ReserveFeeShare       *ItemCache[math.LegacyDec]
 	OrderFee              *ItemCache[math.LegacyDec]

@@ -18,61 +18,207 @@ const (
 	TradeTypeBuy
 )
 
+const (
+	TradeStep1 = iota + 1
+	TradeStep2
+)
+
 type CutLiquidity struct {
-	cutLiq    map[string]math.LegacyDec
-	virtual   map[string]math.LegacyDec
-	BaseValue math.LegacyDec
+	CutBase      math.LegacyDec
+	CutOther     math.LegacyDec
+	VirtualBase  math.LegacyDec
+	VirtualOther math.LegacyDec
 }
 
-func (cl *CutLiquidity) UpdateBase(tradeType TradeType, amountGiven, amountReceived math.Int) {
-	amountBase := cl.Get(constants.BaseCurrency)
-	if tradeType == TradeTypeSell {
-		amountBase = amountBase.Sub(amountReceived.ToLegacyDec())
+func (cl *CutLiquidity) GetFullFrom(denomGiving string) (math.LegacyDec, math.LegacyDec) {
+	if denomGiving == constants.BaseCurrency {
+		return cl.GetFullBase()
 	} else {
-		amountBase = amountBase.Add(amountGiven.ToLegacyDec())
+		return cl.GetFullOther()
 	}
-
-	cl.Set(constants.BaseCurrency, amountBase)
 }
 
-func (cl *CutLiquidity) Set(denom string, cut math.LegacyDec) {
-	if cl.cutLiq == nil {
-		cl.cutLiq = make(map[string]math.LegacyDec)
-		cl.virtual = make(map[string]math.LegacyDec)
+func (cl *CutLiquidity) GetFullTo(denomGiving string) (math.LegacyDec, math.LegacyDec) {
+	if denomGiving == constants.BaseCurrency {
+		return cl.GetFullOther()
+	} else {
+		return cl.GetFullBase()
 	}
-
-	cl.cutLiq[denom] = cut
 }
 
-func (cl *CutLiquidity) SetVirtual(denom string, virtual math.LegacyDec) {
-	if cl.cutLiq == nil {
-		cl.cutLiq = make(map[string]math.LegacyDec)
-		cl.virtual = make(map[string]math.LegacyDec)
-	}
-
-	cl.virtual[denom] = virtual
+func (cl *CutLiquidity) GetFullOther() (math.LegacyDec, math.LegacyDec) {
+	return cl.CutOther, cl.VirtualOther
 }
 
-func (cl *CutLiquidity) Get(denom string) math.LegacyDec {
-	cutLiq, has := cl.cutLiq[denom]
-	if !has {
+func (cl *CutLiquidity) GetFullOtherSummed() math.LegacyDec {
+	v1, v2 := cl.GetFullOther()
+	return v1.Add(v2)
+}
+
+func (cl *CutLiquidity) GetFullBase() (math.LegacyDec, math.LegacyDec) {
+	return cl.CutBase, cl.VirtualBase
+}
+
+func (cl *CutLiquidity) GetFullBaseSummed() math.LegacyDec {
+	v1, v2 := cl.GetFullBase()
+	return v1.Add(v2)
+}
+
+func (cl *CutLiquidity) GetTradeLiquidities(denomGiving string) (math.LegacyDec, math.LegacyDec) {
+	ab, vb := cl.GetFullBase()
+	ao, vo := cl.GetFullOther()
+
+	fullBase := ab.Add(vb)
+	fullOther := ao.Add(vo)
+
+	if denomGiving == constants.BaseCurrency {
+		return fullBase, fullOther
+	} else {
+		return fullOther, fullBase
+	}
+}
+
+type CutLiquidities struct {
+	Step1 *CutLiquidity
+	Step2 *CutLiquidity
+}
+
+func (cl *CutLiquidities) SizeFactor() math.LegacyDec {
+	if cl.Step1 == nil || cl.Step2 == nil {
+		return math.LegacyOneDec()
+	}
+
+	tradeValue1 := cl.Step1.GetFullBaseSummed()
+	tradeValue2 := cl.Step2.GetFullBaseSummed()
+	return tradeValue1.Sub(tradeValue2)
+}
+
+func (cl *CutLiquidities) IsZeroTrade(tradeType TradeType) bool {
+	switch tradeType {
+	case TradeTypeSell:
+		//if cl.Step2 != nil {
+		//	if !cl.Step2.MaximumOther.IsPositive() {
+		//		return true
+		//	}
+		//}
+
+		if cl.Step1 != nil {
+			ab, vb := cl.Step1.GetFullBase()
+			if !ab.Add(vb).IsPositive() {
+				return true
+			}
+		}
+	case TradeTypeBuy:
+		//if cl.Step1 != nil {
+		//	if !cl.Step1.MaximumOther.IsPositive() {
+		//		return true
+		//	}
+		//}
+
+		if cl.Step2 != nil {
+			ab, vb := cl.Step2.GetFullBase()
+			if !ab.Add(vb).IsPositive() {
+				return true
+			}
+		}
+	default:
+		panic("unknown tradeType")
+	}
+
+	return false
+}
+
+func (cl *CutLiquidities) UpdateBaseRelational(tradeType TradeType, amountGiven, amountReceived math.Int) math.LegacyDec {
+	if cl.Step2 == nil {
 		return math.LegacyZeroDec()
 	}
 
-	return cutLiq
-}
-
-func (cl *CutLiquidity) GetVirtual(denom string) math.LegacyDec {
-	virtual, has := cl.virtual[denom]
-	if !has {
-		return math.LegacyZeroDec()
+	amountBaseStep1Original := cl.Step1.CutBase
+	if amountBaseStep1Original.IsNil() {
+		amountBaseStep1Original = math.LegacyZeroDec()
 	}
 
-	return virtual
+	var amountBaseStep1Adjusted math.LegacyDec
+	if tradeType == TradeTypeSell {
+		amountBaseStep1Adjusted = amountBaseStep1Original.Sub(amountReceived.ToLegacyDec())
+	} else {
+		amountBaseStep1Adjusted = amountBaseStep1Original.Add(amountGiven.ToLegacyDec())
+	}
+
+	changeAmount := amountBaseStep1Adjusted.Sub(amountBaseStep1Original)
+	//changeFactor := amountBaseStep1Adjusted.Quo(amountBaseStep1Original)
+	//cl.Step2.CutBase = cl.Step2.CutBase.Mul(changeFactor).Ceil()
+	return changeAmount
 }
 
-func (cl *CutLiquidity) GetFull(denom string) math.LegacyDec {
-	return cl.Get(denom).Add(cl.GetVirtual(denom))
+func (cl *CutLiquidities) UpdateBaseFixed(amount math.LegacyDec) {
+	if cl.Step2 == nil {
+		return
+	}
+
+	amountBase := cl.Step2.CutBase
+	if amountBase.IsNil() {
+		amountBase = math.LegacyZeroDec()
+	}
+
+	amountBase = amountBase.Add(amount)
+	cl.Step2.CutBase = amountBase
+}
+
+func (cl *CutLiquidities) GetFullLiquidityGiving(denom string, tradeType TradeType) math.LegacyDec {
+	if tradeType == TradeTypeSell {
+		if denom != constants.BaseCurrency {
+			return cl.Step1.GetFullOtherSummed()
+		} else {
+			return cl.Step2.GetFullBaseSummed()
+		}
+	} else {
+		if denom != constants.BaseCurrency {
+			return cl.Step2.GetFullOtherSummed()
+		} else {
+			return cl.Step1.GetFullBaseSummed()
+		}
+	}
+}
+
+func (cl *CutLiquidities) GetFullLiquidityReceiving(denom string, tradeType TradeType) math.LegacyDec {
+	if tradeType == TradeTypeSell {
+		if denom != constants.BaseCurrency {
+			return cl.Step2.GetFullOtherSummed()
+		} else {
+			return cl.Step1.GetFullBaseSummed()
+		}
+	} else {
+		if denom != constants.BaseCurrency {
+			return cl.Step1.GetFullOtherSummed()
+		} else {
+			return cl.Step2.GetFullBaseSummed()
+		}
+	}
+}
+
+type liquidityChanges struct {
+	changes map[string]math.Int
+}
+
+func (lc liquidityChanges) addChange(denom string, amount math.Int) {
+	value := lc.getChange(denom)
+	value = value.Add(amount)
+
+	if value.IsZero() {
+		delete(lc.changes, denom)
+	} else {
+		lc.changes[denom] = value
+	}
+}
+
+func (lc liquidityChanges) getChange(denom string) math.Int {
+	value, has := lc.changes[denom]
+	if !has {
+		value = math.ZeroInt()
+	}
+
+	return value
 }
 
 type TradeContext struct {
@@ -84,7 +230,8 @@ type TradeContext struct {
 	MaxPrice               *math.LegacyDec
 	MinimumTradeAmount     *math.Int
 	MaximumAvailableAmount math.Int
-	CutLiquidity           CutLiquidity
+	CutLiquidities         CutLiquidities
+	liquidityChanges       *liquidityChanges
 
 	TradeDenomGiving    string
 	TradeDenomReceiving string
@@ -97,16 +244,37 @@ type TradeContext struct {
 	CoinTarget      string
 	DiscountAddress string
 
-	CalcMaximumTradableAmount      func(TradeContext) (*math.Int, error)
-	CalcTradableAmountGivenPrice   constant_product.CalculateMaximumAmount
-	CalcAmountToGive               func() (math.Int, error)
-	IntermediateTradeAmount        IntermediateTradeAmount
-	CalcMaximumTradeAmountByWallet func() (math.Int, error)
+	CalcMaximumTradableAmount           func(TradeContext) (*math.Int, error)
+	CalcTradableAmountGivenPriceOneStep constant_product.CalculateMaximumAmountOneStep
+	CalcTradableAmountGivenPriceTwoStep constant_product.CalculateMaximumAmountTwoStep
+	CalcAmountToGive                    func() (math.Int, error)
+	IntermediateTradeAmount             IntermediateTradeAmount
+	CalcMaximumTradeAmountByWallet      func() (math.Int, error)
 
 	TradeBalances TradeBalances
 	OrdersCaches  *OrdersCaches
 
 	FlatPrice *constant_product.FlatPrice
+}
+
+func (tc *TradeContext) AddLiquidityChange(denom string, amount math.Int) {
+	if tc.liquidityChanges == nil {
+		tc.liquidityChanges = &liquidityChanges{
+			changes: make(map[string]math.Int),
+		}
+	}
+
+	tc.liquidityChanges.addChange(denom, amount)
+}
+
+func (tc *TradeContext) GetLiquidityChange(denom string) math.Int {
+	if tc.liquidityChanges == nil {
+		tc.liquidityChanges = &liquidityChanges{
+			changes: make(map[string]math.Int),
+		}
+	}
+
+	return tc.liquidityChanges.getChange(denom)
 }
 
 func (tc *TradeContext) GetAmountGiven(result math.LegacyDec) math.Int {
@@ -330,17 +498,19 @@ func plain(_, _, amount, _ math.LegacyDec) (math.LegacyDec, math.LegacyDec, erro
 }
 
 type TradeStepContext struct {
-	TradeContext
+	*TradeContext
 
 	StepDenomGiving    string
 	StepDenomReceiving string
-	FeeDenom           string
 
 	TradeAmount     math.Int
 	ReserveFeeShare math.LegacyDec
+	CutLiquidity    *CutLiquidity
 
 	CalcAmountToGive    constant_product.ConstantProductTrade
 	CalcAmountToReceive constant_product.ConstantProductTrade
+
+	TradeStepIndex int
 }
 
 // When selling: givingDenom > XKP
@@ -384,13 +554,15 @@ func (tc *TradeContext) TradeStep1(reserveFeeShare math.LegacyDec, tradeType Tra
 
 	tc.TradeType = tradeType
 	return TradeStepContext{
-		TradeContext:        *tc,
+		TradeContext:        tc,
 		StepDenomGiving:     denomGiving,
 		StepDenomReceiving:  denomReceiving,
 		TradeAmount:         tc.TradeAmount,
 		ReserveFeeShare:     reserveFeeShare,
 		CalcAmountToGive:    calcAmountToGive,
 		CalcAmountToReceive: calcAmountToReceive,
+		CutLiquidity:        tc.CutLiquidities.Step1,
+		TradeStepIndex:      TradeStep1,
 	}
 }
 
@@ -432,13 +604,15 @@ func (tc *TradeContext) TradeStep2(reserveFeeShare math.LegacyDec, amount math.I
 
 	tc.TradeType = tradeType
 	return TradeStepContext{
-		TradeContext:        *tc,
+		TradeContext:        tc,
 		StepDenomGiving:     denomGiving,
 		StepDenomReceiving:  denomReceiving,
 		TradeAmount:         amount,
 		ReserveFeeShare:     reserveFeeShare,
 		CalcAmountToGive:    calcAmountToGive,
 		CalcAmountToReceive: calcAmountToReceive,
+		CutLiquidity:        tc.CutLiquidities.Step2,
+		TradeStepIndex:      TradeStep2,
 	}
 }
 

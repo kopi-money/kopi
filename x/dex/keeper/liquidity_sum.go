@@ -11,7 +11,7 @@ import (
 func (k Keeper) SumLiquidity(ctx context.Context, denom string) math.Int {
 	liqSum := math.ZeroInt()
 
-	iterator := k.LiquidityIterator(ctx, denom)
+	iterator := k.liquidityEntries.Iterator(ctx, nil, denom)
 	for iterator.Valid() {
 		liq := iterator.GetNext()
 		if liq.Amount.IsNil() || liq.Amount.IsZero() {

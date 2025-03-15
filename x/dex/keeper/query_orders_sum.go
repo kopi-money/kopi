@@ -36,7 +36,7 @@ func (k Keeper) CalcOrdersSum(ctx context.Context) (math.LegacyDec, error) {
 
 	sum := math.LegacyZeroDec()
 	for denom, denomSum := range denomSums {
-		value, err := k.GetValueInUSD(ctx, denom, denomSum.ToLegacyDec())
+		value, err := k.DenomKeeper.GetValueInUSD(ctx, denom, denomSum.ToLegacyDec())
 		if err != nil {
 			return math.LegacyDec{}, fmt.Errorf("could not get order value in usd: %w", err)
 		}
@@ -56,7 +56,7 @@ func (k Keeper) OrdersDenomSum(ctx context.Context, _ *types.QueryOrdersDenomSum
 		ordersMap[order.DenomGiving] = ordersMap[order.DenomGiving].Add(order.AmountLeft)
 	}
 
-	orderSums := []*types.OrdersSum{}
+	orderSums := []types.OrdersSum{}
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
 		sum := "0"
 		orderSum, has := ordersMap[denom]
@@ -64,7 +64,7 @@ func (k Keeper) OrdersDenomSum(ctx context.Context, _ *types.QueryOrdersDenomSum
 			sum = orderSum.String()
 		}
 
-		orderSums = append(orderSums, &types.OrdersSum{
+		orderSums = append(orderSums, types.OrdersSum{
 			DenomGiving: denom,
 			Sum:         sum,
 		})

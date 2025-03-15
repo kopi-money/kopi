@@ -324,6 +324,178 @@ func TestLiquidity9(t *testing.T) {
 	require.NoError(t, checkCache(ctx, k))
 }
 
+func TestCutLiquidity1(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+	denomKeeper := k.DenomKeeper.(AddDenomInterface)
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		denom, ratio, err := denomKeeper.CreateDexDenom(innerCtx, "stable1", "1ukusd", "1_000_000", "1_000_000", "10_000_000", 6)
+		if err != nil {
+			return nil
+		}
+
+		return denomKeeper.DexAddDenom(innerCtx, denom, ratio)
+	}))
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		denom, ratio, err := denomKeeper.CreateDexDenom(innerCtx, "stable2", "1ukusd", "1_000_000", "1_000_000", "1_000_000", 6)
+		if err != nil {
+			return nil
+		}
+
+		return denomKeeper.DexAddDenom(innerCtx, denom, ratio)
+	}))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 4_000000_000000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "stable1", keepertest.Alice, 1_000000_000000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "stable2", keepertest.Alice, 1_000000_000000)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 4_000000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "stable1", 1_000000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "stable2", 1_000000))
+
+	tradeContext := types.TradeContext{
+		Context:             ctx,
+		TradeType:           types.TradeTypeSell,
+		TradeDenomGiving:    "stable1",
+		TradeDenomReceiving: "stable2",
+		OrdersCaches:        k.NewOrdersCaches(ctx),
+	}
+
+	k.PrepareCutLiquidity(&tradeContext)
+
+	require.Equal(t, int64(4_000000), tradeContext.CutLiquidities.Step1.CutBase.TruncateInt().Int64())
+	require.Equal(t, int64(1_000000), tradeContext.CutLiquidities.Step1.CutOther.TruncateInt().Int64())
+	require.Equal(t, int64(40_000000), tradeContext.CutLiquidities.Step1.VirtualBase.TruncateInt().Int64())
+	require.Equal(t, int64(10_000000), tradeContext.CutLiquidities.Step1.VirtualOther.TruncateInt().Int64())
+
+	require.Equal(t, int64(4_000000), tradeContext.CutLiquidities.Step2.CutBase.TruncateInt().Int64())
+	require.Equal(t, int64(1_000000), tradeContext.CutLiquidities.Step2.CutOther.TruncateInt().Int64())
+	require.Equal(t, int64(4_000000), tradeContext.CutLiquidities.Step2.VirtualBase.TruncateInt().Int64())
+	require.Equal(t, int64(1_000000), tradeContext.CutLiquidities.Step2.VirtualOther.TruncateInt().Int64())
+}
+
+func TestCutLiquidity2(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 10_000))
+
+	tradeContext := types.TradeContext{
+		Context:             ctx,
+		TradeType:           types.TradeTypeSell,
+		TradeDenomGiving:    constants.KUSD,
+		TradeDenomReceiving: constants.BaseCurrency,
+		OrdersCaches:        k.NewOrdersCaches(ctx),
+	}
+
+	k.PrepareCutLiquidity(&tradeContext)
+
+	require.Equal(t, int64(10_000), tradeContext.CutLiquidities.Step1.CutBase.TruncateInt().Int64())
+	require.Equal(t, int64(0), tradeContext.CutLiquidities.Step1.CutOther.TruncateInt().Int64())
+	require.Equal(t, int64(39_990_000), tradeContext.CutLiquidities.Step1.VirtualBase.TruncateInt().Int64())
+	require.Equal(t, int64(10_000_000), tradeContext.CutLiquidities.Step1.VirtualOther.TruncateInt().Int64())
+
+	require.Nil(t, tradeContext.CutLiquidities.Step2)
+}
+
+func TestCutLiquidity3(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 500_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 200_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "uwusdc", 100_000))
+
+	tradeContext := types.TradeContext{
+		Context:             ctx,
+		TradeType:           types.TradeTypeSell,
+		TradeDenomGiving:    constants.KUSD,
+		TradeDenomReceiving: "uwusdc",
+		OrdersCaches:        k.NewOrdersCaches(ctx),
+	}
+
+	k.PrepareCutLiquidity(&tradeContext)
+
+	require.Equal(t, int64(500_000), tradeContext.CutLiquidities.Step1.CutBase.TruncateInt().Int64())
+	require.Equal(t, int64(200_000), tradeContext.CutLiquidities.Step1.CutOther.TruncateInt().Int64())
+	require.Equal(t, int64(40_000_000), tradeContext.CutLiquidities.Step1.VirtualBase.TruncateInt().Int64())
+	require.Equal(t, int64(9_925_000), tradeContext.CutLiquidities.Step1.VirtualOther.TruncateInt().Int64())
+
+	require.Equal(t, int64(500_000), tradeContext.CutLiquidities.Step2.CutBase.TruncateInt().Int64())
+	require.Equal(t, int64(100_000), tradeContext.CutLiquidities.Step2.CutOther.TruncateInt().Int64())
+	require.Equal(t, int64(39_900_000), tradeContext.CutLiquidities.Step2.VirtualBase.TruncateInt().Int64())
+	require.Equal(t, int64(10_000_000), tradeContext.CutLiquidities.Step2.VirtualOther.TruncateInt().Int64())
+}
+
+func TestCutLiquidity4(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 50_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 5_000))
+
+	tradeContext := types.TradeContext{
+		Context:             ctx,
+		TradeType:           types.TradeTypeSell,
+		TradeDenomGiving:    constants.KUSD,
+		TradeDenomReceiving: constants.BaseCurrency,
+		OrdersCaches:        k.NewOrdersCaches(ctx),
+	}
+
+	k.PrepareCutLiquidity(&tradeContext)
+
+	require.Equal(t, int64(50_000), tradeContext.CutLiquidities.Step1.CutBase.TruncateInt().Int64())
+	require.Equal(t, int64(5_000), tradeContext.CutLiquidities.Step1.CutOther.TruncateInt().Int64())
+	require.Equal(t, int64(39_970_000), tradeContext.CutLiquidities.Step1.VirtualBase.TruncateInt().Int64())
+	require.Equal(t, int64(10_000_000), tradeContext.CutLiquidities.Step1.VirtualOther.TruncateInt().Int64())
+}
+
+func TestCutLiquidity5(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_000_000))
+
+	tradeContext := types.TradeContext{
+		Context:             ctx,
+		TradeType:           types.TradeTypeSell,
+		TradeDenomGiving:    constants.KUSD,
+		TradeDenomReceiving: constants.BaseCurrency,
+		OrdersCaches:        k.NewOrdersCaches(ctx),
+	}
+
+	k.PrepareCutLiquidity(&tradeContext)
+
+	require.Equal(t, int64(1_000_000), tradeContext.CutLiquidities.Step1.CutBase.TruncateInt().Int64())
+	require.Equal(t, int64(1_000_000), tradeContext.CutLiquidities.Step1.CutOther.TruncateInt().Int64())
+	require.Equal(t, int64(40_000_000), tradeContext.CutLiquidities.Step1.VirtualBase.TruncateInt().Int64())
+	require.Equal(t, int64(9_250_000), tradeContext.CutLiquidities.Step1.VirtualOther.TruncateInt().Int64())
+
+	require.Nil(t, tradeContext.CutLiquidities.Step2)
+}
+
+func TestCutLiquidity6(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1_000_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "uwusdc", 10_000))
+
+	tradeContext := types.TradeContext{
+		Context:             ctx,
+		TradeType:           types.TradeTypeSell,
+		TradeDenomGiving:    constants.BaseCurrency,
+		TradeDenomReceiving: "uwusdc",
+		OrdersCaches:        k.NewOrdersCaches(ctx),
+	}
+
+	k.PrepareCutLiquidity(&tradeContext)
+
+	require.Nil(t, tradeContext.CutLiquidities.Step1)
+
+	require.Equal(t, int64(1_000_000), tradeContext.CutLiquidities.Step2.CutBase.TruncateInt().Int64())
+	require.Equal(t, int64(10_000), tradeContext.CutLiquidities.Step2.CutOther.TruncateInt().Int64())
+	require.Equal(t, int64(39_040_000), tradeContext.CutLiquidities.Step2.VirtualBase.TruncateInt().Int64())
+	require.Equal(t, int64(10_000_000), tradeContext.CutLiquidities.Step2.VirtualOther.TruncateInt().Int64())
+}
+
 func getSpendableAmount(ctx context.Context, k keeper.Keeper, denom, address string) math.Int {
 	addr, _ := sdk.AccAddressFromBech32(address)
 	coins := k.BankKeeper.SpendableCoins(ctx, addr)
