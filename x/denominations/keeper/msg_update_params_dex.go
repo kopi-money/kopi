@@ -17,22 +17,29 @@ func (k msgServer) DexAddDenom(ctx context.Context, req *types.MsgDexAddDenom) (
 		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
 	}
 
-	params := k.GetParams(ctx)
-
-	dexDenom, ratio, err := k.createDexDenom(ctx, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, req.Exponent)
+	dexDenom, ratio, err := k.CreateDexDenom(ctx, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, req.MinVirtualLiquidity, req.Exponent)
 	if err != nil {
 		return nil, err
 	}
 
-	params.DexDenoms = append(params.DexDenoms, dexDenom)
-
-	if err = k.SetParams(ctx, params); err != nil {
+	if err = k.Keeper.DexAddDenom(ctx, dexDenom, ratio); err != nil {
 		return nil, err
 	}
 
-	k.ratios.Set(ctx, req.Name, ratio)
-
 	return &types.MsgUpdateParamsResponse{}, err
+}
+
+func (k Keeper) DexAddDenom(ctx context.Context, dexDenom types.DexDenom, ratio types.Ratio) error {
+	params := k.GetParams(ctx)
+	params.DexDenoms = append(params.DexDenoms, dexDenom)
+
+	if err := k.SetParams(ctx, params); err != nil {
+		return err
+	}
+
+	k.ratios.Set(ctx, dexDenom.Name, ratio)
+
+	return nil
 }
 
 func (k msgServer) DexUpdateMinimumLiquidity(ctx context.Context, req *types.MsgDexUpdateMinimumLiquidity) (*types.MsgUpdateParamsResponse, error) {
@@ -41,6 +48,18 @@ func (k msgServer) DexUpdateMinimumLiquidity(ctx context.Context, req *types.Msg
 	}
 
 	if err := k.Keeper.DexUpdateMinimumLiquidity(ctx, req.Name, req.MinLiquidity); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgUpdateParamsResponse{}, nil
+}
+
+func (k msgServer) DexUpdateExtraVirtualLiquidity(ctx context.Context, req *types.MsgDexUpdateExtraVirtualLiquidity) (*types.MsgUpdateParamsResponse, error) {
+	if k.GetAuthority() != req.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	}
+
+	if err := k.Keeper.DexUpdateExtraVirtualLiquidity(ctx, req.Name, req.ExtraVirtualLiquidity); err != nil {
 		return nil, err
 	}
 
@@ -56,6 +75,44 @@ func (k Keeper) DexUpdateMinimumLiquidity(ctx context.Context, denom, minLiquidi
 	for _, dexDenom := range params.DexDenoms {
 		if dexDenom.Name == denom {
 			dexDenom.MinLiquidity = minLiquidity
+			found = true
+		}
+
+		dexDenoms = append(dexDenoms, dexDenom)
+	}
+
+	if !found {
+		return types.ErrInvalidDexAsset
+	}
+
+	params.DexDenoms = dexDenoms
+
+	if err := k.SetParams(ctx, params); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (k Keeper) DexUpdateExtraVirtualLiquidity(ctx context.Context, denom, extraVirtualLiquidityStr string) error {
+	params := k.GetParams(ctx)
+
+	var extraVirtualLiquidity *math.Int
+	if extraVirtualLiquidityStr != "" {
+		mvl, ok := math.NewIntFromString(extraVirtualLiquidityStr)
+		if !ok {
+			return fmt.Errorf("invalid extra virtual liquidity: %s", extraVirtualLiquidityStr)
+		}
+
+		extraVirtualLiquidity = &mvl
+	}
+
+	dexDenoms := []types.DexDenom{}
+	found := false
+
+	for _, dexDenom := range params.DexDenoms {
+		if dexDenom.Name == denom {
+			dexDenom.ExtraVirtualLiquidity = extraVirtualLiquidity
 			found = true
 		}
 
@@ -107,20 +164,38 @@ func (k msgServer) DexUpdateMinimumOrderSize(ctx context.Context, req *types.Msg
 	return &types.MsgUpdateParamsResponse{}, nil
 }
 
-func (k Keeper) createDexDenom(ctx context.Context, name, factorStr, minLiquidityStr, minOrderSizeStr string, exponent uint64) (types.DexDenom, types.Ratio, error) {
+func (k Keeper) CreateDexDenom(ctx context.Context, name, factorStr, minLiquidityStr, minOrderSizeStr, extraVirtualLiquidityStr string, exponent uint64) (types.DexDenom, types.Ratio, error) {
 	ratioFactor, err := k.CreateRatio(ctx, factorStr, exponent)
 	if err != nil {
 		return types.DexDenom{}, types.Ratio{}, err
 	}
 
-	minLiquidity, _ := math.NewIntFromString(minLiquidityStr)
-	minOrderSize, _ := math.NewIntFromString(minOrderSizeStr)
+	minLiquidity, ok := math.NewIntFromString(minLiquidityStr)
+	if !ok {
+		return types.DexDenom{}, types.Ratio{}, fmt.Errorf("invalid min liquidity")
+	}
+
+	minOrderSize, ok := math.NewIntFromString(minOrderSizeStr)
+	if !ok {
+		return types.DexDenom{}, types.Ratio{}, fmt.Errorf("invalid min order size")
+	}
+
+	var extraVirtualLiquidity *math.Int
+	if extraVirtualLiquidityStr != "" {
+		mvl, ok := math.NewIntFromString(extraVirtualLiquidityStr)
+		if !ok {
+			return types.DexDenom{}, types.Ratio{}, fmt.Errorf("invalid min virtual liquidity")
+		}
+
+		extraVirtualLiquidity = &mvl
+	}
 
 	dexDenom := types.DexDenom{
-		Name:         name,
-		MinLiquidity: minLiquidity,
-		MinOrderSize: minOrderSize,
-		Exponent:     exponent,
+		Name:                  name,
+		MinLiquidity:          minLiquidity,
+		MinOrderSize:          minOrderSize,
+		Exponent:              exponent,
+		ExtraVirtualLiquidity: extraVirtualLiquidity,
 	}
 
 	ratio := types.Ratio{

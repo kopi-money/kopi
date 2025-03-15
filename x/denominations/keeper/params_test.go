@@ -61,13 +61,15 @@ func TestSetParams(t *testing.T) {
 	require.Equal(t, numDenoms1+1, numDenoms2)
 
 	require.Error(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		_, err := msg.DexAddDenom(innerCtx, &types.MsgDexAddDenom{
+		_, err := msg.DexAddDenom(ctx, &types.MsgDexAddDenom{
 			Authority:    k.GetAuthority(),
 			Name:         "ukusd2",
 			Factor:       "10",
 			MinLiquidity: "1000",
 			MinOrderSize: "1000",
+			Exponent:     6,
 		})
+
 		return err
 	}))
 

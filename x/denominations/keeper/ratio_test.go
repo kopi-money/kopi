@@ -1,8 +1,6 @@
 package keeper_test
 
 import (
-	"context"
-	"github.com/cosmos/cosmos-sdk/cache"
 	"testing"
 
 	"cosmossdk.io/math"
@@ -17,15 +15,13 @@ func TestRatios1(t *testing.T) {
 	denomMsg := denomkeeper.NewMsgServerImpl(k)
 
 	// Add BTC with a price 1 BTC = 1000 kUSD
-	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		return keepertest.AddDexDenom(innerCtx, denomMsg, &denomtypes.MsgDexAddDenom{
-			Authority:    k.GetAuthority(),
-			Name:         "bitcoin",
-			Factor:       "1000ukusd",
-			MinLiquidity: "1000000",
-			MinOrderSize: "1000000",
-			Exponent:     8,
-		})
+	require.NoError(t, keepertest.AddDexDenom(ctx, denomMsg, &denomtypes.MsgDexAddDenom{
+		Authority:    k.GetAuthority(),
+		Name:         "bitcoin",
+		Factor:       "1000ukusd",
+		MinLiquidity: "1000000",
+		MinOrderSize: "1000000",
+		Exponent:     8,
 	}))
 
 	ratio, err := k.GetRatio(ctx, "bitcoin")
@@ -41,14 +37,12 @@ func TestRatios2(t *testing.T) {
 	denomMsg := denomkeeper.NewMsgServerImpl(k)
 
 	// Add BTC with a price 1 BTC = 1000 kUSD
-	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		return keepertest.AddDexDenom(innerCtx, denomMsg, &denomtypes.MsgDexAddDenom{
-			Authority:    k.GetAuthority(),
-			Name:         "inj2",
-			Factor:       "22ukusd",
-			MinLiquidity: "1000000",
-			MinOrderSize: "1000000",
-			Exponent:     18,
-		})
+	require.NoError(t, keepertest.AddDexDenom(ctx, denomMsg, &denomtypes.MsgDexAddDenom{
+		Authority:    k.GetAuthority(),
+		Name:         "inj2",
+		Factor:       "22ukusd",
+		MinLiquidity: "1000000",
+		MinOrderSize: "1000000",
+		Exponent:     18,
 	}))
 }

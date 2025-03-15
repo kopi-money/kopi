@@ -388,6 +388,16 @@ func validateDexDenom(dexDenom DexDenom) error {
 		if dexDenom.MinLiquidity.LTE(math.ZeroInt()) {
 			return fmt.Errorf("minimum liquidty must not be smaller than zero")
 		}
+
+		if dexDenom.ExtraVirtualLiquidity != nil {
+			if dexDenom.ExtraVirtualLiquidity.IsNil() {
+				return fmt.Errorf("min virtual liquidity is nil")
+			}
+
+			if dexDenom.ExtraVirtualLiquidity.LTE(math.ZeroInt()) {
+				return fmt.Errorf("minimum virtual liquidty must not be smaller than zero")
+			}
+		}
 	}
 
 	if dexDenom.Exponent < 1 {

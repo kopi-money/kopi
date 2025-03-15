@@ -30,7 +30,7 @@ func (k msgServer) ArbitrageAddDenom(ctx context.Context, req *types.MsgAddArbit
 		return nil, err
 	}
 
-	dexDenom, ratio, err := k.createDexDenom(ctx, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, cAsset.Exponent)
+	dexDenom, ratio, err := k.CreateDexDenom(ctx, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, req.MinVirtualLiquidity, cAsset.Exponent)
 	if err != nil {
 		return nil, err
 	}

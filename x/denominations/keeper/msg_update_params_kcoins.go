@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"cosmossdk.io/math"
 
@@ -16,9 +17,20 @@ func (k msgServer) KCoinAddDenom(ctx context.Context, req *types.MsgKCoinAddDeno
 
 	params := k.GetParams(ctx)
 
-	maxSupply, _ := math.NewIntFromString(req.MaxSupply)
-	maxBurnAmount, _ := math.NewIntFromString(req.MaxBurnAmount)
-	maxMintAmount, _ := math.NewIntFromString(req.MaxMintAmount)
+	maxSupply, ok := math.NewIntFromString(req.MaxSupply)
+	if !ok {
+		return nil, fmt.Errorf("invalid max supply")
+	}
+
+	maxBurnAmount, ok := math.NewIntFromString(req.MaxBurnAmount)
+	if !ok {
+		return nil, fmt.Errorf("invalid max burn amount")
+	}
+
+	maxMintAmount, ok := math.NewIntFromString(req.MaxMintAmount)
+	if !ok {
+		return nil, fmt.Errorf("invalid max mint amount")
+	}
 
 	params.KCoins = append(params.KCoins, types.KCoin{
 		DexDenom:      req.Name,
@@ -28,7 +40,7 @@ func (k msgServer) KCoinAddDenom(ctx context.Context, req *types.MsgKCoinAddDeno
 		MaxBurnAmount: maxBurnAmount,
 	})
 
-	dexDenom, ratio, err := k.createDexDenom(ctx, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, req.Exponent)
+	dexDenom, ratio, err := k.CreateDexDenom(ctx, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, req.MinVirtualLiquidity, req.Exponent)
 	if err != nil {
 		return nil, err
 	}

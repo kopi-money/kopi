@@ -33,7 +33,7 @@ func (k msgServer) CAssetAddDenom(ctx context.Context, req *types.MsgCAssetAddDe
 	}
 
 	if !k.IsValidDenom(ctx, req.Name) {
-		dexDenom, ratio, err := k.createDexDenom(ctx, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, baseDenom.Exponent)
+		dexDenom, ratio, err := k.CreateDexDenom(ctx, req.Name, req.Factor, req.MinLiquidity, req.MinOrderSize, req.MinVirtualLiquidity, baseDenom.Exponent)
 		if err != nil {
 			return nil, err
 		}
