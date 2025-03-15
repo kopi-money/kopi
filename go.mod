@@ -1,6 +1,6 @@
 module github.com/kopi-money/kopi
 
-go 1.23.6
+go 1.23.7
 
 require (
 	cosmossdk.io/api v0.7.6
