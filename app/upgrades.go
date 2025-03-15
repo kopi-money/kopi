@@ -1,12 +1,13 @@
 package app
 
 import (
-	"fmt"
-
 	storetypes "cosmossdk.io/store/types"
 	"cosmossdk.io/x/upgrade/types"
+	"fmt"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	v18 "github.com/kopi-money/kopi/app/upgrades/v18"
+	v19 "github.com/kopi-money/kopi/app/upgrades/v19"
 
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
@@ -25,7 +26,6 @@ import (
 	"github.com/kopi-money/kopi/app/upgrades/v15"
 	"github.com/kopi-money/kopi/app/upgrades/v16"
 	"github.com/kopi-money/kopi/app/upgrades/v17"
-	"github.com/kopi-money/kopi/app/upgrades/v18"
 	"github.com/kopi-money/kopi/app/upgrades/v7"
 	"github.com/kopi-money/kopi/app/upgrades/v8"
 	"github.com/kopi-money/kopi/app/upgrades/v9"
@@ -154,6 +154,14 @@ func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
 		},
 		{
 			UpgradeName:          v18.UpgradeName,
+			CreateUpgradeHandler: v18.CreateUpgradeHandler,
+		},
+		{
+			UpgradeName:          v19.UpgradeName,
+			CreateUpgradeHandler: v18.CreateUpgradeHandler,
+		},
+		{
+			UpgradeName:          v19.UpgradeNameRC1,
 			CreateUpgradeHandler: v18.CreateUpgradeHandler,
 		},
 	}

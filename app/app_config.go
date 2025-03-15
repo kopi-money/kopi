@@ -229,6 +229,8 @@ var (
 		{Account: dexmoduletypes.PoolTrade},
 		{Account: dexmoduletypes.PoolOrders},
 		{Account: dexmoduletypes.PoolReserve, Permissions: []string{authtypes.Burner}},
+		{Account: dexmoduletypes.PoolFeeIncome},
+		{Account: dexmoduletypes.PoolFeeLeftovers},
 
 		// Reserve
 		{Account: reservemoduletypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
