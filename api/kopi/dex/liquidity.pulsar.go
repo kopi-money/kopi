@@ -8,84 +8,40 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	_ "google.golang.org/protobuf/types/known/wrapperspb"
 	io "io"
 	reflect "reflect"
 	sync "sync"
 )
 
-var _ protoreflect.List = (*_DenomLiquidity_2_list)(nil)
-
-type _DenomLiquidity_2_list struct {
-	list *[]*Liquidity
-}
-
-func (x *_DenomLiquidity_2_list) Len() int {
-	if x.list == nil {
-		return 0
-	}
-	return len(*x.list)
-}
-
-func (x *_DenomLiquidity_2_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
-}
-
-func (x *_DenomLiquidity_2_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Liquidity)
-	(*x.list)[i] = concreteValue
-}
-
-func (x *_DenomLiquidity_2_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Liquidity)
-	*x.list = append(*x.list, concreteValue)
-}
-
-func (x *_DenomLiquidity_2_list) AppendMutable() protoreflect.Value {
-	v := new(Liquidity)
-	*x.list = append(*x.list, v)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_DenomLiquidity_2_list) Truncate(n int) {
-	for i := n; i < len(*x.list); i++ {
-		(*x.list)[i] = nil
-	}
-	*x.list = (*x.list)[:n]
-}
-
-func (x *_DenomLiquidity_2_list) NewElement() protoreflect.Value {
-	v := new(Liquidity)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_DenomLiquidity_2_list) IsValid() bool {
-	return x.list != nil
-}
-
 var (
-	md_DenomLiquidity         protoreflect.MessageDescriptor
-	fd_DenomLiquidity_denom   protoreflect.FieldDescriptor
-	fd_DenomLiquidity_entries protoreflect.FieldDescriptor
+	md_GenesisLiquidity                protoreflect.MessageDescriptor
+	fd_GenesisLiquidity_index          protoreflect.FieldDescriptor
+	fd_GenesisLiquidity_address        protoreflect.FieldDescriptor
+	fd_GenesisLiquidity_amount         protoreflect.FieldDescriptor
+	fd_GenesisLiquidity_position_index protoreflect.FieldDescriptor
+	fd_GenesisLiquidity_denom          protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_kopi_dex_liquidity_proto_init()
-	md_DenomLiquidity = File_kopi_dex_liquidity_proto.Messages().ByName("DenomLiquidity")
-	fd_DenomLiquidity_denom = md_DenomLiquidity.Fields().ByName("denom")
-	fd_DenomLiquidity_entries = md_DenomLiquidity.Fields().ByName("entries")
+	md_GenesisLiquidity = File_kopi_dex_liquidity_proto.Messages().ByName("GenesisLiquidity")
+	fd_GenesisLiquidity_index = md_GenesisLiquidity.Fields().ByName("index")
+	fd_GenesisLiquidity_address = md_GenesisLiquidity.Fields().ByName("address")
+	fd_GenesisLiquidity_amount = md_GenesisLiquidity.Fields().ByName("amount")
+	fd_GenesisLiquidity_position_index = md_GenesisLiquidity.Fields().ByName("position_index")
+	fd_GenesisLiquidity_denom = md_GenesisLiquidity.Fields().ByName("denom")
 }
 
-var _ protoreflect.Message = (*fastReflection_DenomLiquidity)(nil)
+var _ protoreflect.Message = (*fastReflection_GenesisLiquidity)(nil)
 
-type fastReflection_DenomLiquidity DenomLiquidity
+type fastReflection_GenesisLiquidity GenesisLiquidity
 
-func (x *DenomLiquidity) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_DenomLiquidity)(x)
+func (x *GenesisLiquidity) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_GenesisLiquidity)(x)
 }
 
-func (x *DenomLiquidity) slowProtoReflect() protoreflect.Message {
+func (x *GenesisLiquidity) slowProtoReflect() protoreflect.Message {
 	mi := &file_kopi_dex_liquidity_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -97,43 +53,43 @@ func (x *DenomLiquidity) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_DenomLiquidity_messageType fastReflection_DenomLiquidity_messageType
-var _ protoreflect.MessageType = fastReflection_DenomLiquidity_messageType{}
+var _fastReflection_GenesisLiquidity_messageType fastReflection_GenesisLiquidity_messageType
+var _ protoreflect.MessageType = fastReflection_GenesisLiquidity_messageType{}
 
-type fastReflection_DenomLiquidity_messageType struct{}
+type fastReflection_GenesisLiquidity_messageType struct{}
 
-func (x fastReflection_DenomLiquidity_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_DenomLiquidity)(nil)
+func (x fastReflection_GenesisLiquidity_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_GenesisLiquidity)(nil)
 }
-func (x fastReflection_DenomLiquidity_messageType) New() protoreflect.Message {
-	return new(fastReflection_DenomLiquidity)
+func (x fastReflection_GenesisLiquidity_messageType) New() protoreflect.Message {
+	return new(fastReflection_GenesisLiquidity)
 }
-func (x fastReflection_DenomLiquidity_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_DenomLiquidity
+func (x fastReflection_GenesisLiquidity_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_GenesisLiquidity
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_DenomLiquidity) Descriptor() protoreflect.MessageDescriptor {
-	return md_DenomLiquidity
+func (x *fastReflection_GenesisLiquidity) Descriptor() protoreflect.MessageDescriptor {
+	return md_GenesisLiquidity
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_DenomLiquidity) Type() protoreflect.MessageType {
-	return _fastReflection_DenomLiquidity_messageType
+func (x *fastReflection_GenesisLiquidity) Type() protoreflect.MessageType {
+	return _fastReflection_GenesisLiquidity_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_DenomLiquidity) New() protoreflect.Message {
-	return new(fastReflection_DenomLiquidity)
+func (x *fastReflection_GenesisLiquidity) New() protoreflect.Message {
+	return new(fastReflection_GenesisLiquidity)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_DenomLiquidity) Interface() protoreflect.ProtoMessage {
-	return (*DenomLiquidity)(x)
+func (x *fastReflection_GenesisLiquidity) Interface() protoreflect.ProtoMessage {
+	return (*GenesisLiquidity)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -141,16 +97,34 @@ func (x *fastReflection_DenomLiquidity) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_DenomLiquidity) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.Denom != "" {
-		value := protoreflect.ValueOfString(x.Denom)
-		if !f(fd_DenomLiquidity_denom, value) {
+func (x *fastReflection_GenesisLiquidity) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Index != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.Index)
+		if !f(fd_GenesisLiquidity_index, value) {
 			return
 		}
 	}
-	if len(x.Entries) != 0 {
-		value := protoreflect.ValueOfList(&_DenomLiquidity_2_list{list: &x.Entries})
-		if !f(fd_DenomLiquidity_entries, value) {
+	if x.Address != "" {
+		value := protoreflect.ValueOfString(x.Address)
+		if !f(fd_GenesisLiquidity_address, value) {
+			return
+		}
+	}
+	if len(x.Amount) != 0 {
+		value := protoreflect.ValueOfBytes(x.Amount)
+		if !f(fd_GenesisLiquidity_amount, value) {
+			return
+		}
+	}
+	if x.PositionIndex != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.PositionIndex)
+		if !f(fd_GenesisLiquidity_position_index, value) {
+			return
+		}
+	}
+	if x.Denom != "" {
+		value := protoreflect.ValueOfString(x.Denom)
+		if !f(fd_GenesisLiquidity_denom, value) {
 			return
 		}
 	}
@@ -167,17 +141,23 @@ func (x *fastReflection_DenomLiquidity) Range(f func(protoreflect.FieldDescripto
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_DenomLiquidity) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_GenesisLiquidity) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "kopi.dex.DenomLiquidity.denom":
+	case "kopi.dex.GenesisLiquidity.index":
+		return x.Index != uint64(0)
+	case "kopi.dex.GenesisLiquidity.address":
+		return x.Address != ""
+	case "kopi.dex.GenesisLiquidity.amount":
+		return len(x.Amount) != 0
+	case "kopi.dex.GenesisLiquidity.position_index":
+		return x.PositionIndex != uint64(0)
+	case "kopi.dex.GenesisLiquidity.denom":
 		return x.Denom != ""
-	case "kopi.dex.DenomLiquidity.entries":
-		return len(x.Entries) != 0
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.DenomLiquidity"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.GenesisLiquidity"))
 		}
-		panic(fmt.Errorf("message kopi.dex.DenomLiquidity does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message kopi.dex.GenesisLiquidity does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -187,17 +167,23 @@ func (x *fastReflection_DenomLiquidity) Has(fd protoreflect.FieldDescriptor) boo
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_DenomLiquidity) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_GenesisLiquidity) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "kopi.dex.DenomLiquidity.denom":
+	case "kopi.dex.GenesisLiquidity.index":
+		x.Index = uint64(0)
+	case "kopi.dex.GenesisLiquidity.address":
+		x.Address = ""
+	case "kopi.dex.GenesisLiquidity.amount":
+		x.Amount = nil
+	case "kopi.dex.GenesisLiquidity.position_index":
+		x.PositionIndex = uint64(0)
+	case "kopi.dex.GenesisLiquidity.denom":
 		x.Denom = ""
-	case "kopi.dex.DenomLiquidity.entries":
-		x.Entries = nil
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.DenomLiquidity"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.GenesisLiquidity"))
 		}
-		panic(fmt.Errorf("message kopi.dex.DenomLiquidity does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message kopi.dex.GenesisLiquidity does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -207,22 +193,28 @@ func (x *fastReflection_DenomLiquidity) Clear(fd protoreflect.FieldDescriptor) {
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_DenomLiquidity) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_GenesisLiquidity) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "kopi.dex.DenomLiquidity.denom":
+	case "kopi.dex.GenesisLiquidity.index":
+		value := x.Index
+		return protoreflect.ValueOfUint64(value)
+	case "kopi.dex.GenesisLiquidity.address":
+		value := x.Address
+		return protoreflect.ValueOfString(value)
+	case "kopi.dex.GenesisLiquidity.amount":
+		value := x.Amount
+		return protoreflect.ValueOfBytes(value)
+	case "kopi.dex.GenesisLiquidity.position_index":
+		value := x.PositionIndex
+		return protoreflect.ValueOfUint64(value)
+	case "kopi.dex.GenesisLiquidity.denom":
 		value := x.Denom
 		return protoreflect.ValueOfString(value)
-	case "kopi.dex.DenomLiquidity.entries":
-		if len(x.Entries) == 0 {
-			return protoreflect.ValueOfList(&_DenomLiquidity_2_list{})
-		}
-		listValue := &_DenomLiquidity_2_list{list: &x.Entries}
-		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.DenomLiquidity"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.GenesisLiquidity"))
 		}
-		panic(fmt.Errorf("message kopi.dex.DenomLiquidity does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message kopi.dex.GenesisLiquidity does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -236,19 +228,23 @@ func (x *fastReflection_DenomLiquidity) Get(descriptor protoreflect.FieldDescrip
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_DenomLiquidity) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_GenesisLiquidity) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "kopi.dex.DenomLiquidity.denom":
+	case "kopi.dex.GenesisLiquidity.index":
+		x.Index = value.Uint()
+	case "kopi.dex.GenesisLiquidity.address":
+		x.Address = value.Interface().(string)
+	case "kopi.dex.GenesisLiquidity.amount":
+		x.Amount = value.Bytes()
+	case "kopi.dex.GenesisLiquidity.position_index":
+		x.PositionIndex = value.Uint()
+	case "kopi.dex.GenesisLiquidity.denom":
 		x.Denom = value.Interface().(string)
-	case "kopi.dex.DenomLiquidity.entries":
-		lv := value.List()
-		clv := lv.(*_DenomLiquidity_2_list)
-		x.Entries = *clv.list
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.DenomLiquidity"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.GenesisLiquidity"))
 		}
-		panic(fmt.Errorf("message kopi.dex.DenomLiquidity does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message kopi.dex.GenesisLiquidity does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -262,49 +258,56 @@ func (x *fastReflection_DenomLiquidity) Set(fd protoreflect.FieldDescriptor, val
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_DenomLiquidity) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_GenesisLiquidity) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "kopi.dex.DenomLiquidity.entries":
-		if x.Entries == nil {
-			x.Entries = []*Liquidity{}
-		}
-		value := &_DenomLiquidity_2_list{list: &x.Entries}
-		return protoreflect.ValueOfList(value)
-	case "kopi.dex.DenomLiquidity.denom":
-		panic(fmt.Errorf("field denom of message kopi.dex.DenomLiquidity is not mutable"))
+	case "kopi.dex.GenesisLiquidity.index":
+		panic(fmt.Errorf("field index of message kopi.dex.GenesisLiquidity is not mutable"))
+	case "kopi.dex.GenesisLiquidity.address":
+		panic(fmt.Errorf("field address of message kopi.dex.GenesisLiquidity is not mutable"))
+	case "kopi.dex.GenesisLiquidity.amount":
+		panic(fmt.Errorf("field amount of message kopi.dex.GenesisLiquidity is not mutable"))
+	case "kopi.dex.GenesisLiquidity.position_index":
+		panic(fmt.Errorf("field position_index of message kopi.dex.GenesisLiquidity is not mutable"))
+	case "kopi.dex.GenesisLiquidity.denom":
+		panic(fmt.Errorf("field denom of message kopi.dex.GenesisLiquidity is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.DenomLiquidity"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.GenesisLiquidity"))
 		}
-		panic(fmt.Errorf("message kopi.dex.DenomLiquidity does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message kopi.dex.GenesisLiquidity does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_DenomLiquidity) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_GenesisLiquidity) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "kopi.dex.DenomLiquidity.denom":
+	case "kopi.dex.GenesisLiquidity.index":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "kopi.dex.GenesisLiquidity.address":
 		return protoreflect.ValueOfString("")
-	case "kopi.dex.DenomLiquidity.entries":
-		list := []*Liquidity{}
-		return protoreflect.ValueOfList(&_DenomLiquidity_2_list{list: &list})
+	case "kopi.dex.GenesisLiquidity.amount":
+		return protoreflect.ValueOfBytes(nil)
+	case "kopi.dex.GenesisLiquidity.position_index":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "kopi.dex.GenesisLiquidity.denom":
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.DenomLiquidity"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.GenesisLiquidity"))
 		}
-		panic(fmt.Errorf("message kopi.dex.DenomLiquidity does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message kopi.dex.GenesisLiquidity does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_DenomLiquidity) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_GenesisLiquidity) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in kopi.dex.DenomLiquidity", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in kopi.dex.GenesisLiquidity", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -312,7 +315,7 @@ func (x *fastReflection_DenomLiquidity) WhichOneof(d protoreflect.OneofDescripto
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_DenomLiquidity) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_GenesisLiquidity) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -323,7 +326,7 @@ func (x *fastReflection_DenomLiquidity) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_DenomLiquidity) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_GenesisLiquidity) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -335,7 +338,7 @@ func (x *fastReflection_DenomLiquidity) SetUnknown(fields protoreflect.RawFields
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_DenomLiquidity) IsValid() bool {
+func (x *fastReflection_GenesisLiquidity) IsValid() bool {
 	return x != nil
 }
 
@@ -345,9 +348,9 @@ func (x *fastReflection_DenomLiquidity) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_DenomLiquidity) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_GenesisLiquidity) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*DenomLiquidity)
+		x := input.Message.Interface().(*GenesisLiquidity)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -359,15 +362,23 @@ func (x *fastReflection_DenomLiquidity) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
-		l = len(x.Denom)
+		if x.Index != 0 {
+			n += 1 + runtime.Sov(uint64(x.Index))
+		}
+		l = len(x.Address)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if len(x.Entries) > 0 {
-			for _, e := range x.Entries {
-				l = options.Size(e)
-				n += 1 + l + runtime.Sov(uint64(l))
-			}
+		l = len(x.Amount)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.PositionIndex != 0 {
+			n += 1 + runtime.Sov(uint64(x.PositionIndex))
+		}
+		l = len(x.Denom)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -379,7 +390,7 @@ func (x *fastReflection_DenomLiquidity) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*DenomLiquidity)
+		x := input.Message.Interface().(*GenesisLiquidity)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -398,28 +409,36 @@ func (x *fastReflection_DenomLiquidity) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.Entries) > 0 {
-			for iNdEx := len(x.Entries) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.Entries[iNdEx])
-				if err != nil {
-					return protoiface.MarshalOutput{
-						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-						Buf:               input.Buf,
-					}, err
-				}
-				i -= len(encoded)
-				copy(dAtA[i:], encoded)
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-				i--
-				dAtA[i] = 0x12
-			}
-		}
 		if len(x.Denom) > 0 {
 			i -= len(x.Denom)
 			copy(dAtA[i:], x.Denom)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Denom)))
 			i--
-			dAtA[i] = 0xa
+			dAtA[i] = 0x2a
+		}
+		if x.PositionIndex != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.PositionIndex))
+			i--
+			dAtA[i] = 0x20
+		}
+		if len(x.Amount) > 0 {
+			i -= len(x.Amount)
+			copy(dAtA[i:], x.Amount)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Amount)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.Address) > 0 {
+			i -= len(x.Address)
+			copy(dAtA[i:], x.Address)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Address)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if x.Index != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Index))
+			i--
+			dAtA[i] = 0x8
 		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
@@ -432,7 +451,7 @@ func (x *fastReflection_DenomLiquidity) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*DenomLiquidity)
+		x := input.Message.Interface().(*GenesisLiquidity)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -464,13 +483,117 @@ func (x *fastReflection_DenomLiquidity) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: DenomLiquidity: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GenesisLiquidity: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: DenomLiquidity: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GenesisLiquidity: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
+				}
+				x.Index = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Index |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Address = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+				}
+				var byteLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					byteLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if byteLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + byteLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Amount = append(x.Amount[:0], dAtA[iNdEx:postIndex]...)
+				if x.Amount == nil {
+					x.Amount = []byte{}
+				}
+				iNdEx = postIndex
+			case 4:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PositionIndex", wireType)
+				}
+				x.PositionIndex = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.PositionIndex |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 5:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
 				}
@@ -501,40 +624,6 @@ func (x *fastReflection_DenomLiquidity) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
 				x.Denom = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 2:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Entries", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Entries = append(x.Entries, &Liquidity{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Entries[len(x.Entries)-1]); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -572,10 +661,11 @@ func (x *fastReflection_DenomLiquidity) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_Liquidity         protoreflect.MessageDescriptor
-	fd_Liquidity_index   protoreflect.FieldDescriptor
-	fd_Liquidity_address protoreflect.FieldDescriptor
-	fd_Liquidity_amount  protoreflect.FieldDescriptor
+	md_Liquidity                protoreflect.MessageDescriptor
+	fd_Liquidity_index          protoreflect.FieldDescriptor
+	fd_Liquidity_address        protoreflect.FieldDescriptor
+	fd_Liquidity_amount         protoreflect.FieldDescriptor
+	fd_Liquidity_position_index protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -584,6 +674,7 @@ func init() {
 	fd_Liquidity_index = md_Liquidity.Fields().ByName("index")
 	fd_Liquidity_address = md_Liquidity.Fields().ByName("address")
 	fd_Liquidity_amount = md_Liquidity.Fields().ByName("amount")
+	fd_Liquidity_position_index = md_Liquidity.Fields().ByName("position_index")
 }
 
 var _ protoreflect.Message = (*fastReflection_Liquidity)(nil)
@@ -669,6 +760,12 @@ func (x *fastReflection_Liquidity) Range(f func(protoreflect.FieldDescriptor, pr
 			return
 		}
 	}
+	if x.PositionIndex != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.PositionIndex)
+		if !f(fd_Liquidity_position_index, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -690,6 +787,8 @@ func (x *fastReflection_Liquidity) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.Address != ""
 	case "kopi.dex.Liquidity.amount":
 		return len(x.Amount) != 0
+	case "kopi.dex.Liquidity.position_index":
+		return x.PositionIndex != uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.Liquidity"))
@@ -712,6 +811,8 @@ func (x *fastReflection_Liquidity) Clear(fd protoreflect.FieldDescriptor) {
 		x.Address = ""
 	case "kopi.dex.Liquidity.amount":
 		x.Amount = nil
+	case "kopi.dex.Liquidity.position_index":
+		x.PositionIndex = uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.Liquidity"))
@@ -737,6 +838,9 @@ func (x *fastReflection_Liquidity) Get(descriptor protoreflect.FieldDescriptor) 
 	case "kopi.dex.Liquidity.amount":
 		value := x.Amount
 		return protoreflect.ValueOfBytes(value)
+	case "kopi.dex.Liquidity.position_index":
+		value := x.PositionIndex
+		return protoreflect.ValueOfUint64(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.Liquidity"))
@@ -763,6 +867,8 @@ func (x *fastReflection_Liquidity) Set(fd protoreflect.FieldDescriptor, value pr
 		x.Address = value.Interface().(string)
 	case "kopi.dex.Liquidity.amount":
 		x.Amount = value.Bytes()
+	case "kopi.dex.Liquidity.position_index":
+		x.PositionIndex = value.Uint()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.Liquidity"))
@@ -789,6 +895,8 @@ func (x *fastReflection_Liquidity) Mutable(fd protoreflect.FieldDescriptor) prot
 		panic(fmt.Errorf("field address of message kopi.dex.Liquidity is not mutable"))
 	case "kopi.dex.Liquidity.amount":
 		panic(fmt.Errorf("field amount of message kopi.dex.Liquidity is not mutable"))
+	case "kopi.dex.Liquidity.position_index":
+		panic(fmt.Errorf("field position_index of message kopi.dex.Liquidity is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.Liquidity"))
@@ -808,6 +916,8 @@ func (x *fastReflection_Liquidity) NewField(fd protoreflect.FieldDescriptor) pro
 		return protoreflect.ValueOfString("")
 	case "kopi.dex.Liquidity.amount":
 		return protoreflect.ValueOfBytes(nil)
+	case "kopi.dex.Liquidity.position_index":
+		return protoreflect.ValueOfUint64(uint64(0))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.Liquidity"))
@@ -888,6 +998,9 @@ func (x *fastReflection_Liquidity) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		if x.PositionIndex != 0 {
+			n += 1 + runtime.Sov(uint64(x.PositionIndex))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -916,6 +1029,11 @@ func (x *fastReflection_Liquidity) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.PositionIndex != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.PositionIndex))
+			i--
+			dAtA[i] = 0x20
 		}
 		if len(x.Amount) > 0 {
 			i -= len(x.Amount)
@@ -1070,6 +1188,957 @@ func (x *fastReflection_Liquidity) ProtoMethods() *protoiface.Methods {
 					x.Amount = []byte{}
 				}
 				iNdEx = postIndex
+			case 4:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PositionIndex", wireType)
+				}
+				x.PositionIndex = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.PositionIndex |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_GenesisLiquidityPositions                protoreflect.MessageDescriptor
+	fd_GenesisLiquidityPositions_address        protoreflect.FieldDescriptor
+	fd_GenesisLiquidityPositions_position_index protoreflect.FieldDescriptor
+	fd_GenesisLiquidityPositions_auto_compound  protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_kopi_dex_liquidity_proto_init()
+	md_GenesisLiquidityPositions = File_kopi_dex_liquidity_proto.Messages().ByName("GenesisLiquidityPositions")
+	fd_GenesisLiquidityPositions_address = md_GenesisLiquidityPositions.Fields().ByName("address")
+	fd_GenesisLiquidityPositions_position_index = md_GenesisLiquidityPositions.Fields().ByName("position_index")
+	fd_GenesisLiquidityPositions_auto_compound = md_GenesisLiquidityPositions.Fields().ByName("auto_compound")
+}
+
+var _ protoreflect.Message = (*fastReflection_GenesisLiquidityPositions)(nil)
+
+type fastReflection_GenesisLiquidityPositions GenesisLiquidityPositions
+
+func (x *GenesisLiquidityPositions) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_GenesisLiquidityPositions)(x)
+}
+
+func (x *GenesisLiquidityPositions) slowProtoReflect() protoreflect.Message {
+	mi := &file_kopi_dex_liquidity_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_GenesisLiquidityPositions_messageType fastReflection_GenesisLiquidityPositions_messageType
+var _ protoreflect.MessageType = fastReflection_GenesisLiquidityPositions_messageType{}
+
+type fastReflection_GenesisLiquidityPositions_messageType struct{}
+
+func (x fastReflection_GenesisLiquidityPositions_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_GenesisLiquidityPositions)(nil)
+}
+func (x fastReflection_GenesisLiquidityPositions_messageType) New() protoreflect.Message {
+	return new(fastReflection_GenesisLiquidityPositions)
+}
+func (x fastReflection_GenesisLiquidityPositions_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_GenesisLiquidityPositions
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_GenesisLiquidityPositions) Descriptor() protoreflect.MessageDescriptor {
+	return md_GenesisLiquidityPositions
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_GenesisLiquidityPositions) Type() protoreflect.MessageType {
+	return _fastReflection_GenesisLiquidityPositions_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_GenesisLiquidityPositions) New() protoreflect.Message {
+	return new(fastReflection_GenesisLiquidityPositions)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_GenesisLiquidityPositions) Interface() protoreflect.ProtoMessage {
+	return (*GenesisLiquidityPositions)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_GenesisLiquidityPositions) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Address != "" {
+		value := protoreflect.ValueOfString(x.Address)
+		if !f(fd_GenesisLiquidityPositions_address, value) {
+			return
+		}
+	}
+	if x.PositionIndex != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.PositionIndex)
+		if !f(fd_GenesisLiquidityPositions_position_index, value) {
+			return
+		}
+	}
+	if x.AutoCompound != false {
+		value := protoreflect.ValueOfBool(x.AutoCompound)
+		if !f(fd_GenesisLiquidityPositions_auto_compound, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_GenesisLiquidityPositions) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "kopi.dex.GenesisLiquidityPositions.address":
+		return x.Address != ""
+	case "kopi.dex.GenesisLiquidityPositions.position_index":
+		return x.PositionIndex != uint64(0)
+	case "kopi.dex.GenesisLiquidityPositions.auto_compound":
+		return x.AutoCompound != false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.GenesisLiquidityPositions"))
+		}
+		panic(fmt.Errorf("message kopi.dex.GenesisLiquidityPositions does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GenesisLiquidityPositions) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "kopi.dex.GenesisLiquidityPositions.address":
+		x.Address = ""
+	case "kopi.dex.GenesisLiquidityPositions.position_index":
+		x.PositionIndex = uint64(0)
+	case "kopi.dex.GenesisLiquidityPositions.auto_compound":
+		x.AutoCompound = false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.GenesisLiquidityPositions"))
+		}
+		panic(fmt.Errorf("message kopi.dex.GenesisLiquidityPositions does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_GenesisLiquidityPositions) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "kopi.dex.GenesisLiquidityPositions.address":
+		value := x.Address
+		return protoreflect.ValueOfString(value)
+	case "kopi.dex.GenesisLiquidityPositions.position_index":
+		value := x.PositionIndex
+		return protoreflect.ValueOfUint64(value)
+	case "kopi.dex.GenesisLiquidityPositions.auto_compound":
+		value := x.AutoCompound
+		return protoreflect.ValueOfBool(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.GenesisLiquidityPositions"))
+		}
+		panic(fmt.Errorf("message kopi.dex.GenesisLiquidityPositions does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GenesisLiquidityPositions) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "kopi.dex.GenesisLiquidityPositions.address":
+		x.Address = value.Interface().(string)
+	case "kopi.dex.GenesisLiquidityPositions.position_index":
+		x.PositionIndex = value.Uint()
+	case "kopi.dex.GenesisLiquidityPositions.auto_compound":
+		x.AutoCompound = value.Bool()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.GenesisLiquidityPositions"))
+		}
+		panic(fmt.Errorf("message kopi.dex.GenesisLiquidityPositions does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GenesisLiquidityPositions) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.dex.GenesisLiquidityPositions.address":
+		panic(fmt.Errorf("field address of message kopi.dex.GenesisLiquidityPositions is not mutable"))
+	case "kopi.dex.GenesisLiquidityPositions.position_index":
+		panic(fmt.Errorf("field position_index of message kopi.dex.GenesisLiquidityPositions is not mutable"))
+	case "kopi.dex.GenesisLiquidityPositions.auto_compound":
+		panic(fmt.Errorf("field auto_compound of message kopi.dex.GenesisLiquidityPositions is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.GenesisLiquidityPositions"))
+		}
+		panic(fmt.Errorf("message kopi.dex.GenesisLiquidityPositions does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_GenesisLiquidityPositions) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.dex.GenesisLiquidityPositions.address":
+		return protoreflect.ValueOfString("")
+	case "kopi.dex.GenesisLiquidityPositions.position_index":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "kopi.dex.GenesisLiquidityPositions.auto_compound":
+		return protoreflect.ValueOfBool(false)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.GenesisLiquidityPositions"))
+		}
+		panic(fmt.Errorf("message kopi.dex.GenesisLiquidityPositions does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_GenesisLiquidityPositions) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in kopi.dex.GenesisLiquidityPositions", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_GenesisLiquidityPositions) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_GenesisLiquidityPositions) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_GenesisLiquidityPositions) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_GenesisLiquidityPositions) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*GenesisLiquidityPositions)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Address)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.PositionIndex != 0 {
+			n += 1 + runtime.Sov(uint64(x.PositionIndex))
+		}
+		if x.AutoCompound {
+			n += 2
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*GenesisLiquidityPositions)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.AutoCompound {
+			i--
+			if x.AutoCompound {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x18
+		}
+		if x.PositionIndex != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.PositionIndex))
+			i--
+			dAtA[i] = 0x10
+		}
+		if len(x.Address) > 0 {
+			i -= len(x.Address)
+			copy(dAtA[i:], x.Address)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Address)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*GenesisLiquidityPositions)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GenesisLiquidityPositions: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GenesisLiquidityPositions: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Address = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PositionIndex", wireType)
+				}
+				x.PositionIndex = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.PositionIndex |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 3:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AutoCompound", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.AutoCompound = bool(v != 0)
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
+var (
+	md_LiquidityPosition               protoreflect.MessageDescriptor
+	fd_LiquidityPosition_auto_compound protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_kopi_dex_liquidity_proto_init()
+	md_LiquidityPosition = File_kopi_dex_liquidity_proto.Messages().ByName("LiquidityPosition")
+	fd_LiquidityPosition_auto_compound = md_LiquidityPosition.Fields().ByName("auto_compound")
+}
+
+var _ protoreflect.Message = (*fastReflection_LiquidityPosition)(nil)
+
+type fastReflection_LiquidityPosition LiquidityPosition
+
+func (x *LiquidityPosition) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_LiquidityPosition)(x)
+}
+
+func (x *LiquidityPosition) slowProtoReflect() protoreflect.Message {
+	mi := &file_kopi_dex_liquidity_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_LiquidityPosition_messageType fastReflection_LiquidityPosition_messageType
+var _ protoreflect.MessageType = fastReflection_LiquidityPosition_messageType{}
+
+type fastReflection_LiquidityPosition_messageType struct{}
+
+func (x fastReflection_LiquidityPosition_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_LiquidityPosition)(nil)
+}
+func (x fastReflection_LiquidityPosition_messageType) New() protoreflect.Message {
+	return new(fastReflection_LiquidityPosition)
+}
+func (x fastReflection_LiquidityPosition_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_LiquidityPosition
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_LiquidityPosition) Descriptor() protoreflect.MessageDescriptor {
+	return md_LiquidityPosition
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_LiquidityPosition) Type() protoreflect.MessageType {
+	return _fastReflection_LiquidityPosition_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_LiquidityPosition) New() protoreflect.Message {
+	return new(fastReflection_LiquidityPosition)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_LiquidityPosition) Interface() protoreflect.ProtoMessage {
+	return (*LiquidityPosition)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_LiquidityPosition) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.AutoCompound != false {
+		value := protoreflect.ValueOfBool(x.AutoCompound)
+		if !f(fd_LiquidityPosition_auto_compound, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_LiquidityPosition) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "kopi.dex.LiquidityPosition.auto_compound":
+		return x.AutoCompound != false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.LiquidityPosition"))
+		}
+		panic(fmt.Errorf("message kopi.dex.LiquidityPosition does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_LiquidityPosition) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "kopi.dex.LiquidityPosition.auto_compound":
+		x.AutoCompound = false
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.LiquidityPosition"))
+		}
+		panic(fmt.Errorf("message kopi.dex.LiquidityPosition does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_LiquidityPosition) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "kopi.dex.LiquidityPosition.auto_compound":
+		value := x.AutoCompound
+		return protoreflect.ValueOfBool(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.LiquidityPosition"))
+		}
+		panic(fmt.Errorf("message kopi.dex.LiquidityPosition does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_LiquidityPosition) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "kopi.dex.LiquidityPosition.auto_compound":
+		x.AutoCompound = value.Bool()
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.LiquidityPosition"))
+		}
+		panic(fmt.Errorf("message kopi.dex.LiquidityPosition does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_LiquidityPosition) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.dex.LiquidityPosition.auto_compound":
+		panic(fmt.Errorf("field auto_compound of message kopi.dex.LiquidityPosition is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.LiquidityPosition"))
+		}
+		panic(fmt.Errorf("message kopi.dex.LiquidityPosition does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_LiquidityPosition) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "kopi.dex.LiquidityPosition.auto_compound":
+		return protoreflect.ValueOfBool(false)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.LiquidityPosition"))
+		}
+		panic(fmt.Errorf("message kopi.dex.LiquidityPosition does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_LiquidityPosition) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in kopi.dex.LiquidityPosition", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_LiquidityPosition) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_LiquidityPosition) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_LiquidityPosition) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_LiquidityPosition) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*LiquidityPosition)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.AutoCompound {
+			n += 2
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*LiquidityPosition)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.AutoCompound {
+			i--
+			if x.AutoCompound {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*LiquidityPosition)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: LiquidityPosition: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: LiquidityPosition: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AutoCompound", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.AutoCompound = bool(v != 0)
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -1118,17 +2187,20 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type DenomLiquidity struct {
+type GenesisLiquidity struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Denom   string       `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
-	Entries []*Liquidity `protobuf:"bytes,2,rep,name=entries,proto3" json:"entries,omitempty"`
+	Index         uint64 `protobuf:"varint,1,opt,name=index,proto3" json:"index,omitempty"`
+	Address       string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	Amount        []byte `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	PositionIndex uint64 `protobuf:"varint,4,opt,name=position_index,json=positionIndex,proto3" json:"position_index,omitempty"`
+	Denom         string `protobuf:"bytes,5,opt,name=denom,proto3" json:"denom,omitempty"`
 }
 
-func (x *DenomLiquidity) Reset() {
-	*x = DenomLiquidity{}
+func (x *GenesisLiquidity) Reset() {
+	*x = GenesisLiquidity{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_kopi_dex_liquidity_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1136,29 +2208,50 @@ func (x *DenomLiquidity) Reset() {
 	}
 }
 
-func (x *DenomLiquidity) String() string {
+func (x *GenesisLiquidity) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DenomLiquidity) ProtoMessage() {}
+func (*GenesisLiquidity) ProtoMessage() {}
 
-// Deprecated: Use DenomLiquidity.ProtoReflect.Descriptor instead.
-func (*DenomLiquidity) Descriptor() ([]byte, []int) {
+// Deprecated: Use GenesisLiquidity.ProtoReflect.Descriptor instead.
+func (*GenesisLiquidity) Descriptor() ([]byte, []int) {
 	return file_kopi_dex_liquidity_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DenomLiquidity) GetDenom() string {
+func (x *GenesisLiquidity) GetIndex() uint64 {
 	if x != nil {
-		return x.Denom
+		return x.Index
+	}
+	return 0
+}
+
+func (x *GenesisLiquidity) GetAddress() string {
+	if x != nil {
+		return x.Address
 	}
 	return ""
 }
 
-func (x *DenomLiquidity) GetEntries() []*Liquidity {
+func (x *GenesisLiquidity) GetAmount() []byte {
 	if x != nil {
-		return x.Entries
+		return x.Amount
 	}
 	return nil
+}
+
+func (x *GenesisLiquidity) GetPositionIndex() uint64 {
+	if x != nil {
+		return x.PositionIndex
+	}
+	return 0
+}
+
+func (x *GenesisLiquidity) GetDenom() string {
+	if x != nil {
+		return x.Denom
+	}
+	return ""
 }
 
 type Liquidity struct {
@@ -1166,9 +2259,10 @@ type Liquidity struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Index   uint64 `protobuf:"varint,1,opt,name=index,proto3" json:"index,omitempty"`
-	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
-	Amount  []byte `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	Index         uint64 `protobuf:"varint,1,opt,name=index,proto3" json:"index,omitempty"`
+	Address       string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	Amount        []byte `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	PositionIndex uint64 `protobuf:"varint,4,opt,name=position_index,json=positionIndex,proto3" json:"position_index,omitempty"`
 }
 
 func (x *Liquidity) Reset() {
@@ -1212,34 +2306,150 @@ func (x *Liquidity) GetAmount() []byte {
 	return nil
 }
 
+func (x *Liquidity) GetPositionIndex() uint64 {
+	if x != nil {
+		return x.PositionIndex
+	}
+	return 0
+}
+
+type GenesisLiquidityPositions struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Address       string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	PositionIndex uint64 `protobuf:"varint,2,opt,name=position_index,json=positionIndex,proto3" json:"position_index,omitempty"`
+	AutoCompound  bool   `protobuf:"varint,3,opt,name=auto_compound,json=autoCompound,proto3" json:"auto_compound,omitempty"`
+}
+
+func (x *GenesisLiquidityPositions) Reset() {
+	*x = GenesisLiquidityPositions{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_kopi_dex_liquidity_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GenesisLiquidityPositions) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GenesisLiquidityPositions) ProtoMessage() {}
+
+// Deprecated: Use GenesisLiquidityPositions.ProtoReflect.Descriptor instead.
+func (*GenesisLiquidityPositions) Descriptor() ([]byte, []int) {
+	return file_kopi_dex_liquidity_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GenesisLiquidityPositions) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
+}
+
+func (x *GenesisLiquidityPositions) GetPositionIndex() uint64 {
+	if x != nil {
+		return x.PositionIndex
+	}
+	return 0
+}
+
+func (x *GenesisLiquidityPositions) GetAutoCompound() bool {
+	if x != nil {
+		return x.AutoCompound
+	}
+	return false
+}
+
+type LiquidityPosition struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AutoCompound bool `protobuf:"varint,1,opt,name=auto_compound,json=autoCompound,proto3" json:"auto_compound,omitempty"`
+}
+
+func (x *LiquidityPosition) Reset() {
+	*x = LiquidityPosition{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_kopi_dex_liquidity_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *LiquidityPosition) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LiquidityPosition) ProtoMessage() {}
+
+// Deprecated: Use LiquidityPosition.ProtoReflect.Descriptor instead.
+func (*LiquidityPosition) Descriptor() ([]byte, []int) {
+	return file_kopi_dex_liquidity_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *LiquidityPosition) GetAutoCompound() bool {
+	if x != nil {
+		return x.AutoCompound
+	}
+	return false
+}
+
 var File_kopi_dex_liquidity_proto protoreflect.FileDescriptor
 
 var file_kopi_dex_liquidity_proto_rawDesc = []byte{
 	0x0a, 0x18, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0x2f, 0x6c, 0x69, 0x71, 0x75, 0x69,
 	0x64, 0x69, 0x74, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x08, 0x6b, 0x6f, 0x70, 0x69,
 	0x2e, 0x64, 0x65, 0x78, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f,
-	0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x5b, 0x0a, 0x0e, 0x44, 0x65,
-	0x6e, 0x6f, 0x6d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x12, 0x14, 0x0a, 0x05,
-	0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e,
-	0x6f, 0x6d, 0x12, 0x33, 0x0a, 0x07, 0x65, 0x6e, 0x74, 0x72, 0x69, 0x65, 0x73, 0x18, 0x02, 0x20,
-	0x03, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e, 0x4c,
-	0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x07,
-	0x65, 0x6e, 0x74, 0x72, 0x69, 0x65, 0x73, 0x22, 0x72, 0x0a, 0x09, 0x4c, 0x69, 0x71, 0x75, 0x69,
-	0x64, 0x69, 0x74, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x04, 0x52, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64,
-	0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64,
-	0x72, 0x65, 0x73, 0x73, 0x12, 0x35, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x0c, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
-	0x49, 0x6e, 0x74, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x42, 0x7a, 0x0a, 0x0c, 0x63,
-	0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x42, 0x0e, 0x4c, 0x69, 0x71,
-	0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x19, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f,
-	0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0xa2, 0x02, 0x03, 0x4b, 0x44, 0x58, 0xaa, 0x02,
-	0x08, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x44, 0x65, 0x78, 0xca, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69,
-	0x5c, 0x44, 0x65, 0x78, 0xe2, 0x02, 0x14, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0x5c,
-	0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x09, 0x4b, 0x6f,
-	0x70, 0x69, 0x3a, 0x3a, 0x44, 0x65, 0x78, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1e, 0x67, 0x6f, 0x6f, 0x67,
+	0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2f, 0x77, 0x72, 0x61, 0x70,
+	0x70, 0x65, 0x72, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xb6, 0x01, 0x0a, 0x10, 0x47,
+	0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x12,
+	0x14, 0x0a, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x05,
+	0x69, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12,
+	0x35, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x42,
+	0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
+	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x06,
+	0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x25, 0x0a, 0x0e, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69,
+	0x6f, 0x6e, 0x5f, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x04, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0d,
+	0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x14, 0x0a,
+	0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65,
+	0x6e, 0x6f, 0x6d, 0x22, 0x99, 0x01, 0x0a, 0x09, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74,
+	0x79, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04,
+	0x52, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65,
+	0x73, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73,
+	0x73, 0x12, 0x35, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x0c, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74,
+	0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x25, 0x0a, 0x0e, 0x70, 0x6f, 0x73, 0x69,
+	0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x04, 0x20, 0x01, 0x28, 0x04,
+	0x52, 0x0d, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x22,
+	0x81, 0x01, 0x0a, 0x19, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x4c, 0x69, 0x71, 0x75, 0x69,
+	0x64, 0x69, 0x74, 0x79, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x18, 0x0a,
+	0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
+	0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x25, 0x0a, 0x0e, 0x70, 0x6f, 0x73, 0x69, 0x74,
+	0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52,
+	0x0d, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x23,
+	0x0a, 0x0d, 0x61, 0x75, 0x74, 0x6f, 0x5f, 0x63, 0x6f, 0x6d, 0x70, 0x6f, 0x75, 0x6e, 0x64, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0c, 0x61, 0x75, 0x74, 0x6f, 0x43, 0x6f, 0x6d, 0x70, 0x6f,
+	0x75, 0x6e, 0x64, 0x22, 0x38, 0x0a, 0x11, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79,
+	0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x23, 0x0a, 0x0d, 0x61, 0x75, 0x74, 0x6f,
+	0x5f, 0x63, 0x6f, 0x6d, 0x70, 0x6f, 0x75, 0x6e, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52,
+	0x0c, 0x61, 0x75, 0x74, 0x6f, 0x43, 0x6f, 0x6d, 0x70, 0x6f, 0x75, 0x6e, 0x64, 0x42, 0x7a, 0x0a,
+	0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x42, 0x0e, 0x4c,
+	0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a,
+	0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70,
+	0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0xa2, 0x02, 0x03, 0x4b, 0x44, 0x58,
+	0xaa, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x44, 0x65, 0x78, 0xca, 0x02, 0x08, 0x4b, 0x6f,
+	0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0xe2, 0x02, 0x14, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65,
+	0x78, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x09,
+	0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x44, 0x65, 0x78, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x33,
 }
 
 var (
@@ -1254,18 +2464,19 @@ func file_kopi_dex_liquidity_proto_rawDescGZIP() []byte {
 	return file_kopi_dex_liquidity_proto_rawDescData
 }
 
-var file_kopi_dex_liquidity_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_kopi_dex_liquidity_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_kopi_dex_liquidity_proto_goTypes = []interface{}{
-	(*DenomLiquidity)(nil), // 0: kopi.dex.DenomLiquidity
-	(*Liquidity)(nil),      // 1: kopi.dex.Liquidity
+	(*GenesisLiquidity)(nil),          // 0: kopi.dex.GenesisLiquidity
+	(*Liquidity)(nil),                 // 1: kopi.dex.Liquidity
+	(*GenesisLiquidityPositions)(nil), // 2: kopi.dex.GenesisLiquidityPositions
+	(*LiquidityPosition)(nil),         // 3: kopi.dex.LiquidityPosition
 }
 var file_kopi_dex_liquidity_proto_depIdxs = []int32{
-	1, // 0: kopi.dex.DenomLiquidity.entries:type_name -> kopi.dex.Liquidity
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0, // [0:0] is the sub-list for method output_type
+	0, // [0:0] is the sub-list for method input_type
+	0, // [0:0] is the sub-list for extension type_name
+	0, // [0:0] is the sub-list for extension extendee
+	0, // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_kopi_dex_liquidity_proto_init() }
@@ -1275,7 +2486,7 @@ func file_kopi_dex_liquidity_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_kopi_dex_liquidity_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DenomLiquidity); i {
+			switch v := v.(*GenesisLiquidity); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1298,6 +2509,30 @@ func file_kopi_dex_liquidity_proto_init() {
 				return nil
 			}
 		}
+		file_kopi_dex_liquidity_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GenesisLiquidityPositions); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_kopi_dex_liquidity_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*LiquidityPosition); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1305,7 +2540,7 @@ func file_kopi_dex_liquidity_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_kopi_dex_liquidity_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

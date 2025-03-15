@@ -1,0 +1,34 @@
+syntax = "proto3";
+package kopi.dex;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/dex/types";
+
+message EpochShares {
+  bytes shares = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message EpochLeftover {
+  string denom = 1;
+  bytes amount = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message EpochLeftovers {
+  repeated EpochLeftover leftovers = 1 [(gogoproto.nullable) = false];
+}
+
+message EpochStartTime {
+  google.protobuf.Timestamp created_at = 5 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false
+  ];
+}

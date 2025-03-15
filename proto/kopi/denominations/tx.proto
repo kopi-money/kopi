@@ -16,6 +16,7 @@ service Msg {
   rpc DexAddDenom(MsgDexAddDenom) returns (MsgUpdateParamsResponse);
   rpc DexUpdateMinimumLiquidity(MsgDexUpdateMinimumLiquidity) returns (MsgUpdateParamsResponse);
   rpc DexUpdateMinimumOrderSize(MsgDexUpdateMinimumOrderSize) returns (MsgUpdateParamsResponse);
+  rpc DexUpdateExtraVirtualLiquidity(MsgDexUpdateExtraVirtualLiquidity) returns (MsgUpdateParamsResponse);
 
   rpc KCoinAddDenom(MsgKCoinAddDenom) returns (MsgUpdateParamsResponse);
   rpc KCoinUpdateSupplyLimit(MsgKCoinUpdateSupplyLimit) returns (MsgUpdateParamsResponse);
@@ -54,7 +55,8 @@ message MsgDexAddDenom {
   string factor = 3;
   string min_liquidity = 4;
   string min_order_size = 5;
-  uint64 exponent = 6;
+  string min_virtual_liquidity = 6;
+  uint64 exponent = 7;
 }
 
 message MsgDexUpdateMinimumLiquidity {
@@ -64,6 +66,15 @@ message MsgDexUpdateMinimumLiquidity {
 
   string name = 2;
   string min_liquidity = 3;
+}
+
+message MsgDexUpdateExtraVirtualLiquidity {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/denominations/MsgDexUpdateMinimumVirtualLiquidity";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string name = 2;
+  string extra_virtual_liquidity = 3;
 }
 
 message MsgDexUpdateMinimumOrderSize {
@@ -88,7 +99,8 @@ message MsgKCoinAddDenom {
   string factor = 7;
   string min_liquidity = 8;
   string min_order_size = 9;
-  uint64 exponent = 10;
+  string min_virtual_liquidity = 10;
+  uint64 exponent = 11;
 }
 
 message MsgKCoinUpdateSupplyLimit {
@@ -175,8 +187,9 @@ message MsgCAssetAddDenom {
   string factor = 5;
   string min_liquidity = 6;
   string min_order_size = 7;
-  string borrow_limit = 8;
-  string min_loan_size = 9;
+  string min_virtual_liquidity = 8;
+  string borrow_limit = 9;
+  string min_loan_size = 10;
 }
 
 message MsgCAssetUpdateReference {
@@ -224,17 +237,18 @@ message MsgAddArbitrageDenom {
   string factor = 3;
   string min_liquidity = 4;
   string min_order_size = 5;
+  string min_virtual_liquidity = 6;
 
-  string kcoin = 6;
-  string c_asset = 7;
+  string kcoin = 7;
+  string c_asset = 8;
 
-  string buy_threshold = 8;
+  string buy_threshold = 9;
   string buy_trade_amount = 10;
-  string sell_threshold = 9;
-  string sell_trade_amount = 11;
+  string sell_threshold = 11;
+  string sell_trade_amount = 12;
 
-  string redemption_fee = 12;
-  string redemption_fee_reserve_share = 13;
+  string redemption_fee = 13;
+  string redemption_fee_reserve_share = 14;
 }
 
 message MsgArbitrageUpdateBuyThreshold {

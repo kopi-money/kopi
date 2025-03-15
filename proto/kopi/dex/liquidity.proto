@@ -2,16 +2,20 @@ syntax = "proto3";
 package kopi.dex;
 
 import "gogoproto/gogo.proto";
+import "google/protobuf/wrappers.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/dex/types";
 
-message DenomLiquidity {
-  string denom = 1;
-  repeated Liquidity entries = 2 [
+message GenesisLiquidity {
+  uint64 index = 1;
+  string address = 2;
+  bytes amount = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+  uint64 position_index = 4;
+  string denom = 5;
 }
-
 
 message Liquidity {
   uint64 index = 1;
@@ -20,4 +24,16 @@ message Liquidity {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+
+  uint64 position_index = 4;
+}
+
+message GenesisLiquidityPositions {
+  string address = 1;
+  uint64 position_index = 2;
+  bool auto_compound = 3;
+}
+
+message LiquidityPosition {
+  bool auto_compound = 1;
 }

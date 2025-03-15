@@ -18,6 +18,8 @@ var (
 	fd_LiquidityPair_denom         protoreflect.FieldDescriptor
 	fd_LiquidityPair_virtual_base  protoreflect.FieldDescriptor
 	fd_LiquidityPair_virtual_other protoreflect.FieldDescriptor
+	fd_LiquidityPair_extra_base    protoreflect.FieldDescriptor
+	fd_LiquidityPair_extra_other   protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -26,6 +28,8 @@ func init() {
 	fd_LiquidityPair_denom = md_LiquidityPair.Fields().ByName("denom")
 	fd_LiquidityPair_virtual_base = md_LiquidityPair.Fields().ByName("virtual_base")
 	fd_LiquidityPair_virtual_other = md_LiquidityPair.Fields().ByName("virtual_other")
+	fd_LiquidityPair_extra_base = md_LiquidityPair.Fields().ByName("extra_base")
+	fd_LiquidityPair_extra_other = md_LiquidityPair.Fields().ByName("extra_other")
 }
 
 var _ protoreflect.Message = (*fastReflection_LiquidityPair)(nil)
@@ -111,6 +115,18 @@ func (x *fastReflection_LiquidityPair) Range(f func(protoreflect.FieldDescriptor
 			return
 		}
 	}
+	if len(x.ExtraBase) != 0 {
+		value := protoreflect.ValueOfBytes(x.ExtraBase)
+		if !f(fd_LiquidityPair_extra_base, value) {
+			return
+		}
+	}
+	if len(x.ExtraOther) != 0 {
+		value := protoreflect.ValueOfBytes(x.ExtraOther)
+		if !f(fd_LiquidityPair_extra_other, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -132,6 +148,10 @@ func (x *fastReflection_LiquidityPair) Has(fd protoreflect.FieldDescriptor) bool
 		return len(x.VirtualBase) != 0
 	case "kopi.dex.LiquidityPair.virtual_other":
 		return len(x.VirtualOther) != 0
+	case "kopi.dex.LiquidityPair.extra_base":
+		return len(x.ExtraBase) != 0
+	case "kopi.dex.LiquidityPair.extra_other":
+		return len(x.ExtraOther) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.LiquidityPair"))
@@ -154,6 +174,10 @@ func (x *fastReflection_LiquidityPair) Clear(fd protoreflect.FieldDescriptor) {
 		x.VirtualBase = nil
 	case "kopi.dex.LiquidityPair.virtual_other":
 		x.VirtualOther = nil
+	case "kopi.dex.LiquidityPair.extra_base":
+		x.ExtraBase = nil
+	case "kopi.dex.LiquidityPair.extra_other":
+		x.ExtraOther = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.LiquidityPair"))
@@ -178,6 +202,12 @@ func (x *fastReflection_LiquidityPair) Get(descriptor protoreflect.FieldDescript
 		return protoreflect.ValueOfBytes(value)
 	case "kopi.dex.LiquidityPair.virtual_other":
 		value := x.VirtualOther
+		return protoreflect.ValueOfBytes(value)
+	case "kopi.dex.LiquidityPair.extra_base":
+		value := x.ExtraBase
+		return protoreflect.ValueOfBytes(value)
+	case "kopi.dex.LiquidityPair.extra_other":
+		value := x.ExtraOther
 		return protoreflect.ValueOfBytes(value)
 	default:
 		if descriptor.IsExtension() {
@@ -205,6 +235,10 @@ func (x *fastReflection_LiquidityPair) Set(fd protoreflect.FieldDescriptor, valu
 		x.VirtualBase = value.Bytes()
 	case "kopi.dex.LiquidityPair.virtual_other":
 		x.VirtualOther = value.Bytes()
+	case "kopi.dex.LiquidityPair.extra_base":
+		x.ExtraBase = value.Bytes()
+	case "kopi.dex.LiquidityPair.extra_other":
+		x.ExtraOther = value.Bytes()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.LiquidityPair"))
@@ -231,6 +265,10 @@ func (x *fastReflection_LiquidityPair) Mutable(fd protoreflect.FieldDescriptor) 
 		panic(fmt.Errorf("field virtual_base of message kopi.dex.LiquidityPair is not mutable"))
 	case "kopi.dex.LiquidityPair.virtual_other":
 		panic(fmt.Errorf("field virtual_other of message kopi.dex.LiquidityPair is not mutable"))
+	case "kopi.dex.LiquidityPair.extra_base":
+		panic(fmt.Errorf("field extra_base of message kopi.dex.LiquidityPair is not mutable"))
+	case "kopi.dex.LiquidityPair.extra_other":
+		panic(fmt.Errorf("field extra_other of message kopi.dex.LiquidityPair is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.LiquidityPair"))
@@ -249,6 +287,10 @@ func (x *fastReflection_LiquidityPair) NewField(fd protoreflect.FieldDescriptor)
 	case "kopi.dex.LiquidityPair.virtual_base":
 		return protoreflect.ValueOfBytes(nil)
 	case "kopi.dex.LiquidityPair.virtual_other":
+		return protoreflect.ValueOfBytes(nil)
+	case "kopi.dex.LiquidityPair.extra_base":
+		return protoreflect.ValueOfBytes(nil)
+	case "kopi.dex.LiquidityPair.extra_other":
 		return protoreflect.ValueOfBytes(nil)
 	default:
 		if fd.IsExtension() {
@@ -331,6 +373,14 @@ func (x *fastReflection_LiquidityPair) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		l = len(x.ExtraBase)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.ExtraOther)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -359,6 +409,20 @@ func (x *fastReflection_LiquidityPair) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.ExtraOther) > 0 {
+			i -= len(x.ExtraOther)
+			copy(dAtA[i:], x.ExtraOther)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ExtraOther)))
+			i--
+			dAtA[i] = 0x2a
+		}
+		if len(x.ExtraBase) > 0 {
+			i -= len(x.ExtraBase)
+			copy(dAtA[i:], x.ExtraBase)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ExtraBase)))
+			i--
+			dAtA[i] = 0x22
 		}
 		if len(x.VirtualOther) > 0 {
 			i -= len(x.VirtualOther)
@@ -530,6 +594,74 @@ func (x *fastReflection_LiquidityPair) ProtoMethods() *protoiface.Methods {
 					x.VirtualOther = []byte{}
 				}
 				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ExtraBase", wireType)
+				}
+				var byteLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					byteLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if byteLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + byteLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.ExtraBase = append(x.ExtraBase[:0], dAtA[iNdEx:postIndex]...)
+				if x.ExtraBase == nil {
+					x.ExtraBase = []byte{}
+				}
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ExtraOther", wireType)
+				}
+				var byteLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					byteLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if byteLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + byteLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.ExtraOther = append(x.ExtraOther[:0], dAtA[iNdEx:postIndex]...)
+				if x.ExtraOther == nil {
+					x.ExtraOther = []byte{}
+				}
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -586,6 +718,8 @@ type LiquidityPair struct {
 	Denom        string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
 	VirtualBase  []byte `protobuf:"bytes,2,opt,name=virtual_base,json=virtualBase,proto3" json:"virtual_base,omitempty"`
 	VirtualOther []byte `protobuf:"bytes,3,opt,name=virtual_other,json=virtualOther,proto3" json:"virtual_other,omitempty"`
+	ExtraBase    []byte `protobuf:"bytes,4,opt,name=extra_base,json=extraBase,proto3" json:"extra_base,omitempty"`
+	ExtraOther   []byte `protobuf:"bytes,5,opt,name=extra_other,json=extraOther,proto3" json:"extra_other,omitempty"`
 }
 
 func (x *LiquidityPair) Reset() {
@@ -629,6 +763,20 @@ func (x *LiquidityPair) GetVirtualOther() []byte {
 	return nil
 }
 
+func (x *LiquidityPair) GetExtraBase() []byte {
+	if x != nil {
+		return x.ExtraBase
+	}
+	return nil
+}
+
+func (x *LiquidityPair) GetExtraOther() []byte {
+	if x != nil {
+		return x.ExtraOther
+	}
+	return nil
+}
+
 var File_kopi_dex_liquidity_pair_proto protoreflect.FileDescriptor
 
 var file_kopi_dex_liquidity_pair_proto_rawDesc = []byte{
@@ -636,7 +784,7 @@ var file_kopi_dex_liquidity_pair_proto_rawDesc = []byte{
 	0x64, 0x69, 0x74, 0x79, 0x5f, 0x70, 0x61, 0x69, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12,
 	0x08, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22,
-	0xb7, 0x01, 0x0a, 0x0d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x50, 0x61, 0x69,
+	0xc1, 0x02, 0x0a, 0x0d, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x50, 0x61, 0x69,
 	0x72, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
 	0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x46, 0x0a, 0x0c, 0x76, 0x69, 0x72, 0x74, 0x75,
 	0x61, 0x6c, 0x5f, 0x62, 0x61, 0x73, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8,
@@ -647,16 +795,24 @@ var file_kopi_dex_liquidity_pair_proto_rawDesc = []byte{
 	0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
 	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
 	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x76, 0x69, 0x72,
-	0x74, 0x75, 0x61, 0x6c, 0x4f, 0x74, 0x68, 0x65, 0x72, 0x42, 0x7e, 0x0a, 0x0c, 0x63, 0x6f, 0x6d,
-	0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x42, 0x12, 0x4c, 0x69, 0x71, 0x75, 0x69,
-	0x64, 0x69, 0x74, 0x79, 0x50, 0x61, 0x69, 0x72, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a,
-	0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70,
-	0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0xa2, 0x02, 0x03, 0x4b, 0x44, 0x58,
-	0xaa, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x44, 0x65, 0x78, 0xca, 0x02, 0x08, 0x4b, 0x6f,
-	0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0xe2, 0x02, 0x14, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65,
-	0x78, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x09,
-	0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x44, 0x65, 0x78, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x33,
+	0x74, 0x75, 0x61, 0x6c, 0x4f, 0x74, 0x68, 0x65, 0x72, 0x12, 0x42, 0x0a, 0x0a, 0x65, 0x78, 0x74,
+	0x72, 0x61, 0x5f, 0x62, 0x61, 0x73, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8,
+	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
+	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
+	0x65, 0x63, 0x52, 0x09, 0x65, 0x78, 0x74, 0x72, 0x61, 0x42, 0x61, 0x73, 0x65, 0x12, 0x44, 0x0a,
+	0x0b, 0x65, 0x78, 0x74, 0x72, 0x61, 0x5f, 0x6f, 0x74, 0x68, 0x65, 0x72, 0x18, 0x05, 0x20, 0x01,
+	0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
+	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x0a, 0x65, 0x78, 0x74, 0x72, 0x61, 0x4f, 0x74,
+	0x68, 0x65, 0x72, 0x42, 0x7e, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e,
+	0x64, 0x65, 0x78, 0x42, 0x12, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x50, 0x61,
+	0x69, 0x72, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f,
+	0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69,
+	0x2f, 0x64, 0x65, 0x78, 0xa2, 0x02, 0x03, 0x4b, 0x44, 0x58, 0xaa, 0x02, 0x08, 0x4b, 0x6f, 0x70,
+	0x69, 0x2e, 0x44, 0x65, 0x78, 0xca, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65, 0x78,
+	0xe2, 0x02, 0x14, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0x5c, 0x47, 0x50, 0x42, 0x4d,
+	0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x09, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a,
+	0x44, 0x65, 0x78, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

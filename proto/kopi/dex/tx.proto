@@ -20,11 +20,12 @@ service Msg {
 
   rpc AddLiquidity    (MsgAddLiquidity) returns (MsgAddLiquidityResponse);
   rpc RemoveLiquidity (MsgRemoveLiquidity) returns (MsgRemoveLiquidityResponse);
+  rpc RemoveAllLiquidityForDenom (MsgRemoveAllLiquidityForDenom) returns (MsgRemoveLiquidityResponse);
+  rpc ChangePayout    (MsgChangePayout) returns (Void);
   rpc Sell            (MsgSell) returns (MsgTradeResponse);
   rpc Buy             (MsgBuy) returns (MsgTradeResponse);
 
   // this line is used by starport scaffolding # proto/tx/rpc
-  rpc RemoveAllLiquidityForDenom (MsgRemoveAllLiquidityForDenom) returns (Void);
   rpc AddOrder                   (MsgAddOrder) returns (Order);
   rpc RemoveOrder                (MsgRemoveOrder) returns (Void);
   rpc RemoveOrders               (MsgRemoveOrders) returns (Void);
@@ -37,16 +38,16 @@ service Msg {
   rpc UpdateMaxOrderLife          (MsgUpdateMaxOrderLife) returns (Void);
   rpc UpdateTradeAmountDecay      (MsgUpdateTradeAmountDecay) returns (Void);
   rpc UpdateDiscountLevels        (MsgUpdateDiscountLevels) returns (Void);
-  rpc UpdateTradeBaseValue        (MsgUpdateTradeBaseValue) returns (Void);
+  rpc UpdateEpochLength           (MsgUpdateEpochLength) returns (Void);
   rpc RemoveDexDenom              (MsgRemoveDexDenom) returns (Void);
 }
 
-message MsgUpdateTradeBaseValue {
+message MsgUpdateEpochLength {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgUpdateTradeBaseValue";
+  option (amino.name) = "kopi/x/denominations/MsgUpdateEpochLength";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
-  string trade_base_value = 2;
+  string epoch_length = 2;
 }
 
 message MsgRemoveDexDenom {
@@ -119,12 +120,21 @@ message Void {}
 
 message MsgUpdateParamsResponse {}
 
+message MsgChangePayout {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  uint64 position_index = 2;
+  bool auto_compound = 3;
+}
+
 message MsgAddLiquidity {
   option (cosmos.msg.v1.signer) = "creator";
 
   string creator = 1;
   string denom = 2;
   string amount = 3;
+  bool auto_compound = 4;
 }
 
 message MsgAddLiquidityResponse {}
@@ -133,8 +143,10 @@ message MsgRemoveLiquidity {
   option (cosmos.msg.v1.signer) = "creator";
 
   string creator = 1;
-  string denom = 2;
-  string amount = 3;
+  string withdraw_denom = 2;
+  string payout_denom = 3;
+  string amount = 4;
+  string position_index = 5;
 }
 
 message MsgRemoveLiquidityResponse {}
@@ -172,7 +184,8 @@ message MsgRemoveAllLiquidityForDenom {
   option (cosmos.msg.v1.signer) = "creator";
 
   string creator = 1;
-  string denom = 2;
+  string withdraw_denom = 2;
+  string payout_denom = 3;
 }
 
 message MsgAddOrder {

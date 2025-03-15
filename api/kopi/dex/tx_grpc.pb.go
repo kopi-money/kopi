@@ -21,9 +21,10 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	Msg_AddLiquidity_FullMethodName                = "/kopi.dex.Msg/AddLiquidity"
 	Msg_RemoveLiquidity_FullMethodName             = "/kopi.dex.Msg/RemoveLiquidity"
+	Msg_RemoveAllLiquidityForDenom_FullMethodName  = "/kopi.dex.Msg/RemoveAllLiquidityForDenom"
+	Msg_ChangePayout_FullMethodName                = "/kopi.dex.Msg/ChangePayout"
 	Msg_Sell_FullMethodName                        = "/kopi.dex.Msg/Sell"
 	Msg_Buy_FullMethodName                         = "/kopi.dex.Msg/Buy"
-	Msg_RemoveAllLiquidityForDenom_FullMethodName  = "/kopi.dex.Msg/RemoveAllLiquidityForDenom"
 	Msg_AddOrder_FullMethodName                    = "/kopi.dex.Msg/AddOrder"
 	Msg_RemoveOrder_FullMethodName                 = "/kopi.dex.Msg/RemoveOrder"
 	Msg_RemoveOrders_FullMethodName                = "/kopi.dex.Msg/RemoveOrders"
@@ -35,7 +36,7 @@ const (
 	Msg_UpdateMaxOrderLife_FullMethodName          = "/kopi.dex.Msg/UpdateMaxOrderLife"
 	Msg_UpdateTradeAmountDecay_FullMethodName      = "/kopi.dex.Msg/UpdateTradeAmountDecay"
 	Msg_UpdateDiscountLevels_FullMethodName        = "/kopi.dex.Msg/UpdateDiscountLevels"
-	Msg_UpdateTradeBaseValue_FullMethodName        = "/kopi.dex.Msg/UpdateTradeBaseValue"
+	Msg_UpdateEpochLength_FullMethodName           = "/kopi.dex.Msg/UpdateEpochLength"
 	Msg_RemoveDexDenom_FullMethodName              = "/kopi.dex.Msg/RemoveDexDenom"
 )
 
@@ -45,10 +46,11 @@ const (
 type MsgClient interface {
 	AddLiquidity(ctx context.Context, in *MsgAddLiquidity, opts ...grpc.CallOption) (*MsgAddLiquidityResponse, error)
 	RemoveLiquidity(ctx context.Context, in *MsgRemoveLiquidity, opts ...grpc.CallOption) (*MsgRemoveLiquidityResponse, error)
+	RemoveAllLiquidityForDenom(ctx context.Context, in *MsgRemoveAllLiquidityForDenom, opts ...grpc.CallOption) (*MsgRemoveLiquidityResponse, error)
+	ChangePayout(ctx context.Context, in *MsgChangePayout, opts ...grpc.CallOption) (*Void, error)
 	Sell(ctx context.Context, in *MsgSell, opts ...grpc.CallOption) (*MsgTradeResponse, error)
 	Buy(ctx context.Context, in *MsgBuy, opts ...grpc.CallOption) (*MsgTradeResponse, error)
 	// this line is used by starport scaffolding # proto/tx/rpc
-	RemoveAllLiquidityForDenom(ctx context.Context, in *MsgRemoveAllLiquidityForDenom, opts ...grpc.CallOption) (*Void, error)
 	AddOrder(ctx context.Context, in *MsgAddOrder, opts ...grpc.CallOption) (*Order, error)
 	RemoveOrder(ctx context.Context, in *MsgRemoveOrder, opts ...grpc.CallOption) (*Void, error)
 	RemoveOrders(ctx context.Context, in *MsgRemoveOrders, opts ...grpc.CallOption) (*Void, error)
@@ -60,7 +62,7 @@ type MsgClient interface {
 	UpdateMaxOrderLife(ctx context.Context, in *MsgUpdateMaxOrderLife, opts ...grpc.CallOption) (*Void, error)
 	UpdateTradeAmountDecay(ctx context.Context, in *MsgUpdateTradeAmountDecay, opts ...grpc.CallOption) (*Void, error)
 	UpdateDiscountLevels(ctx context.Context, in *MsgUpdateDiscountLevels, opts ...grpc.CallOption) (*Void, error)
-	UpdateTradeBaseValue(ctx context.Context, in *MsgUpdateTradeBaseValue, opts ...grpc.CallOption) (*Void, error)
+	UpdateEpochLength(ctx context.Context, in *MsgUpdateEpochLength, opts ...grpc.CallOption) (*Void, error)
 	RemoveDexDenom(ctx context.Context, in *MsgRemoveDexDenom, opts ...grpc.CallOption) (*Void, error)
 }
 
@@ -90,6 +92,24 @@ func (c *msgClient) RemoveLiquidity(ctx context.Context, in *MsgRemoveLiquidity,
 	return out, nil
 }
 
+func (c *msgClient) RemoveAllLiquidityForDenom(ctx context.Context, in *MsgRemoveAllLiquidityForDenom, opts ...grpc.CallOption) (*MsgRemoveLiquidityResponse, error) {
+	out := new(MsgRemoveLiquidityResponse)
+	err := c.cc.Invoke(ctx, Msg_RemoveAllLiquidityForDenom_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) ChangePayout(ctx context.Context, in *MsgChangePayout, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_ChangePayout_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) Sell(ctx context.Context, in *MsgSell, opts ...grpc.CallOption) (*MsgTradeResponse, error) {
 	out := new(MsgTradeResponse)
 	err := c.cc.Invoke(ctx, Msg_Sell_FullMethodName, in, out, opts...)
@@ -102,15 +122,6 @@ func (c *msgClient) Sell(ctx context.Context, in *MsgSell, opts ...grpc.CallOpti
 func (c *msgClient) Buy(ctx context.Context, in *MsgBuy, opts ...grpc.CallOption) (*MsgTradeResponse, error) {
 	out := new(MsgTradeResponse)
 	err := c.cc.Invoke(ctx, Msg_Buy_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) RemoveAllLiquidityForDenom(ctx context.Context, in *MsgRemoveAllLiquidityForDenom, opts ...grpc.CallOption) (*Void, error) {
-	out := new(Void)
-	err := c.cc.Invoke(ctx, Msg_RemoveAllLiquidityForDenom_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -216,9 +227,9 @@ func (c *msgClient) UpdateDiscountLevels(ctx context.Context, in *MsgUpdateDisco
 	return out, nil
 }
 
-func (c *msgClient) UpdateTradeBaseValue(ctx context.Context, in *MsgUpdateTradeBaseValue, opts ...grpc.CallOption) (*Void, error) {
+func (c *msgClient) UpdateEpochLength(ctx context.Context, in *MsgUpdateEpochLength, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
-	err := c.cc.Invoke(ctx, Msg_UpdateTradeBaseValue_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_UpdateEpochLength_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -240,10 +251,11 @@ func (c *msgClient) RemoveDexDenom(ctx context.Context, in *MsgRemoveDexDenom, o
 type MsgServer interface {
 	AddLiquidity(context.Context, *MsgAddLiquidity) (*MsgAddLiquidityResponse, error)
 	RemoveLiquidity(context.Context, *MsgRemoveLiquidity) (*MsgRemoveLiquidityResponse, error)
+	RemoveAllLiquidityForDenom(context.Context, *MsgRemoveAllLiquidityForDenom) (*MsgRemoveLiquidityResponse, error)
+	ChangePayout(context.Context, *MsgChangePayout) (*Void, error)
 	Sell(context.Context, *MsgSell) (*MsgTradeResponse, error)
 	Buy(context.Context, *MsgBuy) (*MsgTradeResponse, error)
 	// this line is used by starport scaffolding # proto/tx/rpc
-	RemoveAllLiquidityForDenom(context.Context, *MsgRemoveAllLiquidityForDenom) (*Void, error)
 	AddOrder(context.Context, *MsgAddOrder) (*Order, error)
 	RemoveOrder(context.Context, *MsgRemoveOrder) (*Void, error)
 	RemoveOrders(context.Context, *MsgRemoveOrders) (*Void, error)
@@ -255,7 +267,7 @@ type MsgServer interface {
 	UpdateMaxOrderLife(context.Context, *MsgUpdateMaxOrderLife) (*Void, error)
 	UpdateTradeAmountDecay(context.Context, *MsgUpdateTradeAmountDecay) (*Void, error)
 	UpdateDiscountLevels(context.Context, *MsgUpdateDiscountLevels) (*Void, error)
-	UpdateTradeBaseValue(context.Context, *MsgUpdateTradeBaseValue) (*Void, error)
+	UpdateEpochLength(context.Context, *MsgUpdateEpochLength) (*Void, error)
 	RemoveDexDenom(context.Context, *MsgRemoveDexDenom) (*Void, error)
 	mustEmbedUnimplementedMsgServer()
 }
@@ -270,14 +282,17 @@ func (UnimplementedMsgServer) AddLiquidity(context.Context, *MsgAddLiquidity) (*
 func (UnimplementedMsgServer) RemoveLiquidity(context.Context, *MsgRemoveLiquidity) (*MsgRemoveLiquidityResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveLiquidity not implemented")
 }
+func (UnimplementedMsgServer) RemoveAllLiquidityForDenom(context.Context, *MsgRemoveAllLiquidityForDenom) (*MsgRemoveLiquidityResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveAllLiquidityForDenom not implemented")
+}
+func (UnimplementedMsgServer) ChangePayout(context.Context, *MsgChangePayout) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangePayout not implemented")
+}
 func (UnimplementedMsgServer) Sell(context.Context, *MsgSell) (*MsgTradeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Sell not implemented")
 }
 func (UnimplementedMsgServer) Buy(context.Context, *MsgBuy) (*MsgTradeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Buy not implemented")
-}
-func (UnimplementedMsgServer) RemoveAllLiquidityForDenom(context.Context, *MsgRemoveAllLiquidityForDenom) (*Void, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveAllLiquidityForDenom not implemented")
 }
 func (UnimplementedMsgServer) AddOrder(context.Context, *MsgAddOrder) (*Order, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddOrder not implemented")
@@ -312,8 +327,8 @@ func (UnimplementedMsgServer) UpdateTradeAmountDecay(context.Context, *MsgUpdate
 func (UnimplementedMsgServer) UpdateDiscountLevels(context.Context, *MsgUpdateDiscountLevels) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateDiscountLevels not implemented")
 }
-func (UnimplementedMsgServer) UpdateTradeBaseValue(context.Context, *MsgUpdateTradeBaseValue) (*Void, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateTradeBaseValue not implemented")
+func (UnimplementedMsgServer) UpdateEpochLength(context.Context, *MsgUpdateEpochLength) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateEpochLength not implemented")
 }
 func (UnimplementedMsgServer) RemoveDexDenom(context.Context, *MsgRemoveDexDenom) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveDexDenom not implemented")
@@ -367,6 +382,42 @@ func _Msg_RemoveLiquidity_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_RemoveAllLiquidityForDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRemoveAllLiquidityForDenom)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RemoveAllLiquidityForDenom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_RemoveAllLiquidityForDenom_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RemoveAllLiquidityForDenom(ctx, req.(*MsgRemoveAllLiquidityForDenom))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_ChangePayout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgChangePayout)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ChangePayout(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_ChangePayout_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ChangePayout(ctx, req.(*MsgChangePayout))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_Sell_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgSell)
 	if err := dec(in); err != nil {
@@ -399,24 +450,6 @@ func _Msg_Buy_Handler(srv interface{}, ctx context.Context, dec func(interface{}
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).Buy(ctx, req.(*MsgBuy))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_RemoveAllLiquidityForDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgRemoveAllLiquidityForDenom)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).RemoveAllLiquidityForDenom(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_RemoveAllLiquidityForDenom_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RemoveAllLiquidityForDenom(ctx, req.(*MsgRemoveAllLiquidityForDenom))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -619,20 +652,20 @@ func _Msg_UpdateDiscountLevels_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateTradeBaseValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateTradeBaseValue)
+func _Msg_UpdateEpochLength_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateEpochLength)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateTradeBaseValue(ctx, in)
+		return srv.(MsgServer).UpdateEpochLength(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_UpdateTradeBaseValue_FullMethodName,
+		FullMethod: Msg_UpdateEpochLength_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateTradeBaseValue(ctx, req.(*MsgUpdateTradeBaseValue))
+		return srv.(MsgServer).UpdateEpochLength(ctx, req.(*MsgUpdateEpochLength))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -671,16 +704,20 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_RemoveLiquidity_Handler,
 		},
 		{
+			MethodName: "RemoveAllLiquidityForDenom",
+			Handler:    _Msg_RemoveAllLiquidityForDenom_Handler,
+		},
+		{
+			MethodName: "ChangePayout",
+			Handler:    _Msg_ChangePayout_Handler,
+		},
+		{
 			MethodName: "Sell",
 			Handler:    _Msg_Sell_Handler,
 		},
 		{
 			MethodName: "Buy",
 			Handler:    _Msg_Buy_Handler,
-		},
-		{
-			MethodName: "RemoveAllLiquidityForDenom",
-			Handler:    _Msg_RemoveAllLiquidityForDenom_Handler,
 		},
 		{
 			MethodName: "AddOrder",
@@ -727,8 +764,8 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_UpdateDiscountLevels_Handler,
 		},
 		{
-			MethodName: "UpdateTradeBaseValue",
-			Handler:    _Msg_UpdateTradeBaseValue_Handler,
+			MethodName: "UpdateEpochLength",
+			Handler:    _Msg_UpdateEpochLength_Handler,
 		},
 		{
 			MethodName: "RemoveDexDenom",

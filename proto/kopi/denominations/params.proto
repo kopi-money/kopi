@@ -20,6 +20,11 @@ message DexDenom {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
+
+  bytes extra_virtual_liquidity = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = true
+  ];
 }
 
 message KCoin {

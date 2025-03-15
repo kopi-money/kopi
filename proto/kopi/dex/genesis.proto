@@ -16,12 +16,15 @@ option go_package = "github.com/kopi-money/kopi/x/dex/types";
 message GenesisState {
   Params        params = 1 [(gogoproto.nullable) = false];
 
-  repeated DenomLiquidity    liquidity_list = 2 [(gogoproto.nullable) = false];
-  repeated Order             orderList = 3 [(gogoproto.nullable) = false];
-  repeated WalletTradeAmount wallet_trade_amount = 4 [(gogoproto.nullable) = false];
+  repeated GenesisLiquidity       liquidity_list = 2 [(gogoproto.nullable) = false];
+  repeated GenesisLiquidityPositions liquidity_positions_list = 8 [(gogoproto.nullable) = false];
+  repeated Order                  orderList = 3 [(gogoproto.nullable) = false];
+  repeated WalletTradeAmount      wallet_trade_amount = 4 [(gogoproto.nullable) = false];
 
   uint64 liquidity_next_index = 5;
   uint64 order_next_index = 6;
+  uint64 liquidity_deposit_next_index = 7;
+
 
   // this line is used by starport scaffolding # genesis/proto/state
 }

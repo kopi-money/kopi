@@ -6,3 +6,7 @@ option go_package = "github.com/kopi-money/kopi/x/dex/types";
 message LiquidityNextIndex {
   uint64 next = 1;
 }
+
+message LiquidityDepositNextIndex {
+  uint64 next = 1;
+}

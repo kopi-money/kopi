@@ -6,7 +6,9 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "kopi/dex/params.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
+import "kopi/dex/epochs.proto";
 import "kopi/dex/liquidity_pair.proto";
+import "kopi/dex/liquidity.proto";
 import "kopi/dex/order.proto";
 
 // this line is used by starport scaffolding # 1
@@ -23,11 +25,26 @@ service Query {
   rpc LiquidityForAddress (QueryLiquidityForAddressRequest) returns (QueryLiquidityForAddressResponse) {
     option (google.api.http).get = "/kopi/dex/liquidity/address/{address}";
   }
+  rpc LiquidityPositions (QueryLiquidityPositionsRequest) returns (QueryLiquidityPositionsResponse) {
+    option (google.api.http).get = "/kopi/dex/liquidity/positions";
+  }
+  rpc LiquidityPositionsAddresses (QueryLiquidityPositionsAddressesRequest) returns (QueryLiquidityPositionsAddressesResponse) {
+    option (google.api.http).get = "/kopi/dex/liquidity/positions/addresses";
+  }
+  rpc LiquidityPositionForAddress (QueryLiquidityPositionForAddressRequest) returns (QueryLiquidityPositionForAddressResponse) {
+    option (google.api.http).get = "/kopi/dex/liquidity/positions/address/{address}";
+  }
+  rpc LiquidityPositionForPositionIndex (QueryLiquidityPositionForPositionIndexRequest) returns (QueryLiquidityPositionForPositionIndexResponse) {
+    option (google.api.http).get = "/kopi/dex/liquidity/positions/index/{position_index}";
+  }
   rpc Liquidity (QueryGetLiquidityRequest) returns (QueryGetLiquidityResponse) {
     option (google.api.http).get = "/kopi/dex/liquidity/by_denom";
   }
   rpc LiquidityQueue (QueryGetLiquidityQueueRequest) returns (QueryGetLiquidityQueueResponse) {
     option (google.api.http).get = "/kopi/dex/liquidity/queue/by_denom";
+  }
+  rpc LiquidityGrouped (QueryGetLiquidityQueueRequest) returns (QueryLiquidityGroupedResponse) {
+    option (google.api.http).get = "/kopi/dex/liquidity/grouped/by_denom";
   }
   rpc LiquiditySum (QueryGetLiquiditySumRequest) returns (QueryGetLiquiditySumResponse) {
     option (google.api.http).get = "/kopi/dex/liquidity/sum";
@@ -83,8 +100,43 @@ service Query {
   rpc QuerySimulateBuy (QuerySimulateTradeRequest) returns (QuerySimulateTradeResponse) {
     option (google.api.http).get = "/kopi/dex/simulate/buy";
   }
+  rpc QueryEpochCountdown (QueryEpochCountdownRequest) returns (QueryEpochCountdownResponse) {
+    option (google.api.http).get = "/kopi/dex/epoch/countdown";
+  }
+  rpc QueryEpochPositions (QueryEpochPositionsRequest) returns (QueryEpochPositionsResponse) {
+    option (google.api.http).get = "/kopi/dex/epoch/positions";
+  }
 
   // this line is used by starport scaffolding # 2
+}
+
+message QueryLiquidityPositionsAddressesResponse {
+  repeated string addresses = 1;
+}
+
+message QueryLiquidityPositionsAddressesRequest {
+}
+
+message QueryLiquidityPositionsRequest {
+}
+
+message AddressEpochPositions {
+  string address = 1;
+  repeated EpochShares positions = 2 [(gogoproto.nullable) = false];
+}
+
+message QueryEpochPositionsResponse {
+  repeated AddressEpochPositions address_epoch_shares = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryEpochPositionsRequest {
+}
+
+message QueryEpochCountdownResponse {
+  string seconds = 1;
+}
+
+message QueryEpochCountdownRequest {
 }
 
 message QueryLiquidityPoolRequest {
@@ -98,7 +150,7 @@ message LiquidityPoolEntry {
 }
 
 message QueryLiquidityPoolResponse {
-  repeated LiquidityPoolEntry entries = 1;
+  repeated LiquidityPoolEntry entries = 1 [(gogoproto.nullable) = false];
 }
 
 message OrdersByPairRequest {
@@ -107,8 +159,8 @@ message OrdersByPairRequest {
 }
 
 message QueryOrdersByPairResponse {
-  repeated OrderResponse bids = 1;
-  repeated OrderResponse asks = 2;
+  repeated OrderResponse bids = 1 [(gogoproto.nullable) = false];
+  repeated OrderResponse asks = 2 [(gogoproto.nullable) = false];
 }
 
 message QueryReserveFundsRequest {}
@@ -158,10 +210,12 @@ message QueryGetLiquidityAllResponseEntry {
   string denom = 1;
   string amount = 2;
   string amount_usd = 3;
+  string available_fee_amount = 4;
+  string available_fee_amount_usd = 5;
 }
 
 message QueryGetLiquidityAllResponse {
-  repeated QueryGetLiquidityAllResponseEntry denoms = 1;
+  repeated QueryGetLiquidityAllResponseEntry denoms = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryGetLiquidityRequest {
@@ -179,6 +233,8 @@ message QueryGetLiquidityResponse {
 message LiquidityEntry {
   string address = 1;
   string amount = 2;
+  string index = 3;
+  string position_index = 4;
 }
 
 message QueryGetLiquidityQueueRequest {
@@ -186,8 +242,18 @@ message QueryGetLiquidityQueueRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
+message LiquidityGroupedEntry {
+  string address = 1;
+  string sum = 2;
+  int64 num_entries = 3;
+}
+
+message QueryLiquidityGroupedResponse {
+  repeated LiquidityGroupedEntry entries = 1 [(gogoproto.nullable) = false];
+}
+
 message QueryGetLiquidityQueueResponse {
-  repeated LiquidityEntry entries = 1;
+  repeated LiquidityEntry entries = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -220,6 +286,39 @@ message QueryLiquidityForAddressRequest {
   string address = 1;
 }
 
+message QueryLiquidityPositionsResponse {
+  repeated QueryLiquidityPositionForAddressResponse addresses = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryLiquidityPositionForAddressRequest {
+  string address = 1;
+}
+
+message QueryLiquidityPositionForAddressResponse {
+  string address = 1;
+  repeated LiquidityPositionResponse liquidity_positions = 2 [(gogoproto.nullable) = false];
+}
+
+message LiquidityPositionResponse {
+  uint64 position_index = 1;
+  bool auto_compound = 2;
+  repeated LiquidityPositionEntry liquidity_position_entries = 3 [(gogoproto.nullable) = false];
+}
+
+message QueryLiquidityPositionForPositionIndexRequest {
+  uint64 position_index = 1;
+}
+
+message LiquidityPositionEntry {
+  string denom = 1;
+  string user_amount = 2;
+  string user_amount_usd = 3;
+}
+
+message QueryLiquidityPositionForPositionIndexResponse {
+  repeated LiquidityPositionEntry liquidity_position_entries = 1 [(gogoproto.nullable) = false];
+}
+
 message AddressLiquidity {
   string denom = 1;
   string user_amount = 2;
@@ -231,7 +330,7 @@ message AddressLiquidity {
 }
 
 message QueryLiquidityForAddressResponse {
-  repeated AddressLiquidity liquidity = 1;
+  repeated AddressLiquidity liquidity = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryPriceUsdRequest {
@@ -259,7 +358,7 @@ message QueryOrdersAddressRequest {
 }
 
 message QueryOrdersAddressResponse {
-  repeated OrderResponse orders = 1;
+  repeated OrderResponse orders = 1 [(gogoproto.nullable) = false];
 
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
@@ -285,7 +384,7 @@ message OrdersSum {
 }
 
 message QueryOrdersDenomSumResponse {
-  repeated OrdersSum denoms = 1;
+  repeated OrdersSum denoms = 1 [(gogoproto.nullable) = false];
 }
 
 message QuerySimulateTradeRequest {
@@ -304,6 +403,7 @@ message QuerySimulateTradeResponse {
   string price = 6;
   string price_given_in_usd = 7;
   string price_received_in_usd = 8;
+  string spread = 9;
 }
 
 message OrderBookSum {
@@ -318,7 +418,7 @@ message QueryDepthToRequest {
 }
 
 message QueryDepthToResponse {
-  repeated OrderBookSum orders = 1;
+  repeated OrderBookSum orders = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryDepthFromRequest {
@@ -326,7 +426,7 @@ message QueryDepthFromRequest {
 }
 
 message QueryDepthFromResponse {
-  repeated OrderBookSum orders = 1;
+  repeated OrderBookSum orders = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryOrdersRequest {
@@ -355,7 +455,7 @@ message OrderResponse {
 }
 
 message QueryOrdersResponse {
-  repeated OrderResponse orders = 1;
+  repeated OrderResponse orders = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
@@ -364,7 +464,7 @@ message QueryOrderRequest {
 }
 
 message QueryOrderResponse {
-  OrderResponse order = 1;
+  OrderResponse order = 1  [(gogoproto.nullable) = false];
 }
 
 message QueryOrderPoolRequest {}
@@ -376,7 +476,7 @@ message OrderBalance {
 }
 
 message QueryOrderPoolResponse {
-  repeated OrderBalance balance = 1;
+  repeated OrderBalance balance = 1  [(gogoproto.nullable) = false];
 }
 
 message QueryValueKCoinsRequest {}

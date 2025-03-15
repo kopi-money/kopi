@@ -45,6 +45,9 @@ message Params {
 
   bytes trade_base_value = 8 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
-    (gogoproto.nullable)   = false
+    (gogoproto.nullable)   = false,
+    deprecated = true
   ];
+
+  uint64 epoch_length = 9;
 }
