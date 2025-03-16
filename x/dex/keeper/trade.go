@@ -260,7 +260,9 @@ func (k Keeper) executeTrade(ctx *types.TradeContext) (types.TradeResults, error
 		return types.TradeResults{}, fmt.Errorf("could not execute trade step 2: %w", err)
 	}
 
-	k.updateRatiosToBase(ctx)
+	if err = k.updateRatiosToBase(ctx); err != nil {
+		return types.TradeResults{}, fmt.Errorf("update ratios to base: %w", err)
+	}
 
 	ctx.OrdersCaches.Clear()
 	k.AddTradeAmount(ctx, ctx.CoinTarget, amountReceived1)
@@ -390,7 +392,7 @@ func (k Keeper) ExecuteTradeStep(ctx types.TradeStepContext) (math.Int, math.Int
 	return amountToGiveGross, payoutAmount, feePaid, nil
 }
 
-func (k Keeper) updateRatiosToBase(ctx *types.TradeContext) {
+func (k Keeper) updateRatiosToBase(ctx *types.TradeContext) error {
 	changeBase := ctx.GetLiquidityChange(constants.BaseCurrency)
 	liqBase := k.GetLiquiditySum(ctx, constants.BaseCurrency)
 
@@ -403,7 +405,10 @@ func (k Keeper) updateRatiosToBase(ctx *types.TradeContext) {
 		liqOther := k.GetLiquiditySum(ctx, ratio.Denom)
 		extraVirtualLiquidity := k.DenomKeeper.ExtraVirtualLiquidity(ctx, ratio.Denom)
 
-		pair := k.CreateLiquidityPairWithLiquidity(ratio, liqBase, liqOther, extraVirtualLiquidity)
+		pair, err := k.CreateLiquidityPairWithLiquidity(ctx, ratio, liqBase, liqOther, extraVirtualLiquidity)
+		if err != nil {
+			return fmt.Errorf("liquidity pair %v: %w", ratio.Denom, err)
+		}
 
 		fullBase := pair.VirtualBase.Add(pair.ActualBase)
 		fullOther := pair.VirtualOther.Add(pair.ActualOther)
@@ -422,6 +427,8 @@ func (k Keeper) updateRatiosToBase(ctx *types.TradeContext) {
 			})
 		}
 	}
+
+	return nil
 }
 
 func (k Keeper) calculateTradeAmounts(ctx types.TradeStepContext, poolFrom, poolTo, tradeAmount, fee math.LegacyDec) (math.Int, math.Int, math.Int, math.Int, error) {

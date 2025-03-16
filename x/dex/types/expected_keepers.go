@@ -51,6 +51,7 @@ type DenomKeeper interface {
 	GetRatio(ctx context.Context, denom string) (denomtypes.Ratio, error)
 	GetPriceInUSD(ctx context.Context, denom string) (math.LegacyDec, error)
 	GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.LegacyDec) (math.LegacyDec, error)
+	GetValueInFromUSD(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
 	GetValueInBase(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
 	GetValueInUSD(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
 	IsCollateralDenom(ctx context.Context, denom string) bool
