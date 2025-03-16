@@ -38,10 +38,13 @@ func (k Keeper) CreateLiquidityPairWithLiquidity(ratio denomtypes.Ratio, liqBase
 	liqBaseDec := liqBase.ToLegacyDec()
 	liqOtherDec := liqOther.ToLegacyDec()
 
-	liqBaseInOther := liqBaseDec.Mul(ratio.Ratio)
 	liqOtherInBase := liqOtherDec.Quo(ratio.Ratio)
+	liqBaseDec = math.LegacyMinDec(liqBaseDec, liqOtherInBase)
+	liqBaseInOther := liqBaseDec.Mul(ratio.Ratio)
 
 	pair.Denom = ratio.Denom
+	pair.ActualBase = liqBaseDec
+	pair.ActualOther = liqOtherDec
 	pair.VirtualBase = math.LegacyZeroDec()
 	pair.VirtualOther = math.LegacyZeroDec()
 
@@ -53,8 +56,8 @@ func (k Keeper) CreateLiquidityPairWithLiquidity(ratio denomtypes.Ratio, liqBase
 		pair.VirtualOther = liqBaseInOther.Sub(liqOtherDec)
 	}
 
-	minVirtualLiquidityBase := extraVirtualLiquidity.ToLegacyDec().Quo(ratio.Ratio)
-	pair.ExtraBase = minVirtualLiquidityBase
+	extraVirtualLiquidityBase := extraVirtualLiquidity.ToLegacyDec().Quo(ratio.Ratio)
+	pair.ExtraBase = extraVirtualLiquidityBase
 	pair.ExtraOther = extraVirtualLiquidity.ToLegacyDec()
 
 	return

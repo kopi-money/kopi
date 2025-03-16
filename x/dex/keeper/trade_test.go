@@ -713,7 +713,7 @@ func TestSingleTrade9(t *testing.T) {
 
 	pair, err := k.GetLiquidityPair(ctx, constants.KUSD)
 	require.NoError(t, err)
-	require.Equal(t, math.LegacyNewDec(115_000), pair.VirtualOther)
+	require.Equal(t, math.LegacyNewDec(0), pair.VirtualOther)
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.NoError(t, tradePoolEmpty(ctx, k))
@@ -763,7 +763,7 @@ func TestSingleTrade10(t *testing.T) {
 
 	pair, err := k.GetLiquidityPair(ctx, constants.KUSD)
 	require.NoError(t, err)
-	require.Equal(t, math.LegacyNewDec(115_000), pair.VirtualOther)
+	require.Equal(t, math.LegacyNewDec(0), pair.VirtualOther)
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.NoError(t, tradePoolEmpty(ctx, k))
@@ -2305,7 +2305,7 @@ func TestTrade17(t *testing.T) {
 
 	pair, err := k.GetLiquidityPair(ctx, constants.KUSD)
 	require.NoError(t, err)
-	require.Equal(t, math.LegacyNewDec(11500), pair.VirtualOther)
+	require.Equal(t, math.LegacyNewDec(0), pair.VirtualOther)
 
 	response, err := keepertest.Sell(ctx, msg, &types.MsgSell{
 		Creator:        keepertest.Carol,
@@ -2332,7 +2332,7 @@ func TestTrade18(t *testing.T) {
 
 	pair, err := k.GetLiquidityPair(ctx, constants.KUSD)
 	require.NoError(t, err)
-	require.Equal(t, math.LegacyNewDec(115000), pair.VirtualOther)
+	require.Equal(t, math.LegacyNewDec(0), pair.VirtualOther)
 
 	response, err := keepertest.Sell(ctx, msg, &types.MsgSell{
 		Creator:        keepertest.Carol,

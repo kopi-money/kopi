@@ -8,22 +8,32 @@ option go_package = "github.com/kopi-money/kopi/x/dex/types";
 message LiquidityPair {
   string denom = 1;
 
-  bytes virtual_base = 2 [
+  bytes actual_base = 2 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
 
-  bytes virtual_other = 3 [
+  bytes actual_other = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
 
-  bytes extra_base = 4 [
+  bytes virtual_base = 4 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
 
-  bytes extra_other = 5 [
+  bytes virtual_other = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+
+  bytes extra_base = 6 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+
+  bytes extra_other = 7 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];

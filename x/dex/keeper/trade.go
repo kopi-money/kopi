@@ -405,8 +405,13 @@ func (k Keeper) updateRatiosToBase(ctx *types.TradeContext) {
 
 		pair := k.CreateLiquidityPairWithLiquidity(ratio, liqBase, liqOther, extraVirtualLiquidity)
 
-		fullBase := pair.ExtraBase.Add(pair.VirtualBase.Add(liqBase.ToLegacyDec()).Add(changeBase.ToLegacyDec()))
-		fullOther := pair.ExtraOther.Add(pair.VirtualOther.Add(liqOther.ToLegacyDec()))
+		fullBase := pair.VirtualBase.Add(pair.ActualBase)
+		fullOther := pair.VirtualOther.Add(pair.ActualOther)
+
+		fullBase = fullBase.Add(pair.ExtraBase)
+		fullOther = fullOther.Add(pair.ExtraOther)
+
+		fullBase = fullBase.Add(changeBase.ToLegacyDec())
 		fullOther = fullOther.Add(changeOther.ToLegacyDec())
 
 		if fullBase.IsPositive() {

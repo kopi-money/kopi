@@ -37,7 +37,7 @@ func TestLiquidityPairs1(t *testing.T) {
 	pair, err := k.GetLiquidityPair(ctx, constants.KUSD)
 	require.NoError(t, err)
 	require.Equal(t, math.LegacyZeroDec(), pair.VirtualBase)
-	require.Equal(t, math.LegacyNewDec(2), pair.VirtualOther)
+	require.Equal(t, math.LegacyNewDec(0), pair.VirtualOther)
 
 	// Add 1 kUSD
 	// Expected:
@@ -57,7 +57,7 @@ func TestLiquidityPairs1(t *testing.T) {
 	pair, err = k.GetLiquidityPair(ctx, constants.KUSD)
 	require.NoError(t, err)
 	require.Equal(t, math.LegacyNewDec(0), pair.VirtualBase)
-	require.Equal(t, math.LegacyNewDec(1), pair.VirtualOther)
+	require.Equal(t, math.LegacyNewDec(0), pair.VirtualOther)
 
 	ratio, err := k.DenomKeeper.GetRatio(ctx, constants.KUSD)
 	require.NoError(t, err)
@@ -107,7 +107,7 @@ func TestLiquidityPairs1(t *testing.T) {
 	pair, err = k.GetLiquidityPair(ctx, constants.KUSD)
 	require.NoError(t, err)
 	require.Equal(t, math.LegacyNewDec(0), pair.VirtualBase)
-	require.Equal(t, math.LegacyNewDec(1), pair.VirtualOther)
+	require.Equal(t, math.LegacyNewDec(0), pair.VirtualOther)
 
 	// Remove 4 XKP
 	// Expected:

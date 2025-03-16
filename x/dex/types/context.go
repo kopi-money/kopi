@@ -257,6 +257,10 @@ type TradeContext struct {
 	FlatPrice *constant_product.FlatPrice
 }
 
+func (tc *TradeContext) TouchedDenom(denom string) bool {
+	return tc.TradeDenomReceiving == denom || tc.TradeDenomGiving == denom
+}
+
 func (tc *TradeContext) AddLiquidityChange(denom string, amount math.Int) {
 	if tc.liquidityChanges == nil {
 		tc.liquidityChanges = &liquidityChanges{

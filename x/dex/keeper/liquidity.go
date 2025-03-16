@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/cache"
-	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"sort"
 	"strconv"
 
 	"cosmossdk.io/math"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/constants"
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"github.com/kopi-money/kopi/x/dex/types"
 )
 
