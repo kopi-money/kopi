@@ -39,6 +39,7 @@ service Msg {
   rpc UpdateTradeAmountDecay      (MsgUpdateTradeAmountDecay) returns (Void);
   rpc UpdateDiscountLevels        (MsgUpdateDiscountLevels) returns (Void);
   rpc UpdateEpochLength           (MsgUpdateEpochLength) returns (Void);
+  rpc UpdateLiquidityChangeDecay  (MsgUpdateLiquidityChangeDecay) returns (Void);
   rpc RemoveDexDenom              (MsgRemoveDexDenom) returns (Void);
 }
 
@@ -98,6 +99,14 @@ message MsgUpdateReserveShare {
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string reserve_share = 2;
+}
+
+message MsgUpdateLiquidityChangeDecay {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/dex/MsgUpdateLiquidityChangeDecay";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string liquidity_change_decay = 2;
 }
 
 message MsgUpdateTradeFee {

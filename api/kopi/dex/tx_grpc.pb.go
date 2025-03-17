@@ -37,6 +37,7 @@ const (
 	Msg_UpdateTradeAmountDecay_FullMethodName      = "/kopi.dex.Msg/UpdateTradeAmountDecay"
 	Msg_UpdateDiscountLevels_FullMethodName        = "/kopi.dex.Msg/UpdateDiscountLevels"
 	Msg_UpdateEpochLength_FullMethodName           = "/kopi.dex.Msg/UpdateEpochLength"
+	Msg_UpdateLiquidityChangeDecay_FullMethodName  = "/kopi.dex.Msg/UpdateLiquidityChangeDecay"
 	Msg_RemoveDexDenom_FullMethodName              = "/kopi.dex.Msg/RemoveDexDenom"
 )
 
@@ -63,6 +64,7 @@ type MsgClient interface {
 	UpdateTradeAmountDecay(ctx context.Context, in *MsgUpdateTradeAmountDecay, opts ...grpc.CallOption) (*Void, error)
 	UpdateDiscountLevels(ctx context.Context, in *MsgUpdateDiscountLevels, opts ...grpc.CallOption) (*Void, error)
 	UpdateEpochLength(ctx context.Context, in *MsgUpdateEpochLength, opts ...grpc.CallOption) (*Void, error)
+	UpdateLiquidityChangeDecay(ctx context.Context, in *MsgUpdateLiquidityChangeDecay, opts ...grpc.CallOption) (*Void, error)
 	RemoveDexDenom(ctx context.Context, in *MsgRemoveDexDenom, opts ...grpc.CallOption) (*Void, error)
 }
 
@@ -236,6 +238,15 @@ func (c *msgClient) UpdateEpochLength(ctx context.Context, in *MsgUpdateEpochLen
 	return out, nil
 }
 
+func (c *msgClient) UpdateLiquidityChangeDecay(ctx context.Context, in *MsgUpdateLiquidityChangeDecay, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateLiquidityChangeDecay_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) RemoveDexDenom(ctx context.Context, in *MsgRemoveDexDenom, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
 	err := c.cc.Invoke(ctx, Msg_RemoveDexDenom_FullMethodName, in, out, opts...)
@@ -268,6 +279,7 @@ type MsgServer interface {
 	UpdateTradeAmountDecay(context.Context, *MsgUpdateTradeAmountDecay) (*Void, error)
 	UpdateDiscountLevels(context.Context, *MsgUpdateDiscountLevels) (*Void, error)
 	UpdateEpochLength(context.Context, *MsgUpdateEpochLength) (*Void, error)
+	UpdateLiquidityChangeDecay(context.Context, *MsgUpdateLiquidityChangeDecay) (*Void, error)
 	RemoveDexDenom(context.Context, *MsgRemoveDexDenom) (*Void, error)
 	mustEmbedUnimplementedMsgServer()
 }
@@ -329,6 +341,9 @@ func (UnimplementedMsgServer) UpdateDiscountLevels(context.Context, *MsgUpdateDi
 }
 func (UnimplementedMsgServer) UpdateEpochLength(context.Context, *MsgUpdateEpochLength) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateEpochLength not implemented")
+}
+func (UnimplementedMsgServer) UpdateLiquidityChangeDecay(context.Context, *MsgUpdateLiquidityChangeDecay) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateLiquidityChangeDecay not implemented")
 }
 func (UnimplementedMsgServer) RemoveDexDenom(context.Context, *MsgRemoveDexDenom) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveDexDenom not implemented")
@@ -670,6 +685,24 @@ func _Msg_UpdateEpochLength_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateLiquidityChangeDecay_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateLiquidityChangeDecay)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateLiquidityChangeDecay(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateLiquidityChangeDecay_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateLiquidityChangeDecay(ctx, req.(*MsgUpdateLiquidityChangeDecay))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_RemoveDexDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgRemoveDexDenom)
 	if err := dec(in); err != nil {
@@ -766,6 +799,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateEpochLength",
 			Handler:    _Msg_UpdateEpochLength_Handler,
+		},
+		{
+			MethodName: "UpdateLiquidityChangeDecay",
+			Handler:    _Msg_UpdateLiquidityChangeDecay_Handler,
 		},
 		{
 			MethodName: "RemoveDexDenom",

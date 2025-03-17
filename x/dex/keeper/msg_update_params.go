@@ -162,6 +162,26 @@ func (k msgServer) UpdateEpochLength(ctx context.Context, req *types.MsgUpdateEp
 	return &types.Void{}, err
 }
 
+func (k msgServer) UpdateLiquidityChangeDecay(ctx context.Context, req *types.MsgUpdateLiquidityChangeDecay) (*types.Void, error) {
+	if k.GetAuthority() != req.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	}
+
+	liquidityChangeDecay, err := math.LegacyNewDecFromStr(req.LiquidityChangeDecay)
+	if err != nil {
+		return nil, err
+	}
+
+	params := k.GetParams(ctx)
+	params.LiquidityChangeDecayFromDeposits = liquidityChangeDecay
+
+	if err = k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
+
+	return &types.Void{}, err
+}
+
 func (k msgServer) RemoveDexDenom(ctx context.Context, req *types.MsgRemoveDexDenom) (*types.Void, error) {
 	if k.GetAuthority() != req.Authority {
 		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
