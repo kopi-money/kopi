@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"github.com/kopi-money/kopi/constants"
 
 	"github.com/kopi-money/kopi/x/dex/types"
 	"google.golang.org/grpc/codes"
@@ -24,8 +25,8 @@ func (k Keeper) LiquidityPair(ctx context.Context, req *types.QueryGetLiquidityP
 		return nil, err
 	}
 
-	fullOther := k.GetFullLiquidityOther(ctx, req.Denom)
-	fullBase := k.GetFullLiquidityBase(ctx, req.Denom)
+	fullOther := k.GetPoolLiquidity(ctx, req.Denom)
+	fullBase := k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 
 	return &types.QueryGetLiquidityPairResponse{
 		Denom:        liquidityPair.Denom,

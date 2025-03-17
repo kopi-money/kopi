@@ -117,7 +117,7 @@ func TestHandle2(t *testing.T) {
 		Creator:        keepertest.Bob,
 		DenomGiving:    "uwusdc",
 		DenomReceiving: constants.KUSD,
-		Amount:         "200000",
+		Amount:         "1_000_000_000",
 	})
 	require.NoError(t, err)
 

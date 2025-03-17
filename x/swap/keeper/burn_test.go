@@ -211,7 +211,7 @@ func liquidityBalanced(ctx context.Context, k dexkeeper.Keeper) bool {
 	coins := k.BankKeeper.SpendableCoins(ctx, acc.GetAddress())
 
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
-		liqSum := k.GetLiquiditySum(ctx, denom)
+		liqSum := k.GetPoolLiquidity(ctx, denom)
 		funds := coins.AmountOf(denom)
 
 		diff := liqSum.Sub(funds).Abs()

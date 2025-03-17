@@ -27,7 +27,7 @@ func (k Keeper) LiquidityAll(ctx context.Context, _ *types.QueryGetLiquidityAllR
 	)
 
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
-		val := k.GetLiquiditySum(ctx, denom)
+		val := k.GetPoolLiquidity(ctx, denom)
 
 		amountUSD, err = k.DenomKeeper.GetValueIn(ctx, denom, referenceDenom, val.ToLegacyDec())
 		if err != nil {
@@ -59,7 +59,7 @@ func (k Keeper) LiquiditySum(ctx context.Context, _ *types.QueryGetLiquiditySumR
 
 	valueUSD := math.LegacyZeroDec()
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
-		val := k.GetLiquiditySum(ctx, denom)
+		val := k.GetPoolLiquidity(ctx, denom)
 
 		var price math.LegacyDec
 		price, err = k.DenomKeeper.CalculatePrice(ctx, denom, referenceDenom)
@@ -85,7 +85,7 @@ func (k Keeper) Liquidity(ctx context.Context, req *types.QueryGetLiquidityReque
 	}
 
 	res := types.QueryGetLiquidityResponse{}
-	res.Amount = k.GetLiquiditySum(ctx, req.Denom).String()
+	res.Amount = k.GetPoolLiquidity(ctx, req.Denom).String()
 
 	if req.Denom != constants.BaseCurrency {
 		pair, err := k.GetLiquidityPair(ctx, req.Denom)
@@ -199,7 +199,7 @@ func (k Keeper) LiquidityPool(ctx context.Context, _ *types.QueryLiquidityPoolRe
 	var entries []types.LiquidityPoolEntry
 
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
-		sum := k.GetLiquiditySum(ctx, denom)
+		sum := k.GetPoolLiquidity(ctx, denom)
 		entrySum := k.getSummedLiquidity(ctx, denom)
 
 		entries = append(entries, types.LiquidityPoolEntry{

@@ -260,11 +260,11 @@ func (k Keeper) skipKCoin(ctx context.Context, denom string) bool {
 
 func (k Keeper) GetDenomValue(ctx context.Context, denom string) (math.LegacyDec, error) {
 	if denom == constants.BaseCurrency {
-		liq := k.GetLiquiditySum(ctx, constants.BaseCurrency)
+		liq := k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 		return liq.ToLegacyDec(), nil
 	}
 
-	liq := k.GetFullLiquidityOther(ctx, denom)
+	liq := k.GetPoolLiquidity(ctx, denom).ToLegacyDec()
 	price, err := k.DenomKeeper.CalculatePrice(ctx, denom, constants.BaseCurrency)
 	if err != nil {
 		return math.LegacyDec{}, err
@@ -274,12 +274,18 @@ func (k Keeper) GetDenomValue(ctx context.Context, denom string) (math.LegacyDec
 }
 
 func (k Keeper) PrepareCutLiquidity(ctx *types.TradeContext) {
-	liqFrom := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomGiving)
-	liqTo := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomReceiving)
-	liqBase := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(constants.BaseCurrency).ToLegacyDec()
+	poolLiqFrom := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomGiving).ToLegacyDec()
+	poolLiqTo := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomReceiving).ToLegacyDec()
+	poolLiqBase := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(constants.BaseCurrency).ToLegacyDec()
+
+	spreadLiqFrom := k.GetSpreadLiquidity(ctx, ctx.TradeDenomGiving)
+	spreadLiqTo := k.GetSpreadLiquidity(ctx, ctx.TradeDenomReceiving)
+	spreadLiqBase := k.GetSpreadLiquidity(ctx, constants.BaseCurrency)
 
 	if ctx.TradeDenomGiving != constants.BaseCurrency {
-		cutLiquidity := k.createCutLiquidity(ctx, liqBase, liqFrom.ToLegacyDec(), ctx.TradeDenomGiving)
+		cutLiquidity, _ := k.createCutLiquidity(ctx, spreadLiqBase, spreadLiqFrom, poolLiqBase, poolLiqFrom, ctx.TradeDenomGiving)
+		cutLiquidity.DenomGiving = ctx.TradeDenomGiving
+		cutLiquidity.DenomReceiving = constants.BaseCurrency
 
 		switch ctx.TradeType {
 		case types.TradeTypeSell:
@@ -292,7 +298,9 @@ func (k Keeper) PrepareCutLiquidity(ctx *types.TradeContext) {
 	}
 
 	if ctx.TradeDenomReceiving != constants.BaseCurrency {
-		cutLiquidity := k.createCutLiquidity(ctx, liqBase, liqTo.ToLegacyDec(), ctx.TradeDenomReceiving)
+		cutLiquidity, _ := k.createCutLiquidity(ctx, spreadLiqBase, spreadLiqTo, poolLiqBase, poolLiqTo, ctx.TradeDenomReceiving)
+		cutLiquidity.DenomGiving = constants.BaseCurrency
+		cutLiquidity.DenomReceiving = ctx.TradeDenomReceiving
 
 		switch ctx.TradeType {
 		case types.TradeTypeSell:
@@ -305,11 +313,11 @@ func (k Keeper) PrepareCutLiquidity(ctx *types.TradeContext) {
 	}
 }
 
-func (k Keeper) createCutLiquidity(ctx context.Context, liqBase, liqOther math.LegacyDec, denom string) types.CutLiquidity {
+func (k Keeper) createCutLiquidity(ctx context.Context, spreadBase, spreadOther, liqBase, liqOther math.LegacyDec, denom string) (types.CutLiquidity, error) {
 	ratio, _ := k.DenomKeeper.GetRatio(ctx, denom)
-	liqValue := liqOther.Quo(ratio.Ratio) // C
+	spreadLiqValue := spreadOther.Quo(ratio.Ratio) // C
 
-	tradeValue := math.LegacyMinDec(liqValue, liqBase)
+	tradeValue := math.LegacyMinDec(spreadLiqValue, spreadBase)
 	unusedLiqBase := liqBase.Sub(tradeValue)
 	tradeValueOther := tradeValue.Mul(ratio.Ratio)
 	unusedLiqOther := liqOther.Sub(tradeValueOther)
@@ -327,6 +335,16 @@ func (k Keeper) createCutLiquidity(ctx context.Context, liqBase, liqOther math.L
 	}
 
 	extraVirtualLiquidity := k.DenomKeeper.ExtraVirtualLiquidity(ctx, denom)
+	extraVirtualLiquidityBase, err := k.DenomKeeper.GetValueInFromUSD(ctx, constants.BaseCurrency, extraVirtualLiquidity.ToLegacyDec())
+	if err != nil {
+		return cutLiquidity, fmt.Errorf("convert extra liq to base: %w", err)
+	}
+
+	extraVirtualLiquidityOther, err := k.DenomKeeper.GetValueIn(ctx, constants.BaseCurrency, ratio.Denom, extraVirtualLiquidityBase)
+	if err != nil {
+		return cutLiquidity, fmt.Errorf("convert extra liq to base: %w", err)
+	}
+
 	if cutLiquidity.VirtualBase.IsNil() {
 		cutLiquidity.VirtualBase = math.LegacyZeroDec()
 	}
@@ -335,9 +353,8 @@ func (k Keeper) createCutLiquidity(ctx context.Context, liqBase, liqOther math.L
 		cutLiquidity.VirtualOther = math.LegacyZeroDec()
 	}
 
-	extraVirtualLiquidityBase := extraVirtualLiquidity.ToLegacyDec().Quo(ratio.Ratio)
 	cutLiquidity.VirtualBase = cutLiquidity.VirtualBase.Add(extraVirtualLiquidityBase)
-	cutLiquidity.VirtualOther = cutLiquidity.VirtualOther.Add(extraVirtualLiquidity.ToLegacyDec())
+	cutLiquidity.VirtualOther = cutLiquidity.VirtualOther.Add(extraVirtualLiquidityOther)
 
 	if cutLiquidity.VirtualBase.IsPositive() && unusedLiqBase.IsPositive() {
 		usable := math.LegacyMinDec(cutLiquidity.VirtualBase, unusedLiqBase)
@@ -351,22 +368,7 @@ func (k Keeper) createCutLiquidity(ctx context.Context, liqBase, liqOther math.L
 		cutLiquidity.VirtualOther = cutLiquidity.VirtualOther.Sub(usable)
 	}
 
-	return cutLiquidity
-}
-
-func (k Keeper) CalcTradeBaseValue(ctx context.Context) (math.LegacyDec, error) {
-	tradeBaseValueUSD := k.getTradeBaseValue(ctx)
-	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
-	if err != nil {
-		return math.LegacyDec{}, fmt.Errorf("highest USD reference: %w", err)
-	}
-
-	tradeValueBase, err := k.DenomKeeper.GetValueInBase(ctx, referenceDenom, tradeBaseValueUSD)
-	if err != nil {
-		return math.LegacyDec{}, fmt.Errorf("convert to base: %w", err)
-	}
-
-	return tradeValueBase, nil
+	return cutLiquidity, nil
 }
 
 func (k Keeper) RemoveAllLiquidityForDenom(ctx context.Context, denom string) error {

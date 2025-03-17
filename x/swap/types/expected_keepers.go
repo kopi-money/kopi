@@ -43,9 +43,7 @@ type DexKeeper interface {
 	CalculateParity(ctx context.Context, kCoin string) (*math.LegacyDec, string, error)
 	ExecuteSell(ctx dextypes.TradeContext) (dextypes.TradeResult, error)
 	GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int
-	GetFullLiquidityBase(ctx context.Context, denomOther string) math.LegacyDec
-	GetFullLiquidityOther(ctx context.Context, denomOther string) math.LegacyDec
-	GetLiquiditySum(ctx context.Context, denom string) math.Int
+	GetPoolLiquidity(context.Context, string) math.Int
 	RemoveLiquidityForAddress(ctx context.Context, accAddress sdk.AccAddress, denom string, amount math.Int, positionIndex *uint64) (math.Int, error)
 }
 

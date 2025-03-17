@@ -8,7 +8,7 @@ import (
 )
 
 func (k Keeper) NewOrdersCaches(ctx context.Context) *types.OrdersCaches {
-	oc := types.NewOrderCaches(
+	return types.NewOrderCaches(
 		func() sdk.AccAddress {
 			acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolTrade)
 			return acc.GetAddress()
@@ -50,6 +50,4 @@ func (k Keeper) NewOrdersCaches(ctx context.Context) *types.OrdersCaches {
 			return k.liquidityEntries.Iterator(ctx, nil, denom).GetAll()
 		},
 	)
-
-	return oc
 }

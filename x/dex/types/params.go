@@ -23,20 +23,20 @@ var (
 			Discount:    math.LegacyNewDecWithPrec(1, 1),
 		},
 	}
-	TradeBaseValue = math.LegacyNewDec(1_000000_000000) // 1mio
+	LiquidityChangeDecayFromDeposits = math.LegacyNewDecWithPrec(9999, 4)
 )
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return Params{
-		TradeFee:              TradeFee,
-		OrderFee:              OrderFee,
-		VirtualLiquidityDecay: VirtualLiquidityDecay,
-		ReserveShare:          ReserveShare,
-		MaxOrderLife:          uint64(MaxOrderLife),
-		TradeAmountDecay:      TradeAmountDecay,
-		DiscountLevels:        DiscountLevels,
-		TradeBaseValue:        TradeBaseValue,
+		TradeFee:                         TradeFee,
+		OrderFee:                         OrderFee,
+		VirtualLiquidityDecay:            VirtualLiquidityDecay,
+		ReserveShare:                     ReserveShare,
+		MaxOrderLife:                     uint64(MaxOrderLife),
+		TradeAmountDecay:                 TradeAmountDecay,
+		DiscountLevels:                   DiscountLevels,
+		LiquidityChangeDecayFromDeposits: LiquidityChangeDecayFromDeposits,
 	}
 }
 
@@ -70,12 +70,12 @@ func (p Params) Validate() error {
 		return fmt.Errorf("invalid trade amount decay: %w", err)
 	}
 
-	if p.TradeBaseValue.IsNil() {
-		p.TradeBaseValue = TradeBaseValue
+	if p.LiquidityChangeDecayFromDeposits.IsNil() {
+		p.LiquidityChangeDecayFromDeposits = LiquidityChangeDecayFromDeposits
 	}
 
-	if err := validateDexBiggerThanZero(p.TradeBaseValue); err != nil {
-		return fmt.Errorf("invalid trade base value: %w", err)
+	if err := validateBetweenZeroAndOne(p.LiquidityChangeDecayFromDeposits); err != nil {
+		return fmt.Errorf("invalid change decay from deposits: %w", err)
 	}
 
 	return nil

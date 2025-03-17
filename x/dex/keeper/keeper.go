@@ -29,6 +29,8 @@ var (
 	PrefixEpochSharesSum             = collections.NewPrefix(11)
 	PrefixEpochPayouts               = collections.NewPrefix(12)
 	PrefixEpochStartTime             = collections.NewPrefix(13)
+
+	PrefixMovingLiquidity = collections.NewPrefix(14)
 )
 
 type (
@@ -44,6 +46,7 @@ type (
 
 		// Collections
 		params                    *cache.ItemCache[types.Params]
+		movingLiquidity           *cache.MapCache[string, types.MovingLiquidity]
 		liquidityEntries          *cache.NestedMapCache[string, uint64, types.Liquidity]
 		liquidityEntriesNextIndex *cache.ItemCache[uint64]
 		orders                    *cache.MapCache[uint64, types.Order]
@@ -105,6 +108,15 @@ func NewKeeper(
 			PrefixParams,
 			"params",
 			codec.CollValue[types.Params](cdc),
+			caches,
+		),
+
+		movingLiquidity: cache.NewMapCache(
+			sb,
+			PrefixMovingLiquidity,
+			"moving_liquidity",
+			collections.StringKey,
+			codec.CollValue[types.MovingLiquidity](cdc),
 			caches,
 		),
 

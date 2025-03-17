@@ -25,7 +25,7 @@ func TestLiquidity1(t *testing.T) {
 	poolBalance := k.BankKeeper.SpendableCoins(ctx, addr.GetAddress())
 	require.Equal(t, int64(1), poolBalance.AmountOf(constants.BaseCurrency).Int64())
 
-	liq := k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq := k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, int64(1), liq.Int64())
 
 	require.NoError(t, checkCache(ctx, k))
@@ -34,7 +34,7 @@ func TestLiquidity1(t *testing.T) {
 	require.Nil(t, err)
 	num := k.GetLiquidityEntriesByAddress(ctx, constants.BaseCurrency, keepertest.Alice)
 	require.Equal(t, 2, num)
-	liq = k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq = k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, int64(2), liq.Int64())
 	liq = k.GetLiquidityByAddress(ctx, constants.BaseCurrency, keepertest.Alice)
 	require.Equal(t, int64(2), liq.Int64())
@@ -44,7 +44,7 @@ func TestLiquidity1(t *testing.T) {
 	err = keepertest.RemoveLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1)
 	num = k.GetLiquidityEntriesByAddress(ctx, constants.BaseCurrency, keepertest.Alice)
 	require.Equal(t, 1, num)
-	liq = k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq = k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, int64(1), liq.Int64())
 	liq = k.GetLiquidityByAddress(ctx, constants.BaseCurrency, keepertest.Alice)
 	require.Equal(t, int64(1), liq.Int64())
@@ -54,7 +54,7 @@ func TestLiquidity1(t *testing.T) {
 	err = keepertest.RemoveLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1)
 	num = k.GetLiquidityEntriesByAddress(ctx, constants.BaseCurrency, keepertest.Alice)
 	require.Equal(t, 0, num)
-	liq = k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq = k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, int64(0), liq.Int64())
 	liq = k.GetLiquidityByAddress(ctx, constants.BaseCurrency, keepertest.Alice)
 	require.Equal(t, int64(0), liq.Int64())
@@ -101,7 +101,7 @@ func TestLiquidity3(t *testing.T) {
 	err := keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 10)
 	require.NoError(t, err)
 
-	liq := k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq := k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, liq, math.NewInt(10))
 	amount2 := getSpendableAmount(ctx, k, constants.BaseCurrency, keepertest.Alice)
 	require.Equal(t, amount1, amount2.Add(math.NewInt(10)))
@@ -119,7 +119,7 @@ func TestLiquidity3(t *testing.T) {
 func TestLiquidity4(t *testing.T) {
 	k, _, ctx := keepertest.SetupDexMsgServer(t)
 
-	liq := k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq := k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, int64(0), liq.Int64())
 	iterator := k.LiquidityIterator(ctx, constants.BaseCurrency)
 	require.Equal(t, 0, len(iterator.GetAll()))
@@ -143,7 +143,7 @@ func TestLiquidity4(t *testing.T) {
 func TestLiquidity5(t *testing.T) {
 	k, _, ctx := keepertest.SetupDexMsgServer(t)
 
-	liq := k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq := k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, int64(0), liq.Int64())
 	iterator := k.LiquidityIterator(ctx, constants.BaseCurrency)
 	require.Equal(t, 0, len(iterator.GetAll()))
@@ -153,7 +153,7 @@ func TestLiquidity5(t *testing.T) {
 		_, err := k.AddLiquidity(innerCtx, acc, constants.BaseCurrency, math.NewInt(10))
 		require.NoError(t, err)
 
-		liq = k.GetLiquiditySum(innerCtx, constants.BaseCurrency)
+		liq = k.GetPoolLiquidity(innerCtx, constants.BaseCurrency)
 		require.Equal(t, int64(10), liq.Int64())
 		iterator = k.LiquidityIterator(innerCtx, constants.BaseCurrency)
 		require.Equal(t, 1, len(iterator.GetAll()))
@@ -173,7 +173,7 @@ func TestLiquidity5(t *testing.T) {
 func TestLiquidity6(t *testing.T) {
 	k, _, ctx := keepertest.SetupDexMsgServer(t)
 
-	liq := k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq := k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, int64(0), liq.Int64())
 	iterator := k.LiquidityIterator(ctx, constants.BaseCurrency)
 	require.Equal(t, 0, len(iterator.GetAll()))
@@ -197,7 +197,7 @@ func TestLiquidity6(t *testing.T) {
 func TestLiquidity7(t *testing.T) {
 	k, _, ctx := keepertest.SetupDexMsgServer(t)
 
-	liq := k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq := k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, int64(0), liq.Int64())
 	iterator := k.LiquidityIterator(ctx, constants.BaseCurrency)
 	require.Equal(t, 0, len(iterator.GetAll()))
@@ -207,7 +207,7 @@ func TestLiquidity7(t *testing.T) {
 		_, err := k.AddLiquidity(innerCtx, acc, constants.BaseCurrency, math.NewInt(10))
 		require.NoError(t, err)
 
-		liq = k.GetLiquiditySum(innerCtx, constants.BaseCurrency)
+		liq = k.GetPoolLiquidity(innerCtx, constants.BaseCurrency)
 		require.Equal(t, int64(10), liq.Int64())
 		iterator = k.LiquidityIterator(innerCtx, constants.BaseCurrency)
 		require.Equal(t, 1, len(iterator.GetAll()))
@@ -215,7 +215,7 @@ func TestLiquidity7(t *testing.T) {
 		return nil
 	})
 
-	liq = k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq = k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, int64(10), liq.Int64())
 	iterator = k.LiquidityIterator(ctx, constants.BaseCurrency)
 	require.Equal(t, 1, len(iterator.GetAll()))
@@ -239,7 +239,7 @@ func TestLiquidity7(t *testing.T) {
 func TestLiquidity8(t *testing.T) {
 	k, _, ctx := keepertest.SetupDexMsgServer(t)
 
-	liq := k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq := k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, int64(0), liq.Int64())
 	iterator := k.LiquidityIterator(ctx, constants.BaseCurrency)
 	require.Equal(t, 0, len(iterator.GetAll()))
@@ -249,7 +249,7 @@ func TestLiquidity8(t *testing.T) {
 		_, err := k.AddLiquidity(innerCtx, acc, constants.BaseCurrency, math.NewInt(10))
 		require.NoError(t, err)
 
-		liq = k.GetLiquiditySum(innerCtx, constants.BaseCurrency)
+		liq = k.GetPoolLiquidity(innerCtx, constants.BaseCurrency)
 		require.Equal(t, int64(10), liq.Int64())
 		iterator = k.LiquidityIterator(innerCtx, constants.BaseCurrency)
 		require.Equal(t, 1, len(iterator.GetAll()))
@@ -257,7 +257,7 @@ func TestLiquidity8(t *testing.T) {
 		return nil
 	})
 
-	liq = k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq = k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, int64(10), liq.Int64())
 	iterator = k.LiquidityIterator(ctx, constants.BaseCurrency)
 	require.Equal(t, 1, len(iterator.GetAll()))
@@ -267,7 +267,7 @@ func TestLiquidity8(t *testing.T) {
 		_, err := k.AddLiquidity(innerCtx, acc, constants.BaseCurrency, math.NewInt(10))
 		require.NoError(t, err)
 
-		liq = k.GetLiquiditySum(innerCtx, constants.BaseCurrency)
+		liq = k.GetPoolLiquidity(innerCtx, constants.BaseCurrency)
 		require.Equal(t, int64(20), liq.Int64())
 		iterator = k.LiquidityIterator(innerCtx, constants.BaseCurrency)
 		require.Equal(t, 2, len(iterator.GetAll()))
@@ -275,7 +275,7 @@ func TestLiquidity8(t *testing.T) {
 		return nil
 	})
 
-	liq = k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq = k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, int64(20), liq.Int64())
 	iterator = k.LiquidityIterator(ctx, constants.BaseCurrency)
 	require.Equal(t, 2, len(iterator.GetAll()))
@@ -284,7 +284,7 @@ func TestLiquidity8(t *testing.T) {
 		return fmt.Errorf("")
 	})
 
-	liq = k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq = k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, int64(20), liq.Int64())
 	iterator = k.LiquidityIterator(ctx, constants.BaseCurrency)
 	require.Equal(t, 2, len(iterator.GetAll()))

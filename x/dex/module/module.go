@@ -172,9 +172,10 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 
 	return cache.TransactWithNewMultiStore(ctx, func(innerCtx context.Context) error {
 		am.keeper.ResetTradeFeeTracker(innerCtx)
+		am.keeper.UpdateMovingLiquidities(innerCtx)
 
 		if err := am.keeper.UpdateVirtualLiquidities(innerCtx); err != nil {
-			return fmt.Errorf("could not update virtual liquidities: %w", err)
+			return fmt.Errorf("update virtual liquidities: %w", err)
 		}
 
 		return nil
@@ -200,7 +201,7 @@ func (am AppModule) EndBlock(ctx context.Context) error {
 		if err := am.keeper.CheckEpoch(innerCtx); err != nil {
 			return fmt.Errorf("error checking epoch: %w", err)
 		}
-		
+
 		am.keeper.EmitTradeFeeEvent(innerCtx)
 
 		return nil

@@ -284,7 +284,7 @@ func RemoveLiquidityWithPayout(ctx context.Context, k dextypes.MsgServer, addres
 
 type LiquidityI interface {
 	AddLiquidity(context.Context, sdk.AccAddress, string, math.Int) (math.Int, error)
-	GetLiquiditySum(context.Context, string) math.Int
+	GetPoolLiquidity(context.Context, string) math.Int
 }
 
 func TestAddLiquidity(ctx context.Context, k LiquidityI, t *testing.T, address, denom string, amount int64) {
@@ -296,7 +296,7 @@ func TestAddLiquidity(ctx context.Context, k LiquidityI, t *testing.T, address, 
 		return err
 	}))
 
-	require.Equal(t, k.GetLiquiditySum(ctx, denom).Int64(), amount)
+	require.Equal(t, k.GetPoolLiquidity(ctx, denom).Int64(), amount)
 }
 
 func SetupDexMsgServer(t *testing.T) (dexkeeper.Keeper, dextypes.MsgServer, context.Context) {

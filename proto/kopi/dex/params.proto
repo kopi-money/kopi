@@ -50,4 +50,9 @@ message Params {
   ];
 
   uint64 epoch_length = 9;
+
+  bytes liquidity_change_decay_from_deposits = 10 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
 }

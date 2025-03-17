@@ -58,17 +58,17 @@ func (k Keeper) getVirtualLiquidityDecay(ctx context.Context) math.LegacyDec {
 	return k.GetParams(ctx).VirtualLiquidityDecay
 }
 
-func (k Keeper) getTradeBaseValue(ctx context.Context) math.LegacyDec {
-	params := k.GetParams(ctx)
-	if params.TradeBaseValue.IsNil() || params.TradeBaseValue.IsZero() {
-		return types.TradeBaseValue
-	}
-
-	return params.TradeBaseValue
-}
-
 func (k Keeper) getEpochLength(ctx context.Context) uint64 {
 	length := k.GetParams(ctx).EpochLength
 	length = max(length, minimumEpochTime)
 	return length
+}
+
+func (k Keeper) getLiquiditySpreadDecayFromDeposits(ctx context.Context) math.LegacyDec {
+	params := k.GetParams(ctx)
+	if params.LiquidityChangeDecayFromDeposits.IsNil() || params.LiquidityChangeDecayFromDeposits.IsZero() {
+		return types.LiquidityChangeDecayFromDeposits
+	}
+
+	return params.LiquidityChangeDecayFromDeposits
 }

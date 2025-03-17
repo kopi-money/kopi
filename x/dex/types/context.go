@@ -24,10 +24,15 @@ const (
 )
 
 type CutLiquidity struct {
-	CutBase      math.LegacyDec
-	CutOther     math.LegacyDec
-	VirtualBase  math.LegacyDec
-	VirtualOther math.LegacyDec
+	CutBase        math.LegacyDec
+	CutOther       math.LegacyDec
+	SpreadLiqBase  math.LegacyDec
+	SpreadLiqOther math.LegacyDec
+	VirtualBase    math.LegacyDec
+	VirtualOther   math.LegacyDec
+
+	DenomGiving    string
+	DenomReceiving string
 }
 
 func (cl *CutLiquidity) GetFullFrom(denomGiving string) (math.LegacyDec, math.LegacyDec) {
@@ -81,6 +86,9 @@ func (cl *CutLiquidity) GetTradeLiquidities(denomGiving string) (math.LegacyDec,
 type CutLiquidities struct {
 	Step1 *CutLiquidity
 	Step2 *CutLiquidity
+
+	LiqChangeFrom math.LegacyDec
+	LiqChangeTo   math.LegacyDec
 }
 
 func (cl *CutLiquidities) SizeFactor() math.LegacyDec {
@@ -96,12 +104,6 @@ func (cl *CutLiquidities) SizeFactor() math.LegacyDec {
 func (cl *CutLiquidities) IsZeroTrade(tradeType TradeType) bool {
 	switch tradeType {
 	case TradeTypeSell:
-		//if cl.Step2 != nil {
-		//	if !cl.Step2.MaximumOther.IsPositive() {
-		//		return true
-		//	}
-		//}
-
 		if cl.Step1 != nil {
 			ab, vb := cl.Step1.GetFullBase()
 			if !ab.Add(vb).IsPositive() {
@@ -109,12 +111,6 @@ func (cl *CutLiquidities) IsZeroTrade(tradeType TradeType) bool {
 			}
 		}
 	case TradeTypeBuy:
-		//if cl.Step1 != nil {
-		//	if !cl.Step1.MaximumOther.IsPositive() {
-		//		return true
-		//	}
-		//}
-
 		if cl.Step2 != nil {
 			ab, vb := cl.Step2.GetFullBase()
 			if !ab.Add(vb).IsPositive() {
@@ -145,10 +141,7 @@ func (cl *CutLiquidities) UpdateBaseRelational(tradeType TradeType, amountGiven,
 		amountBaseStep1Adjusted = amountBaseStep1Original.Add(amountGiven.ToLegacyDec())
 	}
 
-	changeAmount := amountBaseStep1Adjusted.Sub(amountBaseStep1Original)
-	//changeFactor := amountBaseStep1Adjusted.Quo(amountBaseStep1Original)
-	//cl.Step2.CutBase = cl.Step2.CutBase.Mul(changeFactor).Ceil()
-	return changeAmount
+	return amountBaseStep1Adjusted.Sub(amountBaseStep1Original)
 }
 
 func (cl *CutLiquidities) UpdateBaseFixed(amount math.LegacyDec) {
@@ -194,6 +187,14 @@ func (cl *CutLiquidities) GetFullLiquidityReceiving(denom string, tradeType Trad
 		} else {
 			return cl.Step2.GetFullBaseSummed()
 		}
+	}
+}
+
+func (cl *CutLiquidities) GetFullBase() math.LegacyDec {
+	if cl.Step1 != nil {
+		return cl.Step1.GetFullBaseSummed()
+	} else {
+		return cl.Step2.GetFullBaseSummed()
 	}
 }
 

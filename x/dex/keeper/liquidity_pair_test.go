@@ -29,9 +29,9 @@ func TestLiquidityPairs1(t *testing.T) {
 	require.Equal(t, int64(8), k.GetLiquidityByAddress(ctx, constants.BaseCurrency, keepertest.Alice).Int64())
 	require.Equal(t, int64(0), k.GetLiquidityByAddress(ctx, constants.KUSD, keepertest.Alice).Int64())
 
-	liq := k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq := k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, int64(8), liq.Int64())
-	liq = k.GetLiquiditySum(ctx, constants.KUSD)
+	liq = k.GetPoolLiquidity(ctx, constants.KUSD)
 	require.Equal(t, int64(0), liq.Int64())
 
 	pair, err := k.GetLiquidityPair(ctx, constants.KUSD)
@@ -49,9 +49,9 @@ func TestLiquidityPairs1(t *testing.T) {
 	require.Equal(t, int64(8), k.GetLiquidityByAddress(ctx, constants.BaseCurrency, keepertest.Alice).Int64())
 	require.Equal(t, int64(1), k.GetLiquidityByAddress(ctx, constants.KUSD, keepertest.Alice).Int64())
 
-	liq = k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq = k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, int64(8), liq.Int64())
-	liq = k.GetLiquiditySum(ctx, constants.KUSD)
+	liq = k.GetPoolLiquidity(ctx, constants.KUSD)
 	require.Equal(t, int64(1), liq.Int64())
 
 	pair, err = k.GetLiquidityPair(ctx, constants.KUSD)
@@ -74,9 +74,9 @@ func TestLiquidityPairs1(t *testing.T) {
 	require.Equal(t, int64(8), k.GetLiquidityByAddress(ctx, constants.BaseCurrency, keepertest.Alice).Int64())
 	require.Equal(t, int64(2), k.GetLiquidityByAddress(ctx, constants.KUSD, keepertest.Alice).Int64())
 
-	liq = k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq = k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, int64(8), liq.Int64())
-	liq = k.GetLiquiditySum(ctx, constants.KUSD)
+	liq = k.GetPoolLiquidity(ctx, constants.KUSD)
 	require.Equal(t, int64(2), liq.Int64())
 
 	pair, err = k.GetLiquidityPair(ctx, constants.KUSD)
@@ -99,9 +99,9 @@ func TestLiquidityPairs1(t *testing.T) {
 	require.Equal(t, int64(12), k.GetLiquidityByAddress(ctx, constants.BaseCurrency, keepertest.Alice).Int64())
 	require.Equal(t, int64(2), k.GetLiquidityByAddress(ctx, constants.KUSD, keepertest.Alice).Int64())
 
-	liq = k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq = k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, int64(12), liq.Int64())
-	liq = k.GetLiquiditySum(ctx, constants.KUSD)
+	liq = k.GetPoolLiquidity(ctx, constants.KUSD)
 	require.Equal(t, int64(2), liq.Int64())
 
 	pair, err = k.GetLiquidityPair(ctx, constants.KUSD)
@@ -119,9 +119,9 @@ func TestLiquidityPairs1(t *testing.T) {
 	require.Equal(t, int64(8), k.GetLiquidityByAddress(ctx, constants.BaseCurrency, keepertest.Alice).Int64())
 	require.Equal(t, int64(2), k.GetLiquidityByAddress(ctx, constants.KUSD, keepertest.Alice).Int64())
 
-	liq = k.GetLiquiditySum(ctx, constants.BaseCurrency)
+	liq = k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 	require.Equal(t, int64(8), liq.Int64())
-	liq = k.GetLiquiditySum(ctx, constants.KUSD)
+	liq = k.GetPoolLiquidity(ctx, constants.KUSD)
 	require.Equal(t, int64(2), liq.Int64())
 
 	pair, err = k.GetLiquidityPair(ctx, constants.KUSD)

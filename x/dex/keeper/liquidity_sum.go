@@ -24,7 +24,17 @@ func (k Keeper) SumLiquidity(ctx context.Context, denom string) math.Int {
 	return liqSum
 }
 
-func (k Keeper) GetLiquiditySum(ctx context.Context, denom string) math.Int {
+func (k Keeper) GetPoolLiquidity(ctx context.Context, denom string) math.Int {
 	liquidityPool := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
 	return k.BankKeeper.SpendableCoins(ctx, liquidityPool.GetAddress()).AmountOf(denom)
+}
+
+func (k Keeper) GetSpreadLiquidity(ctx context.Context, denom string) math.LegacyDec {
+	poolLiquidity := k.GetPoolLiquidity(ctx, denom).ToLegacyDec()
+	movingLiquidity := k.getMovingLiquidity(ctx, denom).DepositAmount
+	if movingLiquidity.IsZero() {
+		return poolLiquidity
+	}
+
+	return math.LegacyMinDec(poolLiquidity, movingLiquidity)
 }

@@ -37,3 +37,10 @@ message GenesisLiquidityPositions {
 message LiquidityPosition {
   bool auto_compound = 1;
 }
+
+message MovingLiquidity {
+  bytes deposit_amount = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}

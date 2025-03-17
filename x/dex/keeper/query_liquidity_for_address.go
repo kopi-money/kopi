@@ -23,7 +23,7 @@ func (k Keeper) LiquidityForAddress(goCtx context.Context, req *types.QueryLiqui
 	liquidities := []types.AddressLiquidity{}
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
 		userAmount := k.GetLiquidityByAddress(ctx, denom, req.Address)
-		sum := k.GetLiquiditySum(ctx, denom)
+		sum := k.GetPoolLiquidity(ctx, denom)
 
 		userAmountUSD, _ := k.DenomKeeper.GetValueInUSD(ctx, denom, userAmount.ToLegacyDec())
 		sumUSD, _ := k.DenomKeeper.GetValueInUSD(ctx, denom, sum.ToLegacyDec())

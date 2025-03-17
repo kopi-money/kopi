@@ -33,39 +33,35 @@ func (k Keeper) GetAllLiquidityPair(ctx context.Context) (list []types.Liquidity
 }
 
 func (k Keeper) CreateLiquidityPair(ctx context.Context, ratio denomtypes.Ratio) (types.LiquidityPair, error) {
-	liqBase := k.GetLiquiditySum(ctx, constants.BaseCurrency)
-	liqOther := k.GetLiquiditySum(ctx, ratio.Denom)
+	liqBase := k.GetSpreadLiquidity(ctx, constants.BaseCurrency)
+	liqOther := k.GetSpreadLiquidity(ctx, ratio.Denom)
 	extraVirtualLiquidity := k.DenomKeeper.ExtraVirtualLiquidity(ctx, ratio.Denom)
 
 	return k.CreateLiquidityPairWithLiquidity(ctx, ratio, liqBase, liqOther, extraVirtualLiquidity)
 }
 
-func (k Keeper) CreateLiquidityPairWithLiquidity(ctx context.Context, ratio denomtypes.Ratio, liqBase, liqOther math.Int, extraVirtualLiquidity math.Int) (types.LiquidityPair, error) {
-	liqBaseDec := liqBase.ToLegacyDec()
-	liqOtherDec := liqOther.ToLegacyDec()
-
-	liqOtherInBase := liqOtherDec.Quo(ratio.Ratio)
-	liqBaseDec = math.LegacyMinDec(liqBaseDec, liqOtherInBase)
-	liqBaseInOther := liqBaseDec.Mul(ratio.Ratio)
+func (k Keeper) CreateLiquidityPairWithLiquidity(ctx context.Context, ratio denomtypes.Ratio, liqBase, liqOther math.LegacyDec, extraVirtualLiquidity math.Int) (types.LiquidityPair, error) {
+	liqOtherInBase := liqOther.Quo(ratio.Ratio)
+	liqBase = math.LegacyMinDec(liqBase, liqOtherInBase)
+	liqBaseInOther := liqBase.Mul(ratio.Ratio)
 
 	pair := types.LiquidityPair{
 		Denom:        ratio.Denom,
-		ActualBase:   liqBaseDec,
-		ActualOther:  liqOtherDec,
+		ActualBase:   liqBase,
+		ActualOther:  liqOther,
 		VirtualBase:  math.LegacyZeroDec(),
 		VirtualOther: math.LegacyZeroDec(),
 	}
 
-	if liqBaseDec.LT(liqOtherInBase) {
-		pair.VirtualBase = liqOtherInBase.Sub(liqBaseDec)
+	if liqBase.LT(liqOtherInBase) {
+		pair.VirtualBase = liqOtherInBase.Sub(liqBase)
 	}
 
-	if liqOtherDec.LT(liqBaseInOther) {
-		pair.VirtualOther = liqBaseInOther.Sub(liqOtherDec)
+	if liqOther.LT(liqBaseInOther) {
+		pair.VirtualOther = liqBaseInOther.Sub(liqOther)
 	}
 
-	extraVirtualLiquidityUSD := extraVirtualLiquidity.ToLegacyDec().Quo(ratio.Ratio)
-	extraVirtualLiquidityBase, err := k.DenomKeeper.GetValueInFromUSD(ctx, constants.BaseCurrency, extraVirtualLiquidityUSD)
+	extraVirtualLiquidityBase, err := k.DenomKeeper.GetValueInFromUSD(ctx, constants.BaseCurrency, extraVirtualLiquidity.ToLegacyDec())
 	if err != nil {
 		return pair, fmt.Errorf("convert extra liq to base: %w", err)
 	}
@@ -79,28 +75,4 @@ func (k Keeper) CreateLiquidityPairWithLiquidity(ctx context.Context, ratio deno
 	pair.ExtraOther = extraVirtualLiquidityOther
 
 	return pair, nil
-}
-
-func (k Keeper) GetFullLiquidityBase(ctx context.Context, denomOther string) math.LegacyDec {
-	if denomOther == constants.BaseCurrency {
-		panic("other denom cannot be base currency")
-	}
-
-	liq1 := k.GetLiquiditySum(ctx, constants.BaseCurrency)
-	liq2, _ := k.GetLiquidityPair(ctx, denomOther)
-	return sumLiquidity(liq1.ToLegacyDec(), liq2.VirtualBase)
-}
-
-func (k Keeper) GetFullLiquidityOther(ctx context.Context, denom string) math.LegacyDec {
-	liq1 := k.GetLiquiditySum(ctx, denom)
-	liq2, _ := k.GetLiquidityPair(ctx, denom)
-	return sumLiquidity(liq1.ToLegacyDec(), liq2.VirtualOther)
-}
-
-func sumLiquidity(actual, virtual math.LegacyDec) math.LegacyDec {
-	if virtual.IsNil() || virtual.IsZero() {
-		return actual
-	}
-
-	return actual.Add(virtual)
 }
