@@ -535,12 +535,6 @@ func (k Keeper) calculateAmountGivenPrice(ctx *types.TradeContext) (math.LegacyD
 		T2 := ctx.CutLiquidities.Step2.GetFullBaseSummed()
 		Y := ctx.CutLiquidities.Step2.GetFullOtherSummed()
 
-		fmt.Println("--")
-		fmt.Println(X)
-		fmt.Println(T1)
-		fmt.Println(T2)
-		fmt.Println(Y)
-
 		if ctx.TradeType == types.TradeTypeBuy {
 			X, Y = Y, X
 			T1, T2 = T2, T1
@@ -791,11 +785,6 @@ func calculateSingleTrade(denomGiving, denomReceiving string, offer, fee math.Le
 	}
 
 	poolFrom, poolTo := cutLiquidity.GetTradeLiquidities(denomGiving)
-
-	fmt.Println("--")
-	fmt.Println(poolFrom)
-	fmt.Println(poolTo)
-
 	amount, feeAmount, err := cpTrade(poolFrom, poolTo, offer, fee)
 	if err != nil {
 		return math.LegacyDec{}, math.LegacyDec{}, err
