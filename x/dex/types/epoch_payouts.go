@@ -2,6 +2,7 @@ package types
 
 import (
 	"cosmossdk.io/math"
+	"sort"
 )
 
 type EpochPayouts struct {
@@ -25,6 +26,10 @@ func (ep EpochPayouts) ToLeftovers() EpochLeftovers {
 			})
 		}
 	}
+
+	sort.SliceStable(leftovers, func(i, j int) bool {
+		return leftovers[i].Denom < leftovers[j].Denom
+	})
 
 	return EpochLeftovers{
 		Leftovers: leftovers,
