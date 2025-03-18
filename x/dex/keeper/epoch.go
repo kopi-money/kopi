@@ -11,22 +11,6 @@ import (
 
 const minimumPayout = 1000
 
-type PayoutFunds struct {
-	funds map[string]math.LegacyDec
-}
-
-func NewPayoutFunds(funds sdk.Coins) *PayoutFunds {
-	pf := PayoutFunds{
-		funds: make(map[string]math.LegacyDec),
-	}
-
-	for _, coin := range funds {
-		pf.funds[coin.Denom] = coin.Amount.ToLegacyDec()
-	}
-
-	return &pf
-}
-
 func (k Keeper) CheckEpoch(ctx context.Context) error {
 	if k.shouldStartNewEpoch(ctx) {
 		return k.RestartEpoch(ctx)
@@ -136,8 +120,7 @@ func (k Keeper) DistributeCollectedFees(ctx context.Context) error {
 	accFees := k.AccountKeeper.GetModuleAccount(ctx, types.PoolFeeIncome)
 	accLeftovers := k.AccountKeeper.GetModuleAccount(ctx, types.PoolFeeLeftovers)
 
-	fundsToDistribute := k.BankKeeper.SpendableCoins(ctx, accFees.GetAddress())
-	payoutFunds := NewPayoutFunds(fundsToDistribute)
+	payoutFunds := k.BankKeeper.SpendableCoins(ctx, accFees.GetAddress())
 
 	fundsLeftover := k.BankKeeper.SpendableCoins(ctx, accLeftovers.GetAddress())
 	if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolFeeLeftovers, types.PoolFeeIncome, fundsLeftover); err != nil {
@@ -150,15 +133,15 @@ func (k Keeper) DistributeCollectedFees(ctx context.Context) error {
 		}
 	}
 
-	fundsToDistribute = k.BankKeeper.SpendableCoins(ctx, accFees.GetAddress())
-	if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolFeeIncome, types.PoolFeeLeftovers, fundsToDistribute); err != nil {
+	leftOvers := k.BankKeeper.SpendableCoins(ctx, accFees.GetAddress())
+	if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolFeeIncome, types.PoolFeeLeftovers, leftOvers); err != nil {
 		return fmt.Errorf("return leftover funds: %w", err)
 	}
 
 	return nil
 }
 
-func (k Keeper) HandleEpochAddress(ctx context.Context, address string, epochShareSum math.LegacyDec, payoutFunds *PayoutFunds) error {
+func (k Keeper) HandleEpochAddress(ctx context.Context, address string, epochShareSum math.LegacyDec, payoutFunds sdk.Coins) error {
 	iterator := k.epochShares.Iterator(ctx, nil, address)
 
 	for iterator.Valid() {
@@ -173,7 +156,7 @@ func (k Keeper) HandleEpochAddress(ctx context.Context, address string, epochSha
 	return nil
 }
 
-func (k Keeper) HandleEpochDeposit(ctx context.Context, address string, positionIndex uint64, epochShareSum math.LegacyDec, epochDeposit types.EpochShares, payoutFunds *PayoutFunds) error {
+func (k Keeper) HandleEpochDeposit(ctx context.Context, address string, positionIndex uint64, epochShareSum math.LegacyDec, epochDeposit types.EpochShares, payoutFunds sdk.Coins) error {
 	epochPayouts := k.collectFeesForDeposit(ctx, address, positionIndex, epochShareSum, epochDeposit.Shares, payoutFunds)
 	hasAutoCompound, stillExists := k.hasAutoCompound(ctx, address, positionIndex)
 
@@ -223,14 +206,14 @@ func (k Keeper) handleEpochDepositAutoCompound(ctx context.Context, address stri
 	}
 }
 
-func (k Keeper) collectFeesForDeposit(ctx context.Context, address string, positionIndex uint64, epochShares, depositShares math.LegacyDec, payoutFunds *PayoutFunds) *types.EpochPayouts {
+func (k Keeper) collectFeesForDeposit(ctx context.Context, address string, positionIndex uint64, epochShares, depositShares math.LegacyDec, payoutFunds sdk.Coins) *types.EpochPayouts {
 	previousLeftOvers := k.GetEpochLeftovers(ctx, address, positionIndex)
 	newFunds := types.EpochLeftovers{}
 	share := depositShares.Quo(epochShares)
 
-	for denom, amount := range payoutFunds.funds {
-		payoutAmount := amount.Mul(share)
-		newFunds = newFunds.Add(denom, payoutAmount)
+	for _, coin := range payoutFunds {
+		payoutAmount := coin.Amount.ToLegacyDec().Mul(share)
+		newFunds = newFunds.Add(coin.Denom, payoutAmount)
 	}
 
 	rewardsUSD := k.rewardsToUSD(ctx, newFunds)
