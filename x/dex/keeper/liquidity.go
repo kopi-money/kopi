@@ -274,9 +274,9 @@ func (k Keeper) GetDenomValue(ctx context.Context, denom string) (math.LegacyDec
 }
 
 func (k Keeper) PrepareCutLiquidity(ctx *types.TradeContext) {
-	poolLiqFrom := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomGiving).ToLegacyDec()
-	poolLiqTo := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomReceiving).ToLegacyDec()
-	poolLiqBase := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(constants.BaseCurrency).ToLegacyDec()
+	poolLiqFrom := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomGiving)
+	poolLiqTo := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomReceiving)
+	poolLiqBase := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(constants.BaseCurrency)
 
 	spreadLiqFrom := k.GetSpreadLiquidity(ctx, ctx.TradeDenomGiving)
 	spreadLiqTo := k.GetSpreadLiquidity(ctx, ctx.TradeDenomReceiving)

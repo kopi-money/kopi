@@ -40,72 +40,83 @@ type Pair struct {
 	DenomTo   string
 }
 
+type CoinMapEntry struct {
+	denom  string
+	amount math.LegacyDec
+}
 type CoinMap struct {
-	cm map[string]math.Int
+	cm []CoinMapEntry
 }
 
 func NewCoinMap(coins sdk.Coins) *CoinMap {
-	coinMap := make(map[string]math.Int)
+	coinMap := CoinMap{}
 	for _, coin := range coins {
-		coinMap[coin.Denom] = coin.Amount
+		coinMap.Add(coin.Denom, coin.Amount.ToLegacyDec())
 	}
 
-	return &CoinMap{coinMap}
+	return &coinMap
 }
 
-func (cm *CoinMap) AmountOf(denom string) math.Int {
-	amount, has := cm.cm[denom]
-	if !has {
-		return math.ZeroInt()
+func (cm *CoinMap) AmountOf(denom string) math.LegacyDec {
+	for _, entry := range cm.cm {
+		if entry.denom == denom {
+			return entry.amount
+		}
 	}
 
-	return amount
+	return math.LegacyZeroDec()
 }
 
-func (cm *CoinMap) Sub(denom string, subAmount math.Int) {
+func (cm *CoinMap) Sub(denom string, subAmount math.LegacyDec) {
 	cm.sub(denom, subAmount, false)
 }
 
-func (cm *CoinMap) SubIgnore(denom string, subAmount math.Int) {
+func (cm *CoinMap) SubIgnore(denom string, subAmount math.LegacyDec) {
 	cm.sub(denom, subAmount, true)
 }
 
-func (cm *CoinMap) sub(denom string, subAmount math.Int, ignoreNegative bool) {
-	amount, has := cm.cm[denom]
-	if has {
-		newAmount := amount.Sub(subAmount)
-		if !ignoreNegative && newAmount.IsNegative() {
-			panic(fmt.Sprintf("negative coin amount for %v", denom))
-		}
+func (cm *CoinMap) sub(denom string, subAmount math.LegacyDec, ignoreNegative bool) {
+	for index, entry := range cm.cm {
+		if entry.denom == denom {
+			entry.amount = entry.amount.Sub(subAmount)
+			if !ignoreNegative && entry.amount.IsNegative() {
+				panic(fmt.Sprintf("negative coin amount for %v", denom))
+			}
 
-		if newAmount.IsPositive() {
-			cm.cm[denom] = newAmount
-		} else {
-			delete(cm.cm, denom)
-		}
+			if entry.amount.IsPositive() {
+				cm.cm[index] = entry
+			} else {
+				cm.cm = append(cm.cm[:index], cm.cm[index+1:]...)
+			}
 
-		return
+			return
+		}
 	}
 
 	panic(fmt.Sprintf("cannot sub denom that does not exist (%v)", denom))
 }
 
-func (cm *CoinMap) Add(denom string, addAmount math.Int) {
-	amount, has := cm.cm[denom]
-	if has {
-		cm.cm[denom] = amount.Add(addAmount)
-	} else {
-		cm.cm[denom] = addAmount
+func (cm *CoinMap) Add(denom string, addAmount math.LegacyDec) {
+	for index, entry := range cm.cm {
+		if entry.denom == denom {
+			entry.amount = entry.amount.Add(addAmount)
+			cm.cm[index] = entry
+			return
+		}
 	}
+
+	cm.cm = append(cm.cm, CoinMapEntry{
+		denom:  denom,
+		amount: addAmount,
+	})
 }
 
-func (cm *CoinMap) Coins() sdk.Coins {
-	var coinList []sdk.Coin
-	for denom, amount := range cm.cm {
-		coinList = append(coinList, sdk.NewCoin(denom, amount))
+func (cm *CoinMap) Coins() (coins sdk.Coins) {
+	for _, entry := range cm.cm {
+		coins = coins.Add(sdk.NewCoin(entry.denom, entry.amount.TruncateInt()))
 	}
 
-	return sdk.NewCoins(coinList...)
+	return
 }
 
 type OrdersCaches struct {

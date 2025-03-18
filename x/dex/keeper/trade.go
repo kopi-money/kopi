@@ -379,8 +379,8 @@ func (k Keeper) ExecuteTradeStep(ctx types.TradeStepContext) (math.Int, math.Int
 
 	poolFrom2 := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.StepDenomGiving)
 	poolTo2 := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.StepDenomReceiving)
-	changeFrom := poolFrom2.Sub(poolFrom1)
-	changeTo := poolTo2.Sub(poolTo1)
+	changeFrom := poolFrom2.Sub(poolFrom1).TruncateInt()
+	changeTo := poolTo2.Sub(poolTo1).TruncateInt()
 
 	ctx.AddLiquidityChange(ctx.StepDenomGiving, changeFrom)
 	ctx.AddLiquidityChange(ctx.StepDenomReceiving, changeTo)
@@ -635,9 +635,8 @@ func (k Keeper) CalculateMaximumBuyableAmount(ctx types.TradeContext) (*math.Int
 		return nil, err
 	}
 
-	maximumInt := maximum.TruncateInt()
 	available := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomReceiving)
-	maximumInt = math.MinInt(maximumInt, available)
+	maximumInt := math.LegacyMinDec(maximum, available).TruncateInt()
 
 	return &maximumInt, nil
 }
@@ -652,7 +651,7 @@ func subtractOrderFee(amount math.Int, orderFee math.LegacyDec, isOrder bool) ma
 }
 
 func (k Keeper) CalculateSingleBuyableAmount(ordersCaches *types.OrdersCaches, cutLiquidity *types.CutLiquidity, denomGiving, demomReceiving string) math.Int {
-	actualTo := ordersCaches.LiquidityPool.Get().AmountOf(demomReceiving).ToLegacyDec()
+	actualTo := ordersCaches.LiquidityPool.Get().AmountOf(demomReceiving)
 	_, virtualTo := cutLiquidity.GetFullTo(denomGiving)
 
 	return CalculateSingleMaximumBuyableAmount(actualTo, virtualTo)

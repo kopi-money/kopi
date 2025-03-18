@@ -2,7 +2,6 @@ package types
 
 import (
 	"cosmossdk.io/math"
-	"sort"
 )
 
 type EpochPayouts struct {
@@ -12,24 +11,20 @@ type EpochPayouts struct {
 }
 
 func (ep EpochPayouts) ToLeftovers() EpochLeftovers {
-	cm := make(map[string]math.LegacyDec)
-	ep.PreviousEpoch.AddToCoinMap(&cm)
-	ep.CurrentEpoch.AddToCoinMap(&cm)
-	ep.Usage.SubFromCoinMap(&cm)
+	cm := NewCoinMap(nil)
+	ep.PreviousEpoch.AddToCoinMap(cm)
+	ep.CurrentEpoch.AddToCoinMap(cm)
+	ep.Usage.SubFromCoinMap(cm)
 
 	var leftovers []EpochLeftover
-	for denom, amount := range cm {
-		if amount.IsPositive() {
+	for _, entry := range cm.cm {
+		if entry.amount.IsPositive() {
 			leftovers = append(leftovers, EpochLeftover{
-				Denom:  denom,
-				Amount: amount,
+				Denom:  entry.denom,
+				Amount: entry.amount,
 			})
 		}
 	}
-
-	sort.SliceStable(leftovers, func(i, j int) bool {
-		return leftovers[i].Denom < leftovers[j].Denom
-	})
 
 	return EpochLeftovers{
 		Leftovers: leftovers,
@@ -73,22 +68,21 @@ func (el EpochLeftovers) Add(denom string, amount math.LegacyDec) EpochLeftovers
 	return el
 }
 
-func (el EpochLeftovers) AddToCoinMap(cm *map[string]math.LegacyDec) {
-	el.toCoinMap(cm, add)
+func (el EpochLeftovers) AddToCoinMap(cm *CoinMap) {
+	el.toCoinMap(cm, true)
 }
 
-func (el EpochLeftovers) SubFromCoinMap(cm *map[string]math.LegacyDec) {
-	el.toCoinMap(cm, sub)
+func (el EpochLeftovers) SubFromCoinMap(cm *CoinMap) {
+	el.toCoinMap(cm, false)
 }
 
-func (el EpochLeftovers) toCoinMap(cm *map[string]math.LegacyDec, f merge) {
+func (el EpochLeftovers) toCoinMap(cm *CoinMap, add bool) {
 	for _, po := range el.Leftovers {
-		amount, has := (*cm)[po.Denom]
-		if !has {
-			amount = math.LegacyZeroDec()
+		if add {
+			cm.Add(po.Denom, po.Amount)
+		} else {
+			cm.Sub(po.Denom, po.Amount)
 		}
-
-		(*cm)[po.Denom] = f(amount, po.Amount)
 	}
 }
 
