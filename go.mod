@@ -300,7 +300,7 @@ require (
 )
 
 replace (
-	github.com/cosmos/cosmos-sdk => github.com/kopi-money/cosmos-sdk v0.50.13-0.6
+	github.com/cosmos/cosmos-sdk => github.com/kopi-money/cosmos-sdk v0.50.13-0.8
 	// replace broken goleveldb
 	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 )
