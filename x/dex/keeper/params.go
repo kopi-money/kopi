@@ -7,7 +7,10 @@ import (
 	"github.com/kopi-money/kopi/x/dex/types"
 )
 
-const minimumEpochTime = 60
+const (
+	epochTimeMinimum = 60
+	epochTimeMaximum = 60 * 60 * 24
+)
 
 // GetParams get all parameters as types.Params
 func (k Keeper) GetParams(ctx context.Context) types.Params {
@@ -60,7 +63,8 @@ func (k Keeper) getVirtualLiquidityDecay(ctx context.Context) math.LegacyDec {
 
 func (k Keeper) getEpochLength(ctx context.Context) uint64 {
 	length := k.GetParams(ctx).EpochLength
-	length = max(length, minimumEpochTime)
+	length = max(length, epochTimeMinimum)
+	length = min(length, epochTimeMaximum)
 	return length
 }
 

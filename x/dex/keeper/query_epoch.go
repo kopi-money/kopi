@@ -9,13 +9,16 @@ import (
 
 func (k Keeper) QueryEpochCountdown(ctx context.Context, _ *types.QueryEpochCountdownRequest) (*types.QueryEpochCountdownResponse, error) {
 	return &types.QueryEpochCountdownResponse{
-		Seconds: fmt.Sprintf("%.4f", k.getEpochSecondsLeft(ctx)),
+		Seconds: fmt.Sprintf("%v", k.getEpochSecondsLeft(ctx)),
 	}, nil
 }
 
 func (k Keeper) QueryEpochPositions(ctx context.Context, _ *types.QueryEpochPositionsRequest) (*types.QueryEpochPositionsResponse, error) {
 	epochAddresses := []types.AddressEpochPositions{}
-	addresses := k.epochShares.OuterKeys()
+	addresses, err := k.epochShares.OuterKeys(ctx)
+	if err != nil {
+		return nil, err
+	}
 
 	for _, address := range addresses {
 		epochAddress := types.AddressEpochPositions{}

@@ -1,8 +1,6 @@
 package types
 
 import (
-	"fmt"
-
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/measurement"
@@ -10,7 +8,7 @@ import (
 
 type LoadAccAddress func() sdk.AccAddress
 type LoadFee func() math.LegacyDec
-type LoadPoolBalance func() *CoinMap
+type LoadPoolBalance func() *AmountsMap
 type LoadLiquidityPair func(denom string) LiquidityPair
 type LoadLiquidity func(denom string) []Liquidity
 
@@ -39,86 +37,6 @@ type Pair struct {
 	DenomFrom string
 	DenomTo   string
 }
-
-type CoinMapEntry struct {
-	denom  string
-	amount math.LegacyDec
-}
-type CoinMap struct {
-	cm []CoinMapEntry
-}
-
-func NewCoinMap(coins sdk.Coins) *CoinMap {
-	coinMap := CoinMap{}
-	for _, coin := range coins {
-		coinMap.Add(coin.Denom, coin.Amount.ToLegacyDec())
-	}
-
-	return &coinMap
-}
-
-func (cm *CoinMap) AmountOf(denom string) math.LegacyDec {
-	for _, entry := range cm.cm {
-		if entry.denom == denom {
-			return entry.amount
-		}
-	}
-
-	return math.LegacyZeroDec()
-}
-
-func (cm *CoinMap) Sub(denom string, subAmount math.LegacyDec) {
-	cm.sub(denom, subAmount, false)
-}
-
-func (cm *CoinMap) SubIgnore(denom string, subAmount math.LegacyDec) {
-	cm.sub(denom, subAmount, true)
-}
-
-func (cm *CoinMap) sub(denom string, subAmount math.LegacyDec, ignoreNegative bool) {
-	for index, entry := range cm.cm {
-		if entry.denom == denom {
-			entry.amount = entry.amount.Sub(subAmount)
-			if !ignoreNegative && entry.amount.IsNegative() {
-				panic(fmt.Sprintf("negative coin amount for %v", denom))
-			}
-
-			if entry.amount.IsPositive() {
-				cm.cm[index] = entry
-			} else {
-				cm.cm = append(cm.cm[:index], cm.cm[index+1:]...)
-			}
-
-			return
-		}
-	}
-
-	panic(fmt.Sprintf("cannot sub denom that does not exist (%v)", denom))
-}
-
-func (cm *CoinMap) Add(denom string, addAmount math.LegacyDec) {
-	for index, entry := range cm.cm {
-		if entry.denom == denom {
-			entry.amount = entry.amount.Add(addAmount)
-			cm.cm[index] = entry
-			return
-		}
-	}
-
-	cm.cm = append(cm.cm, CoinMapEntry{
-		denom:  denom,
-		amount: addAmount,
-	})
-}
-
-func (cm *CoinMap) Coins() (coins sdk.Coins) {
-	for _, entry := range cm.cm {
-		coins = coins.Add(sdk.NewCoin(entry.denom, entry.amount.TruncateInt()))
-	}
-
-	return
-}
-
 type OrdersCaches struct {
 	AccPoolReserve        *ItemCache[sdk.AccAddress]
 	AccPoolTrade          *ItemCache[sdk.AccAddress]
@@ -129,8 +47,8 @@ type OrdersCaches struct {
 	ReserveFeeShare       *ItemCache[math.LegacyDec]
 	OrderFee              *ItemCache[math.LegacyDec]
 	ProviderFee           *ItemCache[math.LegacyDec]
-	LiquidityPool         *ItemCache[*CoinMap]
-	ReimbursementPool     *ItemCache[*CoinMap]
+	LiquidityPool         *ItemCache[*AmountsMap]
+	ReimbursementPool     *ItemCache[*AmountsMap]
 	PriceAmountsSell      map[Pair]math.LegacyDec
 	PriceAmountsBuy       map[Pair]math.LegacyDec
 	PriceMaxAmounts       map[string]math.LegacyDec

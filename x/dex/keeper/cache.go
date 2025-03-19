@@ -41,10 +41,10 @@ func (k Keeper) NewOrdersCaches(ctx context.Context) *types.OrdersCaches {
 		func() math.LegacyDec {
 			return k.getProviderFee(ctx)
 		},
-		func() *types.CoinMap {
+		func() *types.AmountsMap {
 			acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
 			coins := k.BankKeeper.SpendableCoins(ctx, acc.GetAddress())
-			return types.NewCoinMap(coins)
+			return types.NewAmountsMapFromCoins(coins)
 		},
 		func(denom string) []types.Liquidity {
 			return k.liquidityEntries.Iterator(ctx, nil, denom).GetAll()

@@ -198,30 +198,6 @@ func (cl *CutLiquidities) GetFullBase() math.LegacyDec {
 	}
 }
 
-type liquidityChanges struct {
-	changes map[string]math.Int
-}
-
-func (lc liquidityChanges) addChange(denom string, amount math.Int) {
-	value := lc.getChange(denom)
-	value = value.Add(amount)
-
-	if value.IsZero() {
-		delete(lc.changes, denom)
-	} else {
-		lc.changes[denom] = value
-	}
-}
-
-func (lc liquidityChanges) getChange(denom string) math.Int {
-	value, has := lc.changes[denom]
-	if !has {
-		value = math.ZeroInt()
-	}
-
-	return value
-}
-
 type TradeContext struct {
 	context.Context
 
@@ -232,7 +208,7 @@ type TradeContext struct {
 	MinimumTradeAmount     *math.Int
 	MaximumAvailableAmount math.Int
 	CutLiquidities         CutLiquidities
-	liquidityChanges       *liquidityChanges
+	liquidityChanges       *AmountsMap
 
 	TradeDenomGiving    string
 	TradeDenomReceiving string
@@ -264,22 +240,18 @@ func (tc *TradeContext) TouchedDenom(denom string) bool {
 
 func (tc *TradeContext) AddLiquidityChange(denom string, amount math.Int) {
 	if tc.liquidityChanges == nil {
-		tc.liquidityChanges = &liquidityChanges{
-			changes: make(map[string]math.Int),
-		}
+		tc.liquidityChanges = NewAmountsMap()
 	}
 
-	tc.liquidityChanges.addChange(denom, amount)
+	tc.liquidityChanges.Add(denom, amount.ToLegacyDec())
 }
 
 func (tc *TradeContext) GetLiquidityChange(denom string) math.Int {
 	if tc.liquidityChanges == nil {
-		tc.liquidityChanges = &liquidityChanges{
-			changes: make(map[string]math.Int),
-		}
+		tc.liquidityChanges = NewAmountsMap()
 	}
 
-	return tc.liquidityChanges.getChange(denom)
+	return tc.liquidityChanges.AmountOf(denom).TruncateInt()
 }
 
 func (tc *TradeContext) GetAmountGiven(result math.LegacyDec) math.Int {

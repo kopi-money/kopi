@@ -75,7 +75,12 @@ func (k Keeper) CreateNewSnapshot(ctx context.Context) error {
 		return nil
 	}
 
-	for _, address := range k.liquidityPositions.OuterKeys() {
+	addresses, err := k.liquidityPositions.OuterKeys(ctx)
+	if err != nil {
+		return fmt.Errorf("get outer keys: %w", err)
+	}
+
+	for _, address := range addresses {
 		iterator := k.liquidityPositions.Iterator(ctx, nil, address)
 		for iterator.Valid() {
 			keyValue := iterator.GetNextKeyValue()
@@ -99,23 +104,37 @@ func (k Keeper) CreateNewSnapshot(ctx context.Context) error {
 }
 
 // TODO: replace with more efficient way to delete entries
-func (k Keeper) DeleteOldSnapshot(ctx context.Context) {
-	for _, address := range k.epochShares.OuterKeys() {
+func (k Keeper) DeleteOldSnapshot(ctx context.Context) error {
+	addresses, err := k.liquidityPositions.OuterKeys(ctx)
+	if err != nil {
+		return fmt.Errorf("get outer keys: %w", err)
+	}
+
+	for _, address := range addresses {
 		iterator := k.epochShares.Iterator(ctx, nil, address)
 		for iterator.Valid() {
 			keyValue := iterator.GetNextKeyValue()
 			k.epochShares.Remove(ctx, address, keyValue.Key())
 		}
 	}
+
+	return nil
 }
 
 func (k Keeper) DistributeCollectedFees(ctx context.Context) error {
-	addresses := k.epochShares.OuterKeys()
+	addresses, err := k.epochShares.OuterKeys(ctx)
+	if err != nil {
+		return fmt.Errorf("get outer keys: %w", err)
+	}
+
 	if len(addresses) == 0 {
 		return nil
 	}
 
-	epochShareSum := k.getEpochSharesSum2(ctx)
+	epochShareSum, err := k.getEpochSharesSum(ctx)
+	if err != nil {
+		return fmt.Errorf("get epoch share sum: %w", err)
+	}
 
 	accFees := k.AccountKeeper.GetModuleAccount(ctx, types.PoolFeeIncome)
 	accLeftovers := k.AccountKeeper.GetModuleAccount(ctx, types.PoolFeeLeftovers)
@@ -279,10 +298,14 @@ func (k Keeper) hasAutoCompound(ctx context.Context, address string, positionInd
 	return liquidityShares.AutoCompound, true
 }
 
-func (k Keeper) getEpochSharesSum2(ctx context.Context) math.LegacyDec {
+func (k Keeper) getEpochSharesSum(ctx context.Context) (math.LegacyDec, error) {
 	sum := math.LegacyZeroDec()
 
-	addresses := k.epochShares.OuterKeys()
+	addresses, err := k.epochShares.OuterKeys(ctx)
+	if err != nil {
+		return sum, fmt.Errorf("error getting outer keys: %w", err)
+	}
+
 	for _, address := range addresses {
 		iterator := k.epochShares.Iterator(ctx, nil, address)
 		for iterator.Valid() {
@@ -291,7 +314,7 @@ func (k Keeper) getEpochSharesSum2(ctx context.Context) math.LegacyDec {
 		}
 	}
 
-	return sum
+	return sum, nil
 }
 
 func (k Keeper) rewardsToUSD(ctx context.Context, newFunds types.EpochLeftovers) math.LegacyDec {

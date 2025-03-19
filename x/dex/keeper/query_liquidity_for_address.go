@@ -64,7 +64,11 @@ func (k Keeper) LiquidityPositions(ctx context.Context, req *types.QueryLiquidit
 
 	liquidityPositionsAddress := []types.QueryLiquidityPositionForAddressResponse{}
 
-	addresses := k.liquidityPositions.OuterKeys()
+	addresses, err := k.liquidityPositions.OuterKeys(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	for _, address := range addresses {
 		liquidityPositionsAddress = append(liquidityPositionsAddress, types.QueryLiquidityPositionForAddressResponse{
 			Address:            address,
@@ -77,13 +81,18 @@ func (k Keeper) LiquidityPositions(ctx context.Context, req *types.QueryLiquidit
 	}, nil
 }
 
-func (k Keeper) LiquidityPositionsAddresses(_ context.Context, req *types.QueryLiquidityPositionsAddressesRequest) (*types.QueryLiquidityPositionsAddressesResponse, error) {
+func (k Keeper) LiquidityPositionsAddresses(ctx context.Context, req *types.QueryLiquidityPositionsAddressesRequest) (*types.QueryLiquidityPositionsAddressesResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
+	addresses, err := k.liquidityPositions.OuterKeys(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	return &types.QueryLiquidityPositionsAddressesResponse{
-		Addresses: k.liquidityPositions.OuterKeys(),
+		Addresses: addresses,
 	}, nil
 }
 

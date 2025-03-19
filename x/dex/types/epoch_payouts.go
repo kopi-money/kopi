@@ -12,7 +12,7 @@ type EpochPayouts struct {
 }
 
 func (ep EpochPayouts) ToLeftovers() EpochLeftovers {
-	cm := NewCoinMap(nil)
+	cm := NewAmountsMap()
 	ep.PreviousEpoch.AddToCoinMap(cm)
 	ep.CurrentEpoch.AddToCoinMap(cm)
 	ep.Usage.SubFromCoinMap(cm)
@@ -73,20 +73,20 @@ func (el EpochLeftovers) Add(denom string, amount math.LegacyDec) EpochLeftovers
 	return el
 }
 
-func (el EpochLeftovers) AddToCoinMap(cm *CoinMap) {
-	el.toCoinMap(cm, true)
+func (el EpochLeftovers) AddToCoinMap(am *AmountsMap) {
+	el.toCoinMap(am, true)
 }
 
-func (el EpochLeftovers) SubFromCoinMap(cm *CoinMap) {
-	el.toCoinMap(cm, false)
+func (el EpochLeftovers) SubFromCoinMap(am *AmountsMap) {
+	el.toCoinMap(am, false)
 }
 
-func (el EpochLeftovers) toCoinMap(cm *CoinMap, add bool) {
+func (el EpochLeftovers) toCoinMap(am *AmountsMap, add bool) {
 	for _, po := range el.Leftovers {
 		if add {
-			cm.Add(po.Denom, po.Amount)
+			am.Add(po.Denom, po.Amount)
 		} else {
-			cm.Sub(po.Denom, po.Amount)
+			am.Sub(po.Denom, po.Amount)
 		}
 	}
 }

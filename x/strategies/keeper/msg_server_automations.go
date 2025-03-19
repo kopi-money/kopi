@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"encoding/json"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -126,7 +125,7 @@ func (k msgServer) AutomationsUpdate(ctx context.Context, msg *types.MsgAutomati
 }
 
 func (k Keeper) checkAutomationMessage(ctx context.Context, address string, am types.AutomationMessage) ([]types.Condition, []types.Action, error) {
-	if k.GetAutomationFunds(ctx, address).LTE(math.ZeroInt()) {
+	if !k.GetAutomationFunds(ctx, address).IsPositive() {
 		return nil, nil, types.ErrEmptyAutomationFunds
 	}
 
