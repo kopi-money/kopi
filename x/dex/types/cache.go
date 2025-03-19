@@ -8,7 +8,7 @@ import (
 
 type LoadAccAddress func() sdk.AccAddress
 type LoadFee func() math.LegacyDec
-type LoadPoolBalance func() *AmountsMap
+type LoadPoolBalance func() sdk.Coins
 type LoadLiquidityPair func(denom string) LiquidityPair
 type LoadLiquidity func(denom string) []Liquidity
 
@@ -47,7 +47,7 @@ type OrdersCaches struct {
 	ReserveFeeShare       *ItemCache[math.LegacyDec]
 	OrderFee              *ItemCache[math.LegacyDec]
 	ProviderFee           *ItemCache[math.LegacyDec]
-	LiquidityPool         *ItemCache[*AmountsMap]
+	LiquidityPool         *ItemCache[sdk.Coins]
 	ReimbursementPool     *ItemCache[*AmountsMap]
 	PriceAmountsSell      map[Pair]math.LegacyDec
 	PriceAmountsBuy       map[Pair]math.LegacyDec

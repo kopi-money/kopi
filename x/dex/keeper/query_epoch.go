@@ -9,7 +9,7 @@ import (
 
 func (k Keeper) QueryEpochCountdown(ctx context.Context, _ *types.QueryEpochCountdownRequest) (*types.QueryEpochCountdownResponse, error) {
 	return &types.QueryEpochCountdownResponse{
-		Seconds: fmt.Sprintf("%v", k.getEpochSecondsLeft(ctx)),
+		Seconds: fmt.Sprintf("%.8f", k.getEpochSecondsLeft(ctx)),
 	}, nil
 }
 

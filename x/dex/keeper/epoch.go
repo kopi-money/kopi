@@ -2,11 +2,12 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
+	"strconv"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
-	"strconv"
 )
 
 const minimumPayout = 1000
@@ -56,7 +57,9 @@ func (k Keeper) RestartEpoch(ctx context.Context) error {
 }
 
 func (k Keeper) CreateEpochSnapshot(ctx context.Context) error {
-	k.DeleteOldSnapshot(ctx)
+	if err := k.DeleteOldSnapshot(ctx); err != nil {
+		return fmt.Errorf("delete old snapshot: %w", err)
+	}
 
 	if err := k.CreateNewSnapshot(ctx); err != nil {
 		return fmt.Errorf("create new snapshot: %w", err)
@@ -283,6 +286,10 @@ func (k Keeper) GetEpochSharesPerAddress(ctx context.Context, address string) (l
 	}
 
 	return
+}
+
+func (k Keeper) GetEpochSharesAddresses(ctx context.Context) ([]string, error) {
+	return k.epochShares.OuterKeys(ctx)
 }
 
 func (k Keeper) GetEpochShares(ctx context.Context, address string, positionIndex uint64) (types.EpochShares, bool) {

@@ -40,10 +40,21 @@ func (k Keeper) calcLiquidityValueSum(ctx context.Context, excludeAddresses []st
 	poolAcc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
 
 	poolLiquidity := k.BankKeeper.SpendableCoins(ctx, poolAcc.GetAddress())
-
 	for _, excludeAddress := range excludeAddresses {
-		liq := k.getLiquidityForAddress(ctx, excludeAddress)
-		poolLiquidity = poolLiquidity.Sub(liq...)
+		coins := k.getLiquidityForAddress(ctx, excludeAddress)
+		for _, coin := range coins {
+			if coin.Amount.GT(poolLiquidity.AmountOf(coin.Denom)) {
+				excessAmount := coin.Amount.Sub(poolLiquidity.AmountOf(coin.Denom))
+				if err := k.dissolvePosition(ctx, excludeAddress, coin.Denom, excessAmount); err != nil {
+					return math.LegacyDec{}, fmt.Errorf("dissolve liquidity value (%v, %v): %w", excludeAddress, coin.Denom, err)
+				}
+
+				k.Logger().Warn(fmt.Sprintf("EA %v %v %v", excludeAddress, excessAmount, coin.Denom))
+				coin.Amount = poolLiquidity.AmountOf(coin.Denom)
+			}
+
+			poolLiquidity = poolLiquidity.Sub(coin)
+		}
 	}
 
 	valueSum := math.LegacyZeroDec()

@@ -18,9 +18,9 @@ func TestEpoch1(t *testing.T) {
 
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1))
 
-	_ = cache.Transact(ctx, func(innerCtx context.Context) error {
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		return k.CreateNewSnapshot(innerCtx)
-	})
+	}))
 
 	require.Equal(t, math.LegacyNewDec(1), k.GetEpochShareSum(ctx))
 
@@ -49,9 +49,9 @@ func TestEpoch1(t *testing.T) {
 
 	coins = sdk.NewCoins(sdk.NewCoin(constants.BaseCurrency, math.NewInt(998)))
 	_ = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolFeeIncome, coins)
-	_ = cache.Transact(ctx, func(innerCtx context.Context) error {
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		return k.DistributeCollectedFees(innerCtx)
-	})
+	}))
 
 	epochLeftovers = k.GetEpochLeftovers(ctx, keepertest.Alice, 1)
 	require.Equal(t, 1, len(epochLeftovers.Leftovers))
@@ -61,9 +61,9 @@ func TestEpoch1(t *testing.T) {
 	_ = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolFeeIncome, coins)
 
 	balance1 := k.BankKeeper.SpendableCoin(ctx, acc, constants.BaseCurrency).Amount.Int64()
-	_ = cache.Transact(ctx, func(innerCtx context.Context) error {
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		return k.DistributeCollectedFees(innerCtx)
-	})
+	}))
 
 	balance2 := k.BankKeeper.SpendableCoin(ctx, acc, constants.BaseCurrency).Amount.Int64()
 	require.True(t, balance2 > balance1)
@@ -112,10 +112,9 @@ func TestEpoch3(t *testing.T) {
 	require.NoError(t, keepertest.AddLiquidityCompound(ctx, msg, keepertest.Dave, constants.BaseCurrency, 1, true))
 	require.NoError(t, keepertest.AddLiquidityCompound(ctx, msg, keepertest.Dave, constants.BaseCurrency, 1, true))
 
-	_ = cache.Transact(ctx, func(innerCtx context.Context) error {
-		k.CreateNewSnapshot(innerCtx)
-		return nil
-	})
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.CreateNewSnapshot(innerCtx)
+	}))
 
 	acc, _ := sdk.AccAddressFromBech32(keepertest.Alice)
 	coins := sdk.NewCoins(sdk.NewCoin(constants.BaseCurrency, math.NewInt(1)))
@@ -124,9 +123,9 @@ func TestEpoch3(t *testing.T) {
 	_, has := k.GetEpochShares(ctx, keepertest.Dave, 1)
 	require.True(t, has)
 
-	_ = cache.Transact(ctx, func(innerCtx context.Context) error {
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		return k.RestartEpoch(innerCtx)
-	})
+	}))
 
 	require.Equal(t, int64(1), k.GetLiquidityByPositionIndex(ctx, constants.BaseCurrency, 1).Int64())
 	require.Equal(t, int64(1), k.GetLiquidityByPositionIndex(ctx, constants.BaseCurrency, 2).Int64())
@@ -140,9 +139,9 @@ func TestEpoch3(t *testing.T) {
 	coins = sdk.NewCoins(sdk.NewCoin(constants.BaseCurrency, math.NewInt(1000)))
 	_ = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolFeeIncome, coins)
 
-	_ = cache.Transact(ctx, func(innerCtx context.Context) error {
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		return k.RestartEpoch(innerCtx)
-	})
+	}))
 
 	require.Equal(t, int64(1), k.GetLiquidityByPositionIndex(ctx, constants.BaseCurrency, 1).Int64())
 	require.Equal(t, int64(1), k.GetLiquidityByPositionIndex(ctx, constants.BaseCurrency, 2).Int64())
@@ -155,9 +154,9 @@ func TestEpoch3(t *testing.T) {
 	coins = sdk.NewCoins(sdk.NewCoin(constants.BaseCurrency, math.NewInt(1000)))
 	_ = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolFeeIncome, coins)
 
-	_ = cache.Transact(ctx, func(innerCtx context.Context) error {
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		return k.RestartEpoch(innerCtx)
-	})
+	}))
 
 	require.Equal(t, int64(1001), k.GetLiquidityByPositionIndex(ctx, constants.BaseCurrency, 1).Int64())
 	require.Equal(t, int64(1001), k.GetLiquidityByPositionIndex(ctx, constants.BaseCurrency, 2).Int64())
@@ -167,4 +166,37 @@ func TestEpoch3(t *testing.T) {
 	require.Equal(t, math.LegacyNewDecWithPrec(5, 1), epochPayouts.Leftovers[0].Amount)
 	epochPayouts = k.GetEpochLeftovers(ctx, keepertest.Dave, 2)
 	require.Equal(t, math.LegacyNewDecWithPrec(5, 1), epochPayouts.Leftovers[0].Amount)
+}
+
+func TestEpoch4(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidityCompound(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1, true))
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.CreateNewSnapshot(innerCtx)
+	}))
+
+	acc, _ := sdk.AccAddressFromBech32(keepertest.Alice)
+	coins := sdk.NewCoins(sdk.NewCoin(constants.BaseCurrency, math.NewInt(1)))
+	_ = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolFeeIncome, coins)
+
+	_, has := k.GetEpochShares(ctx, keepertest.Alice, 1)
+	require.True(t, has)
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		addresses, err := k.GetEpochSharesAddresses(innerCtx)
+		require.NoError(t, err)
+		require.Equal(t, 1, len(addresses))
+
+		if err = k.DeleteOldSnapshot(innerCtx); err != nil {
+			return err
+		}
+
+		addresses, err = k.GetEpochSharesAddresses(innerCtx)
+		require.NoError(t, err)
+		require.Equal(t, 0, len(addresses))
+
+		return nil
+	}))
 }

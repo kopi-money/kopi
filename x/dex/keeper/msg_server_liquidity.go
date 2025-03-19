@@ -204,3 +204,40 @@ func (k Keeper) RemoveLiquidityForAddressWithReceiver(ctx context.Context, accAd
 
 	return removed, nil
 }
+
+// only used in testnet to account for issue where module account has more liuqidity positions than there are funds in pool
+func (k Keeper) dissolvePosition(ctx context.Context, address, denom string, amount math.Int) error {
+	removed := math.ZeroInt()
+
+	iterator := k.liquidityEntries.Iterator(ctx, nil, denom)
+	for iterator.Valid() {
+		liq := iterator.GetNext()
+
+		if liq.Address == address {
+			var amountRemovedForPosition math.Int
+
+			if liq.Amount.GT(amount) {
+				amountRemovedForPosition = amount
+				liq.Amount = liq.Amount.Sub(amount)
+				k.SetLiquidity(ctx, denom, liq)
+				amount = math.ZeroInt()
+			} else {
+				amountRemovedForPosition = liq.Amount
+				amount = amount.Sub(liq.Amount)
+				k.RemoveLiquidity(ctx, denom, liq.Index)
+			}
+
+			removed = removed.Add(amountRemovedForPosition)
+		}
+
+		if amount.IsZero() {
+			break
+		}
+	}
+
+	if amount.IsPositive() {
+		return types.ErrNotEnoughFunds
+	}
+
+	return nil
+}

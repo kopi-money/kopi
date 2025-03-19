@@ -69,7 +69,7 @@ func (k Keeper) determineLiquidityProviders(ctx types.TradeStepContext, amountTo
 		}
 	}
 
-	ctx.OrdersCaches.LiquidityPool.Get().Sub(denomTo, sumUsed.ToLegacyDec())
+	ctx.OrdersCaches.LiquidityPool.Set(ctx.OrdersCaches.LiquidityPool.Get().Sub(sdk.NewCoin(denomTo, sumUsed)))
 	liquidityList = removeIndexes(liquidityList, deleteIndexes)
 	ctx.OrdersCaches.LiquidityMap.Set(denomTo, liquidityList)
 	ctx.TradeBalances.AddTransfer(
@@ -142,7 +142,7 @@ func (k Keeper) distributeGivenFunds(ctx types.TradeStepContext, ordersCaches *t
 	}
 
 	ordersCaches.LiquidityMap.Set(denom, liquidityEntries)
-	ordersCaches.LiquidityPool.Get().Add(denom, fundsToDistribute.ToLegacyDec())
+	ctx.OrdersCaches.LiquidityPool.Set(ctx.OrdersCaches.LiquidityPool.Get().Add(sdk.NewCoin(denom, fundsToDistribute)))
 	ctx.TradeBalances.AddTransfer(
 		ordersCaches.AccPoolTrade.Get().String(),
 		ordersCaches.AccPoolLiquidity.Get().String(),

@@ -867,6 +867,10 @@ func TestSingleTrade11a(t *testing.T) {
 
 	_, err := k.SimulateSellWithFee(tradeCtx, fee)
 	require.NoError(t, err)
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade13(t *testing.T) {
@@ -905,9 +909,15 @@ func TestSingleTrade13(t *testing.T) {
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	pricePaid, err := res.PricePaid()
 	require.NoError(t, err)
 	require.True(t, maxPrice.GTE(pricePaid))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade14(t *testing.T) {
@@ -925,26 +935,34 @@ func TestSingleTrade14(t *testing.T) {
 	maxPrice, err := math.LegacyNewDecFromStr("4.4448")
 	require.NoError(t, err)
 
+	tradeCtx := types.TradeContext{
+		TradeAmount:         math.NewInt(2_500),
+		TradeDenomGiving:    constants.BaseCurrency,
+		TradeDenomReceiving: constants.KUSD,
+		MaxPrice:            &maxPrice,
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+		Fee:                 math.LegacyZeroDec(),
+	}
+
 	var res types.TradeResult
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		res, err = k.ExecuteBuy(types.TradeContext{
-			Context:             innerCtx,
-			TradeAmount:         math.NewInt(2_500),
-			TradeDenomGiving:    constants.BaseCurrency,
-			TradeDenomReceiving: constants.KUSD,
-			MaxPrice:            &maxPrice,
-			TradeBalances:       dexkeeper.NewTradeBalances(),
-			CoinSource:          keepertest.Bob,
-			CoinTarget:          keepertest.Bob,
-			Fee:                 math.LegacyZeroDec(),
-		})
+		tradeCtx.Context = innerCtx
+		res, err = k.ExecuteBuy(tradeCtx)
 
 		return err
 	}))
 
+	require.NoError(t, tradeCtx.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	pricePaid, err := res.PricePaid()
 	require.NoError(t, err)
 	require.True(t, maxPrice.GTE(pricePaid))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade15(t *testing.T) {
@@ -963,27 +981,34 @@ func TestSingleTrade15(t *testing.T) {
 	require.NoError(t, err)
 
 	zeroInt := math.ZeroInt()
+	tradeCtx := types.TradeContext{
+		TradeAmount:         math.NewInt(10_000),
+		MinimumTradeAmount:  &zeroInt,
+		TradeDenomGiving:    constants.KUSD,
+		TradeDenomReceiving: constants.BaseCurrency,
+		MaxPrice:            &maxPrice,
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+	}
 
 	var res types.TradeResult
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		res, err = k.ExecuteSell(types.TradeContext{
-			Context:             innerCtx,
-			TradeAmount:         math.NewInt(10_000),
-			MinimumTradeAmount:  &zeroInt,
-			TradeDenomGiving:    constants.KUSD,
-			TradeDenomReceiving: constants.BaseCurrency,
-			MaxPrice:            &maxPrice,
-			TradeBalances:       dexkeeper.NewTradeBalances(),
-			CoinSource:          keepertest.Bob,
-			CoinTarget:          keepertest.Bob,
-		})
+		tradeCtx.Context = innerCtx
+		res, err = k.ExecuteSell(tradeCtx)
 
 		return err
 	}))
 
+	require.NoError(t, tradeCtx.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	pricePaid, err := res.PricePaid()
 	require.NoError(t, err)
 	require.True(t, maxPrice.GTE(pricePaid))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade16(t *testing.T) {
@@ -1002,27 +1027,34 @@ func TestSingleTrade16(t *testing.T) {
 	require.NoError(t, err)
 
 	zeroInt := math.ZeroInt()
+	tradeCtx := types.TradeContext{
+		TradeAmount:         math.NewInt(2_500),
+		MinimumTradeAmount:  &zeroInt,
+		TradeDenomGiving:    constants.BaseCurrency,
+		TradeDenomReceiving: constants.KUSD,
+		MaxPrice:            &maxPrice,
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+	}
 
 	var res types.TradeResult
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		res, err = k.ExecuteBuy(types.TradeContext{
-			Context:             innerCtx,
-			TradeAmount:         math.NewInt(2_500),
-			MinimumTradeAmount:  &zeroInt,
-			TradeDenomGiving:    constants.BaseCurrency,
-			TradeDenomReceiving: constants.KUSD,
-			MaxPrice:            &maxPrice,
-			TradeBalances:       dexkeeper.NewTradeBalances(),
-			CoinSource:          keepertest.Bob,
-			CoinTarget:          keepertest.Bob,
-		})
+		tradeCtx.Context = innerCtx
+		res, err = k.ExecuteBuy(tradeCtx)
 
 		return err
 	}))
 
+	require.NoError(t, tradeCtx.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	pricePaid, err := res.PricePaid()
 	require.NoError(t, err)
 	require.True(t, maxPrice.GTE(pricePaid))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade17(t *testing.T) {
@@ -1072,9 +1104,15 @@ func TestSingleTrade17(t *testing.T) {
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	pricePaid2, err := res2.PricePaid()
 	require.NoError(t, err)
 	require.True(t, maxPrice.GTE(pricePaid2))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade18(t *testing.T) {
@@ -1096,23 +1134,26 @@ func TestSingleTrade18(t *testing.T) {
 	require.NoError(t, err)
 
 	zeroInt := math.ZeroInt()
+	tradeCtx := types.TradeContext{
+		TradeAmount:         math.NewInt(100_000),
+		MinimumTradeAmount:  &zeroInt,
+		TradeDenomGiving:    constants.KUSD,
+		TradeDenomReceiving: "uwusdc",
+		MaxPrice:            &maxPrice,
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+	}
 
 	var res types.TradeResult
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		res, err = k.ExecuteBuy(types.TradeContext{
-			Context:             innerCtx,
-			TradeAmount:         math.NewInt(100_000),
-			MinimumTradeAmount:  &zeroInt,
-			TradeDenomGiving:    constants.KUSD,
-			TradeDenomReceiving: "uwusdc",
-			MaxPrice:            &maxPrice,
-			TradeBalances:       dexkeeper.NewTradeBalances(),
-			CoinSource:          keepertest.Bob,
-			CoinTarget:          keepertest.Bob,
-		})
+		tradeCtx.Context = innerCtx
+		res, err = k.ExecuteBuy(tradeCtx)
 
 		return err
 	}))
+
+	require.NoError(t, tradeCtx.TradeBalances.Settle(ctx, k.BankKeeper))
 
 	amountGiven, _ := strconv.ParseFloat(res.AmountGiven.String(), 64)
 	amountReceived, _ := strconv.ParseFloat(res.AmountReceived.String(), 64)
@@ -1120,6 +1161,10 @@ func TestSingleTrade18(t *testing.T) {
 	mp, _ := maxPrice.Float64()
 
 	require.True(t, pricePaid <= mp)
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade20(t *testing.T) {
@@ -1166,11 +1211,17 @@ func TestSingleTrade20(t *testing.T) {
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	pricePaid, err := res2.PricePaid()
 	require.NoError(t, err)
 
 	pricePaid = pricePaid.Quo(priceTolerance)
 	require.True(t, maxPrice.GTE(pricePaid))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade20x(t *testing.T) {
@@ -1217,6 +1268,8 @@ func TestSingleTrade20x(t *testing.T) {
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	require.Equal(t, res1.AmountGiven.Int64(), res2.AmountGiven.Int64())
 	require.Equal(t, res1.AmountReceived.Int64(), res2.AmountReceived.Int64())
 
@@ -1224,6 +1277,10 @@ func TestSingleTrade20x(t *testing.T) {
 	require.NoError(t, err)
 
 	require.True(t, pricePaid2.LTE(pricePaid1))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade20a(t *testing.T) {
@@ -1270,11 +1327,17 @@ func TestSingleTrade20a(t *testing.T) {
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	pricePaid, err := res2.PricePaid()
 	require.NoError(t, err)
 
 	pricePaid = pricePaid.Quo(priceTolerance)
 	require.True(t, maxPrice.GTE(pricePaid))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade20b(t *testing.T) {
@@ -1321,11 +1384,17 @@ func TestSingleTrade20b(t *testing.T) {
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	pricePaid, err := res2.PricePaid()
 	require.NoError(t, err)
 
 	pricePaid = pricePaid.Quo(priceTolerance)
 	require.True(t, maxPrice.GTE(pricePaid))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade21(t *testing.T) {
@@ -1342,22 +1411,29 @@ func TestSingleTrade21(t *testing.T) {
 	keepertest.SetRatio(ctx, k.DenomKeeper, constants.KUSD, r1)
 
 	tradeAmount := math.NewInt(10_000_000)
+	tradeContext := types.TradeContext{
+		TradeAmount:         tradeAmount,
+		MinimumTradeAmount:  &tradeAmount,
+		TradeDenomGiving:    constants.BaseCurrency,
+		TradeDenomReceiving: constants.KUSD,
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+		Fee:                 math.LegacyZeroDec(),
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+	}
 
 	require.Error(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		_, err := k.ExecuteBuy(types.TradeContext{
-			Context:             innerCtx,
-			TradeAmount:         tradeAmount,
-			MinimumTradeAmount:  &tradeAmount,
-			TradeDenomGiving:    constants.BaseCurrency,
-			TradeDenomReceiving: constants.KUSD,
-			CoinSource:          keepertest.Bob,
-			CoinTarget:          keepertest.Bob,
-			Fee:                 math.LegacyZeroDec(),
-			TradeBalances:       dexkeeper.NewTradeBalances(),
-		})
+		tradeContext.Context = innerCtx
+		_, err := k.ExecuteBuy(tradeContext)
 
 		return err
 	}))
+
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade22(t *testing.T) {
@@ -1374,27 +1450,34 @@ func TestSingleTrade22(t *testing.T) {
 	keepertest.SetRatio(ctx, k.DenomKeeper, constants.KUSD, r1)
 
 	tradeAmount := math.NewInt(999_960)
+	tradeContext := types.TradeContext{
+		TradeAmount:         tradeAmount,
+		MinimumTradeAmount:  &tradeAmount,
+		TradeDenomGiving:    constants.BaseCurrency,
+		TradeDenomReceiving: constants.KUSD,
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+		Fee:                 math.LegacyZeroDec(),
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+	}
 
 	var res types.TradeResult
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		var err error
-		res, err = k.ExecuteBuy(types.TradeContext{
-			Context:             innerCtx,
-			TradeAmount:         tradeAmount,
-			MinimumTradeAmount:  &tradeAmount,
-			TradeDenomGiving:    constants.BaseCurrency,
-			TradeDenomReceiving: constants.KUSD,
-			CoinSource:          keepertest.Bob,
-			CoinTarget:          keepertest.Bob,
-			Fee:                 math.LegacyZeroDec(),
-			TradeBalances:       dexkeeper.NewTradeBalances(),
-		})
+		tradeContext.Context = innerCtx
+		res, err = k.ExecuteBuy(tradeContext)
 
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	// numbers are not exactly equal due to rounding
 	require.Equal(t, tradeAmount.Int64(), res.AmountReceived.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade23(t *testing.T) {
@@ -1411,27 +1494,34 @@ func TestSingleTrade23(t *testing.T) {
 	keepertest.SetRatio(ctx, k.DenomKeeper, constants.KUSD, r1)
 
 	tradeAmount := math.NewInt(10_000)
+	tradeContext := types.TradeContext{
+		TradeAmount:         tradeAmount,
+		MinimumTradeAmount:  &tradeAmount,
+		TradeDenomGiving:    constants.BaseCurrency,
+		TradeDenomReceiving: constants.KUSD,
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+		Fee:                 math.LegacyZeroDec(),
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+	}
 
 	var res types.TradeResult
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		var err error
-		res, err = k.ExecuteBuy(types.TradeContext{
-			Context:             innerCtx,
-			TradeAmount:         tradeAmount,
-			MinimumTradeAmount:  &tradeAmount,
-			TradeDenomGiving:    constants.BaseCurrency,
-			TradeDenomReceiving: constants.KUSD,
-			CoinSource:          keepertest.Bob,
-			CoinTarget:          keepertest.Bob,
-			Fee:                 math.LegacyZeroDec(),
-			TradeBalances:       dexkeeper.NewTradeBalances(),
-		})
+		tradeContext.Context = innerCtx
+		res, err = k.ExecuteBuy(tradeContext)
 
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	// numbers are not exactly equal due to rounding
 	require.Equal(t, tradeAmount.Int64(), res.AmountReceived.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade24(t *testing.T) {
@@ -1452,21 +1542,28 @@ func TestSingleTrade24(t *testing.T) {
 	keepertest.SetRatio(ctx, k.DenomKeeper, "uwusdc", r)
 
 	tradeAmount := math.NewInt(1_000_000)
+	tradeContext := types.TradeContext{
+		TradeAmount:         tradeAmount,
+		TradeDenomGiving:    "uwusdc",
+		TradeDenomReceiving: constants.KUSD,
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+		Fee:                 math.LegacyZeroDec(),
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+	}
 
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		_, err := k.ExecuteSell(types.TradeContext{
-			Context:             innerCtx,
-			TradeAmount:         tradeAmount,
-			TradeDenomGiving:    "uwusdc",
-			TradeDenomReceiving: constants.KUSD,
-			CoinSource:          keepertest.Bob,
-			CoinTarget:          keepertest.Bob,
-			Fee:                 math.LegacyZeroDec(),
-			TradeBalances:       dexkeeper.NewTradeBalances(),
-		})
+		tradeContext.Context = innerCtx
+		_, err := k.ExecuteSell(tradeContext)
 
 		return err
 	}))
+
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade25(t *testing.T) {
@@ -1487,21 +1584,27 @@ func TestSingleTrade25(t *testing.T) {
 	keepertest.SetRatio(ctx, k.DenomKeeper, "uwusdc", r)
 
 	tradeAmount := math.NewInt(1_000_000)
+	tradeContext := types.TradeContext{
+		TradeAmount:         tradeAmount,
+		TradeDenomGiving:    "uwusdc",
+		TradeDenomReceiving: constants.KUSD,
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+		Fee:                 math.LegacyZeroDec(),
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+	}
 
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		_, err := k.ExecuteBuy(types.TradeContext{
-			Context:             innerCtx,
-			TradeAmount:         tradeAmount,
-			TradeDenomGiving:    "uwusdc",
-			TradeDenomReceiving: constants.KUSD,
-			CoinSource:          keepertest.Bob,
-			CoinTarget:          keepertest.Bob,
-			Fee:                 math.LegacyZeroDec(),
-			TradeBalances:       dexkeeper.NewTradeBalances(),
-		})
-
+		tradeContext.Context = innerCtx
+		_, err := k.ExecuteBuy(tradeContext)
 		return err
 	}))
+
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade26(t *testing.T) {
@@ -1546,8 +1649,14 @@ func TestSingleTrade26(t *testing.T) {
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	require.Equal(t, res1.AmountGiven.Int64(), res2.AmountGiven.Int64())
 	require.Equal(t, res1.AmountReceived.Int64(), res2.AmountReceived.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade27(t *testing.T) {
@@ -1594,8 +1703,14 @@ func TestSingleTrade27(t *testing.T) {
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	require.Equal(t, res1.AmountGiven.Int64(), res2.AmountGiven.Int64())
 	require.Equal(t, res1.AmountReceived.Int64(), res2.AmountReceived.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade28(t *testing.T) {
@@ -1642,8 +1757,14 @@ func TestSingleTrade28(t *testing.T) {
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	require.Equal(t, res1.AmountGiven.Int64(), res2.AmountGiven.Int64())
 	require.Equal(t, res1.AmountReceived.Int64(), res2.AmountReceived.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade29(t *testing.T) {
@@ -1690,8 +1811,14 @@ func TestSingleTrade29(t *testing.T) {
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	require.Equal(t, res1.AmountGiven.Int64(), res2.AmountGiven.Int64())
 	require.Equal(t, res1.AmountReceived.Int64(), res2.AmountReceived.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade30(t *testing.T) {
@@ -1709,20 +1836,28 @@ func TestSingleTrade30(t *testing.T) {
 	keepertest.SetRatio(ctx, k.DenomKeeper, constants.KUSD, r)
 	keepertest.SetRatio(ctx, k.DenomKeeper, "uwusdc", r)
 
+	tradeContext := types.TradeContext{
+		TradeAmount:         math.NewInt(600_000),
+		TradeDenomGiving:    constants.KUSD,
+		TradeDenomReceiving: constants.BaseCurrency,
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+		Fee:                 math.LegacyZeroDec(),
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+	}
+
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		_, err := k.ExecuteBuy(types.TradeContext{
-			Context:             innerCtx,
-			TradeAmount:         math.NewInt(600_000),
-			TradeDenomGiving:    constants.KUSD,
-			TradeDenomReceiving: constants.BaseCurrency,
-			CoinSource:          keepertest.Bob,
-			CoinTarget:          keepertest.Bob,
-			Fee:                 math.LegacyZeroDec(),
-			TradeBalances:       dexkeeper.NewTradeBalances(),
-			OrdersCaches:        k.NewOrdersCaches(innerCtx),
-		})
+		tradeContext.Context = innerCtx
+		tradeContext.OrdersCaches = k.NewOrdersCaches(innerCtx)
+		_, err := k.ExecuteBuy(tradeContext)
 		return err
 	}))
+
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade31(t *testing.T) {
@@ -1767,8 +1902,14 @@ func TestSingleTrade31(t *testing.T) {
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	require.Equal(t, res1.AmountGiven.Int64(), res2.AmountGiven.Int64())
 	require.Equal(t, res1.AmountReceived.Int64(), res2.AmountReceived.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade32(t *testing.T) {
@@ -1818,8 +1959,14 @@ func TestSingleTrade32(t *testing.T) {
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	require.Equal(t, res1.AmountGiven.Int64(), res2.AmountGiven.Int64())
 	require.Equal(t, res1.AmountReceived.Int64(), res2.AmountReceived.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade33(t *testing.T) {
@@ -1866,8 +2013,14 @@ func TestSingleTrade33(t *testing.T) {
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	require.Equal(t, res1.AmountGiven.Int64(), res2.AmountGiven.Int64())
 	require.Equal(t, res1.AmountReceived.Int64(), res2.AmountReceived.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestSingleTrade34(t *testing.T) {
@@ -1914,12 +2067,18 @@ func TestSingleTrade34(t *testing.T) {
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	price2, err := res2.PricePaid()
 	require.NoError(t, err)
 	require.True(t, price2.LTE(price1))
 
 	require.Equal(t, res1.AmountGiven.Int64(), res2.AmountGiven.Int64())
 	require.Equal(t, res1.AmountReceived.Int64(), res2.AmountReceived.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade1(t *testing.T) {
@@ -2009,6 +2168,7 @@ func TestTrade3(t *testing.T) {
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade4(t *testing.T) {
@@ -2395,25 +2555,6 @@ func TestTrade23(t *testing.T) {
 	require.NoError(t, checkCache(ctx, k))
 }
 
-func testSmallDenomTrade(t *testing.T, amount int64) int64 {
-	_, msg, ctx := keepertest.SetupDexMsgServer(t)
-
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 25_000))
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, amount))
-
-	response, err := keepertest.Sell(ctx, msg, &types.MsgSell{
-		Creator:        keepertest.Carol,
-		DenomGiving:    constants.BaseCurrency,
-		DenomReceiving: constants.KUSD,
-		Amount:         "1000",
-	})
-
-	require.NoError(t, err)
-
-	amountReceived, _ := strconv.Atoi(response.AmountReceived)
-	return int64(amountReceived)
-}
-
 func getCoin(coins []sdk.Coin, denom string) sdk.Coin {
 	for _, coin := range coins {
 		if coin.Denom == denom {
@@ -2425,7 +2566,7 @@ func getCoin(coins []sdk.Coin, denom string) sdk.Coin {
 }
 
 func TestTrade24(t *testing.T) {
-	_, msg, ctx := keepertest.SetupDexMsgServer(t)
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 10_000))
 
@@ -2437,6 +2578,10 @@ func TestTrade24(t *testing.T) {
 		MaxPrice:       "",
 	})
 	require.NoError(t, err)
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade27(t *testing.T) {
@@ -2648,6 +2793,7 @@ func TestTrade36(t *testing.T) {
 	require.Equal(t, liq1_ukusd.Int64()-tradeAmount, liq2_ukusd.Int64())
 
 	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
 	require.NoError(t, checkCache(ctx, k))
 }
 
@@ -2697,6 +2843,7 @@ func TestTrade37(t *testing.T) {
 	require.Equal(t, int64(9_000), liqOther[0].Amount.Int64())
 
 	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
 	require.NoError(t, checkCache(ctx, k))
 }
 
@@ -2726,7 +2873,7 @@ func TestTrade38(t *testing.T) {
 }
 
 func TestTrade39(t *testing.T) {
-	_, msg, ctx := keepertest.SetupDexMsgServer(t)
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 4_000_000))
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_000_000))
@@ -2751,6 +2898,10 @@ func TestTrade39(t *testing.T) {
 		MaxPrice:       fmt.Sprintf("%.8f", price1),
 	})
 	require.Error(t, err)
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade39b(t *testing.T) {
@@ -2797,10 +2948,14 @@ func TestTrade39b(t *testing.T) {
 		MaxPrice:       fmt.Sprintf("%.8f", price1),
 	})
 	require.Error(t, err)
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade40(t *testing.T) {
-	_, msg, ctx := keepertest.SetupDexMsgServer(t)
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 4_000_000))
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_000_000))
@@ -2832,6 +2987,10 @@ func TestTrade40(t *testing.T) {
 	price2 := amountGiven2 / amountReceived2
 
 	require.True(t, price2 > price1)
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade41(t *testing.T) {
@@ -2859,6 +3018,10 @@ func TestTrade41(t *testing.T) {
 
 	amountGiven, _ := strconv.Atoi(res.AmountGiven)
 	require.Less(t, amountGiven, 10_000)
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade42(t *testing.T) {
@@ -2929,6 +3092,10 @@ func TestTrade42(t *testing.T) {
 		Amount:         "10_000_000",
 	})
 	require.NoError(t, err)
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade43(t *testing.T) {
@@ -2973,6 +3140,10 @@ func TestTrade43(t *testing.T) {
 		MinimumTradeAmount: "1000000000000000",
 	})
 	require.NoError(t, err)
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade44(t *testing.T) {
@@ -2994,6 +3165,10 @@ func TestTrade44(t *testing.T) {
 		MinimumTradeAmount: "0",
 	})
 	require.NoError(t, err)
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade45(t *testing.T) {
@@ -3048,6 +3223,8 @@ func TestTrade45(t *testing.T) {
 	require.Equal(t, int64(756_014), k.BankKeeper.SpendableCoin(ctx, accLiq.GetAddress(), "uwusdc").Amount.Int64())
 
 	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade46(t *testing.T) {
@@ -3111,6 +3288,10 @@ func TestTrade48(t *testing.T) {
 	})
 
 	require.NoError(t, err)
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade49(t *testing.T) {
@@ -3172,8 +3353,11 @@ func TestTrade50(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
-
 	require.Equal(t, int64(2_494), res.AmountGiven.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade51(t *testing.T) {
@@ -3208,6 +3392,10 @@ func TestTrade51(t *testing.T) {
 
 	require.Equal(t, int64(40_061), res.AmountGiven.Int64())
 	require.Equal(t, int64(10_000), res.AmountReceived.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade52(t *testing.T) {
@@ -3239,8 +3427,11 @@ func TestTrade52(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
-
 	require.Equal(t, int64(10_000), res.AmountReceived.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade53(t *testing.T) {
@@ -3273,8 +3464,11 @@ func TestTrade53(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
-
 	require.Equal(t, int64(2_498), res.AmountReceived.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade54(t *testing.T) {
@@ -3306,8 +3500,11 @@ func TestTrade54(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
-
 	require.Equal(t, int64(9_995), res.AmountReceived.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade55(t *testing.T) {
@@ -3339,8 +3536,11 @@ func TestTrade55(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
-
 	require.Equal(t, int64(9_992), res.AmountReceived.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade56(t *testing.T) {
@@ -3372,8 +3572,11 @@ func TestTrade56(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
-
 	require.Equal(t, int64(9_994), res.AmountReceived.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade56a(t *testing.T) {
@@ -3406,8 +3609,11 @@ func TestTrade56a(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
-
 	require.Equal(t, int64(9_995), res.AmountReceived.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade57(t *testing.T) {
@@ -3440,8 +3646,11 @@ func TestTrade57(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
-
 	require.Equal(t, int64(100_000), res.AmountReceived.Int64())
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade58(t *testing.T) {
@@ -3516,7 +3725,10 @@ func TestTrade59(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade60(t *testing.T) {
@@ -3550,7 +3762,10 @@ func TestTrade60(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade61(t *testing.T) {
@@ -3588,6 +3803,10 @@ func TestTrade61(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade62(t *testing.T) {
@@ -3604,6 +3823,8 @@ func TestTrade62(t *testing.T) {
 	keepertest.SetRatio(ctx, k.DenomKeeper, constants.KUSD, r)
 	keepertest.SetRatio(ctx, k.DenomKeeper, "uwusdc", r)
 
+	tradeBalances := dexkeeper.NewTradeBalances()
+
 	var res1 types.TradeResult
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		var err error
@@ -3615,7 +3836,7 @@ func TestTrade62(t *testing.T) {
 			TradeDenomGiving:    "uwusdc",
 			TradeDenomReceiving: constants.KUSD,
 			OrdersCaches:        k.NewOrdersCaches(ctx),
-			TradeBalances:       dexkeeper.NewTradeBalances(),
+			TradeBalances:       tradeBalances,
 		})
 
 		return err
@@ -3628,7 +3849,7 @@ func TestTrade62(t *testing.T) {
 		TradeDenomGiving:    "uwusdc",
 		TradeDenomReceiving: constants.KUSD,
 		OrdersCaches:        k.NewOrdersCaches(ctx),
-		TradeBalances:       dexkeeper.NewTradeBalances(),
+		TradeBalances:       tradeBalances,
 	}
 
 	var res2 types.TradeResult
@@ -3648,6 +3869,10 @@ func TestTrade62(t *testing.T) {
 
 	require.True(t, res2.AmountReceived.LT(res1.AmountReceived))
 	require.True(t, price1.LT(price2))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade63(t *testing.T) {
@@ -3678,6 +3903,10 @@ func TestTrade63(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeBalances.Settle(ctx, k.BankKeeper))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade64(t *testing.T) {
@@ -3713,6 +3942,10 @@ func TestTrade64(t *testing.T) {
 
 		_ = res
 		require.NoError(t, tradeBalances.Settle(ctx, k.BankKeeper))
+
+		require.True(t, liquidityBalanced(ctx, k))
+		require.NoError(t, tradePoolEmpty(ctx, k))
+		require.NoError(t, checkCache(ctx, k))
 	}
 }
 
@@ -3757,6 +3990,10 @@ func TestTrade65(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade66(t *testing.T) {
@@ -3793,6 +4030,10 @@ func TestTrade66(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade67(t *testing.T) {
@@ -3829,6 +4070,10 @@ func TestTrade67(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade68(t *testing.T) {
@@ -3865,6 +4110,10 @@ func TestTrade68(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade69(t *testing.T) {
@@ -3901,6 +4150,10 @@ func TestTrade69(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade70(t *testing.T) {
@@ -3937,6 +4190,10 @@ func TestTrade70(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade71(t *testing.T) {
@@ -3965,6 +4222,10 @@ func TestTrade71(t *testing.T) {
 		})
 		return err
 	}))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade72(t *testing.T) {
@@ -3992,6 +4253,10 @@ func TestTrade72(t *testing.T) {
 		})
 		return err
 	}), "trade amount too small")
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade73(t *testing.T) {
@@ -4019,6 +4284,10 @@ func TestTrade73(t *testing.T) {
 		})
 		return err
 	}), "trade amount too small")
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade74(t *testing.T) {
@@ -4046,6 +4315,10 @@ func TestTrade74(t *testing.T) {
 		})
 		return err
 	}), "trade amount too small")
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade75(t *testing.T) {
@@ -4073,6 +4346,10 @@ func TestTrade75(t *testing.T) {
 		})
 		return err
 	}), "trade amount too small")
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade76(t *testing.T) {
@@ -4115,6 +4392,10 @@ func TestTrade76(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade77(t *testing.T) {
@@ -4155,6 +4436,10 @@ func TestTrade77(t *testing.T) {
 	price2, err := k.DenomKeeper.CalculatePrice(ctx, constants.BaseCurrency, "uwusdc")
 	require.NoError(t, err)
 	require.True(t, price1.LT(price2))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade78(t *testing.T) {
@@ -4194,6 +4479,10 @@ func TestTrade78(t *testing.T) {
 	res2, err := k.SimulateSell(tradeContext)
 	require.NoError(t, err)
 	require.True(t, res2.AmountReceived.LT(res1.AmountReceived))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade79(t *testing.T) {
@@ -4228,6 +4517,10 @@ func TestTrade79(t *testing.T) {
 	}))
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade80(t *testing.T) {
@@ -4262,6 +4555,10 @@ func TestTrade80(t *testing.T) {
 		_, err = k.ExecuteBuy(tradeContext)
 		return err
 	}), "not enough liquidity")
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade81(t *testing.T) {
@@ -4293,6 +4590,10 @@ func TestTrade81(t *testing.T) {
 		_, err = k.ExecuteBuy(tradeContext)
 		return err
 	}), "trade amount too small")
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade82(t *testing.T) {
@@ -4324,6 +4625,10 @@ func TestTrade82(t *testing.T) {
 		_, err = k.ExecuteSell(tradeContext)
 		return err
 	}), "trade amount too small")
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 type AddDenomInterface interface {
@@ -4384,6 +4689,10 @@ func TestTrade83(t *testing.T) {
 	require.True(t, priceStable2.GT(priceStable1))
 	require.True(t, ratio11.Ratio.LT(ratio21.Ratio))
 	require.True(t, ratio12.Ratio.GT(ratio22.Ratio))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade84(t *testing.T) {
@@ -4439,6 +4748,10 @@ func TestTrade84(t *testing.T) {
 	require.True(t, priceStable2.GT(priceStable1))
 	require.True(t, ratio11.Ratio.LT(ratio21.Ratio))
 	require.True(t, ratio12.Ratio.GT(ratio22.Ratio))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade85(t *testing.T) {
@@ -4512,6 +4825,10 @@ func TestTrade85(t *testing.T) {
 	amountReceivedFunky, _ := strconv.Atoi(resFunky.AmountReceived)
 
 	require.True(t, amountReceivedFunky < amountReceivedStable)
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade86(t *testing.T) {
@@ -4552,10 +4869,16 @@ func TestTrade86(t *testing.T) {
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	pricePaid2, err := res2.PricePaid()
 	require.NoError(t, err)
 
 	require.True(t, pricePaid2.LTE(pricePaid))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade87(t *testing.T) {
@@ -4599,9 +4922,15 @@ func TestTrade87(t *testing.T) {
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	pricePaid2, err := res2.PricePaid()
 	require.NoError(t, err)
 	require.True(t, pricePaid2.LTE(pricePaid1))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade88(t *testing.T) {
@@ -4637,6 +4966,10 @@ func TestTrade88(t *testing.T) {
 		_, err = k.ExecuteSell(tradeContext)
 		return err
 	}))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func TestTrade89(t *testing.T) {
@@ -4676,10 +5009,16 @@ func TestTrade89(t *testing.T) {
 		return err
 	}))
 
+	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
+
 	pricePaid2, err := res1.PricePaid()
 	require.NoError(t, err)
 
 	require.True(t, pricePaid2.LTE(pricePaid1))
+
+	require.True(t, liquidityBalanced(ctx, k))
+	require.NoError(t, tradePoolEmpty(ctx, k))
+	require.NoError(t, checkCache(ctx, k))
 }
 
 func liquidityBalanced(ctx context.Context, k dexkeeper.Keeper) bool {
@@ -4687,13 +5026,11 @@ func liquidityBalanced(ctx context.Context, k dexkeeper.Keeper) bool {
 	coins := k.BankKeeper.SpendableCoins(ctx, acc.GetAddress())
 
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
-		liqSum := k.GetPoolLiquidity(ctx, denom).Int64()
 		summedLiq := k.SumLiquidity(ctx, denom).Int64()
 		funds := coins.AmountOf(denom).Int64()
 
-		if liqSum != funds || summedLiq != funds {
+		if summedLiq != funds {
 			fmt.Println(denom)
-			fmt.Println(fmt.Sprintf("liqSum: %v", liqSum))
 			fmt.Println(fmt.Sprintf("summedLiq: %v", summedLiq))
 			fmt.Println(fmt.Sprintf("funds: %v", funds))
 
