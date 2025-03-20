@@ -28,6 +28,7 @@ func (k Keeper) LiquidityAll(ctx context.Context, _ *types.QueryGetLiquidityAllR
 
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
 		val := k.GetPoolLiquidity(ctx, denom)
+		sum := k.SumLiquidity(ctx, denom)
 
 		amountUSD, err = k.DenomKeeper.GetValueIn(ctx, denom, referenceDenom, val.ToLegacyDec())
 		if err != nil {
@@ -43,6 +44,7 @@ func (k Keeper) LiquidityAll(ctx context.Context, _ *types.QueryGetLiquidityAllR
 			AmountUsd:             amountUSD.String(),
 			AvailableFeeAmount:    feeAmount.String(),
 			AvailableFeeAmountUsd: feeAmountUSD.String(),
+			LiquidityPositions:    sum.String(),
 		})
 	}
 

@@ -212,6 +212,7 @@ message QueryGetLiquidityAllResponseEntry {
   string amount_usd = 3;
   string available_fee_amount = 4;
   string available_fee_amount_usd = 5;
+  string liquidity_positions = 6;
 }
 
 message QueryGetLiquidityAllResponse {
