@@ -189,22 +189,40 @@ func (k Keeper) executeTrade(ctx *types.TradeContext) (types.TradeResults, error
 	// When a maximum price is set, it is checked how much can be received to stay below the maximum price.
 
 	if ctx.MaxPrice != nil {
-		priceAmountDec, err := k.calculateAmountGivenPrice(ctx)
-		if err != nil {
-			return types.TradeResults{}, err
-		}
-
-		priceAmount := priceAmountDec.TruncateInt()
-		if !priceAmount.IsPositive() {
-			return types.TradeResults{}, types.ErrNegativeTradeAmount
-		}
-
-		if priceAmount.LT(ctx.TradeAmount) {
-			if ctx.MinimumTradeAmount != nil && !ctx.MinimumTradeAmount.IsNil() && ctx.MinimumTradeAmount.GT(priceAmount) {
-				return types.TradeResults{}, types.ErrPriceTooLow
+		// The calculation for two-step buys might be incorrect. To double-check, we simulate the trade with the given
+		// amount to make sure the user does not overpay.
+		if ctx.TradeType == types.TradeTypeBuy && ctx.HasTwoSteps() {
+			result, err := k.SimulateBuy(*ctx)
+			if err != nil {
+				return types.TradeResults{}, fmt.Errorf("simulate buy: %w", err)
 			}
 
-			ctx.TradeAmount = priceAmount
+			simulatedPrice, err := result.PricePaid()
+			if err != nil {
+				return types.TradeResults{}, fmt.Errorf("simulate buy price: %w", err)
+			}
+
+			if simulatedPrice.GT(*ctx.MaxPrice) {
+				return types.TradeResults{}, types.ErrPriceTooLow
+			}
+		} else {
+			priceAmountDec, err := k.calculateAmountGivenPrice(ctx)
+			if err != nil {
+				return types.TradeResults{}, err
+			}
+
+			priceAmount := priceAmountDec.TruncateInt()
+			if !priceAmount.IsPositive() {
+				return types.TradeResults{}, types.ErrNegativeTradeAmount
+			}
+
+			if priceAmount.LT(ctx.TradeAmount) {
+				if ctx.MinimumTradeAmount != nil && !ctx.MinimumTradeAmount.IsNil() && ctx.MinimumTradeAmount.GT(priceAmount) {
+					return types.TradeResults{}, types.ErrPriceTooLow
+				}
+
+				ctx.TradeAmount = priceAmount
+			}
 		}
 	}
 
@@ -397,10 +415,15 @@ func (k Keeper) updateRatiosToBase(ctx *types.TradeContext) error {
 	changeBase := ctx.GetLiquidityChange(constants.BaseCurrency).ToLegacyDec()
 
 	if ctx.HasOneStep() {
-		fullBase := ctx.CutLiquidities.GetFullBase()
+		tradeRatio, _ := k.DenomKeeper.GetRatio(ctx, ctx.GetOtherDenom())
+		tradePair, err := k.createRatioUpdatePair(ctx, tradeRatio, liqBase)
+		if err != nil {
+			return err
+		}
+
 		for _, ratio := range k.DenomKeeper.GetAllRatios(ctx) {
 			changeOther := ctx.GetLiquidityChange(ratio.Denom).ToLegacyDec()
-			if err := k.UpdateRatioToBase(ctx, ratio, liqBase, changeBase, changeOther, fullBase); err != nil {
+			if err := k.UpdateRatioToBase(ctx, ratio, liqBase, changeBase, changeOther, tradePair.GetFullBase()); err != nil {
 				return fmt.Errorf("update ratio to base (%v): %w", ratio.Denom, err)
 			}
 		}
@@ -428,19 +451,13 @@ func (k Keeper) UpdateRatioToBase(ctx *types.TradeContext, ratio denomtypes.Rati
 		return nil
 	}
 
-	liqOther := k.GetSpreadLiquidity(ctx, ratio.Denom)
-	extraVirtualLiquidity := k.DenomKeeper.ExtraVirtualLiquidity(ctx, ratio.Denom)
-
-	pair, err := k.CreateLiquidityPairWithLiquidity(ctx, ratio, liqBase, liqOther, extraVirtualLiquidity)
+	pair, err := k.createRatioUpdatePair(ctx, ratio, liqBase)
 	if err != nil {
-		return fmt.Errorf("liquidity pair %v: %w", ratio.Denom, err)
+		return err
 	}
 
-	fullBase := pair.VirtualBase.Add(pair.ActualBase)
-	fullOther := pair.VirtualOther.Add(pair.ActualOther)
-
-	fullBase = fullBase.Add(pair.ExtraBase)
-	fullOther = fullOther.Add(pair.ExtraOther)
+	fullBase := pair.GetFullBase()
+	fullOther := pair.GetFullOther()
 
 	if fullBase.LT(originalTradeValue) {
 		changeAdjustmentFactor := fullBase.Quo(originalTradeValue)
@@ -460,6 +477,18 @@ func (k Keeper) UpdateRatioToBase(ctx *types.TradeContext, ratio denomtypes.Rati
 	}
 
 	return nil
+}
+
+func (k Keeper) createRatioUpdatePair(ctx context.Context, ratio denomtypes.Ratio, liqBase math.LegacyDec) (types.LiquidityPair, error) {
+	liqOther := k.GetSpreadLiquidity(ctx, ratio.Denom)
+	extraVirtualLiquidity := k.DenomKeeper.ExtraVirtualLiquidity(ctx, ratio.Denom)
+
+	pair, err := k.CreateLiquidityPairWithLiquidity(ctx, ratio, liqBase, liqOther, extraVirtualLiquidity)
+	if err != nil {
+		return types.LiquidityPair{}, fmt.Errorf("liquidity pair %v: %w", ratio.Denom, err)
+	}
+
+	return pair, nil
 }
 
 func (k Keeper) calculateTradeAmounts(ctx types.TradeStepContext, poolFrom, poolTo, tradeAmount, fee math.LegacyDec) (math.Int, math.Int, math.Int, math.Int, error) {
@@ -520,7 +549,12 @@ func (k Keeper) calculateAmountGivenPrice(ctx *types.TradeContext) (math.LegacyD
 			T1, T2 = T2, T1
 		}
 
-		return ctx.CalcTradableAmountGivenPriceTwoStep(X, T1, T2, Y, maxPrice)
+		amount, err := ctx.CalcTradableAmountGivenPriceTwoStep(X, T1, T2, Y, maxPrice)
+		if err != nil {
+			return math.LegacyZeroDec(), nil
+		}
+
+		return amount, nil
 	} else {
 		liqFrom := ctx.CutLiquidities.GetFullLiquidityGiving(ctx.TradeDenomGiving, ctx.TradeType)
 		liqTo := ctx.CutLiquidities.GetFullLiquidityReceiving(ctx.TradeDenomReceiving, ctx.TradeType)

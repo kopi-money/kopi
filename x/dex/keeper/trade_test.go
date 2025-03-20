@@ -2973,20 +2973,14 @@ func TestTrade40(t *testing.T) {
 	amountReceived1, _ := strconv.ParseFloat(res1.AmountReceived, 64)
 	price1 := amountGiven1 / amountReceived1
 
-	res2, err := keepertest.Buy(ctx, msg, &types.MsgBuy{
+	_, err = keepertest.Buy(ctx, msg, &types.MsgBuy{
 		Creator:        keepertest.Bob,
 		DenomGiving:    constants.KUSD,
 		DenomReceiving: "uwusdc",
 		Amount:         "1_000000_000000",
 		MaxPrice:       fmt.Sprintf("%.8f", price1),
 	})
-	require.NoError(t, err)
-
-	amountGiven2, _ := strconv.ParseFloat(res2.AmountGiven, 64)
-	amountReceived2, _ := strconv.ParseFloat(res2.AmountReceived, 64)
-	price2 := amountGiven2 / amountReceived2
-
-	require.True(t, price2 > price1)
+	require.Error(t, err)
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.NoError(t, tradePoolEmpty(ctx, k))
@@ -5058,15 +5052,50 @@ func TestTrade90(t *testing.T) {
 
 	require.NoError(t, tradeContext.TradeBalances.Settle(ctx, k.BankKeeper))
 
-	r12, err := k.DenomKeeper.GetRatio(ctx, constants.KUSD)
+	_, err := k.DenomKeeper.GetRatio(ctx, constants.KUSD)
 	require.NoError(t, err)
-	r22, err := k.DenomKeeper.GetRatio(ctx, "uwusdc")
+	_, err = k.DenomKeeper.GetRatio(ctx, "uwusdc")
 	require.NoError(t, err)
+}
 
-	c1 := r11.Quo(r12.Ratio)
-	c2 := r21.Quo(r22.Ratio)
-	fmt.Println(c1)
-	fmt.Println(c2)
+func TestTrade91(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 50047614030762)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Alice, 9_973955_830468)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "uwusdc", keepertest.Alice, 86_019_995791)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 50_000000_000000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 8_973955_830468))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "uwusdc", 7019_995791))
+
+	r11, _ := math.LegacyNewDecFromStr("0.242286405309279926")
+	keepertest.SetRatio(ctx, k.DenomKeeper, constants.KUSD, r11)
+	r21, _ := math.LegacyNewDecFromStr("0.238085503436972988")
+	keepertest.SetRatio(ctx, k.DenomKeeper, "uwusdc", r21)
+
+	amount := math.NewInt(50_000000)
+	maxPrice := math.LegacyNewDecWithPrec(1, 4)
+
+	tradeContext := types.TradeContext{
+		Context:             ctx,
+		TradeAmount:         amount,
+		CoinSource:          keepertest.Bob,
+		CoinTarget:          keepertest.Bob,
+		TradeDenomGiving:    "uwusdc",
+		TradeDenomReceiving: constants.KUSD,
+		OrdersCaches:        k.NewOrdersCaches(ctx),
+		TradeBalances:       dexkeeper.NewTradeBalances(),
+		Fee:                 math.LegacyZeroDec(),
+		MaxPrice:            &maxPrice,
+	}
+
+	require.Error(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		tradeContext.Context = innerCtx
+
+		_, err := k.ExecuteBuy(tradeContext)
+		return err
+	}))
 }
 
 func TestUpdateRatioToBaseOneStep1(t *testing.T) {

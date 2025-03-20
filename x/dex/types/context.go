@@ -234,6 +234,18 @@ type TradeContext struct {
 	FlatPrice *constant_product.FlatPrice
 }
 
+func (tc *TradeContext) GetOtherDenom() string {
+	if !tc.HasOneStep() {
+		panic("can only be called when trade has one step")
+	}
+
+	if tc.TradeDenomGiving == constants.BaseCurrency {
+		return tc.TradeDenomReceiving
+	} else {
+		return tc.TradeDenomGiving
+	}
+}
+
 func (tc *TradeContext) TouchedDenom(denom string) bool {
 	return tc.TradeDenomReceiving == denom || tc.TradeDenomGiving == denom
 }
