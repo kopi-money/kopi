@@ -145,6 +145,7 @@ func TestEpoch3(t *testing.T) {
 
 	require.Equal(t, int64(1), k.GetLiquidityByPositionIndex(ctx, constants.BaseCurrency, 1).Int64())
 	require.Equal(t, int64(1), k.GetLiquidityByPositionIndex(ctx, constants.BaseCurrency, 2).Int64())
+	require.True(t, liquidityBalanced(ctx, k))
 
 	epochPayouts = k.GetEpochLeftovers(ctx, keepertest.Dave, 1)
 	require.Equal(t, 1, len(epochPayouts.Leftovers))
@@ -160,6 +161,7 @@ func TestEpoch3(t *testing.T) {
 
 	require.Equal(t, int64(1001), k.GetLiquidityByPositionIndex(ctx, constants.BaseCurrency, 1).Int64())
 	require.Equal(t, int64(1001), k.GetLiquidityByPositionIndex(ctx, constants.BaseCurrency, 2).Int64())
+	require.True(t, liquidityBalanced(ctx, k))
 
 	epochPayouts = k.GetEpochLeftovers(ctx, keepertest.Dave, 1)
 	require.Equal(t, 1, len(epochPayouts.Leftovers))

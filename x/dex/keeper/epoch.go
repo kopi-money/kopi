@@ -2,12 +2,11 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-	"strconv"
-
 	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
+	"strconv"
 )
 
 const minimumPayout = 1000
@@ -141,17 +140,24 @@ func (k Keeper) DistributeCollectedFees(ctx context.Context) error {
 
 	accFees := k.AccountKeeper.GetModuleAccount(ctx, types.PoolFeeIncome)
 	accLeftovers := k.AccountKeeper.GetModuleAccount(ctx, types.PoolFeeLeftovers)
-
 	payoutFunds := k.BankKeeper.SpendableCoins(ctx, accFees.GetAddress())
-
 	fundsLeftover := k.BankKeeper.SpendableCoins(ctx, accLeftovers.GetAddress())
+
 	if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolFeeLeftovers, types.PoolFeeIncome, fundsLeftover); err != nil {
 		return fmt.Errorf("get leftover funds: %w", err)
 	}
 
+	sendToDex := sdk.NewCoins()
 	for _, address := range addresses {
-		if err := k.HandleEpochAddress(ctx, address, epochShareSum, payoutFunds); err != nil {
+		sendToDex, err = k.HandleEpochAddress(ctx, address, epochShareSum, payoutFunds, sendToDex)
+		if err != nil {
 			return fmt.Errorf("handle epoch address: %w", err)
+		}
+	}
+
+	if !sendToDex.IsZero() {
+		if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolFeeIncome, types.PoolLiquidity, sendToDex); err != nil {
+			return fmt.Errorf("return leftover funds: %w", err)
 		}
 	}
 
@@ -163,28 +169,30 @@ func (k Keeper) DistributeCollectedFees(ctx context.Context) error {
 	return nil
 }
 
-func (k Keeper) HandleEpochAddress(ctx context.Context, address string, epochShareSum math.LegacyDec, payoutFunds sdk.Coins) error {
+func (k Keeper) HandleEpochAddress(ctx context.Context, address string, epochShareSum math.LegacyDec, payoutFunds, sendToDex sdk.Coins) (sdk.Coins, error) {
 	iterator := k.epochShares.Iterator(ctx, nil, address)
 
 	for iterator.Valid() {
 		keyValue := iterator.GetNextKeyValue()
 		depositEpoch := keyValue.Value().Value()
 
-		if err := k.HandleEpochDeposit(ctx, address, keyValue.Key(), epochShareSum, *depositEpoch, payoutFunds); err != nil {
-			return fmt.Errorf("handle epoch deposit: %w", err)
+		var err error
+		sendToDex, err = k.HandleEpochDeposit(ctx, address, keyValue.Key(), epochShareSum, *depositEpoch, payoutFunds, sendToDex)
+		if err != nil {
+			return sdk.Coins{}, fmt.Errorf("handle epoch deposit: %w", err)
 		}
 	}
 
-	return nil
+	return sendToDex, nil
 }
 
-func (k Keeper) HandleEpochDeposit(ctx context.Context, address string, positionIndex uint64, epochShareSum math.LegacyDec, epochDeposit types.EpochShares, payoutFunds sdk.Coins) error {
+func (k Keeper) HandleEpochDeposit(ctx context.Context, address string, positionIndex uint64, epochShareSum math.LegacyDec, epochDeposit types.EpochShares, payoutFunds, sendToDex sdk.Coins) (sdk.Coins, error) {
 	epochPayouts := k.collectFeesForDeposit(ctx, address, positionIndex, epochShareSum, epochDeposit.Shares, payoutFunds)
 	hasAutoCompound, stillExists := k.hasAutoCompound(ctx, address, positionIndex)
 
 	coins := sdk.NewCoins()
 	if hasAutoCompound {
-		k.handleEpochDepositAutoCompound(ctx, address, positionIndex, epochPayouts)
+		sendToDex = k.handleEpochDepositAutoCompound(ctx, address, positionIndex, epochPayouts, sendToDex)
 	} else {
 		coins = coins.Add(k.handleEpochDepositPayout(epochPayouts, stillExists)...)
 	}
@@ -192,13 +200,13 @@ func (k Keeper) HandleEpochDeposit(ctx context.Context, address string, position
 	if len(coins) > 0 {
 		acc, _ := sdk.AccAddressFromBech32(address)
 		if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolFeeIncome, acc, coins); err != nil {
-			return fmt.Errorf("distribute collected fees: %w", err)
+			return sdk.Coins{}, fmt.Errorf("distribute collected fees: %w", err)
 		}
 	}
 
 	k.setEpochLeftovers(ctx, address, positionIndex, epochPayouts, stillExists)
 
-	return nil
+	return sendToDex, nil
 }
 
 func (k Keeper) handleEpochDepositPayout(epochPayouts *types.EpochPayouts, stillExists bool) sdk.Coins {
@@ -216,7 +224,7 @@ func (k Keeper) handleEpochDepositPayout(epochPayouts *types.EpochPayouts, still
 	return coinsToSend
 }
 
-func (k Keeper) handleEpochDepositAutoCompound(ctx context.Context, address string, positionIndex uint64, epochPayouts *types.EpochPayouts) {
+func (k Keeper) handleEpochDepositAutoCompound(ctx context.Context, address string, positionIndex uint64, epochPayouts *types.EpochPayouts, sendToDex sdk.Coins) sdk.Coins {
 	for _, denom := range epochPayouts.Denoms() {
 		amount := epochPayouts.GetTruncated(denom)
 		if amount.LT(math.LegacyNewDec(minimumPayout)) {
@@ -225,7 +233,10 @@ func (k Keeper) handleEpochDepositAutoCompound(ctx context.Context, address stri
 
 		epochPayouts.AddUsage(denom, amount)
 		k.addLiquidity(ctx, denom, address, amount.TruncateInt(), nil, positionIndex)
+		sendToDex = sendToDex.Add(sdk.NewCoin(denom, amount.TruncateInt()))
 	}
+
+	return sendToDex
 }
 
 func (k Keeper) collectFeesForDeposit(ctx context.Context, address string, positionIndex uint64, epochShares, depositShares math.LegacyDec, payoutFunds sdk.Coins) *types.EpochPayouts {
