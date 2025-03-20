@@ -400,7 +400,7 @@ func (k Keeper) updateRatiosToBase(ctx *types.TradeContext) error {
 		fullBase := ctx.CutLiquidities.GetFullBase()
 		for _, ratio := range k.DenomKeeper.GetAllRatios(ctx) {
 			changeOther := ctx.GetLiquidityChange(ratio.Denom).ToLegacyDec()
-			if err := k.updateRatioToBase(ctx, ratio, liqBase, changeBase, changeOther, fullBase); err != nil {
+			if err := k.UpdateRatioToBase(ctx, ratio, liqBase, changeBase, changeOther, fullBase); err != nil {
 				return fmt.Errorf("update ratio to base (%v): %w", ratio.Denom, err)
 			}
 		}
@@ -408,14 +408,14 @@ func (k Keeper) updateRatiosToBase(ctx *types.TradeContext) error {
 		ratioGiving, _ := k.DenomKeeper.GetRatio(ctx, ctx.TradeDenomGiving)
 		fullBase := ctx.CutLiquidities.Step1.GetFullBaseSummed()
 		changeOther := ctx.GetLiquidityChange(ctx.TradeDenomGiving).ToLegacyDec()
-		if err := k.updateRatioToBase(ctx, ratioGiving, liqBase, changeBase, changeOther, fullBase); err != nil {
+		if err := k.UpdateRatioToBase(ctx, ratioGiving, liqBase, changeBase, changeOther, fullBase); err != nil {
 			return fmt.Errorf("update ratio to base (step1, %v): %w", ctx.TradeDenomGiving, err)
 		}
 
 		ratioReceiving, _ := k.DenomKeeper.GetRatio(ctx, ctx.TradeDenomReceiving)
 		fullBase = ctx.CutLiquidities.Step2.GetFullBaseSummed()
 		changeOther = ctx.GetLiquidityChange(ctx.TradeDenomReceiving).ToLegacyDec()
-		if err := k.updateRatioToBase(ctx, ratioReceiving, liqBase, changeBase, changeOther, fullBase); err != nil {
+		if err := k.UpdateRatioToBase(ctx, ratioReceiving, liqBase, changeBase, changeOther, fullBase); err != nil {
 			return fmt.Errorf("update ratio to base (step2, %v): %w", ctx.TradeDenomReceiving, err)
 		}
 	}
@@ -423,7 +423,7 @@ func (k Keeper) updateRatiosToBase(ctx *types.TradeContext) error {
 	return nil
 }
 
-func (k Keeper) updateRatioToBase(ctx *types.TradeContext, ratio denomtypes.Ratio, liqBase, changeBase, changeOther math.LegacyDec, originalTradeValue math.LegacyDec) error {
+func (k Keeper) UpdateRatioToBase(ctx *types.TradeContext, ratio denomtypes.Ratio, liqBase, changeBase, changeOther math.LegacyDec, originalTradeValue math.LegacyDec) error {
 	if changeOther.IsZero() && changeBase.IsZero() {
 		return nil
 	}
@@ -442,8 +442,11 @@ func (k Keeper) updateRatioToBase(ctx *types.TradeContext, ratio denomtypes.Rati
 	fullBase = fullBase.Add(pair.ExtraBase)
 	fullOther = fullOther.Add(pair.ExtraOther)
 
-	changeBase = adjustChangeToTradeValue(changeBase, originalTradeValue, fullBase)
-	changeOther = adjustChangeToTradeValue(changeOther, originalTradeValue, fullBase)
+	if fullBase.LT(originalTradeValue) {
+		changeAdjustmentFactor := fullBase.Quo(originalTradeValue)
+		changeBase = changeBase.Mul(changeAdjustmentFactor)
+		changeOther = changeOther.Mul(changeAdjustmentFactor)
+	}
 
 	fullBase = fullBase.Add(changeBase)
 	fullOther = fullOther.Add(changeOther)
@@ -457,29 +460,6 @@ func (k Keeper) updateRatioToBase(ctx *types.TradeContext, ratio denomtypes.Rati
 	}
 
 	return nil
-}
-
-// adjustChangeToTradeValue adjusts the change amount of a denom to that pair's liquidity level. For example, if there
-// is $1k worth of XKP and 1 XKP is bought, changeRelation is 0.001, ie 0.1%. When there is a trading pair with less
-// than $1k trade value, change has to be made smaller as to not be larger than 0.1% of that pair's trade value.
-func adjustChangeToTradeValue(change, originalTradeValueBase, currentTradeValueBase math.LegacyDec) math.LegacyDec {
-	if originalTradeValueBase.LTE(currentTradeValueBase) {
-		return change
-	}
-
-	neg := change.IsNegative()
-	if neg {
-		change = change.Neg()
-	}
-
-	changeRelation := change.Quo(originalTradeValueBase)
-	change = changeRelation.Mul(currentTradeValueBase)
-
-	if neg {
-		change = change.Neg()
-	}
-
-	return change
 }
 
 func (k Keeper) calculateTradeAmounts(ctx types.TradeStepContext, poolFrom, poolTo, tradeAmount, fee math.LegacyDec) (math.Int, math.Int, math.Int, math.Int, error) {
