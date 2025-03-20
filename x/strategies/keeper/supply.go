@@ -9,7 +9,7 @@ import (
 	"github.com/kopi-money/kopi/x/strategies/types"
 )
 
-var minimumAmount = math.NewInt(100_000_000) // i.e. 100
+var minimumAmount = math.NewInt(1_000_000_000) // i.e. 100
 type CalculateValue []func() (math.LegacyDec, error)
 
 func (cv CalculateValue) get() (math.LegacyDec, error) {
@@ -116,9 +116,5 @@ func (k Keeper) calculateRedemptionValue(ctx context.Context, arbitrageDenom den
 	// how much value of all cAssetValue does the redemption request represent
 	redemptionShare := requestedAAssetAmount.ToLegacyDec().Quo(assetSupply) // C
 	redemptionValue := assetValue.Mul(redemptionShare).TruncateInt()
-
-	msg := fmt.Sprintf("Share: %v, Total value: %v, Redemption value: %v", redemptionShare.String(), assetValue.String(), redemptionValue.String())
-	k.Logger().Info(msg)
-
 	return redemptionValue, nil
 }

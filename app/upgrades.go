@@ -168,6 +168,10 @@ func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
 			UpgradeName:          v19.UpgradeNameRC3,
 			CreateUpgradeHandler: v19.CreateUpgradeHandler,
 		},
+		{
+			UpgradeName:          v19.UpgradeNameRC10,
+			CreateUpgradeHandler: v19.CreateUpgradeHandler,
+		},
 	}
 
 	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
