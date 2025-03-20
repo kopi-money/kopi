@@ -169,7 +169,7 @@ func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
 			CreateUpgradeHandler: v19.CreateUpgradeHandler,
 		},
 		{
-			UpgradeName:          v19.UpgradeNameRC10,
+			UpgradeName:          v19.UpgradeNameRC11,
 			CreateUpgradeHandler: v19.CreateUpgradeHandler,
 		},
 	}
