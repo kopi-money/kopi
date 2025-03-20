@@ -177,7 +177,8 @@ func (k Keeper) ExecuteOrder(ctx context.Context, ordersCaches *types.OrdersCach
 		}
 
 		msg := fmt.Sprintf("execute trade (%v%v > %v)", tradeCtx.TradeAmount.String(), order.DenomGiving, order.DenomReceiving)
-		return types.TradeResult{}, false, fmt.Errorf("%v: %w", msg, err)
+		k.Logger().Error(fmt.Errorf("%v: %w", msg, err).Error())
+		return types.TradeResult{}, false, nil
 	}
 
 	if err = orderTradeBalances.Settle(ctx, k.BankKeeper); err != nil {
