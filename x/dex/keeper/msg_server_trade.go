@@ -68,6 +68,9 @@ func (k msgServer) trade(ctx context.Context, creator, denomGiving, denomReceivi
 		Fee:                    k.getTradeFee(ctx, tradeFee, creator, denomGiving, denomReceiving, false),
 	}
 
+	fmt.Println("!!!!!!!")
+	fmt.Println("!!!!!!!")
+	fmt.Println("!!!!!!!")
 	tradeResult, err := tradeFunc(tradeCtx)
 	if err != nil {
 		return nil, fmt.Errorf("could not execute trade: %w", err)

@@ -30,7 +30,8 @@ var (
 	PrefixEpochPayouts               = collections.NewPrefix(12)
 	PrefixEpochStartTime             = collections.NewPrefix(13)
 
-	PrefixMovingLiquidity = collections.NewPrefix(14)
+	PrefixMovingLiquidity     = collections.NewPrefix(14)
+	PrefixLiquidityAddressSum = collections.NewPrefix(15)
 )
 
 type (
@@ -57,7 +58,8 @@ type (
 
 		liquidityPositionNextIndex *cache.ItemCache[uint64]
 
-		liquidityPositions *cache.NestedMapCache[string, uint64, types.LiquidityPosition]
+		liquidityPositions  *cache.NestedMapCache[string, uint64, types.LiquidityPosition]
+		liquidityAddressSum *cache.NestedMapCache[string, string, types.LiquiditySum]
 
 		epochShares    *cache.NestedMapCache[string, uint64, types.EpochShares]
 		epochSharesSum *cache.ItemCache[types.EpochShares]
@@ -194,6 +196,15 @@ func NewKeeper(
 			"liquidity_positions",
 			collections.PairKeyCodec(collections.StringKey, collections.Uint64Key),
 			codec.CollValue[types.LiquidityPosition](cdc),
+			caches,
+		),
+
+		liquidityAddressSum: cache.NewNestedMapCache(
+			sb,
+			PrefixLiquidityAddressSum,
+			"liquidity_address_sum",
+			collections.PairKeyCodec(collections.StringKey, collections.StringKey),
+			codec.CollValue[types.LiquiditySum](cdc),
 			caches,
 		),
 

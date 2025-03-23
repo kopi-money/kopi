@@ -31,6 +31,8 @@ func (k Keeper) LiquidityForAddress(goCtx context.Context, req *types.QueryLiqui
 		availableBalance, _ := k.getAvailableBalance(ctx, req.Address, denom)
 		availableBalanceUSD, _ := k.DenomKeeper.GetValueInUSD(ctx, denom, availableBalance.ToLegacyDec())
 
+		addressSum := k.getLiquidityAddressSum(ctx, req.Address, denom)
+
 		liquidities = append(liquidities, types.AddressLiquidity{
 			Denom:               denom,
 			UserAmount:          userAmount.String(),
@@ -39,6 +41,7 @@ func (k Keeper) LiquidityForAddress(goCtx context.Context, req *types.QueryLiqui
 			TotalUsd:            sumUSD.String(),
 			AvailableBalance:    availableBalance.String(),
 			AvailableBalanceUsd: availableBalanceUSD.String(),
+			Sum:                 addressSum.String(),
 		})
 	}
 
@@ -81,18 +84,18 @@ func (k Keeper) LiquidityPositions(ctx context.Context, req *types.QueryLiquidit
 	}, nil
 }
 
+func (k Keeper) GetLiquidityPositionsAddresses(ctx context.Context) []string {
+	addresses, _ := k.liquidityPositions.OuterKeys(ctx)
+	return addresses
+}
+
 func (k Keeper) LiquidityPositionsAddresses(ctx context.Context, req *types.QueryLiquidityPositionsAddressesRequest) (*types.QueryLiquidityPositionsAddressesResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	addresses, err := k.liquidityPositions.OuterKeys(ctx)
-	if err != nil {
-		return nil, err
-	}
-
 	return &types.QueryLiquidityPositionsAddressesResponse{
-		Addresses: addresses,
+		Addresses: k.GetLiquidityPositionsAddresses(ctx),
 	}, nil
 }
 

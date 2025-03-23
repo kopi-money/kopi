@@ -1,11 +1,13 @@
 package keeper
 
 import (
-	"cosmossdk.io/math"
+	"context"
 	"fmt"
+	"strconv"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
-	"strconv"
 )
 
 type LiquidityProvider struct {
@@ -26,7 +28,7 @@ func (lps LiquidityProviders) amountSum() math.Int {
 	return sum
 }
 
-func (k Keeper) determineLiquidityProviders(ctx types.TradeStepContext, amountToReceiveLeft math.Int, denomTo string) (LiquidityProviders, math.Int, error) {
+func (k Keeper) determineLiquidityProviders(ctx types.TradeStepContext, amountToReceiveLeft math.Int, denomTo string, receivingAddress string, protocolTrade bool) (LiquidityProviders, math.Int, error) {
 	var (
 		liquidityProviders LiquidityProviders
 		liquidityUsed      math.Int
@@ -39,6 +41,12 @@ func (k Keeper) determineLiquidityProviders(ctx types.TradeStepContext, amountTo
 	for index, liq := range liquidityList {
 		if !amountToReceiveLeft.IsPositive() {
 			break
+		}
+
+		// If the trade is not a protocol trade, we don't use liquidity coming from the same address as the address
+		// trading to prevent self-trades.
+		if !protocolTrade && liq.Address == receivingAddress {
+			continue
 		}
 
 		if amountToReceiveLeft.LT(liq.Amount) {
@@ -60,6 +68,7 @@ func (k Keeper) determineLiquidityProviders(ctx types.TradeStepContext, amountTo
 		sumUsed = sumUsed.Add(liquidityUsed)
 		liq.Amount = liq.Amount.Sub(liquidityUsed)
 
+		k.AddLiquidityAddressSum(ctx, liq.Address, denomTo, liquidityUsed.Neg())
 		if liq.Amount.IsZero() {
 			k.RemoveLiquidity(ctx.TradeContext.Context, denomTo, liq.Index)
 			deleteIndexes = append(deleteIndexes, index)
@@ -150,4 +159,33 @@ func (k Keeper) distributeGivenFunds(ctx types.TradeStepContext, ordersCaches *t
 	)
 
 	return nil
+}
+
+func (k Keeper) getLiquidityAddressSum(ctx context.Context, address, denom string) math.Int {
+	sum, has := k.liquidityAddressSum.Get(ctx, address, denom)
+	if !has {
+		return math.ZeroInt()
+	}
+
+	return sum.Sum
+}
+
+func (k Keeper) getLiquidityAddressSumDec(ctx context.Context, address, denom string) math.LegacyDec {
+	return k.getLiquidityAddressSum(ctx, address, denom).ToLegacyDec()
+}
+
+func (k Keeper) GetLiquidityAddressSums(ctx context.Context, address string) (coins sdk.Coins) {
+	iterator := k.liquidityAddressSum.Iterator(ctx, nil, address)
+	for iterator.Valid() {
+		keyValue := iterator.GetNextKeyValue()
+		coins = coins.Add(sdk.NewCoin(keyValue.Key(), keyValue.Value().Value().Sum))
+	}
+
+	return
+}
+
+func (k Keeper) AddLiquidityAddressSum(ctx context.Context, address, denom string, amount math.Int) {
+	sum := k.getLiquidityAddressSum(ctx, address, denom)
+	sum = math.MaxInt(sum.Add(amount), math.ZeroInt())
+	k.liquidityAddressSum.Set(ctx, address, denom, types.LiquiditySum{Sum: sum})
 }

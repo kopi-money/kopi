@@ -38,6 +38,13 @@ message LiquidityPosition {
   bool auto_compound = 1;
 }
 
+message LiquiditySum {
+  bytes sum = 1 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
 message MovingLiquidity {
   bytes deposit_amount = 1 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",

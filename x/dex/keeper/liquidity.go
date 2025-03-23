@@ -113,6 +113,8 @@ func (k Keeper) addLiquidity(ctx context.Context, denom, address string, amount 
 		liquidityEntries = k.liquidityEntries.Iterator(ctx, nil, denom).GetAll()
 	}
 
+	k.AddLiquidityAddressSum(ctx, address, denom, amount)
+
 	seen := false
 	for index, liq := range liquidityEntries {
 		if liq.Address == address && liq.PositionIndex == positionIndex {
@@ -278,12 +280,23 @@ func (k Keeper) PrepareCutLiquidity(ctx *types.TradeContext) {
 	poolLiqTo := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomReceiving).ToLegacyDec()
 	poolLiqBase := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(constants.BaseCurrency).ToLegacyDec()
 
+	var addressLiqFrom, addressLiqTo, addressLiqBase math.LegacyDec
+	if ctx.ProtocolTrade {
+		addressLiqFrom = math.LegacyZeroDec()
+		addressLiqTo = math.LegacyZeroDec()
+		addressLiqBase = math.LegacyZeroDec()
+	} else {
+		addressLiqFrom = k.getLiquidityAddressSumDec(ctx, ctx.CoinTarget, ctx.TradeDenomGiving)
+		addressLiqTo = k.getLiquidityAddressSumDec(ctx, ctx.CoinTarget, ctx.TradeDenomReceiving)
+		addressLiqBase = k.getLiquidityAddressSumDec(ctx, ctx.CoinTarget, constants.BaseCurrency)
+	}
+
 	spreadLiqFrom := k.GetSpreadLiquidity(ctx, ctx.TradeDenomGiving)
 	spreadLiqTo := k.GetSpreadLiquidity(ctx, ctx.TradeDenomReceiving)
 	spreadLiqBase := k.GetSpreadLiquidity(ctx, constants.BaseCurrency)
 
 	if ctx.TradeDenomGiving != constants.BaseCurrency {
-		cutLiquidity, _ := k.createCutLiquidity(ctx, spreadLiqBase, spreadLiqFrom, poolLiqBase, poolLiqFrom, ctx.TradeDenomGiving)
+		cutLiquidity, _ := k.createCutLiquidity(ctx, spreadLiqBase, spreadLiqFrom, poolLiqBase, poolLiqFrom, addressLiqBase, addressLiqFrom, ctx.TradeDenomGiving)
 		cutLiquidity.DenomGiving = ctx.TradeDenomGiving
 		cutLiquidity.DenomReceiving = constants.BaseCurrency
 
@@ -298,7 +311,7 @@ func (k Keeper) PrepareCutLiquidity(ctx *types.TradeContext) {
 	}
 
 	if ctx.TradeDenomReceiving != constants.BaseCurrency {
-		cutLiquidity, _ := k.createCutLiquidity(ctx, spreadLiqBase, spreadLiqTo, poolLiqBase, poolLiqTo, ctx.TradeDenomReceiving)
+		cutLiquidity, _ := k.createCutLiquidity(ctx, spreadLiqBase, spreadLiqTo, poolLiqBase, poolLiqTo, addressLiqBase, addressLiqTo, ctx.TradeDenomReceiving)
 		cutLiquidity.DenomGiving = constants.BaseCurrency
 		cutLiquidity.DenomReceiving = ctx.TradeDenomReceiving
 
@@ -313,7 +326,7 @@ func (k Keeper) PrepareCutLiquidity(ctx *types.TradeContext) {
 	}
 }
 
-func (k Keeper) createCutLiquidity(ctx context.Context, spreadBase, spreadOther, liqBase, liqOther math.LegacyDec, denom string) (types.CutLiquidity, error) {
+func (k Keeper) createCutLiquidity(ctx context.Context, spreadBase, spreadOther, liqBase, liqOther, addressLiqBase, addressLiqOther math.LegacyDec, denom string) (types.CutLiquidity, error) {
 	ratio, _ := k.DenomKeeper.GetRatio(ctx, denom)
 	spreadLiqValue := spreadOther.Quo(ratio.Ratio) // C
 
@@ -366,6 +379,16 @@ func (k Keeper) createCutLiquidity(ctx context.Context, spreadBase, spreadOther,
 		usable := math.LegacyMinDec(cutLiquidity.VirtualOther, unusedLiqOther)
 		cutLiquidity.CutOther = cutLiquidity.CutOther.Add(usable)
 		cutLiquidity.VirtualOther = cutLiquidity.VirtualOther.Sub(usable)
+	}
+
+	if addressLiqBase.IsPositive() {
+		cutLiquidity.CutBase = cutLiquidity.CutBase.Sub(addressLiqBase)
+		cutLiquidity.VirtualBase = cutLiquidity.VirtualBase.Add(addressLiqBase)
+	}
+
+	if addressLiqOther.IsPositive() {
+		cutLiquidity.CutOther = cutLiquidity.CutOther.Sub(addressLiqOther)
+		cutLiquidity.VirtualOther = cutLiquidity.VirtualOther.Add(addressLiqOther)
 	}
 
 	return cutLiquidity, nil

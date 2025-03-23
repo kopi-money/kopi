@@ -328,6 +328,7 @@ message AddressLiquidity {
   string total_usd = 5;
   string available_balance = 6;
   string available_balance_usd = 7;
+  string sum = 8;
 }
 
 message QueryLiquidityForAddressResponse {

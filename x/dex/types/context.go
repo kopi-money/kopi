@@ -190,6 +190,22 @@ func (cl *CutLiquidities) GetFullLiquidityReceiving(denom string, tradeType Trad
 	}
 }
 
+func (cl *CutLiquidities) GetCutLiquidityReceiving(denom string, tradeType TradeType) math.LegacyDec {
+	if tradeType == TradeTypeSell {
+		if denom != constants.BaseCurrency {
+			return cl.Step2.CutOther
+		} else {
+			return cl.Step1.CutBase
+		}
+	} else {
+		if denom != constants.BaseCurrency {
+			return cl.Step1.CutOther
+		} else {
+			return cl.Step2.CutBase
+		}
+	}
+}
+
 func (cl *CutLiquidities) GetFullBase() math.LegacyDec {
 	if cl.Step1 != nil {
 		return cl.Step1.GetFullBaseSummed()

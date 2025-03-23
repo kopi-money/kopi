@@ -189,40 +189,34 @@ func (k Keeper) executeTrade(ctx *types.TradeContext) (types.TradeResults, error
 	// When a maximum price is set, it is checked how much can be received to stay below the maximum price.
 
 	if ctx.MaxPrice != nil {
-		// The calculation for two-step buys might be incorrect. To double-check, we simulate the trade with the given
-		// amount to make sure the user does not overpay.
+		var (
+			priceAmountDec math.LegacyDec
+			err            error
+		)
+
+		// The calculation for two-step buys is inaccurate in some cases. To double-check, we simulate the trade with
+		// the given amount to make sure the user does not overpay.
 		if ctx.TradeType == types.TradeTypeBuy && ctx.HasTwoSteps() {
-			result, err := k.SimulateBuy(*ctx)
-			if err != nil {
-				return types.TradeResults{}, fmt.Errorf("simulate buy: %w", err)
-			}
+			priceAmountDec, err = k.calculateAmountGivenPriceTwoStepBuy(ctx)
+		} else {
+			priceAmountDec, err = k.calculateAmountGivenPrice(ctx)
+		}
 
-			simulatedPrice, err := result.PricePaid()
-			if err != nil {
-				return types.TradeResults{}, fmt.Errorf("simulate buy price: %w", err)
-			}
+		if err != nil {
+			return types.TradeResults{}, err
+		}
 
-			if simulatedPrice.GT(*ctx.MaxPrice) {
+		priceAmount := priceAmountDec.TruncateInt()
+		if !priceAmount.IsPositive() {
+			return types.TradeResults{}, types.ErrNegativeTradeAmount
+		}
+
+		if priceAmount.LT(ctx.TradeAmount) {
+			if ctx.MinimumTradeAmount != nil && !ctx.MinimumTradeAmount.IsNil() && ctx.MinimumTradeAmount.GT(priceAmount) {
 				return types.TradeResults{}, types.ErrPriceTooLow
 			}
-		} else {
-			priceAmountDec, err := k.calculateAmountGivenPrice(ctx)
-			if err != nil {
-				return types.TradeResults{}, err
-			}
 
-			priceAmount := priceAmountDec.TruncateInt()
-			if !priceAmount.IsPositive() {
-				return types.TradeResults{}, types.ErrNegativeTradeAmount
-			}
-
-			if priceAmount.LT(ctx.TradeAmount) {
-				if ctx.MinimumTradeAmount != nil && !ctx.MinimumTradeAmount.IsNil() && ctx.MinimumTradeAmount.GT(priceAmount) {
-					return types.TradeResults{}, types.ErrPriceTooLow
-				}
-
-				ctx.TradeAmount = priceAmount
-			}
+			ctx.TradeAmount = priceAmount
 		}
 	}
 
@@ -340,7 +334,7 @@ func (k Keeper) ExecuteTradeStep(ctx types.TradeStepContext) (math.Int, math.Int
 		return math.ZeroInt(), math.ZeroInt(), math.ZeroInt(), nil
 	}
 
-	liquidityProviders, amountToReceiveLeft, err := k.determineLiquidityProviders(ctx, amountToReceiveGross.Add(feeReceiving), ctx.StepDenomReceiving)
+	liquidityProviders, amountToReceiveLeft, err := k.determineLiquidityProviders(ctx, amountToReceiveGross.Add(feeReceiving), ctx.StepDenomReceiving, ctx.CoinTarget, ctx.ProtocolTrade)
 	if err != nil {
 		return math.Int{}, math.Int{}, math.Int{}, fmt.Errorf("could not send from source to dex (2): %w", err)
 	}
@@ -562,6 +556,46 @@ func (k Keeper) calculateAmountGivenPrice(ctx *types.TradeContext) (math.LegacyD
 	}
 }
 
+func (k Keeper) calculateAmountGivenPriceTwoStepBuy(ctx *types.TradeContext) (math.LegacyDec, error) {
+	result, err := k.SimulateBuy(*ctx)
+	if err != nil {
+		return math.LegacyDec{}, fmt.Errorf("simulate buy: %w", err)
+	}
+
+	simulatedPrice, err := result.PricePaid()
+	if err != nil {
+		return math.LegacyDec{}, fmt.Errorf("simulate buy price: %w", err)
+	}
+
+	// The given max price is okay, so we use the given trade amount
+	if simulatedPrice.LTE(*ctx.MaxPrice) {
+		return ctx.TradeAmount.ToLegacyDec(), nil
+	}
+
+	calculatedAmount, err := k.calculateAmountGivenPrice(ctx)
+	if err != nil {
+		return math.LegacyDec{}, fmt.Errorf("calulcate buy amount: %w", err)
+	}
+
+	// We double-check whether the calculated amount results in a price below the given maximum price
+	ctx.TradeAmount = calculatedAmount.TruncateInt()
+	result2, err := k.SimulateBuy(*ctx)
+	if err != nil {
+		return math.LegacyDec{}, fmt.Errorf("simulate buy: %w", err)
+	}
+
+	simulatedPrice2, err := result2.PricePaid()
+	if err != nil {
+		return math.LegacyDec{}, fmt.Errorf("simulate buy price: %w", err)
+	}
+
+	if simulatedPrice2.LTE(*ctx.MaxPrice) {
+		return calculatedAmount, nil
+	}
+
+	return math.LegacyDec{}, types.ErrPriceTooLow
+}
+
 // SimulateTradeForReserve is used when calculating the profitability of a mint/burn trade. When trading, the reserve
 // has to pay the trade fee. However, part of it will be paid out to itself. Thus, when estimating the profitability of
 // a trade, that part of the fee is removed.
@@ -581,11 +615,6 @@ func (k Keeper) CalculateMaximumSellableAmount(ctx types.TradeContext) (*math.In
 	var max1, max2 *math.Int
 	if ctx.TradeDenomReceiving != constants.BaseCurrency && ctx.CutLiquidities.Step2 != nil {
 		max2 = k.CalculateSingleSellableAmount(ctx.CutLiquidities.Step2, constants.BaseCurrency, nil)
-
-		//if max2 != nil {
-		//	s := ctx.CutLiquidities.SizeFactor().Mul(max2.ToLegacyDec()).TruncateInt()
-		//	max2 = &s
-		//}
 	}
 
 	if max2 != nil && max2.IsZero() {
@@ -626,33 +655,45 @@ func (k Keeper) CalculateSingleSellableAmount(cutLiquidity *types.CutLiquidity, 
 
 // CalculateMaximumBuyableAmount...
 func (k Keeper) CalculateMaximumBuyableAmount(ctx types.TradeContext) (*math.Int, error) {
-	orderFee := ctx.OrdersCaches.OrderFee.Get()
-
+	var maximum math.Int
 	if ctx.HasOneStep() {
-		var cutLiquidity *types.CutLiquidity
-		if ctx.TradeDenomGiving == constants.BaseCurrency {
-			cutLiquidity = ctx.CutLiquidities.Step1
-		} else {
-			cutLiquidity = ctx.CutLiquidities.Step2
+		maximum = k.CalculateMaximumBuyableAmountOneStep(ctx)
+	} else {
+		var err error
+		maximum, err = k.CalculateMaximumBuyableAmountTwoStep(ctx)
+		if err != nil {
+			return nil, err
 		}
-
-		maximum := k.CalculateSingleBuyableAmount(ctx.OrdersCaches, cutLiquidity, ctx.TradeDenomGiving, ctx.TradeDenomReceiving)
-		maximum = subtractOrderFee(maximum, orderFee, ctx.IsOrder)
-		return &maximum, nil
 	}
 
+	available := ctx.CutLiquidities.GetCutLiquidityReceiving(ctx.TradeDenomReceiving, types.TradeTypeBuy).TruncateInt()
+	maximumInt := math.MinInt(maximum, available)
+	return &maximumInt, nil
+}
+
+func (k Keeper) CalculateMaximumBuyableAmountOneStep(ctx types.TradeContext) math.Int {
+	var cutLiquidity *types.CutLiquidity
+	if ctx.TradeDenomGiving == constants.BaseCurrency {
+		cutLiquidity = ctx.CutLiquidities.Step1
+	} else {
+		cutLiquidity = ctx.CutLiquidities.Step2
+	}
+
+	maximum := k.CalculateSingleBuyableAmount(ctx.OrdersCaches, cutLiquidity, ctx.TradeDenomGiving, ctx.TradeDenomReceiving)
+	maximum = subtractOrderFee(maximum, ctx.OrdersCaches.OrderFee.Get(), ctx.IsOrder)
+	return maximum
+}
+
+func (k Keeper) CalculateMaximumBuyableAmountTwoStep(ctx types.TradeContext) (math.Int, error) {
 	maxBase := k.CalculateSingleBuyableAmount(ctx.OrdersCaches, ctx.CutLiquidities.Step1, ctx.TradeDenomGiving, ctx.TradeDenomReceiving)
-	maxBase = subtractOrderFee(maxBase, orderFee, ctx.IsOrder)
+	maxBase = subtractOrderFee(maxBase, ctx.OrdersCaches.OrderFee.Get(), ctx.IsOrder)
 
 	maximum, _, err := calculateSingleTrade(constants.BaseCurrency, ctx.TradeDenomReceiving, maxBase.ToLegacyDec(), ctx.StepFee(), ctx.CutLiquidities.Step2, constant_product.ConstantProductTradeSell)
 	if err != nil {
-		return nil, err
+		return math.Int{}, err
 	}
 
-	available := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomReceiving).ToLegacyDec()
-	maximumInt := math.LegacyMinDec(maximum, available).TruncateInt()
-
-	return &maximumInt, nil
+	return maximum.TruncateInt(), nil
 }
 
 func subtractOrderFee(amount math.Int, orderFee math.LegacyDec, isOrder bool) math.Int {

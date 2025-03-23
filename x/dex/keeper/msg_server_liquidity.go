@@ -77,6 +77,7 @@ func (k Keeper) RemoveAllLiquidityForAddress(ctx context.Context, address, denom
 		liq := iterator.GetNext()
 		if liq.Address == address {
 			amount = amount.Add(liq.Amount)
+			k.AddLiquidityAddressSum(ctx, liq.Address, denom, liq.Amount.Neg())
 			k.RemoveLiquidity(ctx, denom, liq.Index)
 		}
 	}
@@ -146,10 +147,6 @@ func (k msgServer) RemoveLiquidity(ctx context.Context, msg *types.MsgRemoveLiqu
 }
 
 func (k Keeper) RemoveLiquidityForAddress(ctx context.Context, accAddr sdk.AccAddress, denom string, amount math.Int, positionIndex *uint64) (math.Int, error) {
-	return k.RemoveLiquidityForAddressWithReceiver(ctx, accAddr, accAddr, denom, amount, positionIndex)
-}
-
-func (k Keeper) RemoveLiquidityForAddressWithReceiver(ctx context.Context, accAddr, recAddr sdk.AccAddress, denom string, amount math.Int, positionIndex *uint64) (math.Int, error) {
 	removed := math.ZeroInt()
 	address := accAddr.String()
 
@@ -163,11 +160,13 @@ func (k Keeper) RemoveLiquidityForAddressWithReceiver(ctx context.Context, accAd
 			if liq.Amount.GT(amount) {
 				amountRemovedForPosition = amount
 				liq.Amount = liq.Amount.Sub(amount)
+				k.AddLiquidityAddressSum(ctx, liq.Address, denom, amount.Neg())
 				k.SetLiquidity(ctx, denom, liq)
 				amount = math.ZeroInt()
 			} else {
 				amountRemovedForPosition = liq.Amount
 				amount = amount.Sub(liq.Amount)
+				k.AddLiquidityAddressSum(ctx, liq.Address, denom, liq.Amount.Neg())
 				k.RemoveLiquidity(ctx, denom, liq.Index)
 			}
 
@@ -198,7 +197,7 @@ func (k Keeper) RemoveLiquidityForAddressWithReceiver(ctx context.Context, accAd
 	}
 
 	coins := sdk.NewCoins(sdk.NewCoin(denom, removed))
-	if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolLiquidity, recAddr, coins); err != nil {
+	if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolLiquidity, accAddr, coins); err != nil {
 		return math.Int{}, fmt.Errorf("could not send coins from module to account: %w", err)
 	}
 

@@ -87,19 +87,23 @@ type SetLiquidityBankKeeper interface {
 	SpendableCoins(ctx context.Context, addr sdk.AccAddress) sdk.Coins
 }
 
-func SetLiquidity(ctx context.Context, k SetLiquidityBankKeeper, dexkeeper dexkeeper.Keeper, t *testing.T, pool map[string]int64) {
+type AddLiquidityData struct {
+	Denom  string
+	Amount sdkmath.Int
+}
+
+func SetLiquidity(ctx context.Context, k SetLiquidityBankKeeper, dexkeeper dexkeeper.Keeper, t *testing.T, pool []AddLiquidityData) {
 	acc := dexkeeper.AccountKeeper.GetModuleAccount(ctx, dextypes.PoolLiquidity)
 	existingCoins := k.SpendableCoins(ctx, acc.GetAddress())
 
 	require.NoError(t, k.SendCoinsFromModuleToModule(ctx, dextypes.PoolLiquidity, dextypes.PoolReserve, existingCoins))
 	require.NoError(t, k.BurnCoins(ctx, dextypes.PoolReserve, existingCoins))
 
-	for denom, amount := range pool {
-		AddFunds(ctx, t, k, denom, acc.GetAddress().String(), amount)
-
+	for _, data := range pool {
 		require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-			dexkeeper.SetLiquidity(innerCtx, denom, dextypes.Liquidity{Address: Alice, Amount: sdkmath.NewInt(amount)})
-			return nil
+			AddFunds(ctx, t, k, data.Denom, acc.GetAddress().String(), data.Amount.Int64())
+			_, err := dexkeeper.AddLiquidity(innerCtx, acc.GetAddress(), data.Denom, data.Amount)
+			return err
 		}))
 	}
 }
