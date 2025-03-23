@@ -47,10 +47,10 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 		}
 
 		// First we check whether the order is expired. If yes, it is removed.
-		blockEnd := k.calculateBlockEnd(maxOrderLife, blockHeight, int64(order.NumBlocks))
+		blockEnd := order.AddedAt + min(maxOrderLife, int64(order.NumBlocks))
 		if blockHeight > blockEnd {
-			if !order.AmountLeft.IsNil() && order.AmountLeft.GT(math.ZeroInt()) {
-				tradeBalances.AddTransfer(ordersCaches.AccPoolOrders.Get().String(), order.Creator, order.DenomGiving, order.AmountLeft)
+			if !order.AmountLeft.IsNil() && order.AmountLeft.IsPositive() {
+				tradeBalances.AddTransfer(ordersCaches.AccPoolOrders.Get().String(), order.Creator, order.DenomGiving, order.AmountLocked)
 			}
 
 			eventManager.EmitEvent(
@@ -66,10 +66,7 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 				),
 			)
 
-			if err := k.RemoveOrder(ctx, *order); err != nil {
-				return fmt.Errorf("RemoveOrder: %w", err)
-			}
-
+			k.orders.Remove(ctx, order.Index)
 			continue
 		}
 
