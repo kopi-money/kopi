@@ -68,3 +68,29 @@ func (k msgServer) UpdateSellThreshold(ctx context.Context, req *types.MsgUpdate
 
 	return &types.Void{}, err
 }
+
+func (k msgServer) UpdateTradeFeeStakers(ctx context.Context, req *types.MsgUpdateTradeFeeStakers) (*types.Void, error) {
+	if k.GetAuthority() != req.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	}
+
+	fromBase, err := math.LegacyNewDecFromStr(req.TradeFeeBaseIncomeShareToStakers)
+	if err != nil {
+		return nil, err
+	}
+
+	fromOthers, err := math.LegacyNewDecFromStr(req.TradeFeeOtherIncomeShareToStakers)
+	if err != nil {
+		return nil, err
+	}
+
+	params := k.GetParams(ctx)
+	params.TradeFeeBaseIncomeShareToStakers = fromBase
+	params.TradeFeeOtherIncomeShareToStakers = fromOthers
+
+	if err = k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
+
+	return &types.Void{}, err
+}

@@ -19,10 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_UpdateKCoinBurnShare_FullMethodName = "/kopi.reserve.Msg/UpdateKCoinBurnShare"
-	Msg_UpdateBuyThreshold_FullMethodName   = "/kopi.reserve.Msg/UpdateBuyThreshold"
-	Msg_UpdateSellThreshold_FullMethodName  = "/kopi.reserve.Msg/UpdateSellThreshold"
-	Msg_Burn_FullMethodName                 = "/kopi.reserve.Msg/Burn"
+	Msg_UpdateKCoinBurnShare_FullMethodName  = "/kopi.reserve.Msg/UpdateKCoinBurnShare"
+	Msg_UpdateBuyThreshold_FullMethodName    = "/kopi.reserve.Msg/UpdateBuyThreshold"
+	Msg_UpdateSellThreshold_FullMethodName   = "/kopi.reserve.Msg/UpdateSellThreshold"
+	Msg_UpdateTradeFeeStakers_FullMethodName = "/kopi.reserve.Msg/UpdateTradeFeeStakers"
+	Msg_Burn_FullMethodName                  = "/kopi.reserve.Msg/Burn"
 )
 
 // MsgClient is the client API for Msg service.
@@ -32,6 +33,7 @@ type MsgClient interface {
 	UpdateKCoinBurnShare(ctx context.Context, in *MsgUpdateKCoinBurnShare, opts ...grpc.CallOption) (*Void, error)
 	UpdateBuyThreshold(ctx context.Context, in *MsgUpdateBuyThreshold, opts ...grpc.CallOption) (*Void, error)
 	UpdateSellThreshold(ctx context.Context, in *MsgUpdateSellThreshold, opts ...grpc.CallOption) (*Void, error)
+	UpdateTradeFeeStakers(ctx context.Context, in *MsgUpdateTradeFeeStakers, opts ...grpc.CallOption) (*Void, error)
 	Burn(ctx context.Context, in *MsgBurn, opts ...grpc.CallOption) (*Void, error)
 }
 
@@ -70,6 +72,15 @@ func (c *msgClient) UpdateSellThreshold(ctx context.Context, in *MsgUpdateSellTh
 	return out, nil
 }
 
+func (c *msgClient) UpdateTradeFeeStakers(ctx context.Context, in *MsgUpdateTradeFeeStakers, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateTradeFeeStakers_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) Burn(ctx context.Context, in *MsgBurn, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
 	err := c.cc.Invoke(ctx, Msg_Burn_FullMethodName, in, out, opts...)
@@ -86,6 +97,7 @@ type MsgServer interface {
 	UpdateKCoinBurnShare(context.Context, *MsgUpdateKCoinBurnShare) (*Void, error)
 	UpdateBuyThreshold(context.Context, *MsgUpdateBuyThreshold) (*Void, error)
 	UpdateSellThreshold(context.Context, *MsgUpdateSellThreshold) (*Void, error)
+	UpdateTradeFeeStakers(context.Context, *MsgUpdateTradeFeeStakers) (*Void, error)
 	Burn(context.Context, *MsgBurn) (*Void, error)
 	mustEmbedUnimplementedMsgServer()
 }
@@ -102,6 +114,9 @@ func (UnimplementedMsgServer) UpdateBuyThreshold(context.Context, *MsgUpdateBuyT
 }
 func (UnimplementedMsgServer) UpdateSellThreshold(context.Context, *MsgUpdateSellThreshold) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateSellThreshold not implemented")
+}
+func (UnimplementedMsgServer) UpdateTradeFeeStakers(context.Context, *MsgUpdateTradeFeeStakers) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateTradeFeeStakers not implemented")
 }
 func (UnimplementedMsgServer) Burn(context.Context, *MsgBurn) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Burn not implemented")
@@ -173,6 +188,24 @@ func _Msg_UpdateSellThreshold_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateTradeFeeStakers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateTradeFeeStakers)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateTradeFeeStakers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateTradeFeeStakers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateTradeFeeStakers(ctx, req.(*MsgUpdateTradeFeeStakers))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_Burn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgBurn)
 	if err := dec(in); err != nil {
@@ -209,6 +242,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateSellThreshold",
 			Handler:    _Msg_UpdateSellThreshold_Handler,
+		},
+		{
+			MethodName: "UpdateTradeFeeStakers",
+			Handler:    _Msg_UpdateTradeFeeStakers_Handler,
 		},
 		{
 			MethodName: "Burn",

@@ -13,11 +13,21 @@ option go_package = "github.com/kopi-money/kopi/x/reserve/types";
 service Msg {
   option (cosmos.msg.v1.service) = true;
 
-  rpc UpdateKCoinBurnShare (MsgUpdateKCoinBurnShare) returns (Void);
-  rpc UpdateBuyThreshold   (MsgUpdateBuyThreshold)   returns (Void);
-  rpc UpdateSellThreshold  (MsgUpdateSellThreshold)  returns (Void);
+  rpc UpdateKCoinBurnShare  (MsgUpdateKCoinBurnShare)  returns (Void);
+  rpc UpdateBuyThreshold    (MsgUpdateBuyThreshold)    returns (Void);
+  rpc UpdateSellThreshold   (MsgUpdateSellThreshold)   returns (Void);
+  rpc UpdateTradeFeeStakers (MsgUpdateTradeFeeStakers) returns (Void);
 
   rpc Burn(MsgBurn) returns (Void);
+}
+
+message MsgUpdateTradeFeeStakers {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/denominations/MsgUpdateTradeFeeStakers";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  string trade_fee_base_income_share_to_stakers = 2;
+  string trade_fee_other_income_share_to_stakers = 3;
 }
 
 message MsgBurn {

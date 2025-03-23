@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"github.com/kopi-money/kopi/constants"
 
 	"cosmossdk.io/math"
 
@@ -51,4 +52,30 @@ func (k Keeper) buyThreshold(ctx context.Context) math.LegacyDec {
 	}
 
 	return buyThreshold
+}
+
+func (k Keeper) getTradeFeeShareStakers(ctx context.Context, denom string) math.LegacyDec {
+	if denom == constants.BaseCurrency {
+		return k.getTradeFeeShareBase(ctx)
+	} else {
+		return k.getTradeFeeShareOther(ctx)
+	}
+}
+
+func (k Keeper) getTradeFeeShareBase(ctx context.Context) math.LegacyDec {
+	share := k.GetParams(ctx).TradeFeeBaseIncomeShareToStakers
+	if share.IsNil() || !share.IsPositive() {
+		return types.TradeFeeBaseIncomeShareToStakers
+	}
+
+	return share
+}
+
+func (k Keeper) getTradeFeeShareOther(ctx context.Context) math.LegacyDec {
+	share := k.GetParams(ctx).TradeFeeOtherIncomeShareToStakers
+	if share.IsNil() || !share.IsPositive() {
+		return types.TradeFeeOtherIncomeShareToStakers
+	}
+
+	return share
 }

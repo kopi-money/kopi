@@ -15,10 +15,12 @@ import (
 )
 
 var (
-	md_Params                  protoreflect.MessageDescriptor
-	fd_Params_kcoin_burn_share protoreflect.FieldDescriptor
-	fd_Params_sell_threshold   protoreflect.FieldDescriptor
-	fd_Params_buy_threshold    protoreflect.FieldDescriptor
+	md_Params                                         protoreflect.MessageDescriptor
+	fd_Params_kcoin_burn_share                        protoreflect.FieldDescriptor
+	fd_Params_sell_threshold                          protoreflect.FieldDescriptor
+	fd_Params_buy_threshold                           protoreflect.FieldDescriptor
+	fd_Params_trade_fee_base_income_share_to_stakers  protoreflect.FieldDescriptor
+	fd_Params_trade_fee_other_income_share_to_stakers protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -27,6 +29,8 @@ func init() {
 	fd_Params_kcoin_burn_share = md_Params.Fields().ByName("kcoin_burn_share")
 	fd_Params_sell_threshold = md_Params.Fields().ByName("sell_threshold")
 	fd_Params_buy_threshold = md_Params.Fields().ByName("buy_threshold")
+	fd_Params_trade_fee_base_income_share_to_stakers = md_Params.Fields().ByName("trade_fee_base_income_share_to_stakers")
+	fd_Params_trade_fee_other_income_share_to_stakers = md_Params.Fields().ByName("trade_fee_other_income_share_to_stakers")
 }
 
 var _ protoreflect.Message = (*fastReflection_Params)(nil)
@@ -112,6 +116,18 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
+	if len(x.TradeFeeBaseIncomeShareToStakers) != 0 {
+		value := protoreflect.ValueOfBytes(x.TradeFeeBaseIncomeShareToStakers)
+		if !f(fd_Params_trade_fee_base_income_share_to_stakers, value) {
+			return
+		}
+	}
+	if len(x.TradeFeeOtherIncomeShareToStakers) != 0 {
+		value := protoreflect.ValueOfBytes(x.TradeFeeOtherIncomeShareToStakers)
+		if !f(fd_Params_trade_fee_other_income_share_to_stakers, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -133,6 +149,10 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 		return len(x.SellThreshold) != 0
 	case "kopi.reserve.Params.buy_threshold":
 		return len(x.BuyThreshold) != 0
+	case "kopi.reserve.Params.trade_fee_base_income_share_to_stakers":
+		return len(x.TradeFeeBaseIncomeShareToStakers) != 0
+	case "kopi.reserve.Params.trade_fee_other_income_share_to_stakers":
+		return len(x.TradeFeeOtherIncomeShareToStakers) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.reserve.Params"))
@@ -155,6 +175,10 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 		x.SellThreshold = nil
 	case "kopi.reserve.Params.buy_threshold":
 		x.BuyThreshold = nil
+	case "kopi.reserve.Params.trade_fee_base_income_share_to_stakers":
+		x.TradeFeeBaseIncomeShareToStakers = nil
+	case "kopi.reserve.Params.trade_fee_other_income_share_to_stakers":
+		x.TradeFeeOtherIncomeShareToStakers = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.reserve.Params"))
@@ -179,6 +203,12 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 		return protoreflect.ValueOfBytes(value)
 	case "kopi.reserve.Params.buy_threshold":
 		value := x.BuyThreshold
+		return protoreflect.ValueOfBytes(value)
+	case "kopi.reserve.Params.trade_fee_base_income_share_to_stakers":
+		value := x.TradeFeeBaseIncomeShareToStakers
+		return protoreflect.ValueOfBytes(value)
+	case "kopi.reserve.Params.trade_fee_other_income_share_to_stakers":
+		value := x.TradeFeeOtherIncomeShareToStakers
 		return protoreflect.ValueOfBytes(value)
 	default:
 		if descriptor.IsExtension() {
@@ -206,6 +236,10 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 		x.SellThreshold = value.Bytes()
 	case "kopi.reserve.Params.buy_threshold":
 		x.BuyThreshold = value.Bytes()
+	case "kopi.reserve.Params.trade_fee_base_income_share_to_stakers":
+		x.TradeFeeBaseIncomeShareToStakers = value.Bytes()
+	case "kopi.reserve.Params.trade_fee_other_income_share_to_stakers":
+		x.TradeFeeOtherIncomeShareToStakers = value.Bytes()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.reserve.Params"))
@@ -232,6 +266,10 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 		panic(fmt.Errorf("field sell_threshold of message kopi.reserve.Params is not mutable"))
 	case "kopi.reserve.Params.buy_threshold":
 		panic(fmt.Errorf("field buy_threshold of message kopi.reserve.Params is not mutable"))
+	case "kopi.reserve.Params.trade_fee_base_income_share_to_stakers":
+		panic(fmt.Errorf("field trade_fee_base_income_share_to_stakers of message kopi.reserve.Params is not mutable"))
+	case "kopi.reserve.Params.trade_fee_other_income_share_to_stakers":
+		panic(fmt.Errorf("field trade_fee_other_income_share_to_stakers of message kopi.reserve.Params is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.reserve.Params"))
@@ -250,6 +288,10 @@ func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protor
 	case "kopi.reserve.Params.sell_threshold":
 		return protoreflect.ValueOfBytes(nil)
 	case "kopi.reserve.Params.buy_threshold":
+		return protoreflect.ValueOfBytes(nil)
+	case "kopi.reserve.Params.trade_fee_base_income_share_to_stakers":
+		return protoreflect.ValueOfBytes(nil)
+	case "kopi.reserve.Params.trade_fee_other_income_share_to_stakers":
 		return protoreflect.ValueOfBytes(nil)
 	default:
 		if fd.IsExtension() {
@@ -332,6 +374,14 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		l = len(x.TradeFeeBaseIncomeShareToStakers)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.TradeFeeOtherIncomeShareToStakers)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -360,6 +410,20 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.TradeFeeOtherIncomeShareToStakers) > 0 {
+			i -= len(x.TradeFeeOtherIncomeShareToStakers)
+			copy(dAtA[i:], x.TradeFeeOtherIncomeShareToStakers)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TradeFeeOtherIncomeShareToStakers)))
+			i--
+			dAtA[i] = 0x2a
+		}
+		if len(x.TradeFeeBaseIncomeShareToStakers) > 0 {
+			i -= len(x.TradeFeeBaseIncomeShareToStakers)
+			copy(dAtA[i:], x.TradeFeeBaseIncomeShareToStakers)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.TradeFeeBaseIncomeShareToStakers)))
+			i--
+			dAtA[i] = 0x22
 		}
 		if len(x.BuyThreshold) > 0 {
 			i -= len(x.BuyThreshold)
@@ -533,6 +597,74 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 					x.BuyThreshold = []byte{}
 				}
 				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TradeFeeBaseIncomeShareToStakers", wireType)
+				}
+				var byteLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					byteLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if byteLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + byteLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.TradeFeeBaseIncomeShareToStakers = append(x.TradeFeeBaseIncomeShareToStakers[:0], dAtA[iNdEx:postIndex]...)
+				if x.TradeFeeBaseIncomeShareToStakers == nil {
+					x.TradeFeeBaseIncomeShareToStakers = []byte{}
+				}
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field TradeFeeOtherIncomeShareToStakers", wireType)
+				}
+				var byteLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					byteLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if byteLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + byteLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.TradeFeeOtherIncomeShareToStakers = append(x.TradeFeeOtherIncomeShareToStakers[:0], dAtA[iNdEx:postIndex]...)
+				if x.TradeFeeOtherIncomeShareToStakers == nil {
+					x.TradeFeeOtherIncomeShareToStakers = []byte{}
+				}
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -587,9 +719,11 @@ type Params struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	KcoinBurnShare []byte `protobuf:"bytes,1,opt,name=kcoin_burn_share,json=kcoinBurnShare,proto3" json:"kcoin_burn_share,omitempty"`
-	SellThreshold  []byte `protobuf:"bytes,2,opt,name=sell_threshold,json=sellThreshold,proto3" json:"sell_threshold,omitempty"`
-	BuyThreshold   []byte `protobuf:"bytes,3,opt,name=buy_threshold,json=buyThreshold,proto3" json:"buy_threshold,omitempty"`
+	KcoinBurnShare                    []byte `protobuf:"bytes,1,opt,name=kcoin_burn_share,json=kcoinBurnShare,proto3" json:"kcoin_burn_share,omitempty"`
+	SellThreshold                     []byte `protobuf:"bytes,2,opt,name=sell_threshold,json=sellThreshold,proto3" json:"sell_threshold,omitempty"`
+	BuyThreshold                      []byte `protobuf:"bytes,3,opt,name=buy_threshold,json=buyThreshold,proto3" json:"buy_threshold,omitempty"`
+	TradeFeeBaseIncomeShareToStakers  []byte `protobuf:"bytes,4,opt,name=trade_fee_base_income_share_to_stakers,json=tradeFeeBaseIncomeShareToStakers,proto3" json:"trade_fee_base_income_share_to_stakers,omitempty"`
+	TradeFeeOtherIncomeShareToStakers []byte `protobuf:"bytes,5,opt,name=trade_fee_other_income_share_to_stakers,json=tradeFeeOtherIncomeShareToStakers,proto3" json:"trade_fee_other_income_share_to_stakers,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -633,6 +767,20 @@ func (x *Params) GetBuyThreshold() []byte {
 	return nil
 }
 
+func (x *Params) GetTradeFeeBaseIncomeShareToStakers() []byte {
+	if x != nil {
+		return x.TradeFeeBaseIncomeShareToStakers
+	}
+	return nil
+}
+
+func (x *Params) GetTradeFeeOtherIncomeShareToStakers() []byte {
+	if x != nil {
+		return x.TradeFeeOtherIncomeShareToStakers
+	}
+	return nil
+}
+
 var File_kopi_reserve_params_proto protoreflect.FileDescriptor
 
 var file_kopi_reserve_params_proto_rawDesc = []byte{
@@ -641,7 +789,7 @@ var file_kopi_reserve_params_proto_rawDesc = []byte{
 	0x69, 0x2e, 0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x1a, 0x11, 0x61, 0x6d, 0x69, 0x6e, 0x6f,
 	0x2f, 0x61, 0x6d, 0x69, 0x6e, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x67, 0x6f,
 	0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x22, 0x8d, 0x02, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x4d, 0x0a,
+	0x74, 0x6f, 0x22, 0xfd, 0x03, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x4d, 0x0a,
 	0x10, 0x6b, 0x63, 0x6f, 0x69, 0x6e, 0x5f, 0x62, 0x75, 0x72, 0x6e, 0x5f, 0x73, 0x68, 0x61, 0x72,
 	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
 	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
@@ -656,7 +804,22 @@ var file_kopi_reserve_params_proto_rawDesc = []byte{
 	0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
 	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
 	0x79, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x62, 0x75, 0x79, 0x54, 0x68, 0x72, 0x65, 0x73, 0x68, 0x6f,
-	0x6c, 0x64, 0x3a, 0x1e, 0xe8, 0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x15, 0x6b, 0x6f, 0x70,
+	0x6c, 0x64, 0x12, 0x75, 0x0a, 0x26, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x66, 0x65, 0x65, 0x5f,
+	0x62, 0x61, 0x73, 0x65, 0x5f, 0x69, 0x6e, 0x63, 0x6f, 0x6d, 0x65, 0x5f, 0x73, 0x68, 0x61, 0x72,
+	0x65, 0x5f, 0x74, 0x6f, 0x5f, 0x73, 0x74, 0x61, 0x6b, 0x65, 0x72, 0x73, 0x18, 0x04, 0x20, 0x01,
+	0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
+	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x20, 0x74, 0x72, 0x61, 0x64, 0x65, 0x46, 0x65,
+	0x65, 0x42, 0x61, 0x73, 0x65, 0x49, 0x6e, 0x63, 0x6f, 0x6d, 0x65, 0x53, 0x68, 0x61, 0x72, 0x65,
+	0x54, 0x6f, 0x53, 0x74, 0x61, 0x6b, 0x65, 0x72, 0x73, 0x12, 0x77, 0x0a, 0x27, 0x74, 0x72, 0x61,
+	0x64, 0x65, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x6f, 0x74, 0x68, 0x65, 0x72, 0x5f, 0x69, 0x6e, 0x63,
+	0x6f, 0x6d, 0x65, 0x5f, 0x73, 0x68, 0x61, 0x72, 0x65, 0x5f, 0x74, 0x6f, 0x5f, 0x73, 0x74, 0x61,
+	0x6b, 0x65, 0x72, 0x73, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00,
+	0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f,
+	0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52,
+	0x21, 0x74, 0x72, 0x61, 0x64, 0x65, 0x46, 0x65, 0x65, 0x4f, 0x74, 0x68, 0x65, 0x72, 0x49, 0x6e,
+	0x63, 0x6f, 0x6d, 0x65, 0x53, 0x68, 0x61, 0x72, 0x65, 0x54, 0x6f, 0x53, 0x74, 0x61, 0x6b, 0x65,
+	0x72, 0x73, 0x3a, 0x1e, 0xe8, 0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x15, 0x6b, 0x6f, 0x70,
 	0x69, 0x2f, 0x78, 0x2f, 0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x2f, 0x50, 0x61, 0x72, 0x61,
 	0x6d, 0x73, 0x42, 0x8f, 0x01, 0x0a, 0x10, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e,
 	0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50,

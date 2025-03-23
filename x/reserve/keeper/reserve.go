@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/kopi-money/kopi/x/reserve/types"
 
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
@@ -86,12 +87,26 @@ func (k Keeper) checkReserveForDenom(ctx context.Context, address sdk.AccAddress
 	// If the coins are kCoins, they are burned
 	coin, err := k.burnKCoinReserve(ctx, coin)
 	if err != nil {
-		return fmt.Errorf("could not burn kcoin reserve: %w", err)
+		return fmt.Errorf("burn kcoin reserve: %w", err)
 	}
 
 	if coin.Amount.IsPositive() {
-		if _, err = k.DexKeeper.AddLiquidity(ctx, address, coin.Denom, coin.Amount); err != nil {
-			return fmt.Errorf("could not add liquidity: %w", err)
+		stakerShareFactor := k.getTradeFeeShareStakers(ctx, coin.Denom)
+		stakerShareAmount := stakerShareFactor.Mul(coin.Amount.ToLegacyDec()).TruncateInt()
+		if stakerShareAmount.IsPositive() {
+			rewardCoins := sdk.NewCoins(sdk.NewCoin(coin.Denom, stakerShareAmount))
+
+			if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, dextypes.PoolReserve, authtypes.FeeCollectorName, rewardCoins); err != nil {
+				return fmt.Errorf("send coins to distribution: %w", err)
+			}
+
+			coin.Amount = coin.Amount.Sub(stakerShareAmount)
+		}
+
+		if coin.Amount.IsPositive() {
+			if _, err = k.DexKeeper.AddLiquidity(ctx, address, coin.Denom, coin.Amount); err != nil {
+				return fmt.Errorf("add liquidity: %w", err)
+			}
 		}
 	}
 
