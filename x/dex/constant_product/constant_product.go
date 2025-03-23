@@ -1,8 +1,14 @@
 package constant_product
 
 import (
-	"cosmossdk.io/math"
+	"errors"
 	"fmt"
+
+	"cosmossdk.io/math"
+)
+
+var (
+	ErrRequestedAmountTooLarge = errors.New("requested amount too large")
 )
 
 type ConstantProduct struct{}
@@ -45,7 +51,7 @@ func ConstantProductTradeSell(poolFrom, poolTo, offer, fee math.LegacyDec) (math
 
 func ConstantProductTradeBuy(poolFrom, poolTo, result, fee math.LegacyDec) (math.LegacyDec, math.LegacyDec, error) {
 	if result.GTE(poolTo) {
-		return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("requsted amount too large")
+		return math.LegacyDec{}, math.LegacyDec{}, ErrRequestedAmountTooLarge
 	}
 
 	if fee.GTE(math.LegacyOneDec()) {

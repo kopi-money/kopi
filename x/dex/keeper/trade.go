@@ -559,7 +559,7 @@ func (k Keeper) calculateAmountGivenPrice(ctx *types.TradeContext) (math.LegacyD
 func (k Keeper) calculateAmountGivenPriceTwoStepBuy(ctx *types.TradeContext) (math.LegacyDec, error) {
 	result, err := k.SimulateBuy(*ctx)
 	if err != nil {
-		return math.LegacyDec{}, fmt.Errorf("simulate buy: %w", err)
+		return math.LegacyDec{}, fmt.Errorf("simulate buy (1): %w", err)
 	}
 
 	simulatedPrice, err := result.PricePaid()
@@ -586,7 +586,7 @@ func (k Keeper) calculateAmountGivenPriceTwoStepBuy(ctx *types.TradeContext) (ma
 
 	simulatedPrice2, err := result2.PricePaid()
 	if err != nil {
-		return math.LegacyDec{}, fmt.Errorf("simulate buy price: %w", err)
+		return math.LegacyDec{}, fmt.Errorf("simulate buy price (2): %w", err)
 	}
 
 	if simulatedPrice2.LTE(*ctx.MaxPrice) {
