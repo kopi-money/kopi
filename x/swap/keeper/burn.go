@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	"github.com/kopi-money/kopi/constants"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
@@ -87,9 +87,9 @@ func (k Keeper) mintTradeBurn(ctx context.Context, kCoin string, mintAmountBase 
 		CoinTarget:          address.String(),
 		TradeDenomGiving:    constants.BaseCurrency,
 		TradeDenomReceiving: kCoin,
+		TradeBalances:       dexkeeper.NewTradeBalances(),
 		ExcludeFromDiscount: true,
 		ProtocolTrade:       true,
-		TradeBalances:       dexkeeper.NewTradeBalances(),
 	}
 
 	if _, err := k.DexKeeper.ExecuteSell(tradeCtx); err != nil {
@@ -116,7 +116,7 @@ func (k Keeper) mintTradeBurn(ctx context.Context, kCoin string, mintAmountBase 
 
 func (k Keeper) burnFunds(ctx context.Context, denom string) error {
 	burnableAmount := k.getUsableAmount(ctx, denom, types.ModuleName)
-	if burnableAmount.LTE(math.ZeroInt()) {
+	if !burnableAmount.IsPositive() {
 		return nil
 	}
 
@@ -127,9 +127,9 @@ func (k Keeper) burnFunds(ctx context.Context, denom string) error {
 		}
 
 		rewards := stakingShare.Mul(burnableAmount.ToLegacyDec()).TruncateInt()
-		if rewards.GT(math.ZeroInt()) {
+		if rewards.IsPositive() {
 			rewardCoins := sdk.NewCoins(sdk.NewCoin(constants.BaseCurrency, rewards))
-			if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, distributiontypes.ModuleName, rewardCoins); err != nil {
+			if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, authtypes.FeeCollectorName, rewardCoins); err != nil {
 				return fmt.Errorf("could not send coins to distribution: %w", err)
 			}
 

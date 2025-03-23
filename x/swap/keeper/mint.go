@@ -74,9 +74,9 @@ func (k Keeper) CheckMint(ctx context.Context, kCoin string, maxMintAmount math.
 		TradeAmount:         mintAmount,
 		TradeDenomGiving:    kCoin,
 		TradeDenomReceiving: constants.BaseCurrency,
+		TradeBalances:       dexkeeper.NewTradeBalances(),
 		ExcludeFromDiscount: true,
 		ProtocolTrade:       true,
-		TradeBalances:       dexkeeper.NewTradeBalances(),
 	}
 
 	if _, err = k.DexKeeper.ExecuteSell(tradeCtx); err != nil {

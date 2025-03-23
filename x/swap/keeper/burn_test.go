@@ -161,9 +161,16 @@ func burnScenario(t *testing.T, sellAmount int64) int64 {
 	addr, err := sdk.AccAddressFromBech32(keepertest.Alice)
 	require.NoError(t, err)
 
-	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.BaseCurrency, 100_000)
-	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, constants.KUSD, 100_000)
-	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, keepertest.Alice, "uwusdc", 100_000)
+	reserveAcc := k.AccountKeeper.GetModuleAccount(ctx, dextypes.PoolReserve).GetAddress().String()
+
+	bankKeeper := k.BankKeeper.(keepertest.TestBankKeeper)
+	keepertest.AddFunds(ctx, t, bankKeeper, constants.BaseCurrency, reserveAcc, 100_000)
+	keepertest.AddFunds(ctx, t, bankKeeper, constants.KUSD, reserveAcc, 100_000)
+	keepertest.AddFunds(ctx, t, bankKeeper, "uwusdc", reserveAcc, 100_000)
+
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, reserveAcc, constants.BaseCurrency, 100_000)
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, reserveAcc, constants.KUSD, 100_000)
+	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, reserveAcc, "uwusdc", 100_000)
 	addReserveFundsToDex(ctx, k.AccountKeeper, k.DexKeeper, k.BankKeeper, t, constants.KUSD, 10)
 
 	zeroInt := math.ZeroInt()

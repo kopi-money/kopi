@@ -21,9 +21,9 @@ func TestMint1(t *testing.T) {
 	addr, err := sdk.AccAddressFromBech32(keepertest.Alice)
 	require.NoError(t, err)
 
-	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, constants.BaseCurrency, 100000))
-	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, constants.KUSD, 100000))
-	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, "uwusdc", 100000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Bob, constants.BaseCurrency, 100000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Bob, constants.KUSD, 100000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Bob, "uwusdc", 100000))
 	addReserveFundsToDex(ctx, k.AccountKeeper, k.DexKeeper, k.BankKeeper, t, constants.KUSD, 10)
 
 	tradeCtx := dextypes.TradeContext{
@@ -76,9 +76,9 @@ func mintScenario(t *testing.T, buyAmount int64) int64 {
 	addr, err := sdk.AccAddressFromBech32(keepertest.Alice)
 	require.NoError(t, err)
 
-	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, constants.BaseCurrency, 100000))
-	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, constants.KUSD, 100000))
-	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, "uwusdc", 100000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Bob, constants.BaseCurrency, 100000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Bob, constants.KUSD, 100000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Bob, "uwusdc", 100000))
 	addReserveFundsToDex(ctx, k.AccountKeeper, k.DexKeeper, k.BankKeeper, t, constants.KUSD, 10)
 
 	tradeCtx := dextypes.TradeContext{
@@ -123,7 +123,7 @@ func mintScenario(t *testing.T, buyAmount int64) int64 {
 func TestMint3(t *testing.T) {
 	k, dexMsg, _, _, ctx := keepertest.SetupSwapMsgServer(t)
 
-	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, constants.BaseCurrency, 100000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Bob, constants.BaseCurrency, 100000))
 
 	addr, err := sdk.AccAddressFromBech32(keepertest.Alice)
 	require.NoError(t, err)
