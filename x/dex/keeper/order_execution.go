@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/kopi/x/dex/constant_product"
 	"github.com/kopi-money/kopi/x/dex/types"
 
 	"cosmossdk.io/math"
@@ -19,6 +20,8 @@ var skipErrors = []error{
 	types.ErrPriceTooLow,
 	types.ErrZeroTrade,
 	types.ErrNegativeTradeAmount,
+
+	constant_product.ErrRequestedAmountTooLarge,
 }
 
 func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManagerI, blockHeight int64) error {
@@ -78,7 +81,7 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 		// Next we do the actual execution
 		tradeResult, remove, err := k.ExecuteOrder(ctx, ordersCaches, fee, order)
 		if err != nil {
-			return fmt.Errorf("executing order (list index %v): %w", index, err)
+			return fmt.Errorf("executing order (%v / %v): %w", index, order.Index, err)
 		}
 
 		if !tradeResult.AmountIntermediate.IsNil() && tradeResult.AmountIntermediate.IsPositive() {
@@ -176,7 +179,13 @@ func (k Keeper) ExecuteOrder(ctx context.Context, ordersCaches *types.OrdersCach
 			return types.TradeResult{}, false, nil
 		}
 
-		msg := fmt.Sprintf("execute trade (%v%v > %v)", tradeCtx.TradeAmount.String(), order.DenomGiving, order.DenomReceiving)
+		var msg string
+		if tradeCtx.TradeType == types.TradeTypeSell {
+			msg = fmt.Sprintf("execute trade (%v%v > %v)", tradeCtx.TradeAmount.String(), order.DenomGiving, order.DenomReceiving)
+		} else {
+			msg = fmt.Sprintf("execute trade (%v > %v%v)", order.DenomGiving, tradeCtx.TradeAmount.String(), order.DenomReceiving)
+		}
+
 		k.Logger().Error(fmt.Errorf("%v: %w", msg, err).Error())
 		return types.TradeResult{}, false, nil
 	}
