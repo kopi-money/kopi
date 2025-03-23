@@ -213,6 +213,7 @@ message QueryGetLiquidityAllResponseEntry {
   string available_fee_amount = 4;
   string available_fee_amount_usd = 5;
   string liquidity_positions = 6;
+  string moving_liquidity = 7;
 }
 
 message QueryGetLiquidityAllResponse {
@@ -441,19 +442,21 @@ message OrderResponse {
   string denom_giving = 3;
   string denom_receiving = 4;
   string amount_given = 5;
-  string amount_left = 6;
-  string amount_left_usd = 7;
-  string amount_received = 8;
-  string amount_received_usd = 9;
-  string trade_amount = 10;
-  string current_price = 11;
-  string current_price_usd = 12;
-  string max_price = 13;
-  string max_price_usd = 14;
-  uint64 num_blocks = 15;
-  uint64 block_end = 16;
-  bool allow_incomplete = 17;
-  bool is_buy_order = 18;
+  string amount_locked = 6;
+  string amount_left = 7;
+  string amount_left_usd = 8;
+  string amount_received = 9;
+  string amount_received_usd = 10;
+  string trade_amount = 11;
+  string current_price = 12;
+  string current_price_usd = 13;
+  string max_price = 14;
+  string max_price_usd = 15;
+  uint64 added_at = 16;
+  uint64 num_blocks = 17;
+  uint64 block_end = 18;
+  bool allow_incomplete = 19;
+  bool is_buy_order = 20;
 }
 
 message QueryOrdersResponse {
