@@ -89,6 +89,7 @@ func (k Keeper) handleArbitrageDenom(ctx context.Context, arbitrageDenom denomty
 				TradeDenomReceiving: arbitrageDenom.KCoin,
 				TradeBalances:       tradeBalances,
 				MinimumTradeAmount:  &zeroInt,
+				ProtocolTrade:       true,
 			}
 
 			var tradeResult dextypes.TradeResult
@@ -127,6 +128,7 @@ func (k Keeper) handleArbitrageDenom(ctx context.Context, arbitrageDenom denomty
 				TradeDenomGiving:       arbitrageDenom.KCoin,
 				TradeDenomReceiving:    arbitrageDenom.CAsset,
 				TradeBalances:          tradeBalances,
+				ProtocolTrade:          true,
 			}
 
 			var tradeResult dextypes.TradeResult

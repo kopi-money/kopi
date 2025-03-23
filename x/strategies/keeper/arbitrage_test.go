@@ -55,11 +55,16 @@ func TestHandle2(t *testing.T) {
 	keepertest.AddFunds(ctx, t, k.BankKeeper, "uwusdc", keepertest.Alice, 1_000_000_000_000)
 	keepertest.AddFunds(ctx, t, k.BankKeeper, "ucwusdc", keepertest.Alice, 1_000_000_000_000)
 
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Dave, 4_000_000_000_000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Dave, 1_000_000_000_000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "uwusdc", keepertest.Dave, 1_000_000_000_000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "ucwusdc", keepertest.Dave, 1_000_000_000_000)
+
 	dexKeeper := k.DexKeeper.(keepertest.LiquidityI)
-	keepertest.TestAddLiquidity(ctx, dexKeeper, t, keepertest.Alice, constants.BaseCurrency, 4_000_000_000_000)
-	keepertest.TestAddLiquidity(ctx, dexKeeper, t, keepertest.Alice, constants.KUSD, 1_000_000_000_000)
-	keepertest.TestAddLiquidity(ctx, dexKeeper, t, keepertest.Alice, "uwusdc", 1_000_000_000_000)
-	keepertest.TestAddLiquidity(ctx, dexKeeper, t, keepertest.Alice, "ucwusdc", 1_000_000_000_000)
+	keepertest.TestAddLiquidity(ctx, dexKeeper, t, keepertest.Dave, constants.BaseCurrency, 4_000_000_000_000)
+	keepertest.TestAddLiquidity(ctx, dexKeeper, t, keepertest.Dave, constants.KUSD, 1_000_000_000_000)
+	keepertest.TestAddLiquidity(ctx, dexKeeper, t, keepertest.Dave, "uwusdc", 1_000_000_000_000)
+	keepertest.TestAddLiquidity(ctx, dexKeeper, t, keepertest.Dave, "ucwusdc", 1_000_000_000_000)
 
 	balance := k.BankKeeper.SpendableCoins(ctx, liqPool.GetAddress()).AmountOf(constants.KUSD)
 	require.Equal(t, int64(1_000_000_000_000), balance.Int64())
