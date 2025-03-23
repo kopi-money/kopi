@@ -19,7 +19,8 @@ func TestLiquidate1(t *testing.T) {
 	k, dexMsg, mmMsg, ctx := keepertest.SetupMMMsgServer(t)
 
 	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Alice, 100_000_000_000)
-	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Alice, constants.KUSD, 1_000_000_000))
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Dave, 100_000_000_000)
+	require.NoError(t, keepertest.AddLiquidity(ctx, dexMsg, keepertest.Dave, constants.KUSD, 1_000_000_000))
 
 	require.NoError(t, keepertest.AddDeposit(ctx, mmMsg, &types.MsgAddDeposit{
 		Creator: keepertest.Alice,

@@ -232,10 +232,10 @@ func (k Keeper) processLiquidation(ctx context.Context, tradeBalances dextypes.T
 			MaximumAvailableAmount: collateral.Amount,
 			TradeDenomGiving:       collateralDenom,
 			TradeDenomReceiving:    cAsset.BaseDexDenom,
-			ProtocolTrade:          true,
 			OrdersCaches:           ordersCaches,
-			ExcludeFromDiscount:    true,
 			TradeBalances:          tradeBalances,
+			ProtocolTrade:          true,
+			ExcludeFromDiscount:    true,
 		}
 
 		tradeResult, err := k.DexKeeper.ExecuteBuy(tradeCtx)
