@@ -1114,6 +1114,30 @@ func TestOrders38(t *testing.T) {
 	require.NoError(t, executeOrders(ctx, k))
 }
 
+func TestOrders39(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 6_485173_588126))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_032352_408229))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "uwusdc", 13569_619822))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Dave, 1_000_000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Dave, 1_000_000)
+
+	require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
+		Creator:         keepertest.Dave,
+		DenomGiving:     constants.KUSD,
+		DenomReceiving:  "uwusdc",
+		Amount:          "1000000",
+		MaxPrice:        "0.1275",
+		TradeAmount:     "0",
+		IsBuyOrder:      true,
+		AllowIncomplete: true,
+	}))
+
+	require.NoError(t, executeOrders(ctx, k))
+}
+
 func randomAmount(max int) int {
 	return rand.Intn(max-1) + 1
 }
