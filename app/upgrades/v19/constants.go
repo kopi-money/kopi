@@ -7,4 +7,5 @@ const (
 	UpgradeNameRC3  = "v19-rc3"
 	UpgradeNameRC11 = "v19-rc11"
 	UpgradeNameRC12 = "v19-rc12"
+	UpgradeNameRC13 = "v19-rc13"
 )
