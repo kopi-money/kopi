@@ -49,20 +49,6 @@ func (k Keeper) CheckBurn(ctx context.Context, kCoin string, maxBurnAmount math.
 		return fmt.Errorf("could not convert to mintAmountBase: %w", err)
 	}
 
-	referenceRatio, err := k.DenomKeeper.GetRatio(ctx, referenceDenom)
-	if err != nil {
-		return fmt.Errorf("ratio: %w", err)
-	}
-
-	if !referenceRatio.Ratio.IsPositive() {
-		return fmt.Errorf("ratio (%v) is not positive", referenceDenom)
-	}
-
-	mintCoins := sdk.NewCoins(sdk.NewCoin(kCoin, mintAmountBase.TruncateInt()))
-	if err = k.BankKeeper.MintCoins(ctx, types.ModuleName, mintCoins); err != nil {
-		return fmt.Errorf("could not mint coins: %w", err)
-	}
-
 	// New coins of the base currency are minted, used to buy the kCoin and burn
 	if err = k.mintTradeBurn(ctx, kCoin, mintAmountBase.TruncateInt()); err != nil {
 		return fmt.Errorf("could not mintTradeBurn: %w", err)

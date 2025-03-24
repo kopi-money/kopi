@@ -32,7 +32,7 @@ func (k Keeper) Mint(ctx context.Context) error {
 // CheckMint checks the parity of a given kCoin. If it is above 1, new coins are minted and sold in favor of
 // the base currency.
 func (k Keeper) CheckMint(ctx context.Context, kCoin string, maxMintAmount math.Int) error {
-	parity, referenceDenom, err := k.DexKeeper.CalculateParity(ctx, kCoin)
+	parity, _, err := k.DexKeeper.CalculateParity(ctx, kCoin)
 	if err != nil {
 		return fmt.Errorf("could not calculate parity: %w", err)
 	}
@@ -44,15 +44,6 @@ func (k Keeper) CheckMint(ctx context.Context, kCoin string, maxMintAmount math.
 
 	if parity.LTE(k.mintThreshold(ctx)) {
 		return nil
-	}
-
-	referenceRatio, err := k.DenomKeeper.GetRatio(ctx, referenceDenom)
-	if err != nil {
-		return fmt.Errorf("ratio: %w", err)
-	}
-
-	if !referenceRatio.Ratio.IsPositive() {
-		return fmt.Errorf("ratio (%v) is not positive", referenceDenom)
 	}
 
 	mintAmount := k.adjustForSupplyCap(ctx, kCoin, maxMintAmount)
