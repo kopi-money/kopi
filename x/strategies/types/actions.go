@@ -3,6 +3,7 @@ package types
 import (
 	"cosmossdk.io/math"
 	"fmt"
+	"github.com/kopi-money/kopi/x/dex/constant_product"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	mmtypes "github.com/kopi-money/kopi/x/mm/types"
 )
@@ -31,13 +32,15 @@ var NoAmountActions = []int64{
 	ActionWithdrawRewardsAndStake,
 }
 
-// List of errors which will not be logged because they are of no further interest. Covers issues like trades that cannot
-// be executed because there is not enough liquidity.
+// ValidErrors is a list of errors which will not be logged because they are of no further interest. Covers issues like
+// trades that cannot be executed because there is not enough liquidity.
 var ValidErrors = []error{
 	dextypes.ErrBaseLiqEmpty,
 	dextypes.ErrNotEnoughFunds,
 	dextypes.ErrTradeAmountTooSmall,
 	dextypes.ErrNotEnoughLiquidity,
+
+	constant_product.ErrRequestedAmountTooLarge,
 
 	mmtypes.ErrBorrowLimitExceeded,
 	mmtypes.ErrCannotWithdrawCollateral,
