@@ -37,7 +37,7 @@ func (k Keeper) LiquidityAll(ctx context.Context, _ *types.QueryGetLiquidityAllR
 
 		feeAmount := k.GetLiquidityByAddress(ctx, denom, feeAcc.String())
 		feeAmountUSD, _ := k.DenomKeeper.GetValueInUSD(ctx, denom, feeAmount.ToLegacyDec())
-		movingLiquidity := k.getMovingLiquidity(ctx, denom)
+		movingLiquidity := k.getMovingLiquidity(ctx, denom).DepositAmount
 
 		entries = append(entries, types.QueryGetLiquidityAllResponseEntry{
 			Denom:                 denom,
