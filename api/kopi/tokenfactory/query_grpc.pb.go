@@ -24,6 +24,7 @@ const (
 	Query_GetPool_FullMethodName                                  = "/kopi.tokenfactory.Query/GetPool"
 	Query_GetFactoryTokenBalance_FullMethodName                   = "/kopi.tokenfactory.Query/GetFactoryTokenBalance"
 	Query_GetPoolLiquidityAddress_FullMethodName                  = "/kopi.tokenfactory.Query/GetPoolLiquidityAddress"
+	Query_GetPoolLiquidityAddressByDenom_FullMethodName           = "/kopi.tokenfactory.Query/GetPoolLiquidityAddressByDenom"
 	Query_QuerySimulateAddingLiquidityKCoin_FullMethodName        = "/kopi.tokenfactory.Query/QuerySimulateAddingLiquidityKCoin"
 	Query_QuerySimulateAddingLiquidityFactoryToken_FullMethodName = "/kopi.tokenfactory.Query/QuerySimulateAddingLiquidityFactoryToken"
 	Query_QuerySimulateSell_FullMethodName                        = "/kopi.tokenfactory.Query/QuerySimulateSell"
@@ -40,6 +41,7 @@ type QueryClient interface {
 	GetPool(ctx context.Context, in *QueryPoolRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error)
 	GetFactoryTokenBalance(ctx context.Context, in *GetFactoryTokenBalanceRequest, opts ...grpc.CallOption) (*GetFactoryTokenBalanceResponse, error)
 	GetPoolLiquidityAddress(ctx context.Context, in *QueryPoolLiquidityAddressRequest, opts ...grpc.CallOption) (*QueryPoolLiquidityAddressResponse, error)
+	GetPoolLiquidityAddressByDenom(ctx context.Context, in *QueryPoolLiquidityAddressRequestByDenom, opts ...grpc.CallOption) (*PoolLiquidityAddress, error)
 	QuerySimulateAddingLiquidityKCoin(ctx context.Context, in *QuerySimulateAddingLiquidityRequest, opts ...grpc.CallOption) (*QuerySimulateAddingLiquidityResponse, error)
 	QuerySimulateAddingLiquidityFactoryToken(ctx context.Context, in *QuerySimulateAddingLiquidityRequest, opts ...grpc.CallOption) (*QuerySimulateAddingLiquidityResponse, error)
 	QuerySimulateSell(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error)
@@ -99,6 +101,15 @@ func (c *queryClient) GetPoolLiquidityAddress(ctx context.Context, in *QueryPool
 	return out, nil
 }
 
+func (c *queryClient) GetPoolLiquidityAddressByDenom(ctx context.Context, in *QueryPoolLiquidityAddressRequestByDenom, opts ...grpc.CallOption) (*PoolLiquidityAddress, error) {
+	out := new(PoolLiquidityAddress)
+	err := c.cc.Invoke(ctx, Query_GetPoolLiquidityAddressByDenom_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) QuerySimulateAddingLiquidityKCoin(ctx context.Context, in *QuerySimulateAddingLiquidityRequest, opts ...grpc.CallOption) (*QuerySimulateAddingLiquidityResponse, error) {
 	out := new(QuerySimulateAddingLiquidityResponse)
 	err := c.cc.Invoke(ctx, Query_QuerySimulateAddingLiquidityKCoin_FullMethodName, in, out, opts...)
@@ -145,6 +156,7 @@ type QueryServer interface {
 	GetPool(context.Context, *QueryPoolRequest) (*QueryPoolResponse, error)
 	GetFactoryTokenBalance(context.Context, *GetFactoryTokenBalanceRequest) (*GetFactoryTokenBalanceResponse, error)
 	GetPoolLiquidityAddress(context.Context, *QueryPoolLiquidityAddressRequest) (*QueryPoolLiquidityAddressResponse, error)
+	GetPoolLiquidityAddressByDenom(context.Context, *QueryPoolLiquidityAddressRequestByDenom) (*PoolLiquidityAddress, error)
 	QuerySimulateAddingLiquidityKCoin(context.Context, *QuerySimulateAddingLiquidityRequest) (*QuerySimulateAddingLiquidityResponse, error)
 	QuerySimulateAddingLiquidityFactoryToken(context.Context, *QuerySimulateAddingLiquidityRequest) (*QuerySimulateAddingLiquidityResponse, error)
 	QuerySimulateSell(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error)
@@ -170,6 +182,9 @@ func (UnimplementedQueryServer) GetFactoryTokenBalance(context.Context, *GetFact
 }
 func (UnimplementedQueryServer) GetPoolLiquidityAddress(context.Context, *QueryPoolLiquidityAddressRequest) (*QueryPoolLiquidityAddressResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPoolLiquidityAddress not implemented")
+}
+func (UnimplementedQueryServer) GetPoolLiquidityAddressByDenom(context.Context, *QueryPoolLiquidityAddressRequestByDenom) (*PoolLiquidityAddress, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPoolLiquidityAddressByDenom not implemented")
 }
 func (UnimplementedQueryServer) QuerySimulateAddingLiquidityKCoin(context.Context, *QuerySimulateAddingLiquidityRequest) (*QuerySimulateAddingLiquidityResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QuerySimulateAddingLiquidityKCoin not implemented")
@@ -286,6 +301,24 @@ func _Query_GetPoolLiquidityAddress_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_GetPoolLiquidityAddressByDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryPoolLiquidityAddressRequestByDenom)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GetPoolLiquidityAddressByDenom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_GetPoolLiquidityAddressByDenom_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GetPoolLiquidityAddressByDenom(ctx, req.(*QueryPoolLiquidityAddressRequestByDenom))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Query_QuerySimulateAddingLiquidityKCoin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QuerySimulateAddingLiquidityRequest)
 	if err := dec(in); err != nil {
@@ -384,6 +417,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetPoolLiquidityAddress",
 			Handler:    _Query_GetPoolLiquidityAddress_Handler,
+		},
+		{
+			MethodName: "GetPoolLiquidityAddressByDenom",
+			Handler:    _Query_GetPoolLiquidityAddressByDenom_Handler,
 		},
 		{
 			MethodName: "QuerySimulateAddingLiquidityKCoin",

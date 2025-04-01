@@ -99,6 +99,35 @@ func (k Keeper) GetPoolLiquidityAddress(ctx context.Context, req *types.QueryPoo
 	return &response, nil
 }
 
+func (k Keeper) GetPoolLiquidityAddressByDenom(ctx context.Context, req *types.QueryPoolLiquidityAddressRequestByDenom) (*types.PoolLiquidityAddress, error) {
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("could not get highest usd reference: %w", err)
+	}
+
+	pool, has := k.liquidityPools.Get(ctx, req.FullName)
+	if !has {
+		return nil, types.ErrPoolDoesNotExist
+	}
+
+	amountKCoin, amountFactoryToken, err := k.getLiquidity(ctx, req.FullName, req.Address)
+	if err != nil {
+		return nil, fmt.Errorf("get liquidity for address: %w", err)
+	}
+
+	liquidityValue, err := k.DenomKeeper.GetValueIn(ctx, pool.KCoin, referenceDenom, amountKCoin.ToLegacyDec())
+	if err != nil {
+		return nil, fmt.Errorf("kcoin amount in usd: %w", err)
+	}
+
+	return &types.PoolLiquidityAddress{
+		FactoryDenomHash:   req.FullName,
+		AmountKcoin:        amountKCoin.String(),
+		AmountFactoryToken: amountFactoryToken.String(),
+		LiquidityValue:     liquidityValue.String(),
+	}, nil
+}
+
 func (k Keeper) QuerySimulateAddingLiquidityKCoin(ctx context.Context, req *types.QuerySimulateAddingLiquidityRequest) (*types.QuerySimulateAddingLiquidityResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")

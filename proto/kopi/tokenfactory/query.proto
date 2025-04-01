@@ -33,6 +33,10 @@ service Query {
     option (google.api.http).get = "/kopi/tokenfactory/denoms/pool/{address}";
   }
 
+  rpc GetPoolLiquidityAddressByDenom (QueryPoolLiquidityAddressRequestByDenom) returns (PoolLiquidityAddress) {
+    option (google.api.http).get = "/kopi/tokenfactory/denoms/pool/{address}/by_denom";
+  }
+
   rpc QuerySimulateAddingLiquidityKCoin (QuerySimulateAddingLiquidityRequest) returns (QuerySimulateAddingLiquidityResponse) {
     option (google.api.http).get = "/kopi/tokenfactory/denoms/pool/add/kcoin";
   }
@@ -48,6 +52,11 @@ service Query {
   rpc QuerySimulateBuy (QuerySimulateTradeRequest) returns (QuerySimulateTradeResponse) {
     option (google.api.http).get = "/kopi/tokenfactory/simulate/buy";
   }
+}
+
+message QueryPoolLiquidityAddressRequestByDenom {
+  string address = 1;
+  string full_name = 2;
 }
 
 message QuerySimulateAddingLiquidityRequest {
