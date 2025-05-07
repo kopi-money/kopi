@@ -47,7 +47,7 @@ func validateAutomation(am AutomationMessage) error {
 
 	var messageConditions []MessageCondition
 	if err := json.Unmarshal([]byte(am.GetConditions()), &messageConditions); err != nil {
-		return fmt.Errorf("could not unmarshal conditions: %w", err)
+		return fmt.Errorf("unmarshal conditions: %w", err)
 	}
 
 	if len(messageConditions) > 16 {
@@ -55,12 +55,12 @@ func validateAutomation(am AutomationMessage) error {
 	}
 
 	if _, err := ConvertConditions(messageConditions); err != nil {
-		return fmt.Errorf("could not convert conditions: %w", err)
+		return fmt.Errorf("convert conditions: %w", err)
 	}
 
 	var actions []*Action
 	if err := json.Unmarshal([]byte(am.GetActions()), &actions); err != nil {
-		return fmt.Errorf("could not unmarshal actions: %w", err)
+		return fmt.Errorf("unmarshal actions: %w", err)
 	}
 
 	if len(messageConditions) > 16 {

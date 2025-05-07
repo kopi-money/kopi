@@ -34,9 +34,9 @@ func (k Keeper) ArbitrageSimulateDepositBase(ctx context.Context, req *types.Arb
 		return cAssetAmount.ToLegacyDec(), nil
 	})
 
-	newTokens, err := k.calculateNewStrategyAssetAmount(ctx, aAsset.DexDenom, cAssetAmount, calculateValue)
+	newTokens, err := k.calculateNewAAssetAmount(ctx, aAsset.DexDenom, cAssetAmount, calculateValue)
 	if err != nil {
-		return nil, fmt.Errorf("could not calculate new strategy asset amount: %w", err)
+		return nil, fmt.Errorf("calculate new aasset amount: %w", err)
 	}
 
 	return &types.ArbitrageSimulateDepositResponse{
@@ -61,9 +61,9 @@ func (k Keeper) ArbitrageSimulateDepositCAsset(ctx context.Context, req *types.A
 		return amount.ToLegacyDec(), nil
 	})
 
-	newTokens, err := k.calculateNewStrategyAssetAmount(ctx, aAsset.DexDenom, amount, calculateValue)
+	newTokens, err := k.calculateNewAAssetAmount(ctx, aAsset.DexDenom, amount, calculateValue)
 	if err != nil {
-		return nil, fmt.Errorf("could not calculate new strategy asset amount: %w", err)
+		return nil, fmt.Errorf("calculate new strategy asset amount: %w", err)
 	}
 
 	return &types.ArbitrageSimulateDepositResponse{
@@ -86,7 +86,7 @@ func (k Keeper) ArbitrageSimulateRedemption(ctx context.Context, req *types.Arbi
 	calculateValue := k.calculateArbitrageTokenValue(ctx, aAsset)
 	redemptionValue, err := k.calculateRedemptionValue(ctx, aAsset, amount, calculateValue)
 	if err != nil {
-		return nil, fmt.Errorf("could not calculate redemption amount: %w", err)
+		return nil, fmt.Errorf("calculate redemption amount: %w", err)
 	}
 
 	return &types.ArbitrageSimulateRedemptionResponse{

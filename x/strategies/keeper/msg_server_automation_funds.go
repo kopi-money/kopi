@@ -72,7 +72,7 @@ func (k Keeper) withdrawAutomationFunds(ctx context.Context, amount math.Int, ad
 
 	coins := sdk.NewCoins(sdk.NewCoin(constants.KUSD, amount))
 	if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolAutomationFunds, acc, coins); err != nil {
-		return fmt.Errorf("could not send coins from module to account: %w", err)
+		return fmt.Errorf("send coins from module to account: %w", err)
 	}
 
 	return nil

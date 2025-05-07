@@ -28,14 +28,14 @@ func (k msgServer) ArbitrageDeposit(ctx context.Context, msg *types.MsgArbitrage
 		var cAssetAmount math.Int
 		cAssetAmount, err = k.MMKeeper.Deposit(ctx, address, cAsset, amount)
 		if err != nil {
-			return nil, fmt.Errorf("could not deposit into c asset: %w", err)
+			return nil, fmt.Errorf("deposit into c asset: %w", err)
 		}
 
 		amount = cAssetAmount
 	} else {
 		cAsset, err = k.DenomKeeper.GetCAsset(ctx, msg.Denom)
 		if err != nil {
-			return nil, fmt.Errorf("could not find cAsset by name: %v", msg.Denom)
+			return nil, fmt.Errorf("find cAsset by name: %v", msg.Denom)
 		}
 	}
 
@@ -50,13 +50,13 @@ func (k msgServer) ArbitrageDeposit(ctx context.Context, msg *types.MsgArbitrage
 
 	coins := sdk.NewCoins(sdk.NewCoin(arbitrageDenom.CAsset, amount))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, address, types.PoolArbitrage, coins); err != nil {
-		return nil, fmt.Errorf("could not send coins to module: %w", err)
+		return nil, fmt.Errorf("send coins to module: %w", err)
 	}
 
 	calculateValue := k.calculateArbitrageTokenValue(ctx, arbitrageDenom)
-	newTokens, err := k.calculateNewStrategyAssetAmount(ctx, arbitrageDenom.DexDenom, amount, calculateValue)
+	newTokens, err := k.calculateNewAAssetAmount(ctx, arbitrageDenom.DexDenom, amount, calculateValue)
 	if err != nil {
-		return nil, fmt.Errorf("could not calculate new strategy asset amount: %w", err)
+		return nil, fmt.Errorf("calculate new strategy asset amount: %w", err)
 	}
 
 	if newTokens.LTE(math.ZeroInt()) {
@@ -69,7 +69,7 @@ func (k msgServer) ArbitrageDeposit(ctx context.Context, msg *types.MsgArbitrage
 	}
 
 	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolArbitrage, address, coins); err != nil {
-		return nil, fmt.Errorf("could not send coins to module: %w", err)
+		return nil, fmt.Errorf("send coins to module: %w", err)
 	}
 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
@@ -115,27 +115,27 @@ func (k msgServer) ArbitrageRedeem(ctx context.Context, msg *types.MsgArbitrageR
 	calculateValue := k.calculateArbitrageTokenValue(ctx, arbitrageDenom)
 	payoutAmountGross, burnAmount, err := k.calculateRedemptionAmount(ctx, arbitrageDenom, amount, available, calculateValue, msg.AllowIncomplete)
 	if err != nil {
-		return nil, fmt.Errorf("could not calculate redemption amount: %w", err)
+		return nil, fmt.Errorf("calculate redemption amount: %w", err)
 	}
 
 	coins := sdk.NewCoins(sdk.NewCoin(arbitrageDenom.DexDenom, burnAmount))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, address, types.PoolArbitrage, coins); err != nil {
-		return nil, fmt.Errorf("could not send aasset coins to module: %w", err)
+		return nil, fmt.Errorf("send aasset coins to module: %w", err)
 	}
 
 	payoutAmountNet, err := k.handleRedemptionFee(ctx, arbitrageDenom, payoutAmountGross)
 	if err != nil {
-		return nil, fmt.Errorf("could not handle redemption fee: %w", err)
+		return nil, fmt.Errorf("handle redemption fee: %w", err)
 	}
 
 	coins = sdk.NewCoins(sdk.NewCoin(arbitrageDenom.DexDenom, burnAmount))
 	if err = k.BankKeeper.BurnCoins(ctx, types.PoolArbitrage, coins); err != nil {
-		return nil, fmt.Errorf("could not burn aasset coins: %w", err)
+		return nil, fmt.Errorf("burn aasset coins: %w", err)
 	}
 
 	coins = sdk.NewCoins(sdk.NewCoin(arbitrageDenom.CAsset, payoutAmountNet))
 	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolArbitrage, address, coins); err != nil {
-		return nil, fmt.Errorf("could not send casset coins to user: %w", err)
+		return nil, fmt.Errorf("send casset coins to user: %w", err)
 	}
 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
@@ -161,7 +161,7 @@ func (k Keeper) calculateArbitrageTokenValue(ctx context.Context, arbitrageDenom
 			amountKCoin := k.BankKeeper.SpendableCoins(ctx, acc.GetAddress()).AmountOf(arbitrageDenom.KCoin)
 			valueKCoin, err := k.DenomKeeper.GetValueIn(ctx, arbitrageDenom.KCoin, arbitrageDenom.CAsset, amountKCoin.ToLegacyDec())
 			if err != nil {
-				return math.LegacyDec{}, fmt.Errorf("could not convert kcoin value to casset value: %w", err)
+				return math.LegacyDec{}, fmt.Errorf("convert kcoin value to casset value: %w", err)
 			}
 
 			return valueKCoin, nil

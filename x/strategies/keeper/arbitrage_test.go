@@ -32,14 +32,14 @@ func TestHandle1(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	parity1, _, err := k.DexKeeper.CalculateParity(ctx, constants.KUSD)
+	parity1, _, err := k.DenomKeeper.CalculateParity(ctx, constants.KUSD)
 	require.NoError(t, err)
 	require.NotNil(t, parity1)
 	require.True(t, parity1.LT(math.LegacyOneDec()))
 
 	require.NoError(t, k.HandleArbitrageDenoms(ctx))
 
-	parity2, _, err := k.DexKeeper.CalculateParity(ctx, constants.KUSD)
+	parity2, _, err := k.DenomKeeper.CalculateParity(ctx, constants.KUSD)
 	require.NoError(t, err)
 	require.NotNil(t, parity2)
 	require.True(t, parity1.Equal(*parity2))
@@ -76,7 +76,7 @@ func TestHandle2(t *testing.T) {
 	keepertest.SetRatio(ctx, k.DenomKeeper, "uwusdc", r)
 	keepertest.SetRatio(ctx, k.DenomKeeper, "ucwusdc", r)
 
-	parity0, _, err := k.DexKeeper.CalculateParity(ctx, constants.KUSD)
+	parity0, _, err := k.DenomKeeper.CalculateParity(ctx, constants.KUSD)
 	require.NoError(t, err)
 	require.True(t, parity0.Equal(math.LegacyOneDec()))
 
@@ -97,7 +97,7 @@ func TestHandle2(t *testing.T) {
 		Amount:  "100_000",
 	}))
 
-	parity1, _, err := k.DexKeeper.CalculateParity(ctx, constants.KUSD)
+	parity1, _, err := k.DenomKeeper.CalculateParity(ctx, constants.KUSD)
 	require.NoError(t, err)
 	require.NotNil(t, parity1)
 	require.True(t, parity1.LT(math.LegacyOneDec()))
@@ -112,7 +112,7 @@ func TestHandle2(t *testing.T) {
 	balance = k.BankKeeper.SpendableCoins(ctx, moduleAcc.GetAddress()).AmountOf(constants.KUSD)
 	require.True(t, balance.IsPositive())
 
-	parity2, _, err := k.DexKeeper.CalculateParity(ctx, constants.KUSD)
+	parity2, _, err := k.DenomKeeper.CalculateParity(ctx, constants.KUSD)
 	require.NoError(t, err)
 	require.NotNil(t, parity2)
 
@@ -122,11 +122,11 @@ func TestHandle2(t *testing.T) {
 		Creator:        keepertest.Bob,
 		DenomGiving:    "uwusdc",
 		DenomReceiving: constants.KUSD,
-		Amount:         "1_000_000_000",
+		Amount:         "100_000",
 	})
 	require.NoError(t, err)
 
-	parity3, _, err := k.DexKeeper.CalculateParity(ctx, constants.KUSD)
+	parity3, _, err := k.DenomKeeper.CalculateParity(ctx, constants.KUSD)
 	require.NoError(t, err)
 	require.NotNil(t, parity3)
 	require.True(t, parity3.GT(math.LegacyOneDec()))
@@ -135,7 +135,7 @@ func TestHandle2(t *testing.T) {
 		return k.HandleArbitrageDenoms(innerCtx)
 	}))
 
-	parity4, _, err := k.DexKeeper.CalculateParity(ctx, constants.KUSD)
+	parity4, _, err := k.DenomKeeper.CalculateParity(ctx, constants.KUSD)
 	require.NoError(t, err)
 	require.NotNil(t, parity4)
 	require.True(t, parity4.LT(*parity3))

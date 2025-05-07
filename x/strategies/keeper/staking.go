@@ -15,13 +15,13 @@ import (
 func (k Keeper) withdrawRewardsAndStake(ctx context.Context, accAddr sdk.AccAddress, strategy string, pseudoRandomNumber int) (string, error) {
 	rewards, err := k.withdrawRewards(ctx, accAddr)
 	if err != nil {
-		return "", fmt.Errorf("could not withdraw rewards: %w", err)
+		return "", fmt.Errorf("withdraw rewards: %w", err)
 	}
 
 	var validator string
 	validator, err = k.stake(ctx, accAddr, rewards.AmountOf(constants.BaseCurrency), strategy, pseudoRandomNumber)
 	if err != nil {
-		return "", fmt.Errorf("could not restake rewards: %w", err)
+		return "", fmt.Errorf("restake rewards: %w", err)
 	}
 
 	return validator, nil
@@ -30,7 +30,7 @@ func (k Keeper) withdrawRewardsAndStake(ctx context.Context, accAddr sdk.AccAddr
 func (k Keeper) withdrawRewards(ctx context.Context, accAddr sdk.AccAddress) (sdk.Coins, error) {
 	delegations, err := k.getDelegations(ctx, accAddr)
 	if err != nil {
-		return nil, fmt.Errorf("could not get delegations: %w", err)
+		return nil, fmt.Errorf("get delegations: %w", err)
 	}
 
 	rewards := sdk.NewCoins()
@@ -38,7 +38,7 @@ func (k Keeper) withdrawRewards(ctx context.Context, accAddr sdk.AccAddress) (sd
 		var reward sdk.Coins
 		reward, err = k.withdrawReward(ctx, accAddr, delegation)
 		if err != nil {
-			return nil, fmt.Errorf("could not withdraw reward: %w", err)
+			return nil, fmt.Errorf("withdraw reward: %w", err)
 		}
 
 		rewards = rewards.Add(reward...)
@@ -82,7 +82,7 @@ func (k Keeper) getDelegations(ctx context.Context, accAddr sdk.AccAddress) ([]s
 func (k Keeper) stake(ctx context.Context, accAddr sdk.AccAddress, amount math.Int, strategy string, pseudoRandomNumber int) (string, error) {
 	validators, err := k.StakingKeeper.GetBondedValidatorsByPower(ctx)
 	if err != nil {
-		return "", fmt.Errorf("could not get validators: %w", err)
+		return "", fmt.Errorf("get validators: %w", err)
 	}
 
 	var validator stakingtypes.Validator
@@ -96,7 +96,7 @@ func (k Keeper) stake(ctx context.Context, accAddr sdk.AccAddress, amount math.I
 	}
 
 	if _, err = k.StakingKeeper.Delegate(ctx, accAddr, amount, stakingtypes.Unbonded, validator, true); err != nil {
-		return "", fmt.Errorf("could not delegate: %w", err)
+		return "", fmt.Errorf("delegate: %w", err)
 	}
 
 	return validator.OperatorAddress, nil

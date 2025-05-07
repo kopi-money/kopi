@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/cache"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -18,18 +16,6 @@ func (k Keeper) SetAutomationFunds(ctx context.Context, address string, funds ma
 	} else {
 		k.automationFunds.Remove(ctx, address)
 	}
-}
-
-func (k Keeper) SetGenesisAutomationFunds(ctx context.Context, genesisAutomationFunds []*types.GenesisAutomationFunds) error {
-	for _, automationFunds := range genesisAutomationFunds {
-		if automationFunds == nil {
-			return fmt.Errorf("automationFunds is nil")
-		}
-
-		k.automationFunds.Set(ctx, automationFunds.Address, types.AutomationFunds{Funds: automationFunds.Funds})
-	}
-
-	return nil
 }
 
 func (k Keeper) consumeAutomationFunds(ctx context.Context, accAddr sdk.AccAddress, amount uint64, totalAmount *uint64) error {
@@ -57,11 +43,11 @@ func (k Keeper) GetAutomationFunds(ctx context.Context, address string) math.Int
 	return funds.Funds
 }
 
-func (k Keeper) GetAllAutomationFunds(ctx context.Context) (list []*types.GenesisAutomationFunds) {
+func (k Keeper) exportAutomationFunds(ctx context.Context) (list []types.GenesisAutomationFunds) {
 	iterator := k.automationFunds.Iterator(ctx, nil)
 	for iterator.Valid() {
 		keyValue := iterator.GetNextKeyValue()
-		list = append(list, &types.GenesisAutomationFunds{
+		list = append(list, types.GenesisAutomationFunds{
 			Address: keyValue.Key(),
 			Funds:   keyValue.Value().Value().Funds,
 		})

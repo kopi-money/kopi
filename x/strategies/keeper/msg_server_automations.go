@@ -22,7 +22,7 @@ func (k msgServer) AutomationsImport(ctx context.Context, msg *types.MsgAutomati
 
 	for index, automation := range automations {
 		if err = k.addAutomation(ctx, &automation, msg.Creator); err != nil {
-			return nil, fmt.Errorf("could not add automation[%d]: %w", index, err)
+			return nil, fmt.Errorf("add automation[%d]: %w", index, err)
 		}
 	}
 
@@ -159,12 +159,12 @@ func (k Keeper) checkAutomationMessage(ctx context.Context, address string, am t
 
 	var messageConditions []types.MessageCondition
 	if err = json.Unmarshal([]byte(am.GetConditions()), &messageConditions); err != nil {
-		return nil, nil, fmt.Errorf("could not unmarshal conditions: %w", err)
+		return nil, nil, fmt.Errorf("unmarshal conditions: %w", err)
 	}
 
 	conditions, err := types.ConvertConditions(messageConditions)
 	if err != nil {
-		return nil, nil, fmt.Errorf("could not convert conditions: %w", err)
+		return nil, nil, fmt.Errorf("convert conditions: %w", err)
 	}
 
 	if err = k.ValidateConditions(ctx, conditions); err != nil {
@@ -173,7 +173,7 @@ func (k Keeper) checkAutomationMessage(ctx context.Context, address string, am t
 
 	var actions []types.Action
 	if err = json.Unmarshal([]byte(am.GetActions()), &actions); err != nil {
-		return nil, nil, fmt.Errorf("could not unmarshal actions: %w", err)
+		return nil, nil, fmt.Errorf("unmarshal actions: %w", err)
 	}
 
 	if err = k.CheckActions(ctx, address, actions); err != nil {

@@ -34,7 +34,7 @@ func (msg *MsgAutomationsImport) ValidateBasic() error {
 
 	_, err := msg.Convert()
 	if err != nil {
-		return fmt.Errorf("could not convert: %w", err)
+		return fmt.Errorf("convert: %w", err)
 	}
 
 	return nil
@@ -43,19 +43,19 @@ func (msg *MsgAutomationsImport) ValidateBasic() error {
 func (msg *MsgAutomationsImport) Convert() ([]MsgAutomationsAdd, error) {
 	var automations []AutomationImport
 	if err := json.Unmarshal([]byte(msg.Automations), &automations); err != nil {
-		return nil, fmt.Errorf("could not unmarshal: %w", err)
+		return nil, fmt.Errorf("unmarshal: %w", err)
 	}
 
 	var newAutomations []MsgAutomationsAdd
 	for _, automation := range automations {
 		conditions, err := json.Marshal(automation.Conditions)
 		if err != nil {
-			return nil, fmt.Errorf("could not marshal conditions: %w", err)
+			return nil, fmt.Errorf("marshal conditions: %w", err)
 		}
 
 		actions, err := json.Marshal(automation.Actions)
 		if err != nil {
-			return nil, fmt.Errorf("could not marshal conditions: %w", err)
+			return nil, fmt.Errorf("marshal conditions: %w", err)
 		}
 
 		newAutomations = append(newAutomations, MsgAutomationsAdd{

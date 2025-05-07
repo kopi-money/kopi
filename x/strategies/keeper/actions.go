@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"github.com/kopi-money/kopi/trading"
 	"strconv"
 	"strings"
 
@@ -202,12 +203,12 @@ func (k Keeper) ExecuteAction(ctx context.Context, address sdk.AccAddress, actio
 
 	amount1, amount2, volume, string1, string2, err := k.executeAction(ctx, address, action, tradeBalances, automationIndex, automationExecutionIndex, actionIndex)
 	if err != nil && !errorIsOf(err, types.ValidErrors) {
-		return fmt.Errorf("could not execute action: %w", err)
+		return fmt.Errorf("execute action: %w", err)
 	}
 
 	if err == nil {
 		if err = tradeBalances.Settle(ctx, k.BankKeeper); err != nil {
-			return fmt.Errorf("could not settle balances: %w", err)
+			return fmt.Errorf("settle balances: %w", err)
 		}
 	}
 
@@ -307,18 +308,18 @@ func (k Keeper) executeAction(
 		}
 
 		tradeCtx := dextypes.TradeContext{
-			Context:             ctx,
 			TradeAmount:         amount1,
+			MinimumTradeAmount:  minimumTradeAmount,
+			Context:             ctx,
 			TradeDenomGiving:    denomGiving,
 			TradeDenomReceiving: denomReceiving,
-			MinimumTradeAmount:  minimumTradeAmount,
 			CoinSource:          address.String(),
 			CoinTarget:          address.String(),
 			DiscountAddress:     address.String(),
 			TradeBalances:       tradeBalances,
 		}
 
-		var tradeResult dextypes.TradeResult
+		var tradeResult trading.TradeResult
 		if action.ActionType == types.ActionSell {
 			tradeResult, err = k.DexKeeper.ExecuteSell(tradeCtx)
 		} else {
@@ -330,11 +331,11 @@ func (k Keeper) executeAction(
 		}
 
 		if action.ActionType == types.ActionSell {
-			amount1 = tradeResult.AmountGiven
-			amount2 = tradeResult.AmountReceived
+			amount1 = tradeResult.AmountGiven()
+			amount2 = tradeResult.AmountReceived()
 		} else {
-			amount2 = tradeResult.AmountGiven
-			amount1 = tradeResult.AmountReceived
+			amount2 = tradeResult.AmountGiven()
+			amount1 = tradeResult.AmountReceived()
 		}
 
 		volume, err = k.DenomKeeper.GetValueInUSD(ctx, denomReceiving, amount2.ToLegacyDec())
@@ -348,7 +349,7 @@ func (k Keeper) executeAction(
 		var cAsset denomtypes.CAsset
 		cAsset, err = k.DenomKeeper.GetCAsset(ctx, action.String1)
 		if err != nil {
-			err = fmt.Errorf("could not get c asset: %w", err)
+			err = fmt.Errorf("get c asset: %w", err)
 			return
 		}
 
@@ -364,7 +365,7 @@ func (k Keeper) executeAction(
 		var cAsset denomtypes.CAsset
 		cAsset, err = k.DenomKeeper.GetCAsset(ctx, action.String1)
 		if err != nil {
-			err = fmt.Errorf("could not get c asset: %w", err)
+			err = fmt.Errorf("get c asset: %w", err)
 			return
 		}
 
@@ -374,7 +375,7 @@ func (k Keeper) executeAction(
 	case types.ActionLoanBorrow:
 		amount1, err = k.getAmountBorrowable(ctx, address, action.String1, action.Amount)
 		if err != nil {
-			err = fmt.Errorf("could not get borrowable amount: %w", err)
+			err = fmt.Errorf("get borrowable amount: %w", err)
 			return
 		}
 
@@ -400,7 +401,7 @@ func (k Keeper) executeAction(
 	case types.ActionCollateralWithdraw:
 		amount1, err = k.getAmountWithdrawableCollateral(ctx, address, action.String1, action.Amount)
 		if err != nil {
-			err = fmt.Errorf("could not get withdrawable collateral amount: %w", err)
+			err = fmt.Errorf("get withdrawable collateral amount: %w", err)
 			return
 		}
 
@@ -412,7 +413,8 @@ func (k Keeper) executeAction(
 			return
 		}
 
-		amount2, err = k.DexKeeper.AddLiquidity(ctx, address, action.String1, amount1)
+		err = k.DexKeeper.AddLiquidity(ctx, address, action.String1, amount1)
+		amount2 = amount1
 
 	case types.ActionLiquidityWithdraw:
 		amount1 = k.getAmountLiquidity(ctx, address, action.String1, action.Amount)
@@ -432,7 +434,7 @@ func (k Keeper) executeAction(
 
 		coins := sdk.NewCoins(sdk.NewCoin(action.String1, amount1))
 		if err = k.BankKeeper.SendCoins(ctx, address, receiver, coins); err != nil {
-			err = fmt.Errorf("could not send coins: %w", err)
+			err = fmt.Errorf("send coins: %w", err)
 			return
 		}
 
@@ -442,7 +444,7 @@ func (k Keeper) executeAction(
 		var validator string
 		validator, err = k.withdrawRewardsAndStake(ctx, address, action.String1, pseudoRandomNumber)
 		if err != nil {
-			err = fmt.Errorf("could not withdraw and stake: %w", err)
+			err = fmt.Errorf("withdraw and stake: %w", err)
 			return
 		}
 
@@ -452,7 +454,7 @@ func (k Keeper) executeAction(
 		var rewards sdk.Coins
 		rewards, err = k.withdrawRewards(ctx, address)
 		if err != nil {
-			err = fmt.Errorf("could not withdraw and stake: %w", err)
+			err = fmt.Errorf("withdraw and stake: %w", err)
 			return
 		}
 
@@ -471,7 +473,7 @@ func (k Keeper) executeAction(
 		var validator string
 		validator, err = k.stake(ctx, address, amount1, strategy, pseudoRandomNumber)
 		if err != nil {
-			err = fmt.Errorf("could not stake: %w", err)
+			err = fmt.Errorf("stake: %w", err)
 			return
 		}
 

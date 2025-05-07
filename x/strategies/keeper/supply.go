@@ -9,7 +9,6 @@ import (
 	"github.com/kopi-money/kopi/x/strategies/types"
 )
 
-var minimumAmount = math.NewInt(1_000_000_000) // i.e. 100
 type CalculateValue []func() (math.LegacyDec, error)
 
 func (cv CalculateValue) get() (math.LegacyDec, error) {
@@ -26,37 +25,15 @@ func (cv CalculateValue) get() (math.LegacyDec, error) {
 	return value, nil
 }
 
-func (k Keeper) calculateNewStrategyAssetAmount(ctx context.Context, denom string, addedAmount math.Int, calculateValue CalculateValue) (math.Int, error) {
-	assetSupply := k.BankKeeper.GetSupply(ctx, denom).Amount
-	newTokens := math.ZeroInt()
-
-	amountBelowThreshold := minimumAmount.Sub(assetSupply)
-	if amountBelowThreshold.IsPositive() {
-		newTokens = math.MinInt(amountBelowThreshold, addedAmount)
-		addedAmount = addedAmount.Sub(newTokens)
-	}
-
-	if addedAmount.IsPositive() {
-		newTokensFromShare, err := k.calculateNewStrategyAssetAmountWithShare(ctx, denom, addedAmount, calculateValue)
-		if err != nil {
-			return math.Int{}, err
-		}
-
-		newTokens = newTokens.Add(newTokensFromShare)
-	}
-
-	return newTokens, nil
-}
-
-func (k Keeper) calculateNewStrategyAssetAmountWithShare(ctx context.Context, denom string, addedAmount math.Int, calculateValue CalculateValue) (math.Int, error) {
-	assetSupply := k.BankKeeper.GetSupply(ctx, denom).Amount
-	if assetSupply.IsZero() {
+func (k Keeper) calculateNewAAssetAmount(ctx context.Context, denom string, addedAmount math.Int, calculateValue CalculateValue) (math.Int, error) {
+	aAssetSupply := k.BankKeeper.GetSupply(ctx, denom).Amount
+	if aAssetSupply.IsZero() {
 		return addedAmount, nil
 	}
 
 	aAssetValue, err := calculateValue.get()
 	if err != nil {
-		return math.Int{}, fmt.Errorf("could not calculate aasset value: %w", err)
+		return math.Int{}, fmt.Errorf("calculate aasset value: %w", err)
 	}
 
 	if !aAssetValue.IsPositive() {
@@ -69,7 +46,7 @@ func (k Keeper) calculateNewStrategyAssetAmountWithShare(ctx context.Context, de
 	if valueShare.Equal(math.LegacyOneDec()) {
 		newTokens = addedAmount
 	} else {
-		newTokens = assetSupply.ToLegacyDec().Quo(math.LegacyOneDec().Sub(valueShare)).RoundInt().Sub(assetSupply) // C
+		newTokens = aAssetSupply.ToLegacyDec().Quo(math.LegacyOneDec().Sub(valueShare)).RoundInt().Sub(aAssetSupply) // C
 	}
 
 	return newTokens, nil
@@ -78,7 +55,7 @@ func (k Keeper) calculateNewStrategyAssetAmountWithShare(ctx context.Context, de
 func (k Keeper) calculateRedemptionAmount(ctx context.Context, arbitrageDenom denomtypes.ArbitrageDenom, requestedAAssetAmount, available math.Int, calculateValue CalculateValue, allowIncomplete bool) (math.Int, math.Int, error) {
 	redemptionValue, err := k.calculateRedemptionValue(ctx, arbitrageDenom, requestedAAssetAmount, calculateValue)
 	if err != nil {
-		return math.Int{}, math.Int{}, fmt.Errorf("could not calculate redemption value: %w", err)
+		return math.Int{}, math.Int{}, fmt.Errorf("calculate redemption value: %w", err)
 	}
 
 	if redemptionValue.GT(available) && !allowIncomplete {
@@ -106,7 +83,7 @@ func (k Keeper) calculateRedemptionValue(ctx context.Context, arbitrageDenom den
 	assetSupply := math.LegacyNewDecFromInt(k.BankKeeper.GetSupply(ctx, arbitrageDenom.DexDenom).Amount)
 	assetValue, err := calculateValue.get()
 	if err != nil {
-		return math.Int{}, fmt.Errorf("could not calculate aAsset value: %w", err)
+		return math.Int{}, fmt.Errorf("calculate aAsset value: %w", err)
 	}
 
 	if !assetSupply.IsPositive() {

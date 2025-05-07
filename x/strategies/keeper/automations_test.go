@@ -78,7 +78,7 @@ func handleAutomationAtHeight(ctx context.Context, k keeper.Keeper, automation t
 		if err = cache.Transact(ctx, func(innerCtx context.Context) error {
 			coins := sdk.NewCoins(sdk.NewCoin(constants.KUSD, math.NewInt(int64(totalConsumption))))
 			if err = k.BankKeeper.SendCoinsFromModuleToModule(innerCtx, types.PoolAutomationFunds, dextypes.PoolReserve, coins); err != nil {
-				return fmt.Errorf("could not send funds from funds pool to reserve: %w", err)
+				return fmt.Errorf("send funds from funds pool to reserve: %w", err)
 			}
 
 			return nil
@@ -404,7 +404,7 @@ func TestAutomation10(t *testing.T) {
 	_, _, err := handleAutomation(ctx, k, automation)
 	require.NoError(t, err)
 
-	executedAutomation := k.GetAutomations(ctx)[0]
+	executedAutomation := k.ExportAutomations(ctx)[0]
 	require.Equal(t, int64(1), executedAutomation.TotalTimesExecuted)
 	require.Equal(t, int64(1), executedAutomation.PeriodTimesExecuted)
 	require.Equal(t, uint64(1), executedAutomation.TotalConditionFeesConsumed)
@@ -414,13 +414,13 @@ func TestAutomation10(t *testing.T) {
 
 	require.True(t, executedAutomation.Active)
 
-	_, _, err = handleAutomation(ctx, k, *executedAutomation)
+	_, _, err = handleAutomation(ctx, k, executedAutomation)
 	require.NoError(t, err)
 
-	_, _, err = handleAutomation(ctx, k, *executedAutomation)
+	_, _, err = handleAutomation(ctx, k, executedAutomation)
 	require.NoError(t, err)
 
-	executedAutomation = k.GetAutomations(ctx)[0]
+	executedAutomation = k.ExportAutomations(ctx)[0]
 	require.False(t, executedAutomation.Active)
 }
 
@@ -461,7 +461,7 @@ func TestAutomation11(t *testing.T) {
 	_, _, err := handleAutomation(ctx, k, automation)
 	require.NoError(t, err)
 
-	executedAutomation := k.GetAutomations(ctx)[0]
+	executedAutomation := k.ExportAutomations(ctx)[0]
 	require.Equal(t, int64(1), executedAutomation.TotalTimesExecuted)
 	require.Equal(t, int64(1), executedAutomation.PeriodTimesExecuted)
 	require.Equal(t, uint64(1), executedAutomation.TotalConditionFeesConsumed)
@@ -471,13 +471,13 @@ func TestAutomation11(t *testing.T) {
 
 	require.True(t, executedAutomation.Active)
 
-	_, _, err = handleAutomation(ctx, k, *executedAutomation)
+	_, _, err = handleAutomation(ctx, k, executedAutomation)
 	require.NoError(t, err)
 
-	_, _, err = handleAutomation(ctx, k, *executedAutomation)
+	_, _, err = handleAutomation(ctx, k, executedAutomation)
 	require.NoError(t, err)
 
-	executedAutomation = k.GetAutomations(ctx)[0]
+	executedAutomation = k.ExportAutomations(ctx)[0]
 	require.False(t, executedAutomation.Active)
 }
 
@@ -518,7 +518,7 @@ func TestAutomation12(t *testing.T) {
 	_, _, err := handleAutomationAtHeight(ctx, k, automation)
 	require.NoError(t, err)
 
-	executedAutomation := k.GetAutomations(ctx)[0]
+	executedAutomation := k.ExportAutomations(ctx)[0]
 	require.Equal(t, int64(1), executedAutomation.TotalTimesExecuted)
 	require.Equal(t, int64(1), executedAutomation.PeriodTimesExecuted)
 	require.Equal(t, uint64(1), executedAutomation.TotalConditionFeesConsumed)
@@ -528,16 +528,16 @@ func TestAutomation12(t *testing.T) {
 
 	require.True(t, executedAutomation.Active)
 
-	_, _, err = handleAutomationAtHeight(ctx, k, *executedAutomation)
+	_, _, err = handleAutomationAtHeight(ctx, k, executedAutomation)
 	require.NoError(t, err)
 
-	executedAutomation = k.GetAutomations(ctx)[0]
+	executedAutomation = k.ExportAutomations(ctx)[0]
 	require.True(t, executedAutomation.Active)
 
-	_, _, err = handleAutomationAtHeight(ctx, k, *executedAutomation)
+	_, _, err = handleAutomationAtHeight(ctx, k, executedAutomation)
 	require.NoError(t, err)
 
-	executedAutomation = k.GetAutomations(ctx)[0]
+	executedAutomation = k.ExportAutomations(ctx)[0]
 	require.True(t, executedAutomation.Active)
 }
 

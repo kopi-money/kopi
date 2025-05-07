@@ -24,7 +24,7 @@ func (k Keeper) AutomationsAll(ctx context.Context, req *types.QueryAutomationsA
 	)
 
 	if err != nil {
-		return nil, fmt.Errorf("could not get orders from pagination: %w", err)
+		return nil, fmt.Errorf("get orders from pagination: %w", err)
 	}
 
 	return &types.QueryAutomationsResponse{
@@ -63,12 +63,29 @@ func (k Keeper) AutomationsAddressFunds(ctx context.Context, req *types.QueryAut
 		return nil, types.ErrInvalidAddress
 	}
 
+	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	funds := k.GetAutomationFunds(ctx, req.Address)
 	coins := k.BankKeeper.SpendableCoin(ctx, acc, constants.KUSD).Amount
 
+	balanceUSD, err := k.DenomKeeper.GetValueIn(ctx, constants.KUSD, referenceDenom, coins.ToLegacyDec())
+	if err != nil {
+		return nil, err
+	}
+
+	fundsUSD, err := k.DenomKeeper.GetValueIn(ctx, constants.KUSD, referenceDenom, funds.ToLegacyDec())
+	if err != nil {
+		return nil, err
+	}
+
 	return &types.QueryAutomationsAddressFundsResponse{
-		Balance: coins.String(),
-		Funds:   funds.String(),
+		Balance:    coins.String(),
+		BalanceUsd: balanceUSD.String(),
+		Funds:      funds.String(),
+		FundsUsd:   fundsUSD.String(),
 	}, nil
 }
 
@@ -124,7 +141,7 @@ func (k Keeper) AutomationInterval(ctx context.Context, req *types.QueryAutomati
 
 	intervalInSeconds, runtimeInSeconds, expectedChecks, err := k.getIntervalCheckData(ctx, secondsPerBlock, automation, blockHeight)
 	if err != nil {
-		return nil, fmt.Errorf("could not get interval check data: %w", err)
+		return nil, fmt.Errorf("get interval check data: %w", err)
 	}
 
 	return &types.QueryAutomationIntervalResponse{

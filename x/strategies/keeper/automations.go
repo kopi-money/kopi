@@ -57,16 +57,6 @@ func (k Keeper) AutomationCacheIterator(ctx context.Context) cache.Iterator[uint
 	return k.automations.CacheIterator(ctx)
 }
 
-func (k Keeper) GetAutomations(ctx context.Context) (list []*types.Automation) {
-	iterator := k.AutomationIterator(ctx)
-	for iterator.Valid() {
-		automation := iterator.GetNext()
-		list = append(list, &automation)
-	}
-
-	return
-}
-
 func (k Keeper) GetAutomationsByAddress(ctx context.Context, address string) (list []*types.Automation) {
 	iterator := k.AutomationIterator(ctx)
 	for iterator.Valid() {
@@ -84,7 +74,7 @@ func (k Keeper) HandleAutomations(ctx context.Context) error {
 
 	blocksPerYearDec, err := k.BlockspeedKeeper.BlocksPerYear(ctx)
 	if err != nil {
-		return fmt.Errorf("could not get blocks per year: %w", err)
+		return fmt.Errorf("get blocks per year: %w", err)
 	}
 
 	blocksPerYear := blocksPerYearDec.RoundInt64()
@@ -132,7 +122,7 @@ func (k Keeper) HandleAutomations(ctx context.Context) error {
 		if err = cache.Transact(ctx, func(innerCtx context.Context) error {
 			coins := sdk.NewCoins(sdk.NewCoin(constants.KUSD, math.NewInt(int64(totalConsumption))))
 			if err = k.BankKeeper.SendCoinsFromModuleToModule(innerCtx, types.PoolAutomationFunds, dextypes.PoolReserve, coins); err != nil {
-				return fmt.Errorf("could not send funds from funds pool to reserve: %w", err)
+				return fmt.Errorf("send funds from funds pool to reserve: %w", err)
 			}
 
 			return nil
@@ -158,7 +148,7 @@ func (k Keeper) checkAutomationBelowCheckRate(ctx context.Context, secondsPerBlo
 func (k Keeper) getIntervalCheckData(ctx context.Context, secondsPerBlock math.LegacyDec, automation types.Automation, blockHeight int64) (math.LegacyDec, math.LegacyDec, math.LegacyDec, error) {
 	intervalInSeconds, err := convertIntervalLengthDec(automation.IntervalType, automation.IntervalLength)
 	if err != nil {
-		return math.LegacyDec{}, math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("could not convert interval length: %w", err)
+		return math.LegacyDec{}, math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("convert interval length: %w", err)
 	}
 
 	var runtimeInSeconds math.LegacyDec
@@ -173,11 +163,6 @@ func (k Keeper) getIntervalCheckData(ctx context.Context, secondsPerBlock math.L
 	expectedChecks := runtimeInSeconds.Quo(intervalInSeconds) // C
 
 	return intervalInSeconds, runtimeInSeconds, expectedChecks, nil
-}
-
-func convertBlocksToSeconds(secondsPerBlock math.LegacyDec, numBlocks int64) math.LegacyDec {
-	numBlocksDec := math.LegacyNewDec(numBlocks)
-	return numBlocksDec.Mul(secondsPerBlock)
 }
 
 func (k Keeper) handleTimeValidity(ctx context.Context, automation types.Automation, blockHeight, blocksPerYear int64) bool {
@@ -252,7 +237,7 @@ func (k Keeper) handleAutomation(ctx context.Context, params types.Params, autom
 
 	numCheckedConditions, numValidConditions, err := k.CheckIfConditionsMet(ctx, acc, automation.Conditions, int(automation.Index))
 	if err != nil {
-		return false, nil, fmt.Errorf("could not check whether conditions are met: %w", err)
+		return false, nil, fmt.Errorf("check whether conditions are met: %w", err)
 	}
 
 	if numCheckedConditions == 0 {
@@ -321,4 +306,19 @@ func (k Keeper) determineAutomationCost(ctx context.Context, automation *types.A
 	cost := int64(k.GetParams(ctx).AutomationFeeCondition) * int64(len(automation.Conditions))
 	cost += k.getActionsCost(ctx, automation.Actions)
 	return math.NewInt(cost)
+}
+
+func (k Keeper) ExportAutomations(ctx context.Context) (list []types.Automation) {
+	iterator := k.AutomationIterator(ctx)
+	for iterator.Valid() {
+		automation := iterator.GetNext()
+		list = append(list, automation)
+	}
+
+	return
+}
+
+func convertBlocksToSeconds(secondsPerBlock math.LegacyDec, numBlocks int64) math.LegacyDec {
+	numBlocksDec := math.LegacyNewDec(numBlocks)
+	return numBlocksDec.Mul(secondsPerBlock)
 }

@@ -82,7 +82,7 @@ type MessageIn interface {
 func convertCondition(messageCondition MessageIn) (Condition, error) {
 	value, err := math.LegacyNewDecFromStr(messageCondition.GetValue())
 	if err != nil {
-		return Condition{}, fmt.Errorf("could not parse value: %w", err)
+		return Condition{}, fmt.Errorf("parse value: %w", err)
 	}
 
 	var referencePrice *math.LegacyDec
@@ -90,7 +90,7 @@ func convertCondition(messageCondition MessageIn) (Condition, error) {
 		var rp math.LegacyDec
 		rp, err = math.LegacyNewDecFromStr(messageCondition.GetReferencePrice())
 		if err != nil {
-			return Condition{}, fmt.Errorf("could not parse reference price: %w", err)
+			return Condition{}, fmt.Errorf("parse reference price: %w", err)
 		}
 
 		referencePrice = &rp

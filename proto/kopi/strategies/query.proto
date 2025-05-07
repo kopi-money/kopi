@@ -125,7 +125,9 @@ message QueryAutomationsAddressFundsRequest {
 
 message QueryAutomationsAddressFundsResponse {
   string balance = 1;
-  string funds = 2;
+  string balance_usd = 2;
+  string funds = 3;
+  string funds_usd = 4;
 }
 
 message QueryAutomationsAddressRequest {

@@ -17,9 +17,16 @@ message GenesisState {
     (amino.dont_omitempty) = true
   ];
 
-  repeated ArbitrageDenom arbitrage_denoms = 2;
-  repeated Automation automations = 3;
-  repeated GenesisAutomationFunds automation_funds = 4;
+  repeated ArbitrageDenom arbitrage_denoms = 2 [
+    (gogoproto.nullable) = false
+  ];
+  repeated Automation automations = 3 [
+    (gogoproto.nullable) = false
+  ];
+
+  repeated GenesisAutomationFunds automation_funds = 4 [
+    (gogoproto.nullable) = false
+  ];
 
   uint64 automation_next_index = 5;
 }

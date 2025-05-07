@@ -3,7 +3,7 @@ package types
 import (
 	"cosmossdk.io/math"
 	"fmt"
-	"github.com/kopi-money/kopi/x/dex/constant_product"
+	"github.com/kopi-money/kopi/trading"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	mmtypes "github.com/kopi-money/kopi/x/mm/types"
 )
@@ -37,10 +37,18 @@ var NoAmountActions = []int64{
 var ValidErrors = []error{
 	dextypes.ErrBaseLiqEmpty,
 	dextypes.ErrNotEnoughFunds,
-	dextypes.ErrTradeAmountTooSmall,
-	dextypes.ErrNotEnoughLiquidity,
+	dextypes.ErrNotEnoughUsableLiquidity,
+	dextypes.ErrNoLiquidityGiving,
+	dextypes.ErrNoLiquidityReceiving,
 
-	constant_product.ErrRequestedAmountTooLarge,
+	trading.ErrRequestedAmountTooLarge,
+	trading.ErrEmptyTrade,
+	trading.ErrMarketPriceTooHigh,
+	trading.ErrPriceTooLow,
+	trading.ErrTradeAmountTooSmall,
+	trading.ErrInvalidMaxPriceFormat,
+	trading.ErrMaxPriceNotPositive,
+	trading.ErrTradeAmountNotPositive,
 
 	mmtypes.ErrBorrowLimitExceeded,
 	mmtypes.ErrCannotWithdrawCollateral,

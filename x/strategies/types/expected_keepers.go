@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+	"github.com/kopi-money/kopi/trading"
 
 	"cosmossdk.io/core/address"
 	"cosmossdk.io/math"
@@ -65,16 +66,16 @@ type BlockspeedKeeper interface {
 }
 
 type DexKeeper interface {
-	AddLiquidity(context.Context, sdk.AccAddress, string, math.Int) (math.Int, error)
-	CalculateParity(context.Context, string) (*math.LegacyDec, string, error)
-	ExecuteBuy(dextypes.TradeContext) (dextypes.TradeResult, error)
-	ExecuteSell(dextypes.TradeContext) (dextypes.TradeResult, error)
+	AddLiquidity(context.Context, sdk.AccAddress, string, math.Int) error
+	ExecuteBuy(dextypes.TradeContext) (trading.TradeResult, error)
+	ExecuteSell(dextypes.TradeContext) (trading.TradeResult, error)
 	GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int
 	NewOrdersCaches(ctx context.Context) *dextypes.OrdersCaches
 	RemoveLiquidityForAddress(context.Context, sdk.AccAddress, string, math.Int, *uint64) (math.Int, error)
 }
 
 type DenomKeeper interface {
+	CalculateParity(context.Context, string) (*math.LegacyDec, string, error)
 	CalculatePrice(context.Context, string, string) (math.LegacyDec, error)
 	GetArbitrageDenoms(context.Context) []denomtypes.ArbitrageDenom
 	GetCAsset(context.Context, string) (denomtypes.CAsset, error)

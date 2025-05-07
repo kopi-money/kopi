@@ -18,7 +18,7 @@ func (k Keeper) ValidateConditions(ctx context.Context, conditions []types.Condi
 
 	for conditionIndex, condition := range conditions {
 		if err := k.ValidateCondition(ctx, condition); err != nil {
-			return fmt.Errorf("could not convert condition[%d]: %w", conditionIndex, err)
+			return fmt.Errorf("convert condition[%d]: %w", conditionIndex, err)
 		}
 	}
 
@@ -197,7 +197,7 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 	case types.ConditionPrice:
 		value, err = k.DenomKeeper.CalculatePrice(ctx, condition.String1, condition.String2)
 		if err != nil {
-			return false, fmt.Errorf("could not calculate price: %w", err)
+			return false, fmt.Errorf("calculate price: %w", err)
 		}
 
 	case types.ConditionPriceChangeAmount:
@@ -211,7 +211,7 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 
 		value, err = k.DenomKeeper.GetPriceInUSD(ctx, condition.String1)
 		if err != nil {
-			return false, fmt.Errorf("could not calculate price: %w", err)
+			return false, fmt.Errorf("calculate price: %w", err)
 		}
 
 		if value.IsZero() {
@@ -234,7 +234,7 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 
 		value, err = k.DenomKeeper.GetPriceInUSD(ctx, condition.String1)
 		if err != nil {
-			return false, fmt.Errorf("could not calculate price: %w", err)
+			return false, fmt.Errorf("calculate price: %w", err)
 		}
 
 		if value.IsZero() {
@@ -250,7 +250,7 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 		coins := k.BankKeeper.SpendableCoin(ctx, accAddr, condition.String1)
 		value, err = k.DenomKeeper.GetValueIn(ctx, condition.String1, condition.String2, coins.Amount.ToLegacyDec())
 		if err != nil {
-			return false, fmt.Errorf("could not calculate value of wallet amount: %w", err)
+			return false, fmt.Errorf("calculate value of wallet amount: %w", err)
 		}
 
 	case types.ConditionCollateralAmount:
@@ -260,7 +260,7 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 		amount := k.MMKeeper.GetCollateralForDenomForAddressWithDefault(ctx, condition.String1, accAddr.String()).ToLegacyDec()
 		value, err = k.DenomKeeper.GetValueIn(ctx, condition.String1, condition.String2, amount)
 		if err != nil {
-			return false, fmt.Errorf("could not calculate value of collateral amount: %w", err)
+			return false, fmt.Errorf("calculate value of collateral amount: %w", err)
 		}
 
 	case types.ConditionLiquidityAmount:
@@ -270,7 +270,7 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 		amount := k.DexKeeper.GetLiquidityByAddress(ctx, condition.String1, accAddr.String()).ToLegacyDec()
 		value, err = k.DenomKeeper.GetValueIn(ctx, condition.String1, condition.String2, amount)
 		if err != nil {
-			return false, fmt.Errorf("could not calculate value of liquidity amount: %w", err)
+			return false, fmt.Errorf("calculate value of liquidity amount: %w", err)
 		}
 
 	case types.ConditionInterestRate:
@@ -283,13 +283,13 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 		amount := k.MMKeeper.GetLoanValue(ctx, condition.String1, accAddr.String())
 		value, err = k.DenomKeeper.GetValueIn(ctx, condition.String1, condition.String2, amount)
 		if err != nil {
-			return false, fmt.Errorf("could not calculate value of loan: %w", err)
+			return false, fmt.Errorf("calculate value of loan: %w", err)
 		}
 
 	case types.ConditionCreditLineUsage:
 		value, err = k.MMKeeper.CalculateCreditLineUsage(ctx, accAddr.String())
 		if err != nil {
-			return false, fmt.Errorf("could not calculate credit line usage: %w", err)
+			return false, fmt.Errorf("calculate credit line usage: %w", err)
 		}
 
 	case types.ConditionAutomationFundsAmount:
@@ -307,7 +307,7 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 
 	matched, err := compare(conditionComparison, value, conditionValue)
 	if err != nil {
-		return false, fmt.Errorf("could not execute condition comparison: %w", err)
+		return false, fmt.Errorf("execute condition comparison: %w", err)
 	}
 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
