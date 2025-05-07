@@ -30,7 +30,7 @@ func CreateUpgradeHandler(_ *module.Manager, _ module.Configurator, denomK denom
 			dexParams := dexK.GetParams(ctx)
 			dexParams.TradeBaseValue = math.LegacyNewDec(1_000000_000000)
 			dexParams.DiscountLevels = nil
-			dexParams.VirtualLiquidityDecay = math.LegacyOneDec()
+			dexParams.PriceIncreasingFactor = math.LegacyOneDec()
 
 			if err := dexK.SetParams(innerCtx, dexParams); err != nil {
 				return err
