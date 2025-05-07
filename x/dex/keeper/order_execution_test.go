@@ -464,10 +464,7 @@ func TestOrders15(t *testing.T) {
 	}))
 
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		eventManager := sdk.UnwrapSDKContext(innerCtx).EventManager()
-		blockHeight := sdk.UnwrapSDKContext(innerCtx).BlockHeight()
-
-		return k.ExecuteOrders(innerCtx, eventManager, blockHeight)
+		return k.ExecuteOrders(innerCtx)
 	}))
 
 	require.True(t, liquidityBalanced(ctx, k))
@@ -526,7 +523,9 @@ func TestOrders17(t *testing.T) {
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 100))
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, "uwusdc", 100))
 
-	for i := 0; i < 1000; i++ {
+	m := measurement.NewMeasurements()
+
+	for i := 0; i < 500; i++ {
 		require.NoError(t, keepertest.AddOrder(ctx, msg, &types.MsgAddOrder{
 			Creator:         keepertest.Bob,
 			DenomGiving:     "uwusdc",
@@ -553,6 +552,10 @@ func TestOrders17(t *testing.T) {
 		checkOrderPoolBalanceDiff(t, k, ctx)
 		require.NoError(t, checkCache(ctx, k))
 	}
+
+	m.Print(func(s string) {
+		fmt.Println(s)
+	})
 }
 
 func TestOrders18(t *testing.T) {

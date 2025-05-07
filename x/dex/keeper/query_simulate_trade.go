@@ -36,28 +36,27 @@ func (k Keeper) querySimulateTrade(ctx context.Context, req *types.QuerySimulate
 
 	ordersCaches := k.NewOrdersCaches(ctx)
 	tradeCtx := types.TradeContext{
-		Context:             ctx,
 		TradeAmount:         amount,
+		Context:             ctx,
 		TradeDenomGiving:    req.DenomGiving,
 		TradeDenomReceiving: req.DenomReceiving,
 		DiscountAddress:     req.Address,
 		OrdersCaches:        ordersCaches,
-		Fee:                 ordersCaches.TradeFee.Get(),
 	}
 
-	tradeResult, err := simulateFunc(tradeCtx)
+	tradeResult, err := simulateFunc(tradeCtx, amount, req.DenomGiving, req.DenomReceiving)
 	if err != nil {
-		return nil, fmt.Errorf("could not simulate trade: %w", err)
+		return nil, fmt.Errorf("simulate trade: %w", err)
 	}
 
 	priceGivingUSD, err := k.DenomKeeper.GetPriceInUSD(ctx, req.DenomGiving)
 	if err != nil {
-		return nil, fmt.Errorf("could not get price in USD: %w", err)
+		return nil, fmt.Errorf("get price in USD: %w", err)
 	}
 
 	priceReceivingUSD, err := k.DenomKeeper.GetPriceInUSD(ctx, req.DenomReceiving)
 	if err != nil {
-		return nil, fmt.Errorf("could not get price in USD: %w", err)
+		return nil, fmt.Errorf("get price in USD: %w", err)
 	}
 
 	var price string

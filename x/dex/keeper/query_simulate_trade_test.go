@@ -66,7 +66,6 @@ func TestSimulateTrade2(t *testing.T) {
 
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 4_463686_945231))
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 64_471_465592))
-
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		_, err := msg.AddLiquidity(innerCtx, &types.MsgAddLiquidity{
 			Creator: keepertest.Alice,

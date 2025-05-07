@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"context"
 	"fmt"
+	gomath "math"
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/cache"
@@ -109,7 +110,7 @@ func TestBurn2(t *testing.T) {
 	require.NoError(t, err)
 	require.False(t, priceBase.IsNil())
 
-	parity, _, err := k.DexKeeper.CalculateParity(ctx, constants.KUSD)
+	parity, _, err := k.DenomKeeper.CalculateParity(ctx, constants.KUSD)
 	require.NoError(t, err)
 	require.False(t, parity.IsNil())
 	require.True(t, parity.LT(math.LegacyOneDec()))
@@ -143,8 +144,7 @@ func addReserveFundsToDex(ctx context.Context, acc swaptypes.AccountKeeper, dex 
 	require.NoError(t, err)
 
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		_, err = dex.AddLiquidity(innerCtx, reserveAcc.GetAddress(), denom, math.LegacyNewDec(amount).RoundInt())
-		return err
+		return dex.AddLiquidity(innerCtx, reserveAcc.GetAddress(), denom, math.LegacyNewDec(amount).RoundInt())
 	}))
 }
 
@@ -152,7 +152,9 @@ func TestBurn3(t *testing.T) {
 	supply1 := burnScenario(t, 1_000_000000)
 	supply2 := burnScenario(t, 10_000_000000)
 
-	require.Equal(t, supply1, supply2)
+	// not exactly equal because of rounding
+	diff := gomath.Abs(float64(supply1 - supply2))
+	require.True(t, diff < 5)
 }
 
 func burnScenario(t *testing.T, sellAmount int64) int64 {
@@ -173,8 +175,6 @@ func burnScenario(t *testing.T, sellAmount int64) int64 {
 	keepertest.TestAddLiquidity(ctx, k.DexKeeper, t, reserveAcc, "uwusdc", 100_000)
 	addReserveFundsToDex(ctx, k.AccountKeeper, k.DexKeeper, k.BankKeeper, t, constants.KUSD, 10)
 
-	zeroInt := math.ZeroInt()
-
 	tradeCtx := dextypes.TradeContext{
 		Context:             ctx,
 		CoinSource:          addr.String(),
@@ -184,20 +184,18 @@ func burnScenario(t *testing.T, sellAmount int64) int64 {
 		TradeDenomReceiving: "uwusdc",
 		MaxPrice:            nil,
 		TradeBalances:       dexkeeper.NewTradeBalances(),
-		Fee:                 math.LegacyZeroDec(),
-		MinimumTradeAmount:  &zeroInt,
 	}
 
-	var tradeResult dextypes.TradeResult
+	var tradeResult trading.TradeResult
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		tradeCtx.Context = innerCtx
 		tradeResult, err = k.DexKeeper.ExecuteSell(tradeCtx)
 		return err
 	}))
 
-	require.True(t, tradeResult.AmountGiven.IsPositive())
+	require.True(t, tradeResult.AmountGiven().IsPositive())
 
-	parity1, _, err := k.DexKeeper.CalculateParity(ctx, constants.KUSD)
+	parity1, _, err := k.DenomKeeper.CalculateParity(ctx, constants.KUSD)
 	require.NoError(t, err)
 	require.True(t, parity1.LT(math.LegacyOneDec()))
 

@@ -18,7 +18,7 @@ func (k Keeper) KCoinsSupplies(ctx context.Context, req *types.QueryKCoinsSuppli
 	for _, kCoin := range k.DenomKeeper.KCoins(ctx) {
 		coin := k.BankKeeper.GetSupply(ctx, kCoin)
 
-		price, denom, err := k.DexKeeper.CalculateParity(ctx, coin.Denom)
+		price, denom, err := k.DenomKeeper.CalculateParity(ctx, coin.Denom)
 		if err != nil {
 			return nil, err
 		}

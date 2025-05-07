@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"cosmossdk.io/math"
@@ -24,7 +25,11 @@ func (k Keeper) ReserveFunds(ctx context.Context, _ *types.QueryReserveFundsRequ
 
 		priceUSD, err := k.DenomKeeper.GetPriceInUSD(ctx, denom)
 		if err != nil {
-			return nil, err
+			if errors.Is(err, types.ErrZeroPrice) {
+				priceUSD = math.LegacyZeroDec()
+			} else {
+				return nil, err
+			}
 		}
 
 		if !priceUSD.IsPositive() {

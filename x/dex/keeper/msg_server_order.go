@@ -70,7 +70,7 @@ func (k Keeper) AddOrder(ctx context.Context, creator, denomGiving, denomReceivi
 	acc, _ := sdk.AccAddressFromBech32(creator)
 	coins := sdk.NewCoins(sdk.NewCoin(denomGiving, lockAmount))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolOrders, coins); err != nil {
-		return nil, fmt.Errorf("could not send coins to module: %w", err)
+		return nil, fmt.Errorf("send coins to module: %w", err)
 	}
 
 	order := types.Order{
@@ -104,9 +104,7 @@ func (k Keeper) calculateBuyLockAmount(ctx context.Context, amountRequested, max
 	return amountRequired.Ceil().TruncateInt()
 }
 
-func (k msgServer) RemoveOrder(goCtx context.Context, msg *types.MsgRemoveOrder) (*types.Void, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) RemoveOrder(ctx context.Context, msg *types.MsgRemoveOrder) (*types.Void, error) {
 	order, found := k.GetOrder(ctx, msg.Index)
 	if !found {
 		return nil, types.ErrItemNotFound
@@ -123,9 +121,7 @@ func (k msgServer) RemoveOrder(goCtx context.Context, msg *types.MsgRemoveOrder)
 	return &types.Void{}, nil
 }
 
-func (k msgServer) RemoveOrders(goCtx context.Context, msg *types.MsgRemoveOrders) (*types.Void, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) RemoveOrders(ctx context.Context, msg *types.MsgRemoveOrders) (*types.Void, error) {
 	for _, order := range k.GetAllOrdersByAddress(ctx, msg.Creator) {
 		if err := k.Keeper.RemoveOrder(ctx, order); err != nil {
 			return nil, err

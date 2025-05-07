@@ -167,15 +167,15 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 // The begin block implementation is optional.
 func (am AppModule) BeginBlock(ctx context.Context) error {
 	if err := am.keeper.Initialize(ctx); err != nil {
-		return fmt.Errorf("could not initialize dex module: %w", err)
+		return fmt.Errorf("initialize dex module: %w", err)
 	}
 
 	return cache.TransactWithNewMultiStore(ctx, func(innerCtx context.Context) error {
 		am.keeper.ResetTradeFeeTracker(innerCtx)
 		am.keeper.UpdateMovingLiquidities(innerCtx)
 
-		if err := am.keeper.UpdateVirtualLiquidities(innerCtx); err != nil {
-			return fmt.Errorf("update virtual liquidities: %w", err)
+		if err := am.keeper.UpdateRatios(innerCtx); err != nil {
+			return fmt.Errorf("update ratios: %w", err)
 		}
 
 		return nil
@@ -186,20 +186,17 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 // The end block implementation is optional.
 func (am AppModule) EndBlock(ctx context.Context) error {
 	return cache.TransactWithNewMultiStore(ctx, func(innerCtx context.Context) error {
-		eventManager := sdk.UnwrapSDKContext(innerCtx).EventManager()
-		blockHeight := sdk.UnwrapSDKContext(innerCtx).BlockHeight()
-
-		if err := am.keeper.ExecuteOrders(innerCtx, eventManager, blockHeight); err != nil {
-			return fmt.Errorf("error executing orders: %w", err)
+		if err := am.keeper.ExecuteOrders(innerCtx); err != nil {
+			return fmt.Errorf("executing orders: %w", err)
 		}
 
 		// Apply the trade amount decay once every day
-		if blockHeight%86400 == 0 {
+		if sdk.UnwrapSDKContext(ctx).BlockHeight()%86400 == 0 {
 			am.keeper.TradeAmountDecay(innerCtx)
 		}
 
 		if err := am.keeper.CheckEpoch(innerCtx); err != nil {
-			return fmt.Errorf("error checking epoch: %w", err)
+			return fmt.Errorf("checking epoch: %w", err)
 		}
 
 		am.keeper.EmitTradeFeeEvent(innerCtx)

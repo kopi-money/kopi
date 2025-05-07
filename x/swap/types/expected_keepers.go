@@ -39,15 +39,15 @@ type BlockspeedKeeper interface {
 type DexKeeper interface {
 	cache.Cache
 
-	AddLiquidity(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int) (math.Int, error)
-	CalculateParity(ctx context.Context, kCoin string) (*math.LegacyDec, string, error)
-	ExecuteSell(ctx dextypes.TradeContext) (dextypes.TradeResult, error)
+	AddLiquidity(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int) error
+	ExecuteSell(ctx dextypes.TradeContext) (trading.TradeResult, error)
 	GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int
 	GetPoolLiquidity(context.Context, string) math.Int
 	RemoveLiquidityForAddress(ctx context.Context, accAddress sdk.AccAddress, denom string, amount math.Int, positionIndex *uint64) (math.Int, error)
 }
 
 type DenomKeeper interface {
+	CalculateParity(ctx context.Context, kCoin string) (*math.LegacyDec, string, error)
 	CalculatePrice(ctx context.Context, denomFrom, denomTo string) (math.LegacyDec, error)
 	GetArbitrageDenoms(ctx context.Context) []denomtypes.ArbitrageDenom
 	GetRatio(ctx context.Context, denom string) (denomtypes.Ratio, error)

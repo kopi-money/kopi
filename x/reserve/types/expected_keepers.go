@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+	"github.com/kopi-money/kopi/trading"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 
 	"cosmossdk.io/math"
@@ -38,6 +39,7 @@ type ParamSubspace interface {
 }
 
 type DenomKeeper interface {
+	CalculateParity(ctx context.Context, kCoin string) (*math.LegacyDec, string, error)
 	GetCAssetByBaseName(ctx context.Context, baseDenom string) (denomtypes.CAsset, error)
 	IsKCoin(ctx context.Context, denom string) bool
 	IsValidDenom(ctx context.Context, denom string) bool
@@ -47,9 +49,8 @@ type DenomKeeper interface {
 }
 
 type DexKeeper interface {
-	AddLiquidity(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int) (math.Int, error)
-	CalculateParity(ctx context.Context, kCoin string) (*math.LegacyDec, string, error)
-	ExecuteSell(ctx dextypes.TradeContext) (dextypes.TradeResult, error)
+	AddLiquidity(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int) error
+	ExecuteSell(ctx dextypes.TradeContext) (trading.TradeResult, error)
 	GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int
 	RemoveLiquidityForAddress(ctx context.Context, accAddr sdk.AccAddress, denom string, amount math.Int, positionIndex *uint64) (math.Int, error)
 }

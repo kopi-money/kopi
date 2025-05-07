@@ -52,12 +52,12 @@ func (k msgServer) UpdateOrderFee(ctx context.Context, req *types.MsgUpdateOrder
 	return &types.Void{}, nil
 }
 
-func (k msgServer) UpdateReserveShare(ctx context.Context, req *types.MsgUpdateReserveShare) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+func (k msgServer) UpdateReserveShare(ctx context.Context, msg *types.MsgUpdateReserveShare) (*types.Void, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
-	reserveShare, err := math.LegacyNewDecFromStr(req.ReserveShare)
+	reserveShare, err := math.LegacyNewDecFromStr(msg.ReserveShare)
 	if err != nil {
 		return nil, err
 	}
@@ -92,13 +92,13 @@ func (k msgServer) UpdateVirtualLiquidityDecay(ctx context.Context, req *types.M
 	return &types.Void{}, nil
 }
 
-func (k msgServer) UpdateMaxOrderLife(ctx context.Context, req *types.MsgUpdateMaxOrderLife) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+func (k msgServer) UpdateMaxOrderLife(ctx context.Context, msg *types.MsgUpdateMaxOrderLife) (*types.Void, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
 	params := k.GetParams(ctx)
-	params.MaxOrderLife = req.MaxOrderLife
+	params.MaxOrderLife = msg.MaxOrderLife
 
 	if err := k.SetParams(ctx, params); err != nil {
 		return nil, err
@@ -107,12 +107,12 @@ func (k msgServer) UpdateMaxOrderLife(ctx context.Context, req *types.MsgUpdateM
 	return &types.Void{}, nil
 }
 
-func (k msgServer) UpdateTradeAmountDecay(ctx context.Context, req *types.MsgUpdateTradeAmountDecay) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+func (k msgServer) UpdateTradeAmountDecay(ctx context.Context, msg *types.MsgUpdateTradeAmountDecay) (*types.Void, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
-	tradeAmountDecay, err := math.LegacyNewDecFromStr(req.TradeAmountDecay)
+	tradeAmountDecay, err := math.LegacyNewDecFromStr(msg.TradeAmountDecay)
 	if err != nil {
 		return nil, err
 	}
@@ -127,13 +127,13 @@ func (k msgServer) UpdateTradeAmountDecay(ctx context.Context, req *types.MsgUpd
 	return &types.Void{}, nil
 }
 
-func (k msgServer) UpdateDiscountLevels(ctx context.Context, req *types.MsgUpdateDiscountLevels) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+func (k msgServer) UpdateDiscountLevels(ctx context.Context, msg *types.MsgUpdateDiscountLevels) (*types.Void, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
 	params := k.GetParams(ctx)
-	params.DiscountLevels = req.DiscountLevels
+	params.DiscountLevels = msg.DiscountLevels
 
 	if err := k.SetParams(ctx, params); err != nil {
 		return nil, err
@@ -142,14 +142,14 @@ func (k msgServer) UpdateDiscountLevels(ctx context.Context, req *types.MsgUpdat
 	return &types.Void{}, nil
 }
 
-func (k msgServer) UpdateEpochLength(ctx context.Context, req *types.MsgUpdateEpochLength) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+func (k msgServer) UpdateEpochLength(ctx context.Context, msg *types.MsgUpdateEpochLength) (*types.Void, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
-	epochLength, err := strconv.ParseUint(req.EpochLength, 10, 64)
+	epochLength, err := strconv.ParseUint(msg.EpochLength, 10, 64)
 	if err != nil {
-		return nil, fmt.Errorf("invalid epoch length: %v", req.EpochLength)
+		return nil, fmt.Errorf("invalid epoch length: %v", msg.EpochLength)
 	}
 
 	params := k.GetParams(ctx)
@@ -159,15 +159,15 @@ func (k msgServer) UpdateEpochLength(ctx context.Context, req *types.MsgUpdateEp
 		return nil, err
 	}
 
-	return &types.Void{}, err
+	return &types.Void{}, nil
 }
 
-func (k msgServer) UpdateLiquidityChangeDecay(ctx context.Context, req *types.MsgUpdateLiquidityChangeDecay) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+func (k msgServer) UpdateLiquidityChangeDecay(ctx context.Context, msg *types.MsgUpdateLiquidityChangeDecay) (*types.Void, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
-	liquidityChangeDecay, err := math.LegacyNewDecFromStr(req.LiquidityChangeDecay)
+	liquidityChangeDecay, err := math.LegacyNewDecFromStr(msg.LiquidityChangeDecay)
 	if err != nil {
 		return nil, err
 	}
@@ -179,31 +179,46 @@ func (k msgServer) UpdateLiquidityChangeDecay(ctx context.Context, req *types.Ms
 		return nil, err
 	}
 
-	return &types.Void{}, err
+	return &types.Void{}, nil
 }
 
-func (k msgServer) RemoveDexDenom(ctx context.Context, req *types.MsgRemoveDexDenom) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+func (k msgServer) UpdateMinimumLiquidityLock(ctx context.Context, msg *types.MsgUpdateMinimumLiquidityLock) (*types.Void, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
-	if !k.DenomKeeper.IsValidDenom(ctx, req.Name) {
+	params := k.GetParams(ctx)
+	params.MinimumLiquidityLockInBlocks = msg.MinimumLiquidityLockInBlocks
+
+	if err := k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
+
+	return &types.Void{}, nil
+}
+
+func (k msgServer) RemoveDexDenom(ctx context.Context, msg *types.MsgRemoveDexDenom) (*types.Void, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
+	}
+
+	if !k.DenomKeeper.IsValidDenom(ctx, msg.Name) {
 		return nil, denomtypes.ErrInvalidDexAsset
 	}
 
-	if k.DenomKeeper.IsCollateralDenom(ctx, req.Name) {
+	if k.DenomKeeper.IsCollateralDenom(ctx, msg.Name) {
 		return nil, types.ErrCannotRemoveCollateralDenom
 	}
 
-	if err := k.Keeper.RemoveAllLiquidityForDenom(ctx, req.Name); err != nil {
+	if err := k.Keeper.RemoveAllLiquidityForDenom(ctx, msg.Name); err != nil {
 		return nil, fmt.Errorf("remove liquidity from denom: %w", err)
 	}
 
-	if err := k.RemoveDenomOrders(ctx, req.Name); err != nil {
+	if err := k.RemoveDenomOrders(ctx, msg.Name); err != nil {
 		return nil, fmt.Errorf("remove orders: %w", err)
 	}
 
-	if err := k.DenomKeeper.RemoveDenom(ctx, req.Name); err != nil {
+	if err := k.DenomKeeper.RemoveDenom(ctx, msg.Name); err != nil {
 		return nil, fmt.Errorf("remove denom: %w", err)
 	}
 

@@ -402,7 +402,7 @@ func (k Keeper) RemoveAllLiquidityForDenom(ctx context.Context, denom string) er
 		acc, _ := sdk.AccAddressFromBech32(liq.Address)
 		coins := sdk.NewCoins(sdk.NewCoin(denom, liq.Amount))
 		if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolLiquidity, acc, coins); err != nil {
-			return fmt.Errorf("could not send coins from module to account: %w", err)
+			return fmt.Errorf("send coins from module to account: %w", err)
 		}
 
 		k.RemoveLiquidity(ctx, denom, liq.Index)

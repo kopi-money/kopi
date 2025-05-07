@@ -38,7 +38,7 @@ func (k Keeper) CalcOrdersSum(ctx context.Context) (math.LegacyDec, error) {
 	for denom, denomSum := range denomSums {
 		value, err := k.DenomKeeper.GetValueInUSD(ctx, denom, denomSum.ToLegacyDec())
 		if err != nil {
-			return math.LegacyDec{}, fmt.Errorf("could not get order value in usd: %w", err)
+			return math.LegacyDec{}, fmt.Errorf("get order value in usd: %w", err)
 		}
 
 		sum = sum.Add(value)

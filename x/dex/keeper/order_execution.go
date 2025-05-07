@@ -76,18 +76,18 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 		}
 
 		// Next we do the actual execution
-		tradeResult, remove, err := k.ExecuteOrder(ctx, ordersCaches, fee, order)
+		_, amountIntermediate, remove, err := k.ExecuteOrder(ctx, ordersCaches, fee, order)
 		if err != nil {
 			return fmt.Errorf("executing order (%v / %v): %w", index, order.Index, err)
 		}
 
-		if !tradeResult.AmountIntermediate.IsNil() && tradeResult.AmountIntermediate.IsPositive() {
-			tradeVolumeBaseSum = tradeVolumeBaseSum.Add(tradeResult.AmountIntermediate)
+		if !amountIntermediate.IsNil() && amountIntermediate.IsPositive() {
+			tradeVolumeBaseSum = tradeVolumeBaseSum.Add(amountIntermediate)
 			numTrades++
 		}
 
 		if remove {
-			eventManager.EmitEvent(
+			sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 				sdk.NewEvent("order_completed",
 					sdk.Attribute{Key: "index", Value: strconv.Itoa(int(order.Index))},
 					sdk.Attribute{Key: "address", Value: order.Creator},
@@ -107,7 +107,7 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 	}
 
 	if numTrades > 0 {
-		eventManager.EmitEvent(
+		sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 			sdk.NewEvent("orders_executed",
 				sdk.Attribute{Key: "num_trades", Value: strconv.Itoa(numTrades)},
 				sdk.Attribute{Key: "amount_intermediate_base_currency", Value: tradeVolumeBaseSum.String()},

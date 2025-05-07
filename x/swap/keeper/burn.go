@@ -22,7 +22,7 @@ func (k Keeper) Burn(ctx context.Context) error {
 	for _, kCoin := range k.DenomKeeper.KCoins(ctx) {
 		maxBurnAmount := k.DenomKeeper.MaxBurnAmount(ctx, kCoin)
 		if err := k.CheckBurn(ctx, kCoin, maxBurnAmount); err != nil {
-			return fmt.Errorf("could not burn denom %v: %w", kCoin, err)
+			return fmt.Errorf("burn denom %v: %w", kCoin, err)
 		}
 	}
 
@@ -30,9 +30,9 @@ func (k Keeper) Burn(ctx context.Context) error {
 }
 
 func (k Keeper) CheckBurn(ctx context.Context, kCoin string, maxBurnAmount math.Int) error {
-	parity, referenceDenom, err := k.DexKeeper.CalculateParity(ctx, kCoin)
+	parity, referenceDenom, err := k.DenomKeeper.CalculateParity(ctx, kCoin)
 	if err != nil {
-		return fmt.Errorf("could not calculate parity: %w", err)
+		return fmt.Errorf("calculate parity: %w", err)
 	}
 
 	// parity can be nil at initialization of the chain when not all currencies have liquidity. It is an edge case.
@@ -46,12 +46,12 @@ func (k Keeper) CheckBurn(ctx context.Context, kCoin string, maxBurnAmount math.
 
 	mintAmountBase, err := k.DenomKeeper.GetValueInBase(ctx, referenceDenom, maxBurnAmount.ToLegacyDec())
 	if err != nil {
-		return fmt.Errorf("could not convert to mintAmountBase: %w", err)
+		return fmt.Errorf("convert to mintAmountBase: %w", err)
 	}
 
 	// New coins of the base currency are minted, used to buy the kCoin and burn
 	if err = k.mintTradeBurn(ctx, kCoin, mintAmountBase.TruncateInt()); err != nil {
-		return fmt.Errorf("could not mintTradeBurn: %w", err)
+		return fmt.Errorf("mintTradeBurn: %w", err)
 	}
 
 	return nil
@@ -61,7 +61,7 @@ func (k Keeper) CheckBurn(ctx context.Context, kCoin string, maxBurnAmount math.
 func (k Keeper) mintTradeBurn(ctx context.Context, kCoin string, mintAmountBase math.Int) error {
 	mintCoins := sdk.NewCoins(sdk.NewCoin(constants.BaseCurrency, mintAmountBase))
 	if err := k.BankKeeper.MintCoins(ctx, types.ModuleName, mintCoins); err != nil {
-		return fmt.Errorf("could not mint new XKP: %w", err)
+		return fmt.Errorf("mint new XKP: %w", err)
 	}
 
 	address := k.AccountKeeper.GetModuleAccount(ctx, types.ModuleName).GetAddress()
@@ -79,22 +79,25 @@ func (k Keeper) mintTradeBurn(ctx context.Context, kCoin string, mintAmountBase 
 	}
 
 	if _, err := k.DexKeeper.ExecuteSell(tradeCtx); err != nil {
-		if errors.Is(err, dextypes.ErrTradeAmountTooSmall) {
+		if errors.Is(err, trading.ErrTradeAmountTooSmall) {
 			return nil
 		}
-		if errors.Is(err, dextypes.ErrNotEnoughLiquidity) {
+		if errors.Is(err, dextypes.ErrNoLiquidityGiving) {
+			return nil
+		}
+		if errors.Is(err, dextypes.ErrNoLiquidityReceiving) {
 			return nil
 		}
 
-		return fmt.Errorf("could not execute trade: %w", err)
+		return fmt.Errorf("execute trade: %w", err)
 	}
 
 	if err := tradeCtx.TradeBalances.Settle(ctx, k.BankKeeper); err != nil {
-		return fmt.Errorf("could not settle trade balances: %w", err)
+		return fmt.Errorf("settle trade balances: %w", err)
 	}
 
 	if err := k.burnFunds(ctx, kCoin); err != nil {
-		return fmt.Errorf("could not burn funds: %w", err)
+		return fmt.Errorf("burn funds: %w", err)
 	}
 
 	return nil
@@ -116,7 +119,7 @@ func (k Keeper) burnFunds(ctx context.Context, denom string) error {
 		if rewards.IsPositive() {
 			rewardCoins := sdk.NewCoins(sdk.NewCoin(constants.BaseCurrency, rewards))
 			if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, authtypes.FeeCollectorName, rewardCoins); err != nil {
-				return fmt.Errorf("could not send coins to distribution: %w", err)
+				return fmt.Errorf("send coins to distribution: %w", err)
 			}
 
 			burnableAmount = burnableAmount.Sub(rewards)

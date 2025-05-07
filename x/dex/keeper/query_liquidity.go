@@ -17,7 +17,7 @@ import (
 func (k Keeper) LiquidityAll(ctx context.Context, _ *types.QueryGetLiquidityAllRequest) (*types.QueryGetLiquidityAllResponse, error) {
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get highest usd reference: %w", err)
+		return nil, fmt.Errorf("get highest usd reference: %w", err)
 	}
 
 	var (
@@ -32,12 +32,12 @@ func (k Keeper) LiquidityAll(ctx context.Context, _ *types.QueryGetLiquidityAllR
 
 		amountUSD, err = k.DenomKeeper.GetValueIn(ctx, denom, referenceDenom, val.ToLegacyDec())
 		if err != nil {
-			return nil, fmt.Errorf("could not convert value %s > %s: %w", denom, referenceDenom, err)
+			return nil, fmt.Errorf("convert value %s > %s: %w", denom, referenceDenom, err)
 		}
 
 		feeAmount := k.GetLiquidityByAddress(ctx, denom, feeAcc.String())
 		feeAmountUSD, _ := k.DenomKeeper.GetValueInUSD(ctx, denom, feeAmount.ToLegacyDec())
-		movingLiquidity := k.getMovingLiquidity(ctx, denom).DepositAmount
+		movingLiquidity := k.getMovingLiquidity(ctx, denom).Amount
 
 		entries = append(entries, types.QueryGetLiquidityAllResponseEntry{
 			Denom:                 denom,
@@ -58,7 +58,7 @@ func (k Keeper) LiquidityAll(ctx context.Context, _ *types.QueryGetLiquidityAllR
 func (k Keeper) LiquiditySum(ctx context.Context, _ *types.QueryGetLiquiditySumRequest) (*types.QueryGetLiquiditySumResponse, error) {
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get highest usd reference: %w", err)
+		return nil, fmt.Errorf("get highest usd reference: %w", err)
 	}
 
 	valueUSD := math.LegacyZeroDec()

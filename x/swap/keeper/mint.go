@@ -22,7 +22,7 @@ func (k Keeper) Mint(ctx context.Context) error {
 	for _, kCoin := range k.DenomKeeper.KCoins(ctx) {
 		maxMintAmount := k.DenomKeeper.MaxMintAmount(ctx, kCoin)
 		if err := k.CheckMint(ctx, kCoin, maxMintAmount); err != nil {
-			return fmt.Errorf("could not mint denom: %w", err)
+			return fmt.Errorf("mint denom: %w", err)
 		}
 	}
 
@@ -32,9 +32,9 @@ func (k Keeper) Mint(ctx context.Context) error {
 // CheckMint checks the parity of a given kCoin. If it is above 1, new coins are minted and sold in favor of
 // the base currency.
 func (k Keeper) CheckMint(ctx context.Context, kCoin string, maxMintAmount math.Int) error {
-	parity, _, err := k.DexKeeper.CalculateParity(ctx, kCoin)
+	parity, _, err := k.DenomKeeper.CalculateParity(ctx, kCoin)
 	if err != nil {
-		return fmt.Errorf("could not calculate parity: %w", err)
+		return fmt.Errorf("calculate parity: %w", err)
 	}
 
 	// parity can be nil at initialization of the chain when not all currencies have liquidity. It is an edge case.
@@ -73,22 +73,24 @@ func (k Keeper) CheckMint(ctx context.Context, kCoin string, maxMintAmount math.
 	if _, err = k.DexKeeper.ExecuteSell(tradeCtx); err != nil {
 		k.Logger().Info(err.Error())
 
-		if errors.Is(err, dextypes.ErrTradeAmountTooSmall) {
-			return nil
-		}
-		if errors.Is(err, dextypes.ErrNotEnoughLiquidity) {
+		if isError(err, []error{
+			trading.ErrTradeAmountTooSmall,
+			dextypes.ErrNoLiquidityGiving,
+			dextypes.ErrNoLiquidityReceiving,
+			dextypes.ErrNotEnoughFunds,
+		}) {
 			return nil
 		}
 
-		return fmt.Errorf("could not execute incomplete trade: %w", err)
+		return fmt.Errorf("execute incomplete trade: %w", err)
 	}
 
 	if err = tradeCtx.TradeBalances.Settle(ctx, k.BankKeeper); err != nil {
-		return fmt.Errorf("could not settle trade balances: %w", err)
+		return fmt.Errorf("settle trade balances: %w", err)
 	}
 
 	if err = k.burnFunds(ctx, constants.BaseCurrency); err != nil {
-		return fmt.Errorf("could not burn funds: %w", err)
+		return fmt.Errorf("burn funds: %w", err)
 	}
 
 	return nil
@@ -107,4 +109,14 @@ func (k Keeper) adjustForSupplyCap(ctx context.Context, kCoin string, amountToAd
 func (k Keeper) getUsableAmount(ctx context.Context, denom, module string) math.Int {
 	address := k.AccountKeeper.GetModuleAccount(ctx, module).GetAddress()
 	return k.BankKeeper.SpendableCoin(ctx, address, denom).Amount
+}
+
+func isError(err error, targets []error) bool {
+	for _, target := range targets {
+		if errors.Is(err, target) {
+			return true
+		}
+	}
+
+	return false
 }

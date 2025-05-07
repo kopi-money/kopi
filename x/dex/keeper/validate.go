@@ -2,12 +2,9 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
-	"strings"
-
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"github.com/kopi-money/kopi/x/dex/types"
 )
 

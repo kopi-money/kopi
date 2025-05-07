@@ -32,7 +32,7 @@ func (k msgServer) AddLiquidity(ctx context.Context, msg *types.MsgAddLiquidity)
 func (k msgServer) ChangePayout(ctx context.Context, msg *types.MsgChangePayout) (*types.Void, error) {
 	liquidityShares, has := k.liquidityPositions.Get(ctx, msg.Creator, msg.PositionIndex)
 	if !has {
-		return nil, fmt.Errorf("could not find liquidity deposit for %s", msg.Creator)
+		return nil, fmt.Errorf("find liquidity deposit for %s", msg.Creator)
 	}
 
 	liquidityShares.AutoCompound = msg.AutoCompound
@@ -41,9 +41,7 @@ func (k msgServer) ChangePayout(ctx context.Context, msg *types.MsgChangePayout)
 	return &types.Void{}, nil
 }
 
-func (k msgServer) RemoveAllLiquidityForDenom(goCtx context.Context, msg *types.MsgRemoveAllLiquidityForDenom) (*types.MsgRemoveLiquidityResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) RemoveAllLiquidityForDenom(ctx context.Context, msg *types.MsgRemoveAllLiquidityForDenom) (*types.MsgRemoveLiquidityResponse, error) {
 	address, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return nil, types.ErrInvalidAddress
@@ -62,7 +60,7 @@ func (k msgServer) RemoveAllLiquidityForDenom(goCtx context.Context, msg *types.
 			DenomReceiving: msg.PayoutDenom,
 			Amount:         amount.String(),
 		}); err != nil {
-			return nil, fmt.Errorf("could not sell liquidity for address: %w", err)
+			return nil, fmt.Errorf("sell liquidity for address: %w", err)
 		}
 	}
 
@@ -96,9 +94,9 @@ func (k Keeper) RemoveAllLiquidityForAddress(ctx context.Context, address, denom
 }
 
 func (k msgServer) RemoveLiquidity(ctx context.Context, msg *types.MsgRemoveLiquidity) (*types.MsgRemoveLiquidityResponse, error) {
-	amount, err := ParseAmount(msg.Amount)
+	amount, err := trading.ParseAmount(msg.Amount)
 	if err != nil {
-		return nil, fmt.Errorf("could not parse amount: %w", err)
+		return nil, fmt.Errorf("parse amount: %w", err)
 	}
 
 	if err = k.precheckTradeWithBalance(ctx, msg.Creator, msg.WithdrawDenom, &amount, false, false); err != nil {
@@ -114,7 +112,7 @@ func (k msgServer) RemoveLiquidity(ctx context.Context, msg *types.MsgRemoveLiqu
 	if msg.PositionIndex != "" {
 		positionIndexInt, err := strconv.Atoi(msg.PositionIndex)
 		if err != nil {
-			return nil, fmt.Errorf("could not parse deposit index: %w", err)
+			return nil, fmt.Errorf("parse deposit index: %w", err)
 		}
 
 		_, has := k.liquidityPositions.Get(ctx, msg.Creator, uint64(positionIndexInt))
@@ -129,7 +127,7 @@ func (k msgServer) RemoveLiquidity(ctx context.Context, msg *types.MsgRemoveLiqu
 	acc, _ := sdk.AccAddressFromBech32(msg.Creator)
 	amount, err = k.RemoveLiquidityForAddress(ctx, acc, msg.WithdrawDenom, amount, positionIndex)
 	if err != nil {
-		return nil, fmt.Errorf("could not remove liquidity for address: %w", err)
+		return nil, fmt.Errorf("remove liquidity for address: %w", err)
 	}
 
 	if msg.WithdrawDenom != msg.PayoutDenom {
@@ -139,7 +137,7 @@ func (k msgServer) RemoveLiquidity(ctx context.Context, msg *types.MsgRemoveLiqu
 			DenomReceiving: msg.PayoutDenom,
 			Amount:         amount.String(),
 		}); err != nil {
-			return nil, fmt.Errorf("could not sell liquidity for address: %w", err)
+			return nil, fmt.Errorf("sell liquidity for address: %w", err)
 		}
 	}
 

@@ -9,12 +9,10 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) LiquidityForAddress(goCtx context.Context, req *types.QueryLiquidityForAddressRequest) (*types.QueryLiquidityForAddressResponse, error) {
+func (k Keeper) LiquidityForAddress(ctx context.Context, req *types.QueryLiquidityForAddressRequest) (*types.QueryLiquidityForAddressResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if _, err := sdk.AccAddressFromBech32(req.Address); err != nil {
 		return nil, types.ErrInvalidAddress

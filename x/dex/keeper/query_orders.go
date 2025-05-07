@@ -7,7 +7,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/query"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/dex/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -25,7 +24,7 @@ func (k Keeper) Order(ctx context.Context, req *types.QueryOrderRequest) (*types
 
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get reference denom: %w", err)
+		return nil, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	feeFac := k.GetJoinedFee(ctx)
@@ -48,7 +47,7 @@ func (k Keeper) Orders(ctx context.Context, req *types.QueryOrdersRequest) (*typ
 
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get reference denom: %w", err)
+		return nil, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	feeFac := k.GetJoinedFee(ctx)
@@ -64,7 +63,7 @@ func (k Keeper) Orders(ctx context.Context, req *types.QueryOrdersRequest) (*typ
 	)
 
 	if err != nil {
-		return nil, fmt.Errorf("could not get orders from pagination: %w", err)
+		return nil, fmt.Errorf("get orders from pagination: %w", err)
 	}
 
 	return &types.QueryOrdersResponse{
@@ -77,16 +76,14 @@ func (k Keeper) OrdersNum(_ context.Context, _ *types.QueryOrdersNumRequest) (*t
 	return &types.QueryOrdersNumResponse{Num: int64(k.GetAllOrdersNum())}, nil
 }
 
-func (k Keeper) OrdersAddress(goCtx context.Context, req *types.QueryOrdersAddressRequest) (*types.QueryOrdersAddressResponse, error) {
+func (k Keeper) OrdersAddress(ctx context.Context, req *types.QueryOrdersAddressRequest) (*types.QueryOrdersAddressResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get reference denom: %w", err)
+		return nil, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	feeFac := k.GetJoinedFee(ctx)
@@ -194,7 +191,7 @@ func (k Keeper) OrdersByPair(ctx context.Context, req *types.OrdersByPairRequest
 
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get reference denom: %w", err)
+		return nil, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	feeFac := k.GetJoinedFee(ctx)

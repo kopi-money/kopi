@@ -159,7 +159,7 @@ func (tb *TradeBalances) NetBalance(acc, denom string) math.Int {
 func (tb *TradeBalances) Settle(ctx context.Context, bank types.Sender) error {
 	transfers, err := tb.MergeTransfers()
 	if err != nil {
-		return fmt.Errorf("could not merge transfers: %w", err)
+		return fmt.Errorf("merge transfers: %w", err)
 	}
 
 	var accFrom, accTo sdk.AccAddress
@@ -176,7 +176,7 @@ func (tb *TradeBalances) Settle(ctx context.Context, bank types.Sender) error {
 		}
 
 		if err = bank.SendCoins(ctx, accFrom, accTo, coins); err != nil {
-			return fmt.Errorf("could not send coins from %v: %w", accFrom.String(), err)
+			return fmt.Errorf("send coins from %v: %w", accFrom.String(), err)
 		}
 	}
 
@@ -240,7 +240,7 @@ func (tb *TradeBalances) MergeTransfers() (Transfers, error) {
 
 		senders = senders.remove(deleteIndexes)
 		if receiver.amount.IsPositive() {
-			return nil, fmt.Errorf("could not fullfill receiver request")
+			return nil, fmt.Errorf("fullfill receiver request")
 		}
 	}
 

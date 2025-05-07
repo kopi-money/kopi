@@ -24,7 +24,7 @@ func (k Keeper) BeginBlockCheckReserve(ctx context.Context) error {
 	coins := k.BankKeeper.SpendableCoins(ctx, address)
 
 	if err := k.handleBaseLiquidity(ctx, address, coins.AmountOf(constants.BaseCurrency)); err != nil {
-		return fmt.Errorf("could not handle base liquidity: %w", err)
+		return fmt.Errorf("handle base liquidity: %w", err)
 	}
 
 	for _, coin := range coins {
@@ -32,7 +32,7 @@ func (k Keeper) BeginBlockCheckReserve(ctx context.Context) error {
 			continue
 		}
 
-		// Not adding liquidity for denom that has not (yet) been whitelisted
+		// Not adding liquidity for denom that is not (yet) whitelisted
 		if !k.DenomKeeper.IsValidDenom(ctx, coin.Denom) {
 			continue
 		}
@@ -54,17 +54,17 @@ func (k Keeper) handleBaseLiquidity(ctx context.Context, address sdk.AccAddress,
 	if baseLiquidity.LT(minimumLiquidity) {
 		newCoins := sdk.NewCoins(sdk.NewCoin(constants.BaseCurrency, minimumLiquidity))
 		if err := k.BankKeeper.MintCoins(ctx, types.ModuleName, newCoins); err != nil {
-			return fmt.Errorf("could not mint new coins: %w", err)
+			return fmt.Errorf("mint new coins: %w", err)
 		}
 
 		if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.ModuleName, dextypes.PoolReserve, newCoins); err != nil {
-			return fmt.Errorf("could not send from module account to reserve: %w", err)
+			return fmt.Errorf("send from module account to reserve: %w", err)
 		}
 
 		baseAmount = baseAmount.Add(minimumLiquidity)
 	}
 
-	if baseAmount.GT(math.ZeroInt()) {
+	if baseAmount.IsPositive() {
 		baseCoin := sdk.NewCoin(constants.BaseCurrency, baseAmount)
 		if err := k.checkReserveForDenom(ctx, address, baseCoin); err != nil {
 			return fmt.Errorf("error checking reserve for base currency: %w", err)
@@ -84,7 +84,7 @@ func (k Keeper) checkReserveForDenom(ctx context.Context, address sdk.AccAddress
 		coin = k.sendToMoneyMarket(ctx, coin, cAsset)
 	}
 
-	// If the coins are kCoins, they are burned
+	// If the coins are kCoins, they are (partially) burned
 	coin, err := k.burnKCoinReserve(ctx, coin)
 	if err != nil {
 		return fmt.Errorf("burn kcoin reserve: %w", err)
@@ -96,7 +96,7 @@ func (k Keeper) checkReserveForDenom(ctx context.Context, address sdk.AccAddress
 		if stakerShareAmount.IsPositive() {
 			rewardCoins := sdk.NewCoins(sdk.NewCoin(coin.Denom, stakerShareAmount))
 
-			if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, dextypes.PoolReserve, authtypes.FeeCollectorName, rewardCoins); err != nil {
+			if err = k.BankKeeper.SendCoinsFromModuleToModule(ctx, dextypes.PoolReserve, authtypes.FeeCollectorName, rewardCoins); err != nil {
 				return fmt.Errorf("send coins to distribution: %w", err)
 			}
 
@@ -104,7 +104,7 @@ func (k Keeper) checkReserveForDenom(ctx context.Context, address sdk.AccAddress
 		}
 
 		if coin.Amount.IsPositive() {
-			if _, err = k.DexKeeper.AddLiquidity(ctx, address, coin.Denom, coin.Amount); err != nil {
+			if err = k.DexKeeper.AddLiquidity(ctx, address, coin.Denom, coin.Amount); err != nil {
 				return fmt.Errorf("add liquidity: %w", err)
 			}
 		}
@@ -118,7 +118,7 @@ func (k Keeper) burnKCoinReserve(ctx context.Context, coin sdk.Coin) (sdk.Coin, 
 		return coin, nil
 	}
 
-	if coin.Amount.LTE(math.ZeroInt()) {
+	if !coin.Amount.IsPositive() {
 		return coin, nil
 	}
 
@@ -143,7 +143,7 @@ func (k Keeper) sendToMoneyMarket(ctx context.Context, coin sdk.Coin, cAsset den
 	sendAmount = math.LegacyMinDec(maxSendAmont, sendAmount)
 
 	sendAmountInt := sendAmount.TruncateInt()
-	if sendAmountInt.GT(math.ZeroInt()) {
+	if sendAmountInt.IsPositive() {
 		coins := sdk.NewCoins(sdk.NewCoin(coin.Denom, sendAmountInt))
 		_ = k.BankKeeper.SendCoinsFromModuleToModule(ctx, dextypes.PoolReserve, mmtypes.PoolVault, coins)
 	}

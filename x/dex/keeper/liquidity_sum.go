@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/x/dex/types"
 )
