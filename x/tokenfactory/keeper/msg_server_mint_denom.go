@@ -19,28 +19,26 @@ func (k msgServer) MintDenom(ctx context.Context, msg *types.MsgMintDenom) (*typ
 		return nil, types.ErrIncorrectAdmin
 	}
 
-	if !factoryDenom.Mintable {
-		return nil, types.ErrNotMintable
-	}
-
 	amount, ok := math.NewIntFromString(msg.Amount)
 	if !ok {
 		return nil, types.ErrInvalidAmountFormat
 	}
 
-	if err := k.mintDenom(ctx, factoryDenom, amount, msg.TargetAddress); err != nil {
+	if err := k.mintDenom(ctx, factoryDenom, amount, msg.TargetAddress, false); err != nil {
 		return nil, fmt.Errorf("failed to mint denom: %w", err)
 	}
 
 	return &types.Void{}, nil
 }
 
-func (k Keeper) mintDenom(ctx context.Context, factoryDenom types.FactoryDenom, amount math.Int, targetAddress string) error {
-	if !factoryDenom.Mintable {
-		return types.ErrNotMintable
+func (k Keeper) mintDenom(ctx context.Context, factoryDenom types.FactoryDenom, amount math.Int, targetAddress string, onCreation bool) error {
+	if !onCreation {
+		if !factoryDenom.Mintable || factoryDenom.LocalName != "" {
+			return types.ErrNotMintable
+		}
 	}
 
-	if !amount.GT(math.ZeroInt()) {
+	if !amount.IsPositive() {
 		return types.ErrNonPositiveAmount
 	}
 

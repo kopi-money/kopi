@@ -38,7 +38,7 @@ func (k Keeper) GetUnlockings(ctx context.Context, factoryDenomHash, address str
 	return
 }
 
-func (k Keeper) HandleUnlockings(ctx context.Context, now time.Time) {
+func (k Keeper) HandleUnlockings(ctx context.Context, now time.Time) error {
 	iterator := k.LiquidityUnlockingsIterator(ctx)
 	poolUnlockings := make(map[string]uint64)
 
@@ -49,10 +49,12 @@ func (k Keeper) HandleUnlockings(ctx context.Context, now time.Time) {
 		unlocksAt := unlocking.CreatedAt.Add(time.Duration(unlockSeconds) * time.Second)
 		if now.After(unlocksAt) {
 			if err := k.HandleUnlocking(ctx, &unlocking); err != nil {
-				k.Logger().Error(fmt.Sprintf("could not handle unlocking: %v", err))
+				return fmt.Errorf("handle unlocking: %w", err)
 			}
 		}
 	}
+
+	return nil
 }
 
 func (k Keeper) getPoolUnlockings(ctx context.Context, factoryDenomHash string) (unlockings []types.LiquidityUnlocking) {
@@ -87,7 +89,7 @@ func (k Keeper) HandleUnlocking(ctx context.Context, unlocking *types.LiquidityU
 
 	acc, _ := sdk.AccAddressFromBech32(unlocking.Address)
 	if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolUnlocking, acc, coins); err != nil {
-		return fmt.Errorf("could not send could from unlocking pool to account: %w", err)
+		return fmt.Errorf("send from unlocking pool to account: %w", err)
 	}
 
 	k.liquidityUnlockings.Remove(ctx, unlocking.Index)

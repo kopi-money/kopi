@@ -19,25 +19,43 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_UpdateMinimumUnlock_FullMethodName         = "/kopi.tokenfactory.Msg/UpdateMinimumUnlock"
-	Msg_UpdateFeeAmount_FullMethodName             = "/kopi.tokenfactory.Msg/UpdateFeeAmount"
-	Msg_UpdateReserveFee_FullMethodName            = "/kopi.tokenfactory.Msg/UpdateReserveFee"
-	Msg_UpdateMinimumPoolSize_FullMethodName       = "/kopi.tokenfactory.Msg/UpdateMinimumPoolSize"
-	Msg_CreateDenom_FullMethodName                 = "/kopi.tokenfactory.Msg/CreateDenom"
-	Msg_MintDenom_FullMethodName                   = "/kopi.tokenfactory.Msg/MintDenom"
-	Msg_BurnDenom_FullMethodName                   = "/kopi.tokenfactory.Msg/BurnDenom"
-	Msg_ChangeAdmin_FullMethodName                 = "/kopi.tokenfactory.Msg/ChangeAdmin"
-	Msg_UpdateIconHash_FullMethodName              = "/kopi.tokenfactory.Msg/UpdateIconHash"
-	Msg_Buyback_FullMethodName                     = "/kopi.tokenfactory.Msg/Buyback"
-	Msg_DisableMinting_FullMethodName              = "/kopi.tokenfactory.Msg/DisableMinting"
-	Msg_UpdateDescription_FullMethodName           = "/kopi.tokenfactory.Msg/UpdateDescription"
-	Msg_UpdateLiquidityPoolSettings_FullMethodName = "/kopi.tokenfactory.Msg/UpdateLiquidityPoolSettings"
-	Msg_CreatePool_FullMethodName                  = "/kopi.tokenfactory.Msg/CreatePool"
-	Msg_AddLiquidity_FullMethodName                = "/kopi.tokenfactory.Msg/AddLiquidity"
-	Msg_UnlockLiquidity_FullMethodName             = "/kopi.tokenfactory.Msg/UnlockLiquidity"
-	Msg_DissolvePool_FullMethodName                = "/kopi.tokenfactory.Msg/DissolvePool"
-	Msg_Buy_FullMethodName                         = "/kopi.tokenfactory.Msg/Buy"
-	Msg_Sell_FullMethodName                        = "/kopi.tokenfactory.Msg/Sell"
+	Msg_UpdateMinimumUnlock_FullMethodName             = "/kopi.tokenfactory.Msg/UpdateMinimumUnlock"
+	Msg_UpdateFeeAmount_FullMethodName                 = "/kopi.tokenfactory.Msg/UpdateFeeAmount"
+	Msg_UpdateReserveFeeShare_FullMethodName           = "/kopi.tokenfactory.Msg/UpdateReserveFeeShare"
+	Msg_UpdateMinimumPoolSize_FullMethodName           = "/kopi.tokenfactory.Msg/UpdateMinimumPoolSize"
+	Msg_UpdateTradeFeeLimits_FullMethodName            = "/kopi.tokenfactory.Msg/UpdateTradeFeeLimits"
+	Msg_AddTokenCategory_FullMethodName                = "/kopi.tokenfactory.Msg/AddTokenCategory"
+	Msg_UpdateTokenCategory_FullMethodName             = "/kopi.tokenfactory.Msg/UpdateTokenCategory"
+	Msg_UpdateMaximumVestingUnlockSteps_FullMethodName = "/kopi.tokenfactory.Msg/UpdateMaximumVestingUnlockSteps"
+	Msg_UpdateChangeSecondsDescription_FullMethodName  = "/kopi.tokenfactory.Msg/UpdateChangeSecondsDescription"
+	Msg_UpdateChangeSecondsWebsite_FullMethodName      = "/kopi.tokenfactory.Msg/UpdateChangeSecondsWebsite"
+	Msg_UpdateChangeSecondsImage_FullMethodName        = "/kopi.tokenfactory.Msg/UpdateChangeSecondsImage"
+	Msg_MoveLiquidityPool_FullMethodName               = "/kopi.tokenfactory.Msg/MoveLiquidityPool"
+	Msg_UpdateMinimumPoolMovingValue_FullMethodName    = "/kopi.tokenfactory.Msg/UpdateMinimumPoolMovingValue"
+	Msg_CreateDenom_FullMethodName                     = "/kopi.tokenfactory.Msg/CreateDenom"
+	Msg_MintDenom_FullMethodName                       = "/kopi.tokenfactory.Msg/MintDenom"
+	Msg_BurnDenom_FullMethodName                       = "/kopi.tokenfactory.Msg/BurnDenom"
+	Msg_ChangeAdmin_FullMethodName                     = "/kopi.tokenfactory.Msg/ChangeAdmin"
+	Msg_Buyback_FullMethodName                         = "/kopi.tokenfactory.Msg/Buyback"
+	Msg_DisableMinting_FullMethodName                  = "/kopi.tokenfactory.Msg/DisableMinting"
+	Msg_UpdateDescription_FullMethodName               = "/kopi.tokenfactory.Msg/UpdateDescription"
+	Msg_UpdateWebsite_FullMethodName                   = "/kopi.tokenfactory.Msg/UpdateWebsite"
+	Msg_UpdateIconHash_FullMethodName                  = "/kopi.tokenfactory.Msg/UpdateIconHash"
+	Msg_UpdateLiquidityPoolSettings_FullMethodName     = "/kopi.tokenfactory.Msg/UpdateLiquidityPoolSettings"
+	Msg_CreatePool_FullMethodName                      = "/kopi.tokenfactory.Msg/CreatePool"
+	Msg_AddLiquidity_FullMethodName                    = "/kopi.tokenfactory.Msg/AddLiquidity"
+	Msg_AddKCoinLiquidity_FullMethodName               = "/kopi.tokenfactory.Msg/AddKCoinLiquidity"
+	Msg_AddFactoryLiquidity_FullMethodName             = "/kopi.tokenfactory.Msg/AddFactoryLiquidity"
+	Msg_UnlockLiquidity_FullMethodName                 = "/kopi.tokenfactory.Msg/UnlockLiquidity"
+	Msg_DissolvePool_FullMethodName                    = "/kopi.tokenfactory.Msg/DissolvePool"
+	Msg_CreateOffers_FullMethodName                    = "/kopi.tokenfactory.Msg/CreateOffers"
+	Msg_CancelOffers_FullMethodName                    = "/kopi.tokenfactory.Msg/CancelOffers"
+	Msg_DeclineOffer_FullMethodName                    = "/kopi.tokenfactory.Msg/DeclineOffer"
+	Msg_TakeOffer_FullMethodName                       = "/kopi.tokenfactory.Msg/TakeOffer"
+	Msg_CreateVestings_FullMethodName                  = "/kopi.tokenfactory.Msg/CreateVestings"
+	Msg_CancelVestings_FullMethodName                  = "/kopi.tokenfactory.Msg/CancelVestings"
+	Msg_Buy_FullMethodName                             = "/kopi.tokenfactory.Msg/Buy"
+	Msg_Sell_FullMethodName                            = "/kopi.tokenfactory.Msg/Sell"
 )
 
 // MsgClient is the client API for Msg service.
@@ -46,21 +64,39 @@ const (
 type MsgClient interface {
 	UpdateMinimumUnlock(ctx context.Context, in *MsgUpdateMinimumUnlock, opts ...grpc.CallOption) (*Void, error)
 	UpdateFeeAmount(ctx context.Context, in *MsgUpdateFeeAmount, opts ...grpc.CallOption) (*Void, error)
-	UpdateReserveFee(ctx context.Context, in *MsgUpdateReserveFee, opts ...grpc.CallOption) (*Void, error)
+	UpdateReserveFeeShare(ctx context.Context, in *MsgUpdateReserveFeeShare, opts ...grpc.CallOption) (*Void, error)
 	UpdateMinimumPoolSize(ctx context.Context, in *MsgUpdateMinimumPoolSize, opts ...grpc.CallOption) (*Void, error)
+	UpdateTradeFeeLimits(ctx context.Context, in *MsgUpdateTradeFeeLimits, opts ...grpc.CallOption) (*Void, error)
+	AddTokenCategory(ctx context.Context, in *MsgAddTokenCategory, opts ...grpc.CallOption) (*Void, error)
+	UpdateTokenCategory(ctx context.Context, in *MsgUpdateTokenCategory, opts ...grpc.CallOption) (*Void, error)
+	UpdateMaximumVestingUnlockSteps(ctx context.Context, in *MsgUpdateMaximumVestingUnlockSteps, opts ...grpc.CallOption) (*Void, error)
+	UpdateChangeSecondsDescription(ctx context.Context, in *MsgUpdateChangeSecondsDescription, opts ...grpc.CallOption) (*Void, error)
+	UpdateChangeSecondsWebsite(ctx context.Context, in *MsgUpdateChangeSecondsWebsite, opts ...grpc.CallOption) (*Void, error)
+	UpdateChangeSecondsImage(ctx context.Context, in *MsgUpdateChangeSecondsImage, opts ...grpc.CallOption) (*Void, error)
+	MoveLiquidityPool(ctx context.Context, in *MsgMoveLiquidityPool, opts ...grpc.CallOption) (*Void, error)
+	UpdateMinimumPoolMovingValue(ctx context.Context, in *MsgUpdateMinimumPoolMovingValue, opts ...grpc.CallOption) (*Void, error)
 	CreateDenom(ctx context.Context, in *MsgCreateDenom, opts ...grpc.CallOption) (*MsgCreateDenomResponse, error)
 	MintDenom(ctx context.Context, in *MsgMintDenom, opts ...grpc.CallOption) (*Void, error)
 	BurnDenom(ctx context.Context, in *MsgBurnDenom, opts ...grpc.CallOption) (*Void, error)
 	ChangeAdmin(ctx context.Context, in *MsgChangeAdmin, opts ...grpc.CallOption) (*Void, error)
-	UpdateIconHash(ctx context.Context, in *MsgUpdateIconHash, opts ...grpc.CallOption) (*Void, error)
-	Buyback(ctx context.Context, in *MsgBuyback, opts ...grpc.CallOption) (*Void, error)
+	Buyback(ctx context.Context, in *MsgBuyback, opts ...grpc.CallOption) (*MsgBuybackResponse, error)
 	DisableMinting(ctx context.Context, in *MsgDisableMinting, opts ...grpc.CallOption) (*Void, error)
 	UpdateDescription(ctx context.Context, in *MsgUpdateDescription, opts ...grpc.CallOption) (*Void, error)
+	UpdateWebsite(ctx context.Context, in *MsgUpdateWebsite, opts ...grpc.CallOption) (*Void, error)
+	UpdateIconHash(ctx context.Context, in *MsgUpdateIconHash, opts ...grpc.CallOption) (*Void, error)
 	UpdateLiquidityPoolSettings(ctx context.Context, in *MsgUpdateLiquidityPoolSettings, opts ...grpc.CallOption) (*Void, error)
 	CreatePool(ctx context.Context, in *MsgCreatePool, opts ...grpc.CallOption) (*Void, error)
 	AddLiquidity(ctx context.Context, in *MsgAddLiquidity, opts ...grpc.CallOption) (*Void, error)
+	AddKCoinLiquidity(ctx context.Context, in *MsgAddKCoinLiquidity, opts ...grpc.CallOption) (*Void, error)
+	AddFactoryLiquidity(ctx context.Context, in *MsgAddFactoryLiquidity, opts ...grpc.CallOption) (*Void, error)
 	UnlockLiquidity(ctx context.Context, in *MsgUnlockLiquidity, opts ...grpc.CallOption) (*Void, error)
 	DissolvePool(ctx context.Context, in *MsgDissolvePool, opts ...grpc.CallOption) (*Void, error)
+	CreateOffers(ctx context.Context, in *MsgCreateOffers, opts ...grpc.CallOption) (*Void, error)
+	CancelOffers(ctx context.Context, in *MsgCancelOffers, opts ...grpc.CallOption) (*Void, error)
+	DeclineOffer(ctx context.Context, in *MsgDeclineOffer, opts ...grpc.CallOption) (*Void, error)
+	TakeOffer(ctx context.Context, in *MsgTakeOffer, opts ...grpc.CallOption) (*Void, error)
+	CreateVestings(ctx context.Context, in *MsgCreateVestings, opts ...grpc.CallOption) (*Void, error)
+	CancelVestings(ctx context.Context, in *MsgCancelVestings, opts ...grpc.CallOption) (*Void, error)
 	Buy(ctx context.Context, in *MsgBuy, opts ...grpc.CallOption) (*MsgTradeResponse, error)
 	Sell(ctx context.Context, in *MsgSell, opts ...grpc.CallOption) (*MsgTradeResponse, error)
 }
@@ -91,9 +127,9 @@ func (c *msgClient) UpdateFeeAmount(ctx context.Context, in *MsgUpdateFeeAmount,
 	return out, nil
 }
 
-func (c *msgClient) UpdateReserveFee(ctx context.Context, in *MsgUpdateReserveFee, opts ...grpc.CallOption) (*Void, error) {
+func (c *msgClient) UpdateReserveFeeShare(ctx context.Context, in *MsgUpdateReserveFeeShare, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
-	err := c.cc.Invoke(ctx, Msg_UpdateReserveFee_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_UpdateReserveFeeShare_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -103,6 +139,87 @@ func (c *msgClient) UpdateReserveFee(ctx context.Context, in *MsgUpdateReserveFe
 func (c *msgClient) UpdateMinimumPoolSize(ctx context.Context, in *MsgUpdateMinimumPoolSize, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
 	err := c.cc.Invoke(ctx, Msg_UpdateMinimumPoolSize_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateTradeFeeLimits(ctx context.Context, in *MsgUpdateTradeFeeLimits, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateTradeFeeLimits_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) AddTokenCategory(ctx context.Context, in *MsgAddTokenCategory, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_AddTokenCategory_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateTokenCategory(ctx context.Context, in *MsgUpdateTokenCategory, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateTokenCategory_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateMaximumVestingUnlockSteps(ctx context.Context, in *MsgUpdateMaximumVestingUnlockSteps, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateMaximumVestingUnlockSteps_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateChangeSecondsDescription(ctx context.Context, in *MsgUpdateChangeSecondsDescription, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateChangeSecondsDescription_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateChangeSecondsWebsite(ctx context.Context, in *MsgUpdateChangeSecondsWebsite, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateChangeSecondsWebsite_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateChangeSecondsImage(ctx context.Context, in *MsgUpdateChangeSecondsImage, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateChangeSecondsImage_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) MoveLiquidityPool(ctx context.Context, in *MsgMoveLiquidityPool, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_MoveLiquidityPool_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateMinimumPoolMovingValue(ctx context.Context, in *MsgUpdateMinimumPoolMovingValue, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateMinimumPoolMovingValue_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -145,17 +262,8 @@ func (c *msgClient) ChangeAdmin(ctx context.Context, in *MsgChangeAdmin, opts ..
 	return out, nil
 }
 
-func (c *msgClient) UpdateIconHash(ctx context.Context, in *MsgUpdateIconHash, opts ...grpc.CallOption) (*Void, error) {
-	out := new(Void)
-	err := c.cc.Invoke(ctx, Msg_UpdateIconHash_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) Buyback(ctx context.Context, in *MsgBuyback, opts ...grpc.CallOption) (*Void, error) {
-	out := new(Void)
+func (c *msgClient) Buyback(ctx context.Context, in *MsgBuyback, opts ...grpc.CallOption) (*MsgBuybackResponse, error) {
+	out := new(MsgBuybackResponse)
 	err := c.cc.Invoke(ctx, Msg_Buyback_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -175,6 +283,24 @@ func (c *msgClient) DisableMinting(ctx context.Context, in *MsgDisableMinting, o
 func (c *msgClient) UpdateDescription(ctx context.Context, in *MsgUpdateDescription, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
 	err := c.cc.Invoke(ctx, Msg_UpdateDescription_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateWebsite(ctx context.Context, in *MsgUpdateWebsite, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateWebsite_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateIconHash(ctx context.Context, in *MsgUpdateIconHash, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateIconHash_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -208,6 +334,24 @@ func (c *msgClient) AddLiquidity(ctx context.Context, in *MsgAddLiquidity, opts 
 	return out, nil
 }
 
+func (c *msgClient) AddKCoinLiquidity(ctx context.Context, in *MsgAddKCoinLiquidity, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_AddKCoinLiquidity_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) AddFactoryLiquidity(ctx context.Context, in *MsgAddFactoryLiquidity, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_AddFactoryLiquidity_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) UnlockLiquidity(ctx context.Context, in *MsgUnlockLiquidity, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
 	err := c.cc.Invoke(ctx, Msg_UnlockLiquidity_FullMethodName, in, out, opts...)
@@ -220,6 +364,60 @@ func (c *msgClient) UnlockLiquidity(ctx context.Context, in *MsgUnlockLiquidity,
 func (c *msgClient) DissolvePool(ctx context.Context, in *MsgDissolvePool, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
 	err := c.cc.Invoke(ctx, Msg_DissolvePool_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) CreateOffers(ctx context.Context, in *MsgCreateOffers, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_CreateOffers_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) CancelOffers(ctx context.Context, in *MsgCancelOffers, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_CancelOffers_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) DeclineOffer(ctx context.Context, in *MsgDeclineOffer, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_DeclineOffer_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) TakeOffer(ctx context.Context, in *MsgTakeOffer, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_TakeOffer_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) CreateVestings(ctx context.Context, in *MsgCreateVestings, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_CreateVestings_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) CancelVestings(ctx context.Context, in *MsgCancelVestings, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_CancelVestings_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -250,21 +448,39 @@ func (c *msgClient) Sell(ctx context.Context, in *MsgSell, opts ...grpc.CallOpti
 type MsgServer interface {
 	UpdateMinimumUnlock(context.Context, *MsgUpdateMinimumUnlock) (*Void, error)
 	UpdateFeeAmount(context.Context, *MsgUpdateFeeAmount) (*Void, error)
-	UpdateReserveFee(context.Context, *MsgUpdateReserveFee) (*Void, error)
+	UpdateReserveFeeShare(context.Context, *MsgUpdateReserveFeeShare) (*Void, error)
 	UpdateMinimumPoolSize(context.Context, *MsgUpdateMinimumPoolSize) (*Void, error)
+	UpdateTradeFeeLimits(context.Context, *MsgUpdateTradeFeeLimits) (*Void, error)
+	AddTokenCategory(context.Context, *MsgAddTokenCategory) (*Void, error)
+	UpdateTokenCategory(context.Context, *MsgUpdateTokenCategory) (*Void, error)
+	UpdateMaximumVestingUnlockSteps(context.Context, *MsgUpdateMaximumVestingUnlockSteps) (*Void, error)
+	UpdateChangeSecondsDescription(context.Context, *MsgUpdateChangeSecondsDescription) (*Void, error)
+	UpdateChangeSecondsWebsite(context.Context, *MsgUpdateChangeSecondsWebsite) (*Void, error)
+	UpdateChangeSecondsImage(context.Context, *MsgUpdateChangeSecondsImage) (*Void, error)
+	MoveLiquidityPool(context.Context, *MsgMoveLiquidityPool) (*Void, error)
+	UpdateMinimumPoolMovingValue(context.Context, *MsgUpdateMinimumPoolMovingValue) (*Void, error)
 	CreateDenom(context.Context, *MsgCreateDenom) (*MsgCreateDenomResponse, error)
 	MintDenom(context.Context, *MsgMintDenom) (*Void, error)
 	BurnDenom(context.Context, *MsgBurnDenom) (*Void, error)
 	ChangeAdmin(context.Context, *MsgChangeAdmin) (*Void, error)
-	UpdateIconHash(context.Context, *MsgUpdateIconHash) (*Void, error)
-	Buyback(context.Context, *MsgBuyback) (*Void, error)
+	Buyback(context.Context, *MsgBuyback) (*MsgBuybackResponse, error)
 	DisableMinting(context.Context, *MsgDisableMinting) (*Void, error)
 	UpdateDescription(context.Context, *MsgUpdateDescription) (*Void, error)
+	UpdateWebsite(context.Context, *MsgUpdateWebsite) (*Void, error)
+	UpdateIconHash(context.Context, *MsgUpdateIconHash) (*Void, error)
 	UpdateLiquidityPoolSettings(context.Context, *MsgUpdateLiquidityPoolSettings) (*Void, error)
 	CreatePool(context.Context, *MsgCreatePool) (*Void, error)
 	AddLiquidity(context.Context, *MsgAddLiquidity) (*Void, error)
+	AddKCoinLiquidity(context.Context, *MsgAddKCoinLiquidity) (*Void, error)
+	AddFactoryLiquidity(context.Context, *MsgAddFactoryLiquidity) (*Void, error)
 	UnlockLiquidity(context.Context, *MsgUnlockLiquidity) (*Void, error)
 	DissolvePool(context.Context, *MsgDissolvePool) (*Void, error)
+	CreateOffers(context.Context, *MsgCreateOffers) (*Void, error)
+	CancelOffers(context.Context, *MsgCancelOffers) (*Void, error)
+	DeclineOffer(context.Context, *MsgDeclineOffer) (*Void, error)
+	TakeOffer(context.Context, *MsgTakeOffer) (*Void, error)
+	CreateVestings(context.Context, *MsgCreateVestings) (*Void, error)
+	CancelVestings(context.Context, *MsgCancelVestings) (*Void, error)
 	Buy(context.Context, *MsgBuy) (*MsgTradeResponse, error)
 	Sell(context.Context, *MsgSell) (*MsgTradeResponse, error)
 	mustEmbedUnimplementedMsgServer()
@@ -280,11 +496,38 @@ func (UnimplementedMsgServer) UpdateMinimumUnlock(context.Context, *MsgUpdateMin
 func (UnimplementedMsgServer) UpdateFeeAmount(context.Context, *MsgUpdateFeeAmount) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateFeeAmount not implemented")
 }
-func (UnimplementedMsgServer) UpdateReserveFee(context.Context, *MsgUpdateReserveFee) (*Void, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateReserveFee not implemented")
+func (UnimplementedMsgServer) UpdateReserveFeeShare(context.Context, *MsgUpdateReserveFeeShare) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateReserveFeeShare not implemented")
 }
 func (UnimplementedMsgServer) UpdateMinimumPoolSize(context.Context, *MsgUpdateMinimumPoolSize) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateMinimumPoolSize not implemented")
+}
+func (UnimplementedMsgServer) UpdateTradeFeeLimits(context.Context, *MsgUpdateTradeFeeLimits) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateTradeFeeLimits not implemented")
+}
+func (UnimplementedMsgServer) AddTokenCategory(context.Context, *MsgAddTokenCategory) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddTokenCategory not implemented")
+}
+func (UnimplementedMsgServer) UpdateTokenCategory(context.Context, *MsgUpdateTokenCategory) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateTokenCategory not implemented")
+}
+func (UnimplementedMsgServer) UpdateMaximumVestingUnlockSteps(context.Context, *MsgUpdateMaximumVestingUnlockSteps) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateMaximumVestingUnlockSteps not implemented")
+}
+func (UnimplementedMsgServer) UpdateChangeSecondsDescription(context.Context, *MsgUpdateChangeSecondsDescription) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateChangeSecondsDescription not implemented")
+}
+func (UnimplementedMsgServer) UpdateChangeSecondsWebsite(context.Context, *MsgUpdateChangeSecondsWebsite) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateChangeSecondsWebsite not implemented")
+}
+func (UnimplementedMsgServer) UpdateChangeSecondsImage(context.Context, *MsgUpdateChangeSecondsImage) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateChangeSecondsImage not implemented")
+}
+func (UnimplementedMsgServer) MoveLiquidityPool(context.Context, *MsgMoveLiquidityPool) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MoveLiquidityPool not implemented")
+}
+func (UnimplementedMsgServer) UpdateMinimumPoolMovingValue(context.Context, *MsgUpdateMinimumPoolMovingValue) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateMinimumPoolMovingValue not implemented")
 }
 func (UnimplementedMsgServer) CreateDenom(context.Context, *MsgCreateDenom) (*MsgCreateDenomResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateDenom not implemented")
@@ -298,10 +541,7 @@ func (UnimplementedMsgServer) BurnDenom(context.Context, *MsgBurnDenom) (*Void, 
 func (UnimplementedMsgServer) ChangeAdmin(context.Context, *MsgChangeAdmin) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangeAdmin not implemented")
 }
-func (UnimplementedMsgServer) UpdateIconHash(context.Context, *MsgUpdateIconHash) (*Void, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateIconHash not implemented")
-}
-func (UnimplementedMsgServer) Buyback(context.Context, *MsgBuyback) (*Void, error) {
+func (UnimplementedMsgServer) Buyback(context.Context, *MsgBuyback) (*MsgBuybackResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Buyback not implemented")
 }
 func (UnimplementedMsgServer) DisableMinting(context.Context, *MsgDisableMinting) (*Void, error) {
@@ -309,6 +549,12 @@ func (UnimplementedMsgServer) DisableMinting(context.Context, *MsgDisableMinting
 }
 func (UnimplementedMsgServer) UpdateDescription(context.Context, *MsgUpdateDescription) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateDescription not implemented")
+}
+func (UnimplementedMsgServer) UpdateWebsite(context.Context, *MsgUpdateWebsite) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateWebsite not implemented")
+}
+func (UnimplementedMsgServer) UpdateIconHash(context.Context, *MsgUpdateIconHash) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateIconHash not implemented")
 }
 func (UnimplementedMsgServer) UpdateLiquidityPoolSettings(context.Context, *MsgUpdateLiquidityPoolSettings) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateLiquidityPoolSettings not implemented")
@@ -319,11 +565,35 @@ func (UnimplementedMsgServer) CreatePool(context.Context, *MsgCreatePool) (*Void
 func (UnimplementedMsgServer) AddLiquidity(context.Context, *MsgAddLiquidity) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddLiquidity not implemented")
 }
+func (UnimplementedMsgServer) AddKCoinLiquidity(context.Context, *MsgAddKCoinLiquidity) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddKCoinLiquidity not implemented")
+}
+func (UnimplementedMsgServer) AddFactoryLiquidity(context.Context, *MsgAddFactoryLiquidity) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddFactoryLiquidity not implemented")
+}
 func (UnimplementedMsgServer) UnlockLiquidity(context.Context, *MsgUnlockLiquidity) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnlockLiquidity not implemented")
 }
 func (UnimplementedMsgServer) DissolvePool(context.Context, *MsgDissolvePool) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DissolvePool not implemented")
+}
+func (UnimplementedMsgServer) CreateOffers(context.Context, *MsgCreateOffers) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOffers not implemented")
+}
+func (UnimplementedMsgServer) CancelOffers(context.Context, *MsgCancelOffers) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CancelOffers not implemented")
+}
+func (UnimplementedMsgServer) DeclineOffer(context.Context, *MsgDeclineOffer) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeclineOffer not implemented")
+}
+func (UnimplementedMsgServer) TakeOffer(context.Context, *MsgTakeOffer) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TakeOffer not implemented")
+}
+func (UnimplementedMsgServer) CreateVestings(context.Context, *MsgCreateVestings) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateVestings not implemented")
+}
+func (UnimplementedMsgServer) CancelVestings(context.Context, *MsgCancelVestings) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CancelVestings not implemented")
 }
 func (UnimplementedMsgServer) Buy(context.Context, *MsgBuy) (*MsgTradeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Buy not implemented")
@@ -380,20 +650,20 @@ func _Msg_UpdateFeeAmount_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateReserveFee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateReserveFee)
+func _Msg_UpdateReserveFeeShare_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateReserveFeeShare)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateReserveFee(ctx, in)
+		return srv.(MsgServer).UpdateReserveFeeShare(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_UpdateReserveFee_FullMethodName,
+		FullMethod: Msg_UpdateReserveFeeShare_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateReserveFee(ctx, req.(*MsgUpdateReserveFee))
+		return srv.(MsgServer).UpdateReserveFeeShare(ctx, req.(*MsgUpdateReserveFeeShare))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -412,6 +682,168 @@ func _Msg_UpdateMinimumPoolSize_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).UpdateMinimumPoolSize(ctx, req.(*MsgUpdateMinimumPoolSize))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateTradeFeeLimits_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateTradeFeeLimits)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateTradeFeeLimits(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateTradeFeeLimits_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateTradeFeeLimits(ctx, req.(*MsgUpdateTradeFeeLimits))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_AddTokenCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAddTokenCategory)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).AddTokenCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_AddTokenCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).AddTokenCategory(ctx, req.(*MsgAddTokenCategory))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateTokenCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateTokenCategory)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateTokenCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateTokenCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateTokenCategory(ctx, req.(*MsgUpdateTokenCategory))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateMaximumVestingUnlockSteps_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateMaximumVestingUnlockSteps)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateMaximumVestingUnlockSteps(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateMaximumVestingUnlockSteps_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateMaximumVestingUnlockSteps(ctx, req.(*MsgUpdateMaximumVestingUnlockSteps))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateChangeSecondsDescription_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateChangeSecondsDescription)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateChangeSecondsDescription(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateChangeSecondsDescription_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateChangeSecondsDescription(ctx, req.(*MsgUpdateChangeSecondsDescription))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateChangeSecondsWebsite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateChangeSecondsWebsite)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateChangeSecondsWebsite(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateChangeSecondsWebsite_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateChangeSecondsWebsite(ctx, req.(*MsgUpdateChangeSecondsWebsite))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateChangeSecondsImage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateChangeSecondsImage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateChangeSecondsImage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateChangeSecondsImage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateChangeSecondsImage(ctx, req.(*MsgUpdateChangeSecondsImage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_MoveLiquidityPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgMoveLiquidityPool)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).MoveLiquidityPool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_MoveLiquidityPool_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).MoveLiquidityPool(ctx, req.(*MsgMoveLiquidityPool))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateMinimumPoolMovingValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateMinimumPoolMovingValue)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateMinimumPoolMovingValue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateMinimumPoolMovingValue_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateMinimumPoolMovingValue(ctx, req.(*MsgUpdateMinimumPoolMovingValue))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -488,24 +920,6 @@ func _Msg_ChangeAdmin_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateIconHash_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateIconHash)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).UpdateIconHash(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_UpdateIconHash_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateIconHash(ctx, req.(*MsgUpdateIconHash))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Msg_Buyback_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgBuyback)
 	if err := dec(in); err != nil {
@@ -556,6 +970,42 @@ func _Msg_UpdateDescription_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).UpdateDescription(ctx, req.(*MsgUpdateDescription))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateWebsite_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateWebsite)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateWebsite(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateWebsite_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateWebsite(ctx, req.(*MsgUpdateWebsite))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateIconHash_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateIconHash)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateIconHash(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateIconHash_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateIconHash(ctx, req.(*MsgUpdateIconHash))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -614,6 +1064,42 @@ func _Msg_AddLiquidity_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_AddKCoinLiquidity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAddKCoinLiquidity)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).AddKCoinLiquidity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_AddKCoinLiquidity_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).AddKCoinLiquidity(ctx, req.(*MsgAddKCoinLiquidity))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_AddFactoryLiquidity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAddFactoryLiquidity)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).AddFactoryLiquidity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_AddFactoryLiquidity_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).AddFactoryLiquidity(ctx, req.(*MsgAddFactoryLiquidity))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_UnlockLiquidity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgUnlockLiquidity)
 	if err := dec(in); err != nil {
@@ -646,6 +1132,114 @@ func _Msg_DissolvePool_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).DissolvePool(ctx, req.(*MsgDissolvePool))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_CreateOffers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateOffers)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateOffers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_CreateOffers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateOffers(ctx, req.(*MsgCreateOffers))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_CancelOffers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCancelOffers)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CancelOffers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_CancelOffers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CancelOffers(ctx, req.(*MsgCancelOffers))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_DeclineOffer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDeclineOffer)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DeclineOffer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_DeclineOffer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DeclineOffer(ctx, req.(*MsgDeclineOffer))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_TakeOffer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgTakeOffer)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).TakeOffer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_TakeOffer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).TakeOffer(ctx, req.(*MsgTakeOffer))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_CreateVestings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCreateVestings)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CreateVestings(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_CreateVestings_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CreateVestings(ctx, req.(*MsgCreateVestings))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_CancelVestings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgCancelVestings)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).CancelVestings(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_CancelVestings_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).CancelVestings(ctx, req.(*MsgCancelVestings))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -702,12 +1296,48 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_UpdateFeeAmount_Handler,
 		},
 		{
-			MethodName: "UpdateReserveFee",
-			Handler:    _Msg_UpdateReserveFee_Handler,
+			MethodName: "UpdateReserveFeeShare",
+			Handler:    _Msg_UpdateReserveFeeShare_Handler,
 		},
 		{
 			MethodName: "UpdateMinimumPoolSize",
 			Handler:    _Msg_UpdateMinimumPoolSize_Handler,
+		},
+		{
+			MethodName: "UpdateTradeFeeLimits",
+			Handler:    _Msg_UpdateTradeFeeLimits_Handler,
+		},
+		{
+			MethodName: "AddTokenCategory",
+			Handler:    _Msg_AddTokenCategory_Handler,
+		},
+		{
+			MethodName: "UpdateTokenCategory",
+			Handler:    _Msg_UpdateTokenCategory_Handler,
+		},
+		{
+			MethodName: "UpdateMaximumVestingUnlockSteps",
+			Handler:    _Msg_UpdateMaximumVestingUnlockSteps_Handler,
+		},
+		{
+			MethodName: "UpdateChangeSecondsDescription",
+			Handler:    _Msg_UpdateChangeSecondsDescription_Handler,
+		},
+		{
+			MethodName: "UpdateChangeSecondsWebsite",
+			Handler:    _Msg_UpdateChangeSecondsWebsite_Handler,
+		},
+		{
+			MethodName: "UpdateChangeSecondsImage",
+			Handler:    _Msg_UpdateChangeSecondsImage_Handler,
+		},
+		{
+			MethodName: "MoveLiquidityPool",
+			Handler:    _Msg_MoveLiquidityPool_Handler,
+		},
+		{
+			MethodName: "UpdateMinimumPoolMovingValue",
+			Handler:    _Msg_UpdateMinimumPoolMovingValue_Handler,
 		},
 		{
 			MethodName: "CreateDenom",
@@ -726,10 +1356,6 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_ChangeAdmin_Handler,
 		},
 		{
-			MethodName: "UpdateIconHash",
-			Handler:    _Msg_UpdateIconHash_Handler,
-		},
-		{
 			MethodName: "Buyback",
 			Handler:    _Msg_Buyback_Handler,
 		},
@@ -740,6 +1366,14 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateDescription",
 			Handler:    _Msg_UpdateDescription_Handler,
+		},
+		{
+			MethodName: "UpdateWebsite",
+			Handler:    _Msg_UpdateWebsite_Handler,
+		},
+		{
+			MethodName: "UpdateIconHash",
+			Handler:    _Msg_UpdateIconHash_Handler,
 		},
 		{
 			MethodName: "UpdateLiquidityPoolSettings",
@@ -754,12 +1388,44 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_AddLiquidity_Handler,
 		},
 		{
+			MethodName: "AddKCoinLiquidity",
+			Handler:    _Msg_AddKCoinLiquidity_Handler,
+		},
+		{
+			MethodName: "AddFactoryLiquidity",
+			Handler:    _Msg_AddFactoryLiquidity_Handler,
+		},
+		{
 			MethodName: "UnlockLiquidity",
 			Handler:    _Msg_UnlockLiquidity_Handler,
 		},
 		{
 			MethodName: "DissolvePool",
 			Handler:    _Msg_DissolvePool_Handler,
+		},
+		{
+			MethodName: "CreateOffers",
+			Handler:    _Msg_CreateOffers_Handler,
+		},
+		{
+			MethodName: "CancelOffers",
+			Handler:    _Msg_CancelOffers_Handler,
+		},
+		{
+			MethodName: "DeclineOffer",
+			Handler:    _Msg_DeclineOffer_Handler,
+		},
+		{
+			MethodName: "TakeOffer",
+			Handler:    _Msg_TakeOffer_Handler,
+		},
+		{
+			MethodName: "CreateVestings",
+			Handler:    _Msg_CreateVestings_Handler,
+		},
+		{
+			MethodName: "CancelVestings",
+			Handler:    _Msg_CancelVestings_Handler,
 		},
 		{
 			MethodName: "Buy",

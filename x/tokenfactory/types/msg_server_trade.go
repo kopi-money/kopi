@@ -39,16 +39,7 @@ func (msg *MsgBuyback) ValidateBasic() error {
 	return nil
 }
 
-type TradeMessage interface {
-	GetAmount() string
-	GetCreator() string
-	GetDenomGiving() string
-	GetDenomReceiving() string
-	GetFullFactoryDenomName() string
-	GetMaxPrice() string
-}
-
-func validateTradeMessage(msg TradeMessage) error {
+func validateTradeMessage(msg MsgTrade) error {
 	if _, err := sdk.AccAddressFromBech32(msg.GetCreator()); err != nil {
 		return errorsmod.Wrap(err, "invalid creator address")
 	}
@@ -69,9 +60,20 @@ func validateTradeMessage(msg TradeMessage) error {
 		return fmt.Errorf("amount: %w", err)
 	}
 
-	if err := denomtypes.IsDec(msg.GetMaxPrice(), math.LegacyZeroDec()); err != nil {
-		return fmt.Errorf("max_price: %w", err)
+	if maxPrice := msg.GetMaxPrice(); maxPrice != nil {
+		if err := denomtypes.IsDec(maxPrice.MaxPrice, math.LegacyZeroDec()); err != nil {
+			return fmt.Errorf("max_price: %w", err)
+		}
 	}
 
 	return nil
+}
+
+type MsgTrade interface {
+	GetAmount() string
+	GetCreator() string
+	GetDenomGiving() string
+	GetDenomReceiving() string
+	GetFullFactoryDenomName() string
+	GetMaxPrice() *MaxPrice
 }

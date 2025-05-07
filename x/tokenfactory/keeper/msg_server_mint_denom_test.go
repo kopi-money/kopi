@@ -11,7 +11,7 @@ import (
 func TestMint1(t *testing.T) {
 	k, msgServer, ctx := keepertest.SetupTokenfactoryMsgServer(t)
 
-	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", 6)
+	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", "test", 6)
 	require.NoError(t, err)
 
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Alice, "100"))
@@ -26,7 +26,7 @@ func TestMint1(t *testing.T) {
 func TestMint2(t *testing.T) {
 	k, msgServer, ctx := keepertest.SetupTokenfactoryMsgServer(t)
 
-	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", 6)
+	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", "test", 6)
 	require.NoError(t, err)
 
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Bob, "100"))
@@ -39,7 +39,7 @@ func TestMint2(t *testing.T) {
 func TestMint3(t *testing.T) {
 	_, msgServer, ctx := keepertest.SetupTokenfactoryMsgServer(t)
 
-	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", 6)
+	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", "test", 6)
 	require.NoError(t, err)
 
 	require.Error(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Bob, factoryDenomHash, keepertest.Bob, "100"))

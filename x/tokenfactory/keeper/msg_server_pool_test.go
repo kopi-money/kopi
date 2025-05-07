@@ -18,7 +18,7 @@ import (
 func TestCreatePool1(t *testing.T) {
 	k, msgServer, ctx := keepertest.SetupTokenfactoryMsgServer(t)
 
-	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", 6)
+	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", "test", 6)
 	require.NoError(t, err)
 
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Alice, "1000"))
@@ -26,23 +26,23 @@ func TestCreatePool1(t *testing.T) {
 	_, has := k.GetLiquidityPool(ctx, factoryDenomHash)
 	require.False(t, has)
 
-	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", constants.KUSD, "1000", "0.1", 10))
+	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", constants.KUSD, "1000", "0.01", 10))
 
 	pool, has := k.GetLiquidityPool(ctx, factoryDenomHash)
 	require.True(t, has)
-	require.Equal(t, math.LegacyNewDecWithPrec(1, 1), pool.PoolFee)
+	require.Equal(t, math.LegacyNewDecWithPrec(1, 2), pool.PoolFee)
 	require.Equal(t, uint64(10), pool.UnlockInSeconds)
 }
 
 func TestAddLiquidity1(t *testing.T) {
 	k, msgServer, ctx := keepertest.SetupTokenfactoryMsgServer(t)
 
-	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", 6)
+	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", "test", 6)
 	require.NoError(t, err)
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Alice, "2000"))
-	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", constants.KUSD, "1000", "0.1", 10))
+	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", constants.KUSD, "1000", "0.01", 10))
 
-	require.NoError(t, keepertest.AddFactoryLiquidity(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000"))
+	require.NoError(t, keepertest.AddFactoryLiquidity(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", "1000"))
 
 	pool, _ := k.GetLiquidityPool(ctx, factoryDenomHash)
 	require.Equal(t, math.NewInt(2000), pool.FactoryDenomAmount)
@@ -57,12 +57,12 @@ func TestAddLiquidity1(t *testing.T) {
 func TestAddLiquidity2(t *testing.T) {
 	k, msgServer, ctx := keepertest.SetupTokenfactoryMsgServer(t)
 
-	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", 6)
+	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", "test", 6)
 	require.NoError(t, err)
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Alice, "2000"))
-	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", constants.KUSD, "100", "0.1", 10))
+	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", constants.KUSD, "100", "0.01", 10))
 
-	require.NoError(t, keepertest.AddFactoryLiquidity(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000"))
+	require.NoError(t, keepertest.AddFactoryLiquidity(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", "100"))
 
 	pool, _ := k.GetLiquidityPool(ctx, factoryDenomHash)
 	require.Equal(t, math.NewInt(2000), pool.FactoryDenomAmount)
@@ -77,10 +77,10 @@ func TestAddLiquidity2(t *testing.T) {
 func TestUnlocking1(t *testing.T) {
 	k, msgServer, ctx := keepertest.SetupTokenfactoryMsgServer(t)
 
-	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", 6)
+	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", "test", 6)
 	require.NoError(t, err)
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Alice, "2000"))
-	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", constants.KUSD, "100", "0.1", 10))
+	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", constants.KUSD, "100", "0.01", 10))
 
 	require.NoError(t, keepertest.UnlockLiquidity(ctx, msgServer, keepertest.Alice, factoryDenomHash, "100"))
 
@@ -123,10 +123,10 @@ func TestUnlocking1(t *testing.T) {
 func TestUnlocking2(t *testing.T) {
 	k, msgServer, ctx := keepertest.SetupTokenfactoryMsgServer(t)
 
-	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", 6)
+	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", "test", 6)
 	require.NoError(t, err)
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Alice, "2000"))
-	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", constants.KUSD, "100", "0.1", 10))
+	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", constants.KUSD, "100", "0.01", 10))
 	require.NoError(t, keepertest.UnlockLiquidity(ctx, msgServer, keepertest.Alice, factoryDenomHash, "100"))
 
 	now := sdk.UnwrapSDKContext(ctx).BlockTime()
@@ -156,7 +156,7 @@ func TestUnlocking2(t *testing.T) {
 func TestUpdateSettingsTest1(t *testing.T) {
 	k, msgServer, ctx := keepertest.SetupTokenfactoryMsgServer(t)
 
-	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", 6)
+	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", "test", 6)
 	require.NoError(t, err)
 
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Alice, "1000"))
@@ -164,32 +164,32 @@ func TestUpdateSettingsTest1(t *testing.T) {
 	_, has := k.GetLiquidityPool(ctx, factoryDenomHash)
 	require.False(t, has)
 
-	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", constants.KUSD, "1000", "0.1", 10))
+	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", constants.KUSD, "1000", "0.01", 10))
 
 	pool, has := k.GetLiquidityPool(ctx, factoryDenomHash)
 	require.True(t, has)
-	require.Equal(t, math.LegacyNewDecWithPrec(1, 1), pool.PoolFee)
+	require.Equal(t, math.LegacyNewDecWithPrec(1, 2), pool.PoolFee)
 	require.Equal(t, uint64(10), pool.UnlockInSeconds)
 
-	require.NoError(t, keepertest.UpdateLiquidityPoolSettings(ctx, msgServer, keepertest.Alice, factoryDenomHash, "0.2", 100))
+	require.NoError(t, keepertest.UpdateLiquidityPoolSettings(ctx, msgServer, keepertest.Alice, factoryDenomHash, "0.02", 100))
 
 	pool, has = k.GetLiquidityPool(ctx, factoryDenomHash)
 	require.True(t, has)
-	require.Equal(t, math.LegacyNewDecWithPrec(2, 1), pool.PoolFee)
+	require.Equal(t, math.LegacyNewDecWithPrec(2, 2), pool.PoolFee)
 	require.Equal(t, uint64(100), pool.UnlockInSeconds)
 }
 
 func TestDissolvePool1(t *testing.T) {
 	k, msgServer, ctx := keepertest.SetupTokenfactoryMsgServer(t)
 
-	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", 6)
+	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", "test", 6)
 	require.NoError(t, err)
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Alice, "1000"))
 
 	acc, _ := sdk.AccAddressFromBech32(keepertest.Alice)
 	userAcc1 := k.BankKeeper.SpendableCoins(ctx, acc)
 
-	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", constants.KUSD, "100", "0.1", 10))
+	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", constants.KUSD, "100", "0.01", 10))
 
 	pool, _ := k.GetLiquidityPool(ctx, factoryDenomHash)
 	require.Equal(t, int64(1000), pool.FactoryDenomAmount.Int64())
@@ -217,14 +217,14 @@ func TestDissolvePool1(t *testing.T) {
 func TestDissolvePool2(t *testing.T) {
 	k, msgServer, ctx := keepertest.SetupTokenfactoryMsgServer(t)
 
-	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", 6)
+	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", "test", 6)
 	require.NoError(t, err)
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Alice, "1000"))
 
 	accAlice, _ := sdk.AccAddressFromBech32(keepertest.Alice)
 	balanceAlice1 := k.BankKeeper.SpendableCoins(ctx, accAlice)
 
-	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", constants.KUSD, "100", "0.1", 10))
+	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", constants.KUSD, "100", "0.01", 10))
 
 	shares := k.LiquidityShareIterator(ctx, factoryDenomHash).GetAll()
 	require.Len(t, shares, 1)
@@ -245,7 +245,7 @@ func TestDissolvePool2(t *testing.T) {
 
 	accBob, _ := sdk.AccAddressFromBech32(keepertest.Bob)
 	balanceBob1 := k.BankKeeper.SpendableCoins(ctx, accBob)
-	require.NoError(t, keepertest.AddFactoryLiquidity(ctx, msgServer, keepertest.Bob, factoryDenomHash, "1000"))
+	require.NoError(t, keepertest.AddFactoryLiquidity(ctx, msgServer, keepertest.Bob, factoryDenomHash, "1000", "100"))
 
 	shares = k.LiquidityShareIterator(ctx, factoryDenomHash).GetAll()
 	require.Len(t, shares, 2)
@@ -266,4 +266,46 @@ func TestDissolvePool2(t *testing.T) {
 	balanceBob2 := k.BankKeeper.SpendableCoins(ctx, accBob)
 	require.Equal(t, balanceBob1.AmountOf(factoryDenomHash).Int64(), balanceBob2.AmountOf(factoryDenomHash).Int64())
 	require.Equal(t, balanceBob1.AmountOf(constants.KUSD).Int64(), balanceBob2.AmountOf(constants.KUSD).Int64())
+}
+
+func TestAddOneSided1(t *testing.T) {
+	k, msgServer, ctx := keepertest.SetupTokenfactoryMsgServer(t)
+
+	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", "test", 6)
+	require.NoError(t, err)
+	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Alice, "2000"))
+	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000", constants.KUSD, "1000", "0.01", 10))
+
+	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Bob, "2000"))
+	require.NoError(t, keepertest.AddOneSidedFactoryLiquidity(ctx, msgServer, keepertest.Bob, factoryDenomHash, "2000"))
+
+	pool, _ := k.GetLiquidityPool(ctx, factoryDenomHash)
+	require.Equal(t, int64(3000), pool.FactoryDenomAmount.Int64())
+	require.Equal(t, int64(998), pool.KCoinAmount.Int64())
+
+	liquidityAcc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolFactoryLiquidity)
+	balance := k.BankKeeper.SpendableCoins(ctx, liquidityAcc.GetAddress())
+	require.Equal(t, int64(3000), balance.AmountOf(factoryDenomHash).Int64())
+	require.Equal(t, int64(998), balance.AmountOf(constants.KUSD).Int64())
+}
+
+func TestAddOneSided2(t *testing.T) {
+	k, msgServer, ctx := keepertest.SetupTokenfactoryMsgServer(t)
+
+	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", "test", 6)
+	require.NoError(t, err)
+	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Alice, "10000"))
+	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "10000", constants.KUSD, "10000", "0.01", 10))
+
+	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Bob, "10000"))
+	require.NoError(t, keepertest.AddOneSidedKCoinLiquidity(ctx, msgServer, keepertest.Bob, factoryDenomHash, "10000"))
+
+	pool, _ := k.GetLiquidityPool(ctx, factoryDenomHash)
+	require.Equal(t, int64(10_000), pool.FactoryDenomAmount.Int64())
+	require.Equal(t, int64(19_975), pool.KCoinAmount.Int64())
+
+	liquidityAcc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolFactoryLiquidity)
+	balance := k.BankKeeper.SpendableCoins(ctx, liquidityAcc.GetAddress())
+	require.Equal(t, int64(10_000), balance.AmountOf(factoryDenomHash).Int64())
+	require.Equal(t, int64(19_975), balance.AmountOf(constants.KUSD).Int64())
 }

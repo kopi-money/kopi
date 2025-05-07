@@ -7,34 +7,52 @@ import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "kopi/tokenfactory/params.proto";
 import "kopi/tokenfactory/denoms.proto";
+import "kopi/tokenfactory/offer.proto";
+import "kopi/tokenfactory/vesting.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
 
 // Query defines the gRPC querier service.
 service Query {
   // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc QueryParams(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/kopi/tokenfactory/params";
   }
 
-  rpc Denoms (QueryDenomsRequest) returns (QueryDenomsResponse) {
+  rpc QueryCategories (QueryCategoriesRequest) returns (QueryCategoriesResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/categories";
+  }
+
+  rpc QueryCreationNameExists (QueryCreationNameExistsQuery) returns (QueryCreationExistsResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/creation/name";
+  }
+
+  rpc QueryCreationSymbolExists (QueryCreationSymbolExistsQuery) returns (QueryCreationExistsResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/creation/symbol";
+  }
+
+  rpc QueryDenoms (QueryDenomsRequest) returns (QueryDenomsResponse) {
     option (google.api.http).get = "/kopi/tokenfactory/denoms";
   }
 
-  rpc GetPool (QueryPoolRequest) returns (QueryPoolResponse) {
+  rpc QueryPool (QueryPoolRequest) returns (QueryPoolResponse) {
     option (google.api.http).get = "/kopi/tokenfactory/denoms/pool";
   }
 
-  rpc GetFactoryTokenBalance (GetFactoryTokenBalanceRequest) returns (GetFactoryTokenBalanceResponse) {
+  rpc QueryDistribution (QueryDistributionRequest) returns (QueryDistributionResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/distribution/by_denom";
+  }
+
+  rpc QueryFactoryTokenBalance (GetFactoryTokenBalanceRequest) returns (GetFactoryTokenBalanceResponse) {
     option (google.api.http).get = "/kopi/tokenfactory/balance/{address}";
   }
 
-  rpc GetPoolLiquidityAddress (QueryPoolLiquidityAddressRequest) returns (QueryPoolLiquidityAddressResponse) {
-    option (google.api.http).get = "/kopi/tokenfactory/denoms/pool/{address}";
+  rpc QueryPoolLiquidityAddress (QueryPoolLiquidityAddressRequest) returns (QueryPoolLiquidityAddressResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/denoms/pool/address/{address}";
   }
 
-  rpc GetPoolLiquidityAddressByDenom (QueryPoolLiquidityAddressRequestByDenom) returns (PoolLiquidityAddress) {
-    option (google.api.http).get = "/kopi/tokenfactory/denoms/pool/{address}/by_denom";
+  rpc QueryPoolLiquidityAddressByDenom (QueryPoolLiquidityAddressRequestByDenom) returns (PoolLiquidityAddress) {
+    option (google.api.http).get = "/kopi/tokenfactory/denoms/pool/address/{address}/by_denom";
   }
 
   rpc QuerySimulateAddingLiquidityKCoin (QuerySimulateAddingLiquidityRequest) returns (QuerySimulateAddingLiquidityResponse) {
@@ -45,6 +63,10 @@ service Query {
     option (google.api.http).get = "/kopi/tokenfactory/denoms/pool/add/factory";
   }
 
+  rpc QueryPoolLiquidityDistribution (QueryPoolLiquidityDistributionRequest) returns (QueryPoolLiquidityDistributionResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/denoms/pool/distribution";
+  }
+
   rpc QuerySimulateSell (QuerySimulateTradeRequest) returns (QuerySimulateTradeResponse) {
     option (google.api.http).get = "/kopi/tokenfactory/simulate/sell";
   }
@@ -52,6 +74,103 @@ service Query {
   rpc QuerySimulateBuy (QuerySimulateTradeRequest) returns (QuerySimulateTradeResponse) {
     option (google.api.http).get = "/kopi/tokenfactory/simulate/buy";
   }
+
+  rpc QueryVestings (QueryVestingsRequest) returns (QueryVestingsResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/vestings";
+  }
+
+  rpc QueryOffers (QueryOffersRequest) returns (QueryOffersResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/offers";
+  }
+
+  //  rpc QueryOffers (QueryOffersRequest) returns (QueryOffersResponse) {
+  //    option (google.api.http).get = "/kopi/tokenfactory/offers";
+  //  }
+}
+
+message LiquidityProvider {
+  string address = 1;
+  string amount = 2;
+}
+
+message QueryPoolLiquidityDistributionResponse {
+  repeated LiquidityProvider providers = 1 [
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryPoolLiquidityDistributionRequest {
+  string full_name = 1;
+}
+
+message QueryCreationExistsResponse {
+  bool exists = 1;
+}
+
+message QueryCreationNameExistsQuery {
+  string name = 1;
+}
+
+message QueryCreationSymbolExistsQuery {
+  string symbol = 1;
+}
+
+message QueryOffersResponse {
+  repeated Offer offers = 1 [
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryOffersRequest {
+  string full_name = 1;
+  string address = 2;
+}
+
+message QueryDistributionResponse {
+  string total_supply = 1;
+  string admin = 2;
+  string pool = 3;
+  string vested = 4;
+  string offered = 5;
+  string unlocking = 6;
+  string wallets = 7;
+
+  string share_admin = 8;
+  string share_pool = 9;
+  string share_vested = 10;
+  string share_offered = 11;
+  string share_unlocking = 12;
+  string share_wallets = 13;
+}
+
+message QueryDistributionRequest {
+  string full_name = 1;
+}
+
+message QueryVestingsResponse {
+  repeated Vesting vestings = 1 [
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryVestingsRequest {
+  string full_name = 1;
+  string address = 2;
+}
+
+message CategoryResponse {
+  uint64 index = 1;
+  string name = 2;
+  string creation_price = 3;
+}
+
+message QueryCategoriesResponse {
+  repeated CategoryResponse categories = 1 [
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryCategoriesRequest {
 }
 
 message QueryPoolLiquidityAddressRequestByDenom {
@@ -118,6 +237,7 @@ message QuerySimulateTradeResponse {
   string amount_received = 2;
   string fee = 3;
   string price = 4;
+  string price_kcoin = 5;
 }
 
 message QueryPoolRequest {
@@ -132,7 +252,8 @@ message QueryPoolResponse {
   string user_kcoin_amount = 4;
   string user_factory_amount = 5;
   string price = 6;
-  int64 created_at = 7;
+  string marketcap = 7;
+  int64 created_at = 8;
 }
 
 message QueryDenomsRequest {
@@ -144,17 +265,21 @@ message FactoryDenomData {
   string display_name = 2;
   string full_name = 3;
   string description = 4;
-  string icon_hash = 5;
-  string symbol = 6;
-  string exponent = 7;
-  string supply = 8;
-  bool has_pool = 9;
-  bool mintable = 10;
+  string website = 5;
+  string icon_hash = 6;
+  string symbol = 7;
+  string exponent = 8;
+  string supply = 9;
+  uint64 category_index = 10;
+  bool has_pool = 11;
+  bool mintable = 12;
 }
 
 message QueryDenomsResponse {
-  repeated FactoryDenomData denoms = 1;
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 1;
+  repeated FactoryDenomData denoms = 2 [
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryParamsRequest {}

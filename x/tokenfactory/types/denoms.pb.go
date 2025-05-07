@@ -7,15 +7,19 @@ import (
 	fmt "fmt"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
+	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
+	_ "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
 	math "math"
 	math_bits "math/bits"
+	time "time"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
+var _ = time.Kitchen
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -24,14 +28,21 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type FactoryDenom struct {
-	Admin       string `protobuf:"bytes,1,opt,name=admin,proto3" json:"admin,omitempty"`
-	DisplayName string `protobuf:"bytes,2,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
-	FullName    string `protobuf:"bytes,3,opt,name=full_name,json=fullName,proto3" json:"full_name,omitempty"`
-	IconHash    string `protobuf:"bytes,4,opt,name=icon_hash,json=iconHash,proto3" json:"icon_hash,omitempty"`
-	Description string `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	Exponent    uint64 `protobuf:"varint,6,opt,name=exponent,proto3" json:"exponent,omitempty"`
-	Symbol      string `protobuf:"bytes,7,opt,name=symbol,proto3" json:"symbol,omitempty"`
-	Mintable    bool   `protobuf:"varint,8,opt,name=mintable,proto3" json:"mintable,omitempty"`
+	Admin                 string    `protobuf:"bytes,1,opt,name=admin,proto3" json:"admin,omitempty"`
+	DisplayName           string    `protobuf:"bytes,2,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
+	FullName              string    `protobuf:"bytes,3,opt,name=full_name,json=fullName,proto3" json:"full_name,omitempty"`
+	IconHash              string    `protobuf:"bytes,4,opt,name=icon_hash,json=iconHash,proto3" json:"icon_hash,omitempty"`
+	Description           string    `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	Exponent              uint64    `protobuf:"varint,6,opt,name=exponent,proto3" json:"exponent,omitempty"`
+	Symbol                string    `protobuf:"bytes,7,opt,name=symbol,proto3" json:"symbol,omitempty"`
+	Mintable              bool      `protobuf:"varint,8,opt,name=mintable,proto3" json:"mintable,omitempty"`
+	CategoryIndex         uint64    `protobuf:"varint,9,opt,name=category_index,json=categoryIndex,proto3" json:"category_index,omitempty"`
+	Website               string    `protobuf:"bytes,10,opt,name=website,proto3" json:"website,omitempty"`
+	LocalName             string    `protobuf:"bytes,14,opt,name=local_name,json=localName,proto3" json:"local_name,omitempty"`
+	Moved                 bool      `protobuf:"varint,15,opt,name=moved,proto3" json:"moved,omitempty"`
+	LsatDescriptionChange time.Time `protobuf:"bytes,11,opt,name=lsat_description_change,json=lsatDescriptionChange,proto3,stdtime" json:"lsat_description_change" yaml:"lsat_description_change"`
+	LastWebsiteChange     time.Time `protobuf:"bytes,12,opt,name=last_website_change,json=lastWebsiteChange,proto3,stdtime" json:"last_website_change" yaml:"last_website_change"`
+	LastImageChange       time.Time `protobuf:"bytes,13,opt,name=last_image_change,json=lastImageChange,proto3,stdtime" json:"last_image_change" yaml:"last_image_change"`
 }
 
 func (m *FactoryDenom) Reset()         { *m = FactoryDenom{} }
@@ -123,6 +134,55 @@ func (m *FactoryDenom) GetMintable() bool {
 	return false
 }
 
+func (m *FactoryDenom) GetCategoryIndex() uint64 {
+	if m != nil {
+		return m.CategoryIndex
+	}
+	return 0
+}
+
+func (m *FactoryDenom) GetWebsite() string {
+	if m != nil {
+		return m.Website
+	}
+	return ""
+}
+
+func (m *FactoryDenom) GetLocalName() string {
+	if m != nil {
+		return m.LocalName
+	}
+	return ""
+}
+
+func (m *FactoryDenom) GetMoved() bool {
+	if m != nil {
+		return m.Moved
+	}
+	return false
+}
+
+func (m *FactoryDenom) GetLsatDescriptionChange() time.Time {
+	if m != nil {
+		return m.LsatDescriptionChange
+	}
+	return time.Time{}
+}
+
+func (m *FactoryDenom) GetLastWebsiteChange() time.Time {
+	if m != nil {
+		return m.LastWebsiteChange
+	}
+	return time.Time{}
+}
+
+func (m *FactoryDenom) GetLastImageChange() time.Time {
+	if m != nil {
+		return m.LastImageChange
+	}
+	return time.Time{}
+}
+
 func init() {
 	proto.RegisterType((*FactoryDenom)(nil), "kopi.tokenfactory.FactoryDenom")
 }
@@ -130,26 +190,39 @@ func init() {
 func init() { proto.RegisterFile("kopi/tokenfactory/denoms.proto", fileDescriptor_a32b3c5c1ac60b7a) }
 
 var fileDescriptor_a32b3c5c1ac60b7a = []byte{
-	// 298 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x54, 0x90, 0xc1, 0x4e, 0x2a, 0x31,
-	0x14, 0x86, 0xe9, 0xbd, 0x80, 0x43, 0x61, 0x63, 0x43, 0x4c, 0x83, 0x49, 0x33, 0xba, 0x62, 0x23,
-	0x5d, 0xf8, 0x06, 0xc6, 0x18, 0xdd, 0xb8, 0x60, 0xe9, 0x86, 0x74, 0x66, 0x0a, 0xd3, 0x30, 0xed,
-	0x69, 0x68, 0x49, 0x98, 0xb7, 0xf0, 0xb1, 0x5c, 0xb2, 0x74, 0x69, 0xe0, 0x11, 0x7c, 0x01, 0xd3,
-	0xce, 0x88, 0xba, 0x3b, 0xff, 0xf7, 0x9d, 0x73, 0x16, 0x3f, 0x66, 0x6b, 0xb0, 0x8a, 0x7b, 0x58,
-	0x4b, 0xb3, 0x14, 0xb9, 0x87, 0x4d, 0xcd, 0x0b, 0x69, 0x40, 0xbb, 0x99, 0xdd, 0x80, 0x07, 0x72,
-	0x1e, 0xfc, 0xec, 0xb7, 0x9f, 0x8c, 0x57, 0xb0, 0x82, 0x68, 0x79, 0x98, 0x9a, 0xc5, 0xeb, 0x4f,
-	0x84, 0x47, 0x0f, 0xcd, 0xc6, 0x7d, 0x78, 0x40, 0xc6, 0xb8, 0x27, 0x0a, 0xad, 0x0c, 0x45, 0x29,
-	0x9a, 0x0e, 0xe6, 0x4d, 0x20, 0x57, 0x78, 0x54, 0x28, 0x67, 0x2b, 0x51, 0x2f, 0x8c, 0xd0, 0x92,
-	0xfe, 0x8b, 0x72, 0xd8, 0xb2, 0x67, 0xa1, 0x25, 0xb9, 0xc4, 0x83, 0xe5, 0xb6, 0xaa, 0x1a, 0xff,
-	0x3f, 0xfa, 0x24, 0x80, 0x6f, 0xa9, 0x72, 0x30, 0x8b, 0x52, 0xb8, 0x92, 0x76, 0x1b, 0x19, 0xc0,
-	0xa3, 0x70, 0x25, 0x49, 0xf1, 0xb0, 0x90, 0x2e, 0xdf, 0x28, 0xeb, 0x15, 0x18, 0xda, 0x6b, 0x7f,
-	0xff, 0x20, 0x32, 0xc1, 0x89, 0xdc, 0x59, 0x30, 0xd2, 0x78, 0xda, 0x4f, 0xd1, 0xb4, 0x3b, 0x3f,
-	0x65, 0x72, 0x81, 0xfb, 0xae, 0xd6, 0x19, 0x54, 0xf4, 0x2c, 0x1e, 0xb6, 0x29, 0xdc, 0x68, 0x65,
-	0xbc, 0xc8, 0x2a, 0x49, 0x93, 0x14, 0x4d, 0x93, 0xf9, 0x29, 0xdf, 0x3d, 0xbd, 0x1d, 0x18, 0xda,
-	0x1f, 0x18, 0xfa, 0x38, 0x30, 0xf4, 0x7a, 0x64, 0x9d, 0xfd, 0x91, 0x75, 0xde, 0x8f, 0xac, 0xf3,
-	0xc2, 0x57, 0xca, 0x97, 0xdb, 0x6c, 0x96, 0x83, 0xe6, 0xa1, 0xc3, 0x1b, 0x0d, 0x46, 0xd6, 0x71,
-	0xe4, 0xbb, 0xbf, 0x85, 0xfb, 0xda, 0x4a, 0x97, 0xf5, 0x63, 0x8f, 0xb7, 0x5f, 0x01, 0x00, 0x00,
-	0xff, 0xff, 0x63, 0xdf, 0x14, 0x0a, 0x92, 0x01, 0x00, 0x00,
+	// 509 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x93, 0xcf, 0x6e, 0xd3, 0x30,
+	0x1c, 0xc7, 0x1b, 0x58, 0xb7, 0xd6, 0xed, 0x36, 0xcd, 0x14, 0xb0, 0x8a, 0x48, 0x4b, 0x05, 0xa8,
+	0x42, 0x22, 0x91, 0xe0, 0xc6, 0x71, 0x4c, 0x88, 0x5e, 0x38, 0x54, 0x48, 0x48, 0x5c, 0x22, 0x27,
+	0x71, 0x13, 0x6b, 0xfe, 0x13, 0xc5, 0x2e, 0x34, 0x17, 0x9e, 0x61, 0x8f, 0x35, 0x89, 0xcb, 0x8e,
+	0x9c, 0x06, 0x6a, 0xdf, 0x80, 0x27, 0x40, 0xb6, 0x93, 0xae, 0x08, 0xa1, 0xdd, 0xfc, 0xfb, 0x7e,
+	0xea, 0xef, 0xa7, 0x3f, 0x59, 0x01, 0xfe, 0xb9, 0x2c, 0x68, 0xa8, 0xe5, 0x39, 0x11, 0x0b, 0x9c,
+	0x68, 0x59, 0x56, 0x61, 0x4a, 0x84, 0xe4, 0x2a, 0x28, 0x4a, 0xa9, 0x25, 0x3c, 0x31, 0x3c, 0xd8,
+	0xe5, 0xc3, 0x51, 0x26, 0x65, 0xc6, 0x48, 0x68, 0x7f, 0x10, 0x2f, 0x17, 0xa1, 0xa6, 0x9c, 0x28,
+	0x8d, 0x79, 0xe1, 0xee, 0x0c, 0x07, 0x99, 0xcc, 0xa4, 0x3d, 0x86, 0xe6, 0xe4, 0xd2, 0xc9, 0xf7,
+	0x36, 0xe8, 0xbf, 0x73, 0x15, 0x67, 0xc6, 0x00, 0x07, 0xa0, 0x8d, 0x53, 0x4e, 0x05, 0xf2, 0xc6,
+	0xde, 0xb4, 0x3b, 0x77, 0x03, 0x7c, 0x02, 0xfa, 0x29, 0x55, 0x05, 0xc3, 0x55, 0x24, 0x30, 0x27,
+	0xe8, 0x8e, 0x85, 0xbd, 0x3a, 0xfb, 0x80, 0x39, 0x81, 0x8f, 0x40, 0x77, 0xb1, 0x64, 0xcc, 0xf1,
+	0xbb, 0x96, 0x77, 0x4c, 0xd0, 0x40, 0x9a, 0x48, 0x11, 0xe5, 0x58, 0xe5, 0x68, 0xcf, 0x41, 0x13,
+	0xbc, 0xc7, 0x2a, 0x87, 0x63, 0xd0, 0x4b, 0x89, 0x4a, 0x4a, 0x5a, 0x68, 0x2a, 0x05, 0x6a, 0xd7,
+	0xdd, 0x37, 0x11, 0x1c, 0x82, 0x0e, 0x59, 0x15, 0x52, 0x10, 0xa1, 0xd1, 0xfe, 0xd8, 0x9b, 0xee,
+	0xcd, 0xb7, 0x33, 0x7c, 0x00, 0xf6, 0x55, 0xc5, 0x63, 0xc9, 0xd0, 0x81, 0xbd, 0x58, 0x4f, 0xe6,
+	0x0e, 0xa7, 0x42, 0xe3, 0x98, 0x11, 0xd4, 0x19, 0x7b, 0xd3, 0xce, 0x7c, 0x3b, 0xc3, 0x67, 0xe0,
+	0x28, 0xc1, 0x9a, 0x64, 0xb2, 0xac, 0x22, 0x2a, 0x52, 0xb2, 0x42, 0x5d, 0xdb, 0x7a, 0xd8, 0xa4,
+	0x33, 0x13, 0x42, 0x04, 0x0e, 0xbe, 0x92, 0x58, 0x51, 0x4d, 0x10, 0xb0, 0xdd, 0xcd, 0x08, 0x1f,
+	0x03, 0xc0, 0x64, 0x82, 0xeb, 0x6d, 0x8f, 0x2c, 0xec, 0xda, 0xc4, 0xae, 0x3b, 0x00, 0x6d, 0x2e,
+	0xbf, 0x90, 0x14, 0x1d, 0x5b, 0xb1, 0x1b, 0xe0, 0x37, 0xf0, 0x90, 0x29, 0xac, 0xa3, 0x9d, 0xcd,
+	0xa2, 0x24, 0xc7, 0x22, 0x23, 0xa8, 0x37, 0xf6, 0xa6, 0xbd, 0x57, 0xc3, 0xc0, 0x3d, 0x62, 0xd0,
+	0x3c, 0x62, 0xf0, 0xb1, 0x79, 0xc4, 0xd3, 0x17, 0x97, 0xd7, 0xa3, 0xd6, 0xef, 0xeb, 0x91, 0x5f,
+	0x61, 0xce, 0xde, 0x4c, 0xfe, 0x53, 0x34, 0xb9, 0xf8, 0x39, 0xf2, 0xe6, 0xf7, 0x0d, 0x3d, 0xbb,
+	0x81, 0x6f, 0x2d, 0x83, 0x25, 0xb8, 0xc7, 0xb0, 0xd2, 0x51, 0xbd, 0x44, 0xe3, 0xee, 0xdf, 0xea,
+	0x7e, 0x5e, 0xbb, 0x87, 0xb5, 0xfb, 0xdf, 0x12, 0xe7, 0x3d, 0x31, 0xe4, 0x93, 0x03, 0xb5, 0x93,
+	0x01, 0x1b, 0x46, 0x94, 0xe3, 0x6c, 0x6b, 0x3c, 0xbc, 0xd5, 0xf8, 0xb4, 0x36, 0xa2, 0x1d, 0xe3,
+	0x6e, 0x85, 0xf3, 0x1d, 0x9b, 0x7c, 0x66, 0x62, 0x67, 0x3b, 0x9d, 0x5d, 0xae, 0x7d, 0xef, 0x6a,
+	0xed, 0x7b, 0xbf, 0xd6, 0xbe, 0x77, 0xb1, 0xf1, 0x5b, 0x57, 0x1b, 0xbf, 0xf5, 0x63, 0xe3, 0xb7,
+	0x3e, 0x87, 0x19, 0xd5, 0xf9, 0x32, 0x0e, 0x12, 0xc9, 0x43, 0xf3, 0xf1, 0xbc, 0xe4, 0x52, 0x90,
+	0xca, 0x1e, 0xc3, 0xd5, 0xdf, 0x5f, 0x9a, 0xae, 0x0a, 0xa2, 0xe2, 0x7d, 0xfb, 0xaf, 0x5e, 0xff,
+	0x09, 0x00, 0x00, 0xff, 0xff, 0xe3, 0x75, 0xba, 0xb0, 0x8b, 0x03, 0x00, 0x00,
 }
 
 func (m *FactoryDenom) Marshal() (dAtA []byte, err error) {
@@ -172,6 +245,59 @@ func (m *FactoryDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.Moved {
+		i--
+		if m.Moved {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x78
+	}
+	if len(m.LocalName) > 0 {
+		i -= len(m.LocalName)
+		copy(dAtA[i:], m.LocalName)
+		i = encodeVarintDenoms(dAtA, i, uint64(len(m.LocalName)))
+		i--
+		dAtA[i] = 0x72
+	}
+	n1, err1 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.LastImageChange, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.LastImageChange):])
+	if err1 != nil {
+		return 0, err1
+	}
+	i -= n1
+	i = encodeVarintDenoms(dAtA, i, uint64(n1))
+	i--
+	dAtA[i] = 0x6a
+	n2, err2 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.LastWebsiteChange, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.LastWebsiteChange):])
+	if err2 != nil {
+		return 0, err2
+	}
+	i -= n2
+	i = encodeVarintDenoms(dAtA, i, uint64(n2))
+	i--
+	dAtA[i] = 0x62
+	n3, err3 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.LsatDescriptionChange, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.LsatDescriptionChange):])
+	if err3 != nil {
+		return 0, err3
+	}
+	i -= n3
+	i = encodeVarintDenoms(dAtA, i, uint64(n3))
+	i--
+	dAtA[i] = 0x5a
+	if len(m.Website) > 0 {
+		i -= len(m.Website)
+		copy(dAtA[i:], m.Website)
+		i = encodeVarintDenoms(dAtA, i, uint64(len(m.Website)))
+		i--
+		dAtA[i] = 0x52
+	}
+	if m.CategoryIndex != 0 {
+		i = encodeVarintDenoms(dAtA, i, uint64(m.CategoryIndex))
+		i--
+		dAtA[i] = 0x48
+	}
 	if m.Mintable {
 		i--
 		if m.Mintable {
@@ -277,6 +403,26 @@ func (m *FactoryDenom) Size() (n int) {
 		n += 1 + l + sovDenoms(uint64(l))
 	}
 	if m.Mintable {
+		n += 2
+	}
+	if m.CategoryIndex != 0 {
+		n += 1 + sovDenoms(uint64(m.CategoryIndex))
+	}
+	l = len(m.Website)
+	if l > 0 {
+		n += 1 + l + sovDenoms(uint64(l))
+	}
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.LsatDescriptionChange)
+	n += 1 + l + sovDenoms(uint64(l))
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.LastWebsiteChange)
+	n += 1 + l + sovDenoms(uint64(l))
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.LastImageChange)
+	n += 1 + l + sovDenoms(uint64(l))
+	l = len(m.LocalName)
+	if l > 0 {
+		n += 1 + l + sovDenoms(uint64(l))
+	}
+	if m.Moved {
 		n += 2
 	}
 	return n
@@ -548,6 +694,208 @@ func (m *FactoryDenom) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.Mintable = bool(v != 0)
+		case 9:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CategoryIndex", wireType)
+			}
+			m.CategoryIndex = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDenoms
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CategoryIndex |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 10:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Website", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDenoms
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDenoms
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDenoms
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Website = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 11:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LsatDescriptionChange", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDenoms
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthDenoms
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthDenoms
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.LsatDescriptionChange, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 12:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LastWebsiteChange", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDenoms
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthDenoms
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthDenoms
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.LastWebsiteChange, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 13:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LastImageChange", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDenoms
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthDenoms
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthDenoms
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.LastImageChange, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 14:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LocalName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDenoms
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDenoms
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDenoms
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.LocalName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 15:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Moved", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDenoms
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Moved = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipDenoms(dAtA[iNdEx:])

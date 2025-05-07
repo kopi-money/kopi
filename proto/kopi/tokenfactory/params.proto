@@ -3,6 +3,7 @@ package kopi.tokenfactory;
 
 import "amino/amino.proto";
 import "gogoproto/gogo.proto";
+import "kopi/tokenfactory/category.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
 
@@ -12,13 +13,14 @@ message Params {
   option (gogoproto.equal) = true;
 
   int64 minimum_unlock_in_seconds = 1;
+  int64 maximum_vesting_unlock_steps = 7;
 
   bytes creation_fee = 2 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false
   ];
 
-  bytes reserve_fee = 3 [
+  bytes reserve_fee_share = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
@@ -27,4 +29,27 @@ message Params {
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable)   = false
   ];
+
+  bytes minimum_pool_fee = 6 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+
+  bytes maximum_pool_fee = 11 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable)   = false
+  ];
+
+  bytes minimum_pool_moving_value = 12 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable)   = false
+  ];
+
+  Categories categories = 5 [
+    (gogoproto.nullable)   = false
+  ];
+
+  int64 change_seconds_description = 8;
+  int64 change_seconds_website = 9;
+  int64 change_seconds_image = 10;
 }

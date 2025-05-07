@@ -12,7 +12,7 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 			Service: modulev1.Query_ServiceDesc.ServiceName,
 			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
 				{
-					RpcMethod: "Params",
+					RpcMethod: "QueryParams",
 					Use:       "params",
 					Short:     "Shows the parameters of the module",
 				},

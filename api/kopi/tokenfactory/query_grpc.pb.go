@@ -19,16 +19,23 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName                                   = "/kopi.tokenfactory.Query/Params"
-	Query_Denoms_FullMethodName                                   = "/kopi.tokenfactory.Query/Denoms"
-	Query_GetPool_FullMethodName                                  = "/kopi.tokenfactory.Query/GetPool"
-	Query_GetFactoryTokenBalance_FullMethodName                   = "/kopi.tokenfactory.Query/GetFactoryTokenBalance"
-	Query_GetPoolLiquidityAddress_FullMethodName                  = "/kopi.tokenfactory.Query/GetPoolLiquidityAddress"
-	Query_GetPoolLiquidityAddressByDenom_FullMethodName           = "/kopi.tokenfactory.Query/GetPoolLiquidityAddressByDenom"
+	Query_QueryParams_FullMethodName                              = "/kopi.tokenfactory.Query/QueryParams"
+	Query_QueryCategories_FullMethodName                          = "/kopi.tokenfactory.Query/QueryCategories"
+	Query_QueryCreationNameExists_FullMethodName                  = "/kopi.tokenfactory.Query/QueryCreationNameExists"
+	Query_QueryCreationSymbolExists_FullMethodName                = "/kopi.tokenfactory.Query/QueryCreationSymbolExists"
+	Query_QueryDenoms_FullMethodName                              = "/kopi.tokenfactory.Query/QueryDenoms"
+	Query_QueryPool_FullMethodName                                = "/kopi.tokenfactory.Query/QueryPool"
+	Query_QueryDistribution_FullMethodName                        = "/kopi.tokenfactory.Query/QueryDistribution"
+	Query_QueryFactoryTokenBalance_FullMethodName                 = "/kopi.tokenfactory.Query/QueryFactoryTokenBalance"
+	Query_QueryPoolLiquidityAddress_FullMethodName                = "/kopi.tokenfactory.Query/QueryPoolLiquidityAddress"
+	Query_QueryPoolLiquidityAddressByDenom_FullMethodName         = "/kopi.tokenfactory.Query/QueryPoolLiquidityAddressByDenom"
 	Query_QuerySimulateAddingLiquidityKCoin_FullMethodName        = "/kopi.tokenfactory.Query/QuerySimulateAddingLiquidityKCoin"
 	Query_QuerySimulateAddingLiquidityFactoryToken_FullMethodName = "/kopi.tokenfactory.Query/QuerySimulateAddingLiquidityFactoryToken"
+	Query_QueryPoolLiquidityDistribution_FullMethodName           = "/kopi.tokenfactory.Query/QueryPoolLiquidityDistribution"
 	Query_QuerySimulateSell_FullMethodName                        = "/kopi.tokenfactory.Query/QuerySimulateSell"
 	Query_QuerySimulateBuy_FullMethodName                         = "/kopi.tokenfactory.Query/QuerySimulateBuy"
+	Query_QueryVestings_FullMethodName                            = "/kopi.tokenfactory.Query/QueryVestings"
+	Query_QueryOffers_FullMethodName                              = "/kopi.tokenfactory.Query/QueryOffers"
 )
 
 // QueryClient is the client API for Query service.
@@ -36,16 +43,23 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type QueryClient interface {
 	// Parameters queries the parameters of the module.
-	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	Denoms(ctx context.Context, in *QueryDenomsRequest, opts ...grpc.CallOption) (*QueryDenomsResponse, error)
-	GetPool(ctx context.Context, in *QueryPoolRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error)
-	GetFactoryTokenBalance(ctx context.Context, in *GetFactoryTokenBalanceRequest, opts ...grpc.CallOption) (*GetFactoryTokenBalanceResponse, error)
-	GetPoolLiquidityAddress(ctx context.Context, in *QueryPoolLiquidityAddressRequest, opts ...grpc.CallOption) (*QueryPoolLiquidityAddressResponse, error)
-	GetPoolLiquidityAddressByDenom(ctx context.Context, in *QueryPoolLiquidityAddressRequestByDenom, opts ...grpc.CallOption) (*PoolLiquidityAddress, error)
+	QueryParams(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	QueryCategories(ctx context.Context, in *QueryCategoriesRequest, opts ...grpc.CallOption) (*QueryCategoriesResponse, error)
+	QueryCreationNameExists(ctx context.Context, in *QueryCreationNameExistsQuery, opts ...grpc.CallOption) (*QueryCreationExistsResponse, error)
+	QueryCreationSymbolExists(ctx context.Context, in *QueryCreationSymbolExistsQuery, opts ...grpc.CallOption) (*QueryCreationExistsResponse, error)
+	QueryDenoms(ctx context.Context, in *QueryDenomsRequest, opts ...grpc.CallOption) (*QueryDenomsResponse, error)
+	QueryPool(ctx context.Context, in *QueryPoolRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error)
+	QueryDistribution(ctx context.Context, in *QueryDistributionRequest, opts ...grpc.CallOption) (*QueryDistributionResponse, error)
+	QueryFactoryTokenBalance(ctx context.Context, in *GetFactoryTokenBalanceRequest, opts ...grpc.CallOption) (*GetFactoryTokenBalanceResponse, error)
+	QueryPoolLiquidityAddress(ctx context.Context, in *QueryPoolLiquidityAddressRequest, opts ...grpc.CallOption) (*QueryPoolLiquidityAddressResponse, error)
+	QueryPoolLiquidityAddressByDenom(ctx context.Context, in *QueryPoolLiquidityAddressRequestByDenom, opts ...grpc.CallOption) (*PoolLiquidityAddress, error)
 	QuerySimulateAddingLiquidityKCoin(ctx context.Context, in *QuerySimulateAddingLiquidityRequest, opts ...grpc.CallOption) (*QuerySimulateAddingLiquidityResponse, error)
 	QuerySimulateAddingLiquidityFactoryToken(ctx context.Context, in *QuerySimulateAddingLiquidityRequest, opts ...grpc.CallOption) (*QuerySimulateAddingLiquidityResponse, error)
+	QueryPoolLiquidityDistribution(ctx context.Context, in *QueryPoolLiquidityDistributionRequest, opts ...grpc.CallOption) (*QueryPoolLiquidityDistributionResponse, error)
 	QuerySimulateSell(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error)
 	QuerySimulateBuy(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error)
+	QueryVestings(ctx context.Context, in *QueryVestingsRequest, opts ...grpc.CallOption) (*QueryVestingsResponse, error)
+	QueryOffers(ctx context.Context, in *QueryOffersRequest, opts ...grpc.CallOption) (*QueryOffersResponse, error)
 }
 
 type queryClient struct {
@@ -56,54 +70,90 @@ func NewQueryClient(cc grpc.ClientConnInterface) QueryClient {
 	return &queryClient{cc}
 }
 
-func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
+func (c *queryClient) QueryParams(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
 	out := new(QueryParamsResponse)
-	err := c.cc.Invoke(ctx, Query_Params_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_QueryParams_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) Denoms(ctx context.Context, in *QueryDenomsRequest, opts ...grpc.CallOption) (*QueryDenomsResponse, error) {
+func (c *queryClient) QueryCategories(ctx context.Context, in *QueryCategoriesRequest, opts ...grpc.CallOption) (*QueryCategoriesResponse, error) {
+	out := new(QueryCategoriesResponse)
+	err := c.cc.Invoke(ctx, Query_QueryCategories_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) QueryCreationNameExists(ctx context.Context, in *QueryCreationNameExistsQuery, opts ...grpc.CallOption) (*QueryCreationExistsResponse, error) {
+	out := new(QueryCreationExistsResponse)
+	err := c.cc.Invoke(ctx, Query_QueryCreationNameExists_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) QueryCreationSymbolExists(ctx context.Context, in *QueryCreationSymbolExistsQuery, opts ...grpc.CallOption) (*QueryCreationExistsResponse, error) {
+	out := new(QueryCreationExistsResponse)
+	err := c.cc.Invoke(ctx, Query_QueryCreationSymbolExists_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) QueryDenoms(ctx context.Context, in *QueryDenomsRequest, opts ...grpc.CallOption) (*QueryDenomsResponse, error) {
 	out := new(QueryDenomsResponse)
-	err := c.cc.Invoke(ctx, Query_Denoms_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_QueryDenoms_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) GetPool(ctx context.Context, in *QueryPoolRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error) {
+func (c *queryClient) QueryPool(ctx context.Context, in *QueryPoolRequest, opts ...grpc.CallOption) (*QueryPoolResponse, error) {
 	out := new(QueryPoolResponse)
-	err := c.cc.Invoke(ctx, Query_GetPool_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_QueryPool_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) GetFactoryTokenBalance(ctx context.Context, in *GetFactoryTokenBalanceRequest, opts ...grpc.CallOption) (*GetFactoryTokenBalanceResponse, error) {
+func (c *queryClient) QueryDistribution(ctx context.Context, in *QueryDistributionRequest, opts ...grpc.CallOption) (*QueryDistributionResponse, error) {
+	out := new(QueryDistributionResponse)
+	err := c.cc.Invoke(ctx, Query_QueryDistribution_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) QueryFactoryTokenBalance(ctx context.Context, in *GetFactoryTokenBalanceRequest, opts ...grpc.CallOption) (*GetFactoryTokenBalanceResponse, error) {
 	out := new(GetFactoryTokenBalanceResponse)
-	err := c.cc.Invoke(ctx, Query_GetFactoryTokenBalance_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_QueryFactoryTokenBalance_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) GetPoolLiquidityAddress(ctx context.Context, in *QueryPoolLiquidityAddressRequest, opts ...grpc.CallOption) (*QueryPoolLiquidityAddressResponse, error) {
+func (c *queryClient) QueryPoolLiquidityAddress(ctx context.Context, in *QueryPoolLiquidityAddressRequest, opts ...grpc.CallOption) (*QueryPoolLiquidityAddressResponse, error) {
 	out := new(QueryPoolLiquidityAddressResponse)
-	err := c.cc.Invoke(ctx, Query_GetPoolLiquidityAddress_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_QueryPoolLiquidityAddress_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) GetPoolLiquidityAddressByDenom(ctx context.Context, in *QueryPoolLiquidityAddressRequestByDenom, opts ...grpc.CallOption) (*PoolLiquidityAddress, error) {
+func (c *queryClient) QueryPoolLiquidityAddressByDenom(ctx context.Context, in *QueryPoolLiquidityAddressRequestByDenom, opts ...grpc.CallOption) (*PoolLiquidityAddress, error) {
 	out := new(PoolLiquidityAddress)
-	err := c.cc.Invoke(ctx, Query_GetPoolLiquidityAddressByDenom_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_QueryPoolLiquidityAddressByDenom_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -128,6 +178,15 @@ func (c *queryClient) QuerySimulateAddingLiquidityFactoryToken(ctx context.Conte
 	return out, nil
 }
 
+func (c *queryClient) QueryPoolLiquidityDistribution(ctx context.Context, in *QueryPoolLiquidityDistributionRequest, opts ...grpc.CallOption) (*QueryPoolLiquidityDistributionResponse, error) {
+	out := new(QueryPoolLiquidityDistributionResponse)
+	err := c.cc.Invoke(ctx, Query_QueryPoolLiquidityDistribution_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) QuerySimulateSell(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error) {
 	out := new(QuerySimulateTradeResponse)
 	err := c.cc.Invoke(ctx, Query_QuerySimulateSell_FullMethodName, in, out, opts...)
@@ -146,21 +205,46 @@ func (c *queryClient) QuerySimulateBuy(ctx context.Context, in *QuerySimulateTra
 	return out, nil
 }
 
+func (c *queryClient) QueryVestings(ctx context.Context, in *QueryVestingsRequest, opts ...grpc.CallOption) (*QueryVestingsResponse, error) {
+	out := new(QueryVestingsResponse)
+	err := c.cc.Invoke(ctx, Query_QueryVestings_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) QueryOffers(ctx context.Context, in *QueryOffersRequest, opts ...grpc.CallOption) (*QueryOffersResponse, error) {
+	out := new(QueryOffersResponse)
+	err := c.cc.Invoke(ctx, Query_QueryOffers_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
-	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	Denoms(context.Context, *QueryDenomsRequest) (*QueryDenomsResponse, error)
-	GetPool(context.Context, *QueryPoolRequest) (*QueryPoolResponse, error)
-	GetFactoryTokenBalance(context.Context, *GetFactoryTokenBalanceRequest) (*GetFactoryTokenBalanceResponse, error)
-	GetPoolLiquidityAddress(context.Context, *QueryPoolLiquidityAddressRequest) (*QueryPoolLiquidityAddressResponse, error)
-	GetPoolLiquidityAddressByDenom(context.Context, *QueryPoolLiquidityAddressRequestByDenom) (*PoolLiquidityAddress, error)
+	QueryParams(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	QueryCategories(context.Context, *QueryCategoriesRequest) (*QueryCategoriesResponse, error)
+	QueryCreationNameExists(context.Context, *QueryCreationNameExistsQuery) (*QueryCreationExistsResponse, error)
+	QueryCreationSymbolExists(context.Context, *QueryCreationSymbolExistsQuery) (*QueryCreationExistsResponse, error)
+	QueryDenoms(context.Context, *QueryDenomsRequest) (*QueryDenomsResponse, error)
+	QueryPool(context.Context, *QueryPoolRequest) (*QueryPoolResponse, error)
+	QueryDistribution(context.Context, *QueryDistributionRequest) (*QueryDistributionResponse, error)
+	QueryFactoryTokenBalance(context.Context, *GetFactoryTokenBalanceRequest) (*GetFactoryTokenBalanceResponse, error)
+	QueryPoolLiquidityAddress(context.Context, *QueryPoolLiquidityAddressRequest) (*QueryPoolLiquidityAddressResponse, error)
+	QueryPoolLiquidityAddressByDenom(context.Context, *QueryPoolLiquidityAddressRequestByDenom) (*PoolLiquidityAddress, error)
 	QuerySimulateAddingLiquidityKCoin(context.Context, *QuerySimulateAddingLiquidityRequest) (*QuerySimulateAddingLiquidityResponse, error)
 	QuerySimulateAddingLiquidityFactoryToken(context.Context, *QuerySimulateAddingLiquidityRequest) (*QuerySimulateAddingLiquidityResponse, error)
+	QueryPoolLiquidityDistribution(context.Context, *QueryPoolLiquidityDistributionRequest) (*QueryPoolLiquidityDistributionResponse, error)
 	QuerySimulateSell(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error)
 	QuerySimulateBuy(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error)
+	QueryVestings(context.Context, *QueryVestingsRequest) (*QueryVestingsResponse, error)
+	QueryOffers(context.Context, *QueryOffersRequest) (*QueryOffersResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -168,23 +252,35 @@ type QueryServer interface {
 type UnimplementedQueryServer struct {
 }
 
-func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+func (UnimplementedQueryServer) QueryParams(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryParams not implemented")
 }
-func (UnimplementedQueryServer) Denoms(context.Context, *QueryDenomsRequest) (*QueryDenomsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Denoms not implemented")
+func (UnimplementedQueryServer) QueryCategories(context.Context, *QueryCategoriesRequest) (*QueryCategoriesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryCategories not implemented")
 }
-func (UnimplementedQueryServer) GetPool(context.Context, *QueryPoolRequest) (*QueryPoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPool not implemented")
+func (UnimplementedQueryServer) QueryCreationNameExists(context.Context, *QueryCreationNameExistsQuery) (*QueryCreationExistsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryCreationNameExists not implemented")
 }
-func (UnimplementedQueryServer) GetFactoryTokenBalance(context.Context, *GetFactoryTokenBalanceRequest) (*GetFactoryTokenBalanceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetFactoryTokenBalance not implemented")
+func (UnimplementedQueryServer) QueryCreationSymbolExists(context.Context, *QueryCreationSymbolExistsQuery) (*QueryCreationExistsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryCreationSymbolExists not implemented")
 }
-func (UnimplementedQueryServer) GetPoolLiquidityAddress(context.Context, *QueryPoolLiquidityAddressRequest) (*QueryPoolLiquidityAddressResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPoolLiquidityAddress not implemented")
+func (UnimplementedQueryServer) QueryDenoms(context.Context, *QueryDenomsRequest) (*QueryDenomsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryDenoms not implemented")
 }
-func (UnimplementedQueryServer) GetPoolLiquidityAddressByDenom(context.Context, *QueryPoolLiquidityAddressRequestByDenom) (*PoolLiquidityAddress, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPoolLiquidityAddressByDenom not implemented")
+func (UnimplementedQueryServer) QueryPool(context.Context, *QueryPoolRequest) (*QueryPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryPool not implemented")
+}
+func (UnimplementedQueryServer) QueryDistribution(context.Context, *QueryDistributionRequest) (*QueryDistributionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryDistribution not implemented")
+}
+func (UnimplementedQueryServer) QueryFactoryTokenBalance(context.Context, *GetFactoryTokenBalanceRequest) (*GetFactoryTokenBalanceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryFactoryTokenBalance not implemented")
+}
+func (UnimplementedQueryServer) QueryPoolLiquidityAddress(context.Context, *QueryPoolLiquidityAddressRequest) (*QueryPoolLiquidityAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryPoolLiquidityAddress not implemented")
+}
+func (UnimplementedQueryServer) QueryPoolLiquidityAddressByDenom(context.Context, *QueryPoolLiquidityAddressRequestByDenom) (*PoolLiquidityAddress, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryPoolLiquidityAddressByDenom not implemented")
 }
 func (UnimplementedQueryServer) QuerySimulateAddingLiquidityKCoin(context.Context, *QuerySimulateAddingLiquidityRequest) (*QuerySimulateAddingLiquidityResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QuerySimulateAddingLiquidityKCoin not implemented")
@@ -192,11 +288,20 @@ func (UnimplementedQueryServer) QuerySimulateAddingLiquidityKCoin(context.Contex
 func (UnimplementedQueryServer) QuerySimulateAddingLiquidityFactoryToken(context.Context, *QuerySimulateAddingLiquidityRequest) (*QuerySimulateAddingLiquidityResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QuerySimulateAddingLiquidityFactoryToken not implemented")
 }
+func (UnimplementedQueryServer) QueryPoolLiquidityDistribution(context.Context, *QueryPoolLiquidityDistributionRequest) (*QueryPoolLiquidityDistributionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryPoolLiquidityDistribution not implemented")
+}
 func (UnimplementedQueryServer) QuerySimulateSell(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QuerySimulateSell not implemented")
 }
 func (UnimplementedQueryServer) QuerySimulateBuy(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QuerySimulateBuy not implemented")
+}
+func (UnimplementedQueryServer) QueryVestings(context.Context, *QueryVestingsRequest) (*QueryVestingsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryVestings not implemented")
+}
+func (UnimplementedQueryServer) QueryOffers(context.Context, *QueryOffersRequest) (*QueryOffersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryOffers not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -211,110 +316,182 @@ func RegisterQueryServer(s grpc.ServiceRegistrar, srv QueryServer) {
 	s.RegisterService(&Query_ServiceDesc, srv)
 }
 
-func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryParamsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Params(ctx, in)
+		return srv.(QueryServer).QueryParams(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_Params_FullMethodName,
+		FullMethod: Query_QueryParams_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Params(ctx, req.(*QueryParamsRequest))
+		return srv.(QueryServer).QueryParams(ctx, req.(*QueryParamsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Denoms_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryCategories_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryCategoriesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).QueryCategories(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_QueryCategories_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).QueryCategories(ctx, req.(*QueryCategoriesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_QueryCreationNameExists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryCreationNameExistsQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).QueryCreationNameExists(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_QueryCreationNameExists_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).QueryCreationNameExists(ctx, req.(*QueryCreationNameExistsQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_QueryCreationSymbolExists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryCreationSymbolExistsQuery)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).QueryCreationSymbolExists(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_QueryCreationSymbolExists_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).QueryCreationSymbolExists(ctx, req.(*QueryCreationSymbolExistsQuery))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_QueryDenoms_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryDenomsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Denoms(ctx, in)
+		return srv.(QueryServer).QueryDenoms(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_Denoms_FullMethodName,
+		FullMethod: Query_QueryDenoms_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Denoms(ctx, req.(*QueryDenomsRequest))
+		return srv.(QueryServer).QueryDenoms(ctx, req.(*QueryDenomsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPoolRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetPool(ctx, in)
+		return srv.(QueryServer).QueryPool(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_GetPool_FullMethodName,
+		FullMethod: Query_QueryPool_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetPool(ctx, req.(*QueryPoolRequest))
+		return srv.(QueryServer).QueryPool(ctx, req.(*QueryPoolRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetFactoryTokenBalance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryDistribution_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryDistributionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).QueryDistribution(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_QueryDistribution_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).QueryDistribution(ctx, req.(*QueryDistributionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_QueryFactoryTokenBalance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetFactoryTokenBalanceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetFactoryTokenBalance(ctx, in)
+		return srv.(QueryServer).QueryFactoryTokenBalance(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_GetFactoryTokenBalance_FullMethodName,
+		FullMethod: Query_QueryFactoryTokenBalance_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetFactoryTokenBalance(ctx, req.(*GetFactoryTokenBalanceRequest))
+		return srv.(QueryServer).QueryFactoryTokenBalance(ctx, req.(*GetFactoryTokenBalanceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetPoolLiquidityAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryPoolLiquidityAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPoolLiquidityAddressRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetPoolLiquidityAddress(ctx, in)
+		return srv.(QueryServer).QueryPoolLiquidityAddress(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_GetPoolLiquidityAddress_FullMethodName,
+		FullMethod: Query_QueryPoolLiquidityAddress_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetPoolLiquidityAddress(ctx, req.(*QueryPoolLiquidityAddressRequest))
+		return srv.(QueryServer).QueryPoolLiquidityAddress(ctx, req.(*QueryPoolLiquidityAddressRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetPoolLiquidityAddressByDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_QueryPoolLiquidityAddressByDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryPoolLiquidityAddressRequestByDenom)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetPoolLiquidityAddressByDenom(ctx, in)
+		return srv.(QueryServer).QueryPoolLiquidityAddressByDenom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_GetPoolLiquidityAddressByDenom_FullMethodName,
+		FullMethod: Query_QueryPoolLiquidityAddressByDenom_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetPoolLiquidityAddressByDenom(ctx, req.(*QueryPoolLiquidityAddressRequestByDenom))
+		return srv.(QueryServer).QueryPoolLiquidityAddressByDenom(ctx, req.(*QueryPoolLiquidityAddressRequestByDenom))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -355,6 +532,24 @@ func _Query_QuerySimulateAddingLiquidityFactoryToken_Handler(srv interface{}, ct
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_QueryPoolLiquidityDistribution_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryPoolLiquidityDistributionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).QueryPoolLiquidityDistribution(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_QueryPoolLiquidityDistribution_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).QueryPoolLiquidityDistribution(ctx, req.(*QueryPoolLiquidityDistributionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Query_QuerySimulateSell_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QuerySimulateTradeRequest)
 	if err := dec(in); err != nil {
@@ -391,6 +586,42 @@ func _Query_QuerySimulateBuy_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_QueryVestings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryVestingsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).QueryVestings(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_QueryVestings_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).QueryVestings(ctx, req.(*QueryVestingsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_QueryOffers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryOffersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).QueryOffers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_QueryOffers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).QueryOffers(ctx, req.(*QueryOffersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -399,28 +630,44 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Params",
-			Handler:    _Query_Params_Handler,
+			MethodName: "QueryParams",
+			Handler:    _Query_QueryParams_Handler,
 		},
 		{
-			MethodName: "Denoms",
-			Handler:    _Query_Denoms_Handler,
+			MethodName: "QueryCategories",
+			Handler:    _Query_QueryCategories_Handler,
 		},
 		{
-			MethodName: "GetPool",
-			Handler:    _Query_GetPool_Handler,
+			MethodName: "QueryCreationNameExists",
+			Handler:    _Query_QueryCreationNameExists_Handler,
 		},
 		{
-			MethodName: "GetFactoryTokenBalance",
-			Handler:    _Query_GetFactoryTokenBalance_Handler,
+			MethodName: "QueryCreationSymbolExists",
+			Handler:    _Query_QueryCreationSymbolExists_Handler,
 		},
 		{
-			MethodName: "GetPoolLiquidityAddress",
-			Handler:    _Query_GetPoolLiquidityAddress_Handler,
+			MethodName: "QueryDenoms",
+			Handler:    _Query_QueryDenoms_Handler,
 		},
 		{
-			MethodName: "GetPoolLiquidityAddressByDenom",
-			Handler:    _Query_GetPoolLiquidityAddressByDenom_Handler,
+			MethodName: "QueryPool",
+			Handler:    _Query_QueryPool_Handler,
+		},
+		{
+			MethodName: "QueryDistribution",
+			Handler:    _Query_QueryDistribution_Handler,
+		},
+		{
+			MethodName: "QueryFactoryTokenBalance",
+			Handler:    _Query_QueryFactoryTokenBalance_Handler,
+		},
+		{
+			MethodName: "QueryPoolLiquidityAddress",
+			Handler:    _Query_QueryPoolLiquidityAddress_Handler,
+		},
+		{
+			MethodName: "QueryPoolLiquidityAddressByDenom",
+			Handler:    _Query_QueryPoolLiquidityAddressByDenom_Handler,
 		},
 		{
 			MethodName: "QuerySimulateAddingLiquidityKCoin",
@@ -431,12 +678,24 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_QuerySimulateAddingLiquidityFactoryToken_Handler,
 		},
 		{
+			MethodName: "QueryPoolLiquidityDistribution",
+			Handler:    _Query_QueryPoolLiquidityDistribution_Handler,
+		},
+		{
 			MethodName: "QuerySimulateSell",
 			Handler:    _Query_QuerySimulateSell_Handler,
 		},
 		{
 			MethodName: "QuerySimulateBuy",
 			Handler:    _Query_QuerySimulateBuy_Handler,
+		},
+		{
+			MethodName: "QueryVestings",
+			Handler:    _Query_QueryVestings_Handler,
+		},
+		{
+			MethodName: "QueryOffers",
+			Handler:    _Query_QueryOffers_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

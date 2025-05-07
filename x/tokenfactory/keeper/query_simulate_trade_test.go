@@ -12,10 +12,10 @@ import (
 func TestTradeSimulation1(t *testing.T) {
 	k, msgServer, ctx := keepertest.SetupTokenfactoryMsgServer(t)
 
-	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", 6)
+	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", "test", 6)
 	require.NoError(t, err)
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Alice, "4000000"))
-	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "4000000", constants.KUSD, "1000000", "0.1", 10))
+	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "4000000", constants.KUSD, "1000000", "0.01", 10))
 
 	pool, _ := k.GetLiquidityPool(ctx, factoryDenomHash)
 	require.Equal(t, int64(4_000_000), pool.FactoryDenomAmount.Int64())
@@ -25,21 +25,21 @@ func TestTradeSimulation1(t *testing.T) {
 		DenomGiving:    constants.KUSD,
 		DenomReceiving: factoryDenomHash,
 		Address:        keepertest.Alice,
-		Amount:         "1_000",
+		Amount:         "10_000",
 	})
 
 	require.NoError(t, err)
-	require.Equal(t, "1000", res.AmountGiven)
-	require.Equal(t, "3592", res.AmountReceived)
+	require.Equal(t, "10000", res.AmountGiven)
+	require.Equal(t, "39211", res.AmountReceived)
 
 	res, err = k.QuerySimulateBuy(ctx, &types.QuerySimulateTradeRequest{
 		DenomGiving:    constants.KUSD,
 		DenomReceiving: factoryDenomHash,
 		Address:        keepertest.Alice,
-		Amount:         "1_000",
+		Amount:         "10_000",
 	})
 
 	require.NoError(t, err)
-	require.Equal(t, "1000", res.AmountReceived)
-	require.Equal(t, "275", res.AmountGiven)
+	require.Equal(t, "10000", res.AmountReceived)
+	require.Equal(t, "2532", res.AmountGiven)
 }

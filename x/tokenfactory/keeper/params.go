@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-
 	"cosmossdk.io/math"
 
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
@@ -24,11 +23,6 @@ func (k Keeper) SetParams(ctx context.Context, params types.Params) error {
 	return nil
 }
 
-func (k Keeper) getTradeFee(ctx context.Context, poolFee math.LegacyDec) math.LegacyDec {
-	reserveFee := k.GetParams(ctx).ReserveFee
-	return reserveFee.Add(poolFee)
-}
-
 func (k Keeper) getMinimumPoolSize(ctx context.Context) math.Int {
 	minimumPoolSize := k.GetParams(ctx).MinimumPoolSize
 	if minimumPoolSize.IsNil() {
@@ -38,11 +32,67 @@ func (k Keeper) getMinimumPoolSize(ctx context.Context) math.Int {
 	return minimumPoolSize
 }
 
-func (k Keeper) getCreationFee(ctx context.Context) math.Int {
-	creationFee := k.GetParams(ctx).CreationFee
-	if creationFee.IsNil() {
-		return types.CreationFee
+func (k Keeper) getMinimumPoolFee(ctx context.Context) math.LegacyDec {
+	minimumPoolFee := k.GetParams(ctx).MinimumPoolFee
+	if minimumPoolFee.IsNil() {
+		return types.MinimumPoolFee
 	}
 
-	return creationFee
+	return minimumPoolFee
+}
+
+func (k Keeper) getMaximumPoolFee(ctx context.Context) math.LegacyDec {
+	maximumPoolFee := k.GetParams(ctx).MaximumPoolFee
+	if maximumPoolFee.IsNil() {
+		return types.MaximumPoolFee
+	}
+
+	return maximumPoolFee
+}
+
+func (k Keeper) getMinimumPoolMovingValue(ctx context.Context) math.Int {
+	minimumPoolMovingValue := k.GetParams(ctx).MinimumPoolMovingValue
+	if minimumPoolMovingValue.IsNil() {
+		return types.MinimumPoolMovingValue
+	}
+
+	return minimumPoolMovingValue
+}
+
+func (k Keeper) getReserveFeeShare(ctx context.Context) math.LegacyDec {
+	reserveFeeShare := k.GetParams(ctx).ReserveFeeShare
+	if reserveFeeShare.IsNil() || !reserveFeeShare.IsPositive() {
+		return types.ReserveFeeShare
+	}
+
+	return reserveFeeShare
+}
+
+func (k Keeper) getMaximumVestingUnlockSteps(ctx context.Context) int64 {
+	maximumVestingUnlockSteps := k.GetParams(ctx).MaximumVestingUnlockSteps
+	if maximumVestingUnlockSteps < 1 {
+		return types.MaximumVestingUnlockSteps
+	}
+
+	return maximumVestingUnlockSteps
+}
+
+func (k Keeper) getCategory(ctx context.Context, categoryIndex uint64) (types.Category, bool) {
+	for _, category := range k.GetParams(ctx).Categories.Categories {
+		if category.Index == categoryIndex {
+			return category, true
+		}
+	}
+
+	return types.Category{}, false
+}
+
+func (k Keeper) validCategoryIndex(ctx context.Context, categoryIndex uint64) bool {
+	for _, category := range k.GetParams(ctx).Categories.Categories {
+		if category.Index == categoryIndex {
+			return true
+		}
+	}
+
+	return false
 }

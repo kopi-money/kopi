@@ -10,7 +10,7 @@ import (
 )
 
 func (k msgServer) CreateDenom(ctx context.Context, msg *types.MsgCreateDenom) (*types.MsgCreateDenomResponse, error) {
-	factoryDenom, err := k.Keeper.CreateDenom(ctx, msg.Creator, msg.Name, msg.Symbol, msg.Description, msg.IconHash, msg.Exponent)
+	factoryDenom, err := k.Keeper.CreateDenom(ctx, msg.Creator, msg.Name, msg.Symbol, msg.Description, msg.Website, msg.IconHash, msg.LocalName, msg.Exponent, msg.CategoryIndex, msg.Mintable)
 	if err != nil {
 		return nil, fmt.Errorf("create denom: %v", err)
 	}
@@ -25,7 +25,7 @@ func (k msgServer) CreateDenom(ctx context.Context, msg *types.MsgCreateDenom) (
 
 	if msg.InitialSupply > 0 {
 		amount := math.NewInt(msg.InitialSupply)
-		if err = k.mintDenom(ctx, factoryDenom, amount, msg.Creator); err != nil {
+		if err = k.mintDenom(ctx, factoryDenom, amount, msg.Creator, true); err != nil {
 			return nil, fmt.Errorf("failed to mint initial supply: %w", err)
 		}
 	}

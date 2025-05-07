@@ -1,0 +1,49 @@
+syntax = "proto3";
+package kopi.tokenfactory;
+
+import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
+
+message OfferNextIndex {
+  uint64 index = 1;
+}
+
+message Offer {
+  uint64 index = 1;
+
+  string address_receiver = 2;
+  string factory_denom = 3;
+  string ask_denom = 4;
+
+  bytes factory_denom_amount = 5 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  bytes ask_amount = 6 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  google.protobuf.Timestamp created_at = 7 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false,
+    (gogoproto.moretags) = "yaml:\"valid_until\""
+  ];
+
+  google.protobuf.Timestamp valid_until = 8 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false,
+    (gogoproto.moretags) = "yaml:\"valid_until\""
+  ];
+
+  google.protobuf.Timestamp vested_until = 9 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = true,
+    (gogoproto.moretags) = "yaml:\"vested_until\""
+  ];
+
+  int64 num_unlocks_steps = 10;
+}

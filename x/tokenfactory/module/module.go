@@ -129,7 +129,11 @@ func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
 // InitGenesis performs the module's genesis initialization. It returns no validator updates.
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.RawMessage) {
+	fmt.Println(string(gs))
 	var genState types.GenesisState
+	raw, _ := cdc.MarshalJSON(&genState)
+	fmt.Println(string(raw))
+
 	// Initialize global index to index in genesis state
 	cdc.MustUnmarshalJSON(gs, &genState)
 
@@ -151,7 +155,7 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 // The begin block implementation is optional.
 func (am AppModule) BeginBlock(ctx context.Context) error {
 	if err := am.keeper.Initialize(ctx); err != nil {
-		return fmt.Errorf("could not initialize tokenfactory module: %w", err)
+		return fmt.Errorf("initialize tokenfactory module: %w", err)
 	}
 
 	return nil
@@ -161,7 +165,19 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 // The end block implementation is optional.
 func (am AppModule) EndBlock(ctx context.Context) error {
 	return cache.Transact(ctx, func(innerCtx context.Context) error {
-		am.keeper.HandleUnlockings(innerCtx, sdk.UnwrapSDKContext(innerCtx).BlockTime())
+		blockTime := sdk.UnwrapSDKContext(innerCtx).BlockTime()
+		if err := am.keeper.HandleUnlockings(innerCtx, blockTime); err != nil {
+			return fmt.Errorf("unlockings: %w", err)
+		}
+
+		if err := am.keeper.HandleVestings(ctx, blockTime); err != nil {
+			return fmt.Errorf("vestings: %w", err)
+		}
+
+		if err := am.keeper.HandleOffers(ctx, blockTime); err != nil {
+			return fmt.Errorf("vestings: %w", err)
+		}
+
 		return nil
 	})
 }
@@ -194,6 +210,7 @@ type ModuleInputs struct {
 	AccountKeeper types.AccountKeeper
 	BankKeeper    types.BankKeeper
 	DenomKeeper   types.DenomKeeper
+	DexKeeper     types.DexKeeper
 }
 
 type ModuleOutputs struct {
@@ -216,6 +233,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.AccountKeeper,
 		in.BankKeeper,
 		in.DenomKeeper,
+		in.DexKeeper,
 		authority.String(),
 	)
 	m := NewAppModule(

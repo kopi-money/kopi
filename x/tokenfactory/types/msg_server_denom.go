@@ -3,19 +3,17 @@ package types
 import (
 	"fmt"
 	"github.com/kopi-money/kopi/constants"
+	"net/url"
 	"regexp"
 	"strings"
 	"unicode"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 )
 
 var (
 	_ sdk.Msg = &MsgCreateDenom{}
-	_ sdk.Msg = &MsgChangeAdmin{}
-	_ sdk.Msg = &MsgUpdateDescription{}
 
 	hashRegex = regexp.MustCompile(`^[A-F0-9]{64}$`)
 )
@@ -42,55 +40,15 @@ func (msg *MsgCreateDenom) ValidateBasic() error {
 	}
 
 	if len(msg.Description) > constants.MaxDescriptionLength {
-		return fmt.Errorf("description must not contain more than 256 characters")
+		return ErrDescriptionTooLong
 	}
 
-	return nil
-}
-
-func (msg *MsgChangeAdmin) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
-		return errorsmod.Wrap(err, "invalid creator address")
+	if len(msg.Website) > constants.MaxWebsiteLength {
+		return ErrWebsiteURLTooLong
 	}
 
-	if _, err := sdk.AccAddressFromBech32(msg.NewAdmin); err != nil {
-		return errorsmod.Wrap(err, "invalid new admin address")
-	}
-
-	if err := denomtypes.ValidateDenomName(msg.FullFactoryDenomName); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (msg *MsgUpdateIconHash) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
-		return errorsmod.Wrap(err, "invalid creator address")
-	}
-
-	if err := denomtypes.ValidateDenomName(msg.FullFactoryDenomName); err != nil {
-		return err
-	}
-
-	if !validateHash(msg.IconHash) {
-		return fmt.Errorf("invalid icon hash")
-	}
-
-	return nil
-}
-
-func (msg *MsgUpdateDescription) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
-		return errorsmod.Wrap(err, "invalid creator address")
-	}
-
-	if err := denomtypes.ValidateDenomName(msg.FullFactoryDenomName); err != nil {
-		return err
-	}
-
-	if len(msg.Description) > constants.MaxDescriptionLength {
-		return fmt.Errorf("description must not contain more than 256 characters")
+	if _, err := url.Parse(msg.Website); err != nil {
+		return ErrWebsiteURLInvalid
 	}
 
 	return nil

@@ -11,12 +11,12 @@ import (
 func TestPoolLiquidityAddress1(t *testing.T) {
 	k, msgServer, ctx := keepertest.SetupTokenfactoryMsgServer(t)
 
-	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", 6)
+	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", "test", 6)
 	require.NoError(t, err)
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Alice, "4000000"))
-	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "4000000", constants.KUSD, "1000000", "0.1", 10))
+	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "4000000", constants.KUSD, "1000000", "0.01", 10))
 
-	res, err := k.GetPoolLiquidityAddress(ctx, &types.QueryPoolLiquidityAddressRequest{
+	res, err := k.QueryPoolLiquidityAddress(ctx, &types.QueryPoolLiquidityAddressRequest{
 		Address: keepertest.Alice,
 	})
 

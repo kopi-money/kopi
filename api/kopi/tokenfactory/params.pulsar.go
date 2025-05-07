@@ -15,20 +15,36 @@ import (
 )
 
 var (
-	md_Params                           protoreflect.MessageDescriptor
-	fd_Params_minimum_unlock_in_seconds protoreflect.FieldDescriptor
-	fd_Params_creation_fee              protoreflect.FieldDescriptor
-	fd_Params_reserve_fee               protoreflect.FieldDescriptor
-	fd_Params_minimum_pool_size         protoreflect.FieldDescriptor
+	md_Params                              protoreflect.MessageDescriptor
+	fd_Params_minimum_unlock_in_seconds    protoreflect.FieldDescriptor
+	fd_Params_maximum_vesting_unlock_steps protoreflect.FieldDescriptor
+	fd_Params_creation_fee                 protoreflect.FieldDescriptor
+	fd_Params_reserve_fee_share            protoreflect.FieldDescriptor
+	fd_Params_minimum_pool_size            protoreflect.FieldDescriptor
+	fd_Params_minimum_pool_fee             protoreflect.FieldDescriptor
+	fd_Params_maximum_pool_fee             protoreflect.FieldDescriptor
+	fd_Params_minimum_pool_moving_value    protoreflect.FieldDescriptor
+	fd_Params_categories                   protoreflect.FieldDescriptor
+	fd_Params_change_seconds_description   protoreflect.FieldDescriptor
+	fd_Params_change_seconds_website       protoreflect.FieldDescriptor
+	fd_Params_change_seconds_image         protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_kopi_tokenfactory_params_proto_init()
 	md_Params = File_kopi_tokenfactory_params_proto.Messages().ByName("Params")
 	fd_Params_minimum_unlock_in_seconds = md_Params.Fields().ByName("minimum_unlock_in_seconds")
+	fd_Params_maximum_vesting_unlock_steps = md_Params.Fields().ByName("maximum_vesting_unlock_steps")
 	fd_Params_creation_fee = md_Params.Fields().ByName("creation_fee")
-	fd_Params_reserve_fee = md_Params.Fields().ByName("reserve_fee")
+	fd_Params_reserve_fee_share = md_Params.Fields().ByName("reserve_fee_share")
 	fd_Params_minimum_pool_size = md_Params.Fields().ByName("minimum_pool_size")
+	fd_Params_minimum_pool_fee = md_Params.Fields().ByName("minimum_pool_fee")
+	fd_Params_maximum_pool_fee = md_Params.Fields().ByName("maximum_pool_fee")
+	fd_Params_minimum_pool_moving_value = md_Params.Fields().ByName("minimum_pool_moving_value")
+	fd_Params_categories = md_Params.Fields().ByName("categories")
+	fd_Params_change_seconds_description = md_Params.Fields().ByName("change_seconds_description")
+	fd_Params_change_seconds_website = md_Params.Fields().ByName("change_seconds_website")
+	fd_Params_change_seconds_image = md_Params.Fields().ByName("change_seconds_image")
 }
 
 var _ protoreflect.Message = (*fastReflection_Params)(nil)
@@ -102,21 +118,69 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
+	if x.MaximumVestingUnlockSteps != int64(0) {
+		value := protoreflect.ValueOfInt64(x.MaximumVestingUnlockSteps)
+		if !f(fd_Params_maximum_vesting_unlock_steps, value) {
+			return
+		}
+	}
 	if len(x.CreationFee) != 0 {
 		value := protoreflect.ValueOfBytes(x.CreationFee)
 		if !f(fd_Params_creation_fee, value) {
 			return
 		}
 	}
-	if len(x.ReserveFee) != 0 {
-		value := protoreflect.ValueOfBytes(x.ReserveFee)
-		if !f(fd_Params_reserve_fee, value) {
+	if len(x.ReserveFeeShare) != 0 {
+		value := protoreflect.ValueOfBytes(x.ReserveFeeShare)
+		if !f(fd_Params_reserve_fee_share, value) {
 			return
 		}
 	}
 	if len(x.MinimumPoolSize) != 0 {
 		value := protoreflect.ValueOfBytes(x.MinimumPoolSize)
 		if !f(fd_Params_minimum_pool_size, value) {
+			return
+		}
+	}
+	if len(x.MinimumPoolFee) != 0 {
+		value := protoreflect.ValueOfBytes(x.MinimumPoolFee)
+		if !f(fd_Params_minimum_pool_fee, value) {
+			return
+		}
+	}
+	if len(x.MaximumPoolFee) != 0 {
+		value := protoreflect.ValueOfBytes(x.MaximumPoolFee)
+		if !f(fd_Params_maximum_pool_fee, value) {
+			return
+		}
+	}
+	if len(x.MinimumPoolMovingValue) != 0 {
+		value := protoreflect.ValueOfBytes(x.MinimumPoolMovingValue)
+		if !f(fd_Params_minimum_pool_moving_value, value) {
+			return
+		}
+	}
+	if x.Categories != nil {
+		value := protoreflect.ValueOfMessage(x.Categories.ProtoReflect())
+		if !f(fd_Params_categories, value) {
+			return
+		}
+	}
+	if x.ChangeSecondsDescription != int64(0) {
+		value := protoreflect.ValueOfInt64(x.ChangeSecondsDescription)
+		if !f(fd_Params_change_seconds_description, value) {
+			return
+		}
+	}
+	if x.ChangeSecondsWebsite != int64(0) {
+		value := protoreflect.ValueOfInt64(x.ChangeSecondsWebsite)
+		if !f(fd_Params_change_seconds_website, value) {
+			return
+		}
+	}
+	if x.ChangeSecondsImage != int64(0) {
+		value := protoreflect.ValueOfInt64(x.ChangeSecondsImage)
+		if !f(fd_Params_change_seconds_image, value) {
 			return
 		}
 	}
@@ -137,12 +201,28 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	case "kopi.tokenfactory.Params.minimum_unlock_in_seconds":
 		return x.MinimumUnlockInSeconds != int64(0)
+	case "kopi.tokenfactory.Params.maximum_vesting_unlock_steps":
+		return x.MaximumVestingUnlockSteps != int64(0)
 	case "kopi.tokenfactory.Params.creation_fee":
 		return len(x.CreationFee) != 0
-	case "kopi.tokenfactory.Params.reserve_fee":
-		return len(x.ReserveFee) != 0
+	case "kopi.tokenfactory.Params.reserve_fee_share":
+		return len(x.ReserveFeeShare) != 0
 	case "kopi.tokenfactory.Params.minimum_pool_size":
 		return len(x.MinimumPoolSize) != 0
+	case "kopi.tokenfactory.Params.minimum_pool_fee":
+		return len(x.MinimumPoolFee) != 0
+	case "kopi.tokenfactory.Params.maximum_pool_fee":
+		return len(x.MaximumPoolFee) != 0
+	case "kopi.tokenfactory.Params.minimum_pool_moving_value":
+		return len(x.MinimumPoolMovingValue) != 0
+	case "kopi.tokenfactory.Params.categories":
+		return x.Categories != nil
+	case "kopi.tokenfactory.Params.change_seconds_description":
+		return x.ChangeSecondsDescription != int64(0)
+	case "kopi.tokenfactory.Params.change_seconds_website":
+		return x.ChangeSecondsWebsite != int64(0)
+	case "kopi.tokenfactory.Params.change_seconds_image":
+		return x.ChangeSecondsImage != int64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.Params"))
@@ -161,12 +241,28 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	case "kopi.tokenfactory.Params.minimum_unlock_in_seconds":
 		x.MinimumUnlockInSeconds = int64(0)
+	case "kopi.tokenfactory.Params.maximum_vesting_unlock_steps":
+		x.MaximumVestingUnlockSteps = int64(0)
 	case "kopi.tokenfactory.Params.creation_fee":
 		x.CreationFee = nil
-	case "kopi.tokenfactory.Params.reserve_fee":
-		x.ReserveFee = nil
+	case "kopi.tokenfactory.Params.reserve_fee_share":
+		x.ReserveFeeShare = nil
 	case "kopi.tokenfactory.Params.minimum_pool_size":
 		x.MinimumPoolSize = nil
+	case "kopi.tokenfactory.Params.minimum_pool_fee":
+		x.MinimumPoolFee = nil
+	case "kopi.tokenfactory.Params.maximum_pool_fee":
+		x.MaximumPoolFee = nil
+	case "kopi.tokenfactory.Params.minimum_pool_moving_value":
+		x.MinimumPoolMovingValue = nil
+	case "kopi.tokenfactory.Params.categories":
+		x.Categories = nil
+	case "kopi.tokenfactory.Params.change_seconds_description":
+		x.ChangeSecondsDescription = int64(0)
+	case "kopi.tokenfactory.Params.change_seconds_website":
+		x.ChangeSecondsWebsite = int64(0)
+	case "kopi.tokenfactory.Params.change_seconds_image":
+		x.ChangeSecondsImage = int64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.Params"))
@@ -186,15 +282,39 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 	case "kopi.tokenfactory.Params.minimum_unlock_in_seconds":
 		value := x.MinimumUnlockInSeconds
 		return protoreflect.ValueOfInt64(value)
+	case "kopi.tokenfactory.Params.maximum_vesting_unlock_steps":
+		value := x.MaximumVestingUnlockSteps
+		return protoreflect.ValueOfInt64(value)
 	case "kopi.tokenfactory.Params.creation_fee":
 		value := x.CreationFee
 		return protoreflect.ValueOfBytes(value)
-	case "kopi.tokenfactory.Params.reserve_fee":
-		value := x.ReserveFee
+	case "kopi.tokenfactory.Params.reserve_fee_share":
+		value := x.ReserveFeeShare
 		return protoreflect.ValueOfBytes(value)
 	case "kopi.tokenfactory.Params.minimum_pool_size":
 		value := x.MinimumPoolSize
 		return protoreflect.ValueOfBytes(value)
+	case "kopi.tokenfactory.Params.minimum_pool_fee":
+		value := x.MinimumPoolFee
+		return protoreflect.ValueOfBytes(value)
+	case "kopi.tokenfactory.Params.maximum_pool_fee":
+		value := x.MaximumPoolFee
+		return protoreflect.ValueOfBytes(value)
+	case "kopi.tokenfactory.Params.minimum_pool_moving_value":
+		value := x.MinimumPoolMovingValue
+		return protoreflect.ValueOfBytes(value)
+	case "kopi.tokenfactory.Params.categories":
+		value := x.Categories
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "kopi.tokenfactory.Params.change_seconds_description":
+		value := x.ChangeSecondsDescription
+		return protoreflect.ValueOfInt64(value)
+	case "kopi.tokenfactory.Params.change_seconds_website":
+		value := x.ChangeSecondsWebsite
+		return protoreflect.ValueOfInt64(value)
+	case "kopi.tokenfactory.Params.change_seconds_image":
+		value := x.ChangeSecondsImage
+		return protoreflect.ValueOfInt64(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.Params"))
@@ -217,12 +337,28 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 	switch fd.FullName() {
 	case "kopi.tokenfactory.Params.minimum_unlock_in_seconds":
 		x.MinimumUnlockInSeconds = value.Int()
+	case "kopi.tokenfactory.Params.maximum_vesting_unlock_steps":
+		x.MaximumVestingUnlockSteps = value.Int()
 	case "kopi.tokenfactory.Params.creation_fee":
 		x.CreationFee = value.Bytes()
-	case "kopi.tokenfactory.Params.reserve_fee":
-		x.ReserveFee = value.Bytes()
+	case "kopi.tokenfactory.Params.reserve_fee_share":
+		x.ReserveFeeShare = value.Bytes()
 	case "kopi.tokenfactory.Params.minimum_pool_size":
 		x.MinimumPoolSize = value.Bytes()
+	case "kopi.tokenfactory.Params.minimum_pool_fee":
+		x.MinimumPoolFee = value.Bytes()
+	case "kopi.tokenfactory.Params.maximum_pool_fee":
+		x.MaximumPoolFee = value.Bytes()
+	case "kopi.tokenfactory.Params.minimum_pool_moving_value":
+		x.MinimumPoolMovingValue = value.Bytes()
+	case "kopi.tokenfactory.Params.categories":
+		x.Categories = value.Message().Interface().(*Categories)
+	case "kopi.tokenfactory.Params.change_seconds_description":
+		x.ChangeSecondsDescription = value.Int()
+	case "kopi.tokenfactory.Params.change_seconds_website":
+		x.ChangeSecondsWebsite = value.Int()
+	case "kopi.tokenfactory.Params.change_seconds_image":
+		x.ChangeSecondsImage = value.Int()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.Params"))
@@ -243,14 +379,33 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "kopi.tokenfactory.Params.categories":
+		if x.Categories == nil {
+			x.Categories = new(Categories)
+		}
+		return protoreflect.ValueOfMessage(x.Categories.ProtoReflect())
 	case "kopi.tokenfactory.Params.minimum_unlock_in_seconds":
 		panic(fmt.Errorf("field minimum_unlock_in_seconds of message kopi.tokenfactory.Params is not mutable"))
+	case "kopi.tokenfactory.Params.maximum_vesting_unlock_steps":
+		panic(fmt.Errorf("field maximum_vesting_unlock_steps of message kopi.tokenfactory.Params is not mutable"))
 	case "kopi.tokenfactory.Params.creation_fee":
 		panic(fmt.Errorf("field creation_fee of message kopi.tokenfactory.Params is not mutable"))
-	case "kopi.tokenfactory.Params.reserve_fee":
-		panic(fmt.Errorf("field reserve_fee of message kopi.tokenfactory.Params is not mutable"))
+	case "kopi.tokenfactory.Params.reserve_fee_share":
+		panic(fmt.Errorf("field reserve_fee_share of message kopi.tokenfactory.Params is not mutable"))
 	case "kopi.tokenfactory.Params.minimum_pool_size":
 		panic(fmt.Errorf("field minimum_pool_size of message kopi.tokenfactory.Params is not mutable"))
+	case "kopi.tokenfactory.Params.minimum_pool_fee":
+		panic(fmt.Errorf("field minimum_pool_fee of message kopi.tokenfactory.Params is not mutable"))
+	case "kopi.tokenfactory.Params.maximum_pool_fee":
+		panic(fmt.Errorf("field maximum_pool_fee of message kopi.tokenfactory.Params is not mutable"))
+	case "kopi.tokenfactory.Params.minimum_pool_moving_value":
+		panic(fmt.Errorf("field minimum_pool_moving_value of message kopi.tokenfactory.Params is not mutable"))
+	case "kopi.tokenfactory.Params.change_seconds_description":
+		panic(fmt.Errorf("field change_seconds_description of message kopi.tokenfactory.Params is not mutable"))
+	case "kopi.tokenfactory.Params.change_seconds_website":
+		panic(fmt.Errorf("field change_seconds_website of message kopi.tokenfactory.Params is not mutable"))
+	case "kopi.tokenfactory.Params.change_seconds_image":
+		panic(fmt.Errorf("field change_seconds_image of message kopi.tokenfactory.Params is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.Params"))
@@ -266,12 +421,29 @@ func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protor
 	switch fd.FullName() {
 	case "kopi.tokenfactory.Params.minimum_unlock_in_seconds":
 		return protoreflect.ValueOfInt64(int64(0))
+	case "kopi.tokenfactory.Params.maximum_vesting_unlock_steps":
+		return protoreflect.ValueOfInt64(int64(0))
 	case "kopi.tokenfactory.Params.creation_fee":
 		return protoreflect.ValueOfBytes(nil)
-	case "kopi.tokenfactory.Params.reserve_fee":
+	case "kopi.tokenfactory.Params.reserve_fee_share":
 		return protoreflect.ValueOfBytes(nil)
 	case "kopi.tokenfactory.Params.minimum_pool_size":
 		return protoreflect.ValueOfBytes(nil)
+	case "kopi.tokenfactory.Params.minimum_pool_fee":
+		return protoreflect.ValueOfBytes(nil)
+	case "kopi.tokenfactory.Params.maximum_pool_fee":
+		return protoreflect.ValueOfBytes(nil)
+	case "kopi.tokenfactory.Params.minimum_pool_moving_value":
+		return protoreflect.ValueOfBytes(nil)
+	case "kopi.tokenfactory.Params.categories":
+		m := new(Categories)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "kopi.tokenfactory.Params.change_seconds_description":
+		return protoreflect.ValueOfInt64(int64(0))
+	case "kopi.tokenfactory.Params.change_seconds_website":
+		return protoreflect.ValueOfInt64(int64(0))
+	case "kopi.tokenfactory.Params.change_seconds_image":
+		return protoreflect.ValueOfInt64(int64(0))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.Params"))
@@ -344,17 +516,45 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if x.MinimumUnlockInSeconds != 0 {
 			n += 1 + runtime.Sov(uint64(x.MinimumUnlockInSeconds))
 		}
+		if x.MaximumVestingUnlockSteps != 0 {
+			n += 1 + runtime.Sov(uint64(x.MaximumVestingUnlockSteps))
+		}
 		l = len(x.CreationFee)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.ReserveFee)
+		l = len(x.ReserveFeeShare)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		l = len(x.MinimumPoolSize)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.MinimumPoolFee)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.MaximumPoolFee)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.MinimumPoolMovingValue)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.Categories != nil {
+			l = options.Size(x.Categories)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.ChangeSecondsDescription != 0 {
+			n += 1 + runtime.Sov(uint64(x.ChangeSecondsDescription))
+		}
+		if x.ChangeSecondsWebsite != 0 {
+			n += 1 + runtime.Sov(uint64(x.ChangeSecondsWebsite))
+		}
+		if x.ChangeSecondsImage != 0 {
+			n += 1 + runtime.Sov(uint64(x.ChangeSecondsImage))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -385,6 +585,61 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
+		if len(x.MinimumPoolMovingValue) > 0 {
+			i -= len(x.MinimumPoolMovingValue)
+			copy(dAtA[i:], x.MinimumPoolMovingValue)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MinimumPoolMovingValue)))
+			i--
+			dAtA[i] = 0x62
+		}
+		if len(x.MaximumPoolFee) > 0 {
+			i -= len(x.MaximumPoolFee)
+			copy(dAtA[i:], x.MaximumPoolFee)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MaximumPoolFee)))
+			i--
+			dAtA[i] = 0x5a
+		}
+		if x.ChangeSecondsImage != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.ChangeSecondsImage))
+			i--
+			dAtA[i] = 0x50
+		}
+		if x.ChangeSecondsWebsite != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.ChangeSecondsWebsite))
+			i--
+			dAtA[i] = 0x48
+		}
+		if x.ChangeSecondsDescription != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.ChangeSecondsDescription))
+			i--
+			dAtA[i] = 0x40
+		}
+		if x.MaximumVestingUnlockSteps != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.MaximumVestingUnlockSteps))
+			i--
+			dAtA[i] = 0x38
+		}
+		if len(x.MinimumPoolFee) > 0 {
+			i -= len(x.MinimumPoolFee)
+			copy(dAtA[i:], x.MinimumPoolFee)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.MinimumPoolFee)))
+			i--
+			dAtA[i] = 0x32
+		}
+		if x.Categories != nil {
+			encoded, err := options.Marshal(x.Categories)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x2a
+		}
 		if len(x.MinimumPoolSize) > 0 {
 			i -= len(x.MinimumPoolSize)
 			copy(dAtA[i:], x.MinimumPoolSize)
@@ -392,10 +647,10 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x22
 		}
-		if len(x.ReserveFee) > 0 {
-			i -= len(x.ReserveFee)
-			copy(dAtA[i:], x.ReserveFee)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ReserveFee)))
+		if len(x.ReserveFeeShare) > 0 {
+			i -= len(x.ReserveFeeShare)
+			copy(dAtA[i:], x.ReserveFeeShare)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ReserveFeeShare)))
 			i--
 			dAtA[i] = 0x1a
 		}
@@ -479,6 +734,25 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 						break
 					}
 				}
+			case 7:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaximumVestingUnlockSteps", wireType)
+				}
+				x.MaximumVestingUnlockSteps = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.MaximumVestingUnlockSteps |= int64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
 			case 2:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field CreationFee", wireType)
@@ -515,7 +789,7 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 3:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ReserveFee", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ReserveFeeShare", wireType)
 				}
 				var byteLen int
 				for shift := uint(0); ; shift += 7 {
@@ -542,9 +816,9 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.ReserveFee = append(x.ReserveFee[:0], dAtA[iNdEx:postIndex]...)
-				if x.ReserveFee == nil {
-					x.ReserveFee = []byte{}
+				x.ReserveFeeShare = append(x.ReserveFeeShare[:0], dAtA[iNdEx:postIndex]...)
+				if x.ReserveFeeShare == nil {
+					x.ReserveFeeShare = []byte{}
 				}
 				iNdEx = postIndex
 			case 4:
@@ -581,6 +855,201 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 					x.MinimumPoolSize = []byte{}
 				}
 				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MinimumPoolFee", wireType)
+				}
+				var byteLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					byteLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if byteLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + byteLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.MinimumPoolFee = append(x.MinimumPoolFee[:0], dAtA[iNdEx:postIndex]...)
+				if x.MinimumPoolFee == nil {
+					x.MinimumPoolFee = []byte{}
+				}
+				iNdEx = postIndex
+			case 11:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MaximumPoolFee", wireType)
+				}
+				var byteLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					byteLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if byteLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + byteLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.MaximumPoolFee = append(x.MaximumPoolFee[:0], dAtA[iNdEx:postIndex]...)
+				if x.MaximumPoolFee == nil {
+					x.MaximumPoolFee = []byte{}
+				}
+				iNdEx = postIndex
+			case 12:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MinimumPoolMovingValue", wireType)
+				}
+				var byteLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					byteLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if byteLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + byteLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.MinimumPoolMovingValue = append(x.MinimumPoolMovingValue[:0], dAtA[iNdEx:postIndex]...)
+				if x.MinimumPoolMovingValue == nil {
+					x.MinimumPoolMovingValue = []byte{}
+				}
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Categories", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.Categories == nil {
+					x.Categories = &Categories{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Categories); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 8:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ChangeSecondsDescription", wireType)
+				}
+				x.ChangeSecondsDescription = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.ChangeSecondsDescription |= int64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 9:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ChangeSecondsWebsite", wireType)
+				}
+				x.ChangeSecondsWebsite = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.ChangeSecondsWebsite |= int64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 10:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ChangeSecondsImage", wireType)
+				}
+				x.ChangeSecondsImage = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.ChangeSecondsImage |= int64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -635,10 +1104,18 @@ type Params struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	MinimumUnlockInSeconds int64  `protobuf:"varint,1,opt,name=minimum_unlock_in_seconds,json=minimumUnlockInSeconds,proto3" json:"minimum_unlock_in_seconds,omitempty"`
-	CreationFee            []byte `protobuf:"bytes,2,opt,name=creation_fee,json=creationFee,proto3" json:"creation_fee,omitempty"`
-	ReserveFee             []byte `protobuf:"bytes,3,opt,name=reserve_fee,json=reserveFee,proto3" json:"reserve_fee,omitempty"`
-	MinimumPoolSize        []byte `protobuf:"bytes,4,opt,name=minimum_pool_size,json=minimumPoolSize,proto3" json:"minimum_pool_size,omitempty"`
+	MinimumUnlockInSeconds    int64       `protobuf:"varint,1,opt,name=minimum_unlock_in_seconds,json=minimumUnlockInSeconds,proto3" json:"minimum_unlock_in_seconds,omitempty"`
+	MaximumVestingUnlockSteps int64       `protobuf:"varint,7,opt,name=maximum_vesting_unlock_steps,json=maximumVestingUnlockSteps,proto3" json:"maximum_vesting_unlock_steps,omitempty"`
+	CreationFee               []byte      `protobuf:"bytes,2,opt,name=creation_fee,json=creationFee,proto3" json:"creation_fee,omitempty"`
+	ReserveFeeShare           []byte      `protobuf:"bytes,3,opt,name=reserve_fee_share,json=reserveFeeShare,proto3" json:"reserve_fee_share,omitempty"`
+	MinimumPoolSize           []byte      `protobuf:"bytes,4,opt,name=minimum_pool_size,json=minimumPoolSize,proto3" json:"minimum_pool_size,omitempty"`
+	MinimumPoolFee            []byte      `protobuf:"bytes,6,opt,name=minimum_pool_fee,json=minimumPoolFee,proto3" json:"minimum_pool_fee,omitempty"`
+	MaximumPoolFee            []byte      `protobuf:"bytes,11,opt,name=maximum_pool_fee,json=maximumPoolFee,proto3" json:"maximum_pool_fee,omitempty"`
+	MinimumPoolMovingValue    []byte      `protobuf:"bytes,12,opt,name=minimum_pool_moving_value,json=minimumPoolMovingValue,proto3" json:"minimum_pool_moving_value,omitempty"`
+	Categories                *Categories `protobuf:"bytes,5,opt,name=categories,proto3" json:"categories,omitempty"`
+	ChangeSecondsDescription  int64       `protobuf:"varint,8,opt,name=change_seconds_description,json=changeSecondsDescription,proto3" json:"change_seconds_description,omitempty"`
+	ChangeSecondsWebsite      int64       `protobuf:"varint,9,opt,name=change_seconds_website,json=changeSecondsWebsite,proto3" json:"change_seconds_website,omitempty"`
+	ChangeSecondsImage        int64       `protobuf:"varint,10,opt,name=change_seconds_image,json=changeSecondsImage,proto3" json:"change_seconds_image,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -668,6 +1145,13 @@ func (x *Params) GetMinimumUnlockInSeconds() int64 {
 	return 0
 }
 
+func (x *Params) GetMaximumVestingUnlockSteps() int64 {
+	if x != nil {
+		return x.MaximumVestingUnlockSteps
+	}
+	return 0
+}
+
 func (x *Params) GetCreationFee() []byte {
 	if x != nil {
 		return x.CreationFee
@@ -675,9 +1159,9 @@ func (x *Params) GetCreationFee() []byte {
 	return nil
 }
 
-func (x *Params) GetReserveFee() []byte {
+func (x *Params) GetReserveFeeShare() []byte {
 	if x != nil {
-		return x.ReserveFee
+		return x.ReserveFeeShare
 	}
 	return nil
 }
@@ -689,6 +1173,55 @@ func (x *Params) GetMinimumPoolSize() []byte {
 	return nil
 }
 
+func (x *Params) GetMinimumPoolFee() []byte {
+	if x != nil {
+		return x.MinimumPoolFee
+	}
+	return nil
+}
+
+func (x *Params) GetMaximumPoolFee() []byte {
+	if x != nil {
+		return x.MaximumPoolFee
+	}
+	return nil
+}
+
+func (x *Params) GetMinimumPoolMovingValue() []byte {
+	if x != nil {
+		return x.MinimumPoolMovingValue
+	}
+	return nil
+}
+
+func (x *Params) GetCategories() *Categories {
+	if x != nil {
+		return x.Categories
+	}
+	return nil
+}
+
+func (x *Params) GetChangeSecondsDescription() int64 {
+	if x != nil {
+		return x.ChangeSecondsDescription
+	}
+	return 0
+}
+
+func (x *Params) GetChangeSecondsWebsite() int64 {
+	if x != nil {
+		return x.ChangeSecondsWebsite
+	}
+	return 0
+}
+
+func (x *Params) GetChangeSecondsImage() int64 {
+	if x != nil {
+		return x.ChangeSecondsImage
+	}
+	return 0
+}
+
 var File_kopi_tokenfactory_params_proto protoreflect.FileDescriptor
 
 var file_kopi_tokenfactory_params_proto_rawDesc = []byte{
@@ -697,39 +1230,76 @@ var file_kopi_tokenfactory_params_proto_rawDesc = []byte{
 	0x12, 0x11, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74,
 	0x6f, 0x72, 0x79, 0x1a, 0x11, 0x61, 0x6d, 0x69, 0x6e, 0x6f, 0x2f, 0x61, 0x6d, 0x69, 0x6e, 0x6f,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xbb, 0x02, 0x0a,
-	0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x39, 0x0a, 0x19, 0x6d, 0x69, 0x6e, 0x69, 0x6d,
-	0x75, 0x6d, 0x5f, 0x75, 0x6e, 0x6c, 0x6f, 0x63, 0x6b, 0x5f, 0x69, 0x6e, 0x5f, 0x73, 0x65, 0x63,
-	0x6f, 0x6e, 0x64, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x16, 0x6d, 0x69, 0x6e, 0x69,
-	0x6d, 0x75, 0x6d, 0x55, 0x6e, 0x6c, 0x6f, 0x63, 0x6b, 0x49, 0x6e, 0x53, 0x65, 0x63, 0x6f, 0x6e,
-	0x64, 0x73, 0x12, 0x40, 0x0a, 0x0c, 0x63, 0x72, 0x65, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x66,
-	0x65, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde,
-	0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d,
-	0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0b, 0x63, 0x72, 0x65, 0x61, 0x74, 0x69, 0x6f,
-	0x6e, 0x46, 0x65, 0x65, 0x12, 0x44, 0x0a, 0x0b, 0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x5f,
-	0x66, 0x65, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda,
-	0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
-	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x0a,
-	0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x46, 0x65, 0x65, 0x12, 0x49, 0x0a, 0x11, 0x6d, 0x69,
-	0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x73, 0x69, 0x7a, 0x65, 0x18,
-	0x04, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63,
-	0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68,
-	0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0f, 0x6d, 0x69, 0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x50, 0x6f, 0x6f,
-	0x6c, 0x53, 0x69, 0x7a, 0x65, 0x3a, 0x23, 0xe8, 0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x1a,
-	0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x78, 0x2f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74,
-	0x6f, 0x72, 0x79, 0x2f, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0xad, 0x01, 0x0a, 0x15, 0x63,
-	0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63,
-	0x74, 0x6f, 0x72, 0x79, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74,
-	0x6f, 0x50, 0x01, 0x5a, 0x22, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
-	0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b, 0x65, 0x6e,
-	0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0xa2, 0x02, 0x03, 0x4b, 0x54, 0x58, 0xaa, 0x02, 0x11,
-	0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72,
-	0x79, 0xca, 0x02, 0x11, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61,
-	0x63, 0x74, 0x6f, 0x72, 0x79, 0xe2, 0x02, 0x1d, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x54, 0x6f, 0x6b,
-	0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74,
-	0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x12, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x54, 0x6f,
-	0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x20, 0x6b, 0x6f,
+	0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x2f,
+	0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xea,
+	0x06, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x39, 0x0a, 0x19, 0x6d, 0x69, 0x6e,
+	0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x75, 0x6e, 0x6c, 0x6f, 0x63, 0x6b, 0x5f, 0x69, 0x6e, 0x5f, 0x73,
+	0x65, 0x63, 0x6f, 0x6e, 0x64, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x16, 0x6d, 0x69,
+	0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x55, 0x6e, 0x6c, 0x6f, 0x63, 0x6b, 0x49, 0x6e, 0x53, 0x65, 0x63,
+	0x6f, 0x6e, 0x64, 0x73, 0x12, 0x3f, 0x0a, 0x1c, 0x6d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x5f,
+	0x76, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x5f, 0x75, 0x6e, 0x6c, 0x6f, 0x63, 0x6b, 0x5f, 0x73,
+	0x74, 0x65, 0x70, 0x73, 0x18, 0x07, 0x20, 0x01, 0x28, 0x03, 0x52, 0x19, 0x6d, 0x61, 0x78, 0x69,
+	0x6d, 0x75, 0x6d, 0x56, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x55, 0x6e, 0x6c, 0x6f, 0x63, 0x6b,
+	0x53, 0x74, 0x65, 0x70, 0x73, 0x12, 0x40, 0x0a, 0x0c, 0x63, 0x72, 0x65, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x1d, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49, 0x6e, 0x74, 0x52, 0x0b, 0x63, 0x72, 0x65, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x46, 0x65, 0x65, 0x12, 0x4f, 0x0a, 0x11, 0x72, 0x65, 0x73, 0x65, 0x72,
+	0x76, 0x65, 0x5f, 0x66, 0x65, 0x65, 0x5f, 0x73, 0x68, 0x61, 0x72, 0x65, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
+	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x0f, 0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65,
+	0x46, 0x65, 0x65, 0x53, 0x68, 0x61, 0x72, 0x65, 0x12, 0x49, 0x0a, 0x11, 0x6d, 0x69, 0x6e, 0x69,
+	0x6d, 0x75, 0x6d, 0x5f, 0x70, 0x6f, 0x6f, 0x6c, 0x5f, 0x73, 0x69, 0x7a, 0x65, 0x18, 0x04, 0x20,
+	0x01, 0x28, 0x0c, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f, 0x73,
+	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x49,
+	0x6e, 0x74, 0x52, 0x0f, 0x6d, 0x69, 0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x50, 0x6f, 0x6f, 0x6c, 0x53,
+	0x69, 0x7a, 0x65, 0x12, 0x4d, 0x0a, 0x10, 0x6d, 0x69, 0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x70,
+	0x6f, 0x6f, 0x6c, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8,
+	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
+	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
+	0x65, 0x63, 0x52, 0x0e, 0x6d, 0x69, 0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x50, 0x6f, 0x6f, 0x6c, 0x46,
+	0x65, 0x65, 0x12, 0x4d, 0x0a, 0x10, 0x6d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x70, 0x6f,
+	0x6f, 0x6c, 0x5f, 0x66, 0x65, 0x65, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde,
+	0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
+	0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65,
+	0x63, 0x52, 0x0e, 0x6d, 0x61, 0x78, 0x69, 0x6d, 0x75, 0x6d, 0x50, 0x6f, 0x6f, 0x6c, 0x46, 0x65,
+	0x65, 0x12, 0x58, 0x0a, 0x19, 0x6d, 0x69, 0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x70, 0x6f, 0x6f,
+	0x6c, 0x5f, 0x6d, 0x6f, 0x76, 0x69, 0x6e, 0x67, 0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x0c,
+	0x20, 0x01, 0x28, 0x0c, 0x42, 0x1d, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x15, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
+	0x49, 0x6e, 0x74, 0x52, 0x16, 0x6d, 0x69, 0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x50, 0x6f, 0x6f, 0x6c,
+	0x4d, 0x6f, 0x76, 0x69, 0x6e, 0x67, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x43, 0x0a, 0x0a, 0x63,
+	0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x69, 0x65, 0x73, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x1d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74,
+	0x6f, 0x72, 0x79, 0x2e, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x69, 0x65, 0x73, 0x42, 0x04,
+	0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0a, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x69, 0x65, 0x73,
+	0x12, 0x3c, 0x0a, 0x1a, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x5f, 0x73, 0x65, 0x63, 0x6f, 0x6e,
+	0x64, 0x73, 0x5f, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x08,
+	0x20, 0x01, 0x28, 0x03, 0x52, 0x18, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x53, 0x65, 0x63, 0x6f,
+	0x6e, 0x64, 0x73, 0x44, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x34,
+	0x0a, 0x16, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x5f, 0x73, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x73,
+	0x5f, 0x77, 0x65, 0x62, 0x73, 0x69, 0x74, 0x65, 0x18, 0x09, 0x20, 0x01, 0x28, 0x03, 0x52, 0x14,
+	0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x53, 0x65, 0x63, 0x6f, 0x6e, 0x64, 0x73, 0x57, 0x65, 0x62,
+	0x73, 0x69, 0x74, 0x65, 0x12, 0x30, 0x0a, 0x14, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x5f, 0x73,
+	0x65, 0x63, 0x6f, 0x6e, 0x64, 0x73, 0x5f, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x18, 0x0a, 0x20, 0x01,
+	0x28, 0x03, 0x52, 0x12, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x53, 0x65, 0x63, 0x6f, 0x6e, 0x64,
+	0x73, 0x49, 0x6d, 0x61, 0x67, 0x65, 0x3a, 0x23, 0xe8, 0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a,
+	0x1a, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x78, 0x2f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63,
+	0x74, 0x6f, 0x72, 0x79, 0x2f, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0xad, 0x01, 0x0a, 0x15,
+	0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61,
+	0x63, 0x74, 0x6f, 0x72, 0x79, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f,
+	0x74, 0x6f, 0x50, 0x01, 0x5a, 0x22, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
+	0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b, 0x65,
+	0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0xa2, 0x02, 0x03, 0x4b, 0x54, 0x58, 0xaa, 0x02,
+	0x11, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f,
+	0x72, 0x79, 0xca, 0x02, 0x11, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x66,
+	0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0xe2, 0x02, 0x1d, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x54, 0x6f,
+	0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65,
+	0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x12, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x54,
+	0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x62, 0x06, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x33,
 }
 
 var (
@@ -746,14 +1316,16 @@ func file_kopi_tokenfactory_params_proto_rawDescGZIP() []byte {
 
 var file_kopi_tokenfactory_params_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_kopi_tokenfactory_params_proto_goTypes = []interface{}{
-	(*Params)(nil), // 0: kopi.tokenfactory.Params
+	(*Params)(nil),     // 0: kopi.tokenfactory.Params
+	(*Categories)(nil), // 1: kopi.tokenfactory.Categories
 }
 var file_kopi_tokenfactory_params_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: kopi.tokenfactory.Params.categories:type_name -> kopi.tokenfactory.Categories
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_kopi_tokenfactory_params_proto_init() }
@@ -761,6 +1333,7 @@ func file_kopi_tokenfactory_params_proto_init() {
 	if File_kopi_tokenfactory_params_proto != nil {
 		return
 	}
+	file_kopi_tokenfactory_category_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_kopi_tokenfactory_params_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Params); i {

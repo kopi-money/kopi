@@ -9,13 +9,13 @@ import (
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 
-func (k Keeper) GetFactoryTokenBalance(ctx context.Context, req *types.GetFactoryTokenBalanceRequest) (*types.GetFactoryTokenBalanceResponse, error) {
+func (k Keeper) QueryFactoryTokenBalance(ctx context.Context, req *types.GetFactoryTokenBalanceRequest) (*types.GetFactoryTokenBalanceResponse, error) {
 	addr, _ := sdk.AccAddressFromBech32(req.Address)
 	spendableCoins := k.BankKeeper.SpendableCoins(ctx, addr)
 
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get highest usd reference: %w", err)
+		return nil, fmt.Errorf("get highest usd reference: %w", err)
 	}
 
 	var (

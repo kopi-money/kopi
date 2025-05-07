@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"github.com/kopi-money/kopi/trading"
 
 	"cosmossdk.io/math"
 )
@@ -26,4 +27,24 @@ func (lp LiquidityPool) ConvertToKCoin(factoryAmount math.Int) (math.LegacyDec, 
 	}
 
 	return ratio.Mul(factoryAmount.ToLegacyDec()), nil
+}
+
+func (lp LiquidityPool) GetLiquidityAmounts(denomGiving string) (trading.Liquidity, trading.Liquidity) {
+	factoryAmount := trading.Liquidity{Actual: lp.FactoryDenomAmount.ToLegacyDec()}
+	kCoinAmount := trading.Liquidity{Actual: lp.KCoinAmount.ToLegacyDec()}
+
+	if denomGiving == lp.KCoin {
+		return kCoinAmount, factoryAmount
+	}
+
+	return factoryAmount, kCoinAmount
+}
+
+func (lp LiquidityPool) GetPoolValue() (math.LegacyDec, error) {
+	factoryValue, err := lp.ConvertToKCoin(lp.FactoryDenomAmount)
+	if err != nil {
+		return math.LegacyDec{}, err
+	}
+
+	return factoryValue.Add(lp.KCoinAmount.ToLegacyDec()), nil
 }

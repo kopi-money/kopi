@@ -2,9 +2,7 @@ package keeper
 
 import (
 	"context"
-	"crypto/sha256"
 	"fmt"
-	"regexp"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -13,25 +11,8 @@ import (
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 
-var factoryDenomReg = regexp.MustCompile(`^factory/[A-F0-9]{64}$`)
-
-func ToFullName(denom string) string {
-	if factoryDenomReg.Match([]byte(denom)) {
-		return denom
-	}
-
-	denom = toHash(denom)
-	denom = fmt.Sprintf("factory/%v", denom)
-	return denom
-}
-
-func toHash(text string) string {
-	h := sha256.New()
-	h.Write([]byte(text))
-	bs := h.Sum(nil)
-	text = fmt.Sprintf("%x", bs)
-	text = strings.ToUpper(text)
-	return text
+func ToFullName(creator, symbol string) string {
+	return strings.ToLower(fmt.Sprintf("factory/%v/%v", creator, symbol))
 }
 
 func (k Keeper) GetAllDenoms(ctx context.Context) []types.FactoryDenom {
@@ -40,14 +21,16 @@ func (k Keeper) GetAllDenoms(ctx context.Context) []types.FactoryDenom {
 }
 
 func (k Keeper) SetDenom(ctx context.Context, denom types.FactoryDenom) {
+	fmt.Println("> ", denom.FullName)
 	k.factoryDenoms.Set(ctx, denom.FullName, denom)
 }
 
-func (k Keeper) GetDenomByDisplayName(ctx context.Context, displayName string) (types.FactoryDenom, bool) {
-	return k.GetDenomByFullName(ctx, ToFullName(displayName))
+func (k Keeper) GetDenom(ctx context.Context, address, symbol string) (types.FactoryDenom, bool) {
+	return k.GetDenomByFullName(ctx, ToFullName(address, symbol))
 }
 
 func (k Keeper) GetDenomByFullName(ctx context.Context, fullName string) (types.FactoryDenom, bool) {
+	fmt.Println("< ", fullName)
 	return k.factoryDenoms.Get(ctx, fullName)
 }
 
@@ -63,15 +46,11 @@ func (k Keeper) GetDenomBySymbol(ctx context.Context, symbol string) (types.Fact
 	return types.FactoryDenom{}, false
 }
 
-func (k Keeper) CreateDenom(ctx context.Context, address, displayName, symbol, description, iconHash string, exponent uint64) (types.FactoryDenom, error) {
-	fullName := ToFullName(displayName)
+func (k Keeper) CreateDenom(ctx context.Context, address, displayName, symbol, description, website, iconHash, localName string, exponent, categoryIndex uint64, mintable bool) (types.FactoryDenom, error) {
+	fullName := ToFullName(address, symbol)
 
 	if _, exists := k.GetDenomByFullName(ctx, fullName); exists {
 		return types.FactoryDenom{}, types.ErrDenomAlreadyExists
-	}
-
-	if _, exists := k.GetDenomBySymbol(ctx, symbol); exists {
-		return types.FactoryDenom{}, types.ErrSymbolAlreadyExists
 	}
 
 	if exponent < 1 {
@@ -82,43 +61,70 @@ func (k Keeper) CreateDenom(ctx context.Context, address, displayName, symbol, d
 		return types.FactoryDenom{}, fmt.Errorf("exponent must not be larger than 18")
 	}
 
-	if err := k.processCreationFee(ctx, address); err != nil {
+	category, has := k.getCategory(ctx, categoryIndex)
+	if !has {
+		return types.FactoryDenom{}, types.ErrCategoryDoesNotExist
+	}
+
+	if category.IsIbc {
+		if err := k.checkLocalToken(ctx, localName); err != nil {
+			return types.FactoryDenom{}, err
+		}
+
+		mintable = false
+	} else {
+		if localName != "" {
+			return types.FactoryDenom{}, types.ErrInvalidLocalNameSet
+		}
+	}
+
+	if err := k.processCreationFee(ctx, category, address); err != nil {
 		return types.FactoryDenom{}, fmt.Errorf("processing fee: %v", err)
 	}
 
+	blocktime := sdk.UnwrapSDKContext(ctx).BlockTime()
 	factoryDenom := types.FactoryDenom{
-		Admin:       address,
-		DisplayName: displayName,
-		FullName:    fullName,
-		Description: description,
-		IconHash:    strings.ToUpper(iconHash),
-		Symbol:      symbol,
-		Exponent:    exponent,
-		Mintable:    true,
+		Admin:                 address,
+		DisplayName:           displayName,
+		FullName:              fullName,
+		Description:           description,
+		Website:               website,
+		IconHash:              strings.ToUpper(iconHash),
+		Symbol:                symbol,
+		Exponent:              exponent,
+		CategoryIndex:         categoryIndex,
+		LastImageChange:       blocktime,
+		LastWebsiteChange:     blocktime,
+		LsatDescriptionChange: blocktime,
+		Mintable:              mintable,
+		LocalName:             localName,
 	}
 
 	k.SetDenom(ctx, factoryDenom)
 	return factoryDenom, nil
 }
 
-func (k Keeper) processCreationFee(ctx context.Context, address string) error {
-	feeAmount := k.getCreationFee(ctx)
-	if feeAmount.IsNil() {
-		return fmt.Errorf("feeAmount is nil")
-	}
-
-	if feeAmount.IsZero() {
-		return nil
-	}
-
+func (k Keeper) processCreationFee(ctx context.Context, category types.Category, address string) error {
 	addr, err := sdk.AccAddressFromBech32(address)
 	if err != nil {
 		return types.ErrInvalidAddress
 	}
 
-	coins := sdk.NewCoins(sdk.NewCoin(constants.KUSD, feeAmount))
+	coins := sdk.NewCoins(sdk.NewCoin(constants.KUSD, category.CreationPrice))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, addr, dextypes.PoolReserve, coins); err != nil {
-		return fmt.Errorf("could not send coins from account to module: %w", err)
+		return fmt.Errorf("send coins from account to module: %w", err)
+	}
+
+	return nil
+}
+
+func (k Keeper) checkLocalToken(ctx context.Context, localName string) error {
+	if !strings.HasPrefix(localName, "ibc/") {
+		return types.ErrInvalidLocalToken
+	}
+
+	if k.BankKeeper.GetSupply(ctx, localName).IsZero() {
+		return types.ErrLocalTokenDoesNotExist
 	}
 
 	return nil

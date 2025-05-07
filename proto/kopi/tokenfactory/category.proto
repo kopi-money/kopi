@@ -1,0 +1,23 @@
+syntax = "proto3";
+package kopi.tokenfactory;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
+
+message Category {
+  uint64 index = 1;
+  string name = 2;
+  bool is_ibc = 4;
+
+  bytes creation_price = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message Categories {
+  repeated Category categories = 1 [
+    (gogoproto.nullable)   = false
+  ];
+}

@@ -19,7 +19,7 @@ func TestParamsQuery(t *testing.T) {
 		return keeper.SetParams(innerCtx, params)
 	}))
 
-	response, err := keeper.Params(ctx, &types.QueryParamsRequest{})
+	response, err := keeper.QueryParams(ctx, &types.QueryParamsRequest{})
 	require.NoError(t, err)
 	require.Equal(t, &types.QueryParamsResponse{Params: params}, response)
 }

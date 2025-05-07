@@ -1,6 +1,7 @@
 syntax = "proto3";
 package kopi.tokenfactory;
 
+import "google/protobuf/timestamp.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
@@ -14,4 +15,26 @@ message FactoryDenom {
   uint64 exponent = 6;
   string symbol = 7;
   bool mintable = 8;
+  uint64 category_index = 9;
+  string website = 10;
+  string local_name = 14;
+  bool moved = 15;
+
+  google.protobuf.Timestamp lsat_description_change = 11 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false,
+    (gogoproto.moretags) = "yaml:\"lsat_description_change\""
+  ];
+
+  google.protobuf.Timestamp last_website_change = 12 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false,
+    (gogoproto.moretags) = "yaml:\"last_website_change\""
+  ];
+
+  google.protobuf.Timestamp last_image_change = 13 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false,
+    (gogoproto.moretags) = "yaml:\"last_image_change\""
+  ];
 }

@@ -11,39 +11,41 @@ import (
 func TestCreateDenom1(t *testing.T) {
 	k, msgServer, ctx := keepertest.SetupTokenfactoryMsgServer(t)
 
-	_, has := k.GetDenomByDisplayName(ctx, "testdenom")
+	_, has := k.GetDenom(ctx, keepertest.Alice, "testdenom")
 	require.False(t, has)
 
-	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", 6)
+	_, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", "test", 6)
 	require.NoError(t, err)
 
-	_, has = k.GetDenomByDisplayName(ctx, "testdenom")
-	require.True(t, has)
-	_, has = k.GetDenomByDisplayName(ctx, factoryDenomHash)
+	_, has = k.GetDenom(ctx, keepertest.Alice, "testdenom")
+	require.False(t, has)
+	_, has = k.GetDenom(ctx, keepertest.Alice, "test")
 	require.True(t, has)
 
-	_, has = k.GetDenomByDisplayName(ctx, "testdenom2")
+	_, has = k.GetDenom(ctx, keepertest.Alice, "test2")
 	require.False(t, has)
-	_, has = k.GetDenomByFullName(ctx, keeper.ToFullName("testdenom2"))
+	_, has = k.GetDenomByFullName(ctx, keeper.ToFullName(keepertest.Alice, "test2"))
 	require.False(t, has)
 }
 
 func TestCreateDenom2(t *testing.T) {
 	k, msgServer, ctx := keepertest.SetupTokenfactoryMsgServer(t)
 
-	_, has := k.GetDenomByDisplayName(ctx, "testdenom")
+	_, has := k.GetDenom(ctx, keepertest.Alice, "testdenom")
 	require.False(t, has)
 
-	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", 6)
+	factoryDenomHash, err := keepertest.CreateFactoryDenom(ctx, msgServer, keepertest.Alice, "testdenom", "test", 6)
 	require.NoError(t, err)
 
-	_, has = k.GetDenomByDisplayName(ctx, "testdenom")
+	_, has = k.GetDenom(ctx, keepertest.Alice, "testdenom")
+	require.False(t, has)
+	_, has = k.GetDenom(ctx, keepertest.Alice, "test")
 	require.True(t, has)
 	_, has = k.GetDenomByFullName(ctx, factoryDenomHash)
 	require.True(t, has)
 
-	_, has = k.GetDenomByDisplayName(ctx, "testdenom2")
+	_, has = k.GetDenom(ctx, keepertest.Alice, "testdenom2")
 	require.False(t, has)
-	_, has = k.GetDenomByFullName(ctx, keeper.ToFullName("testdenom2"))
+	_, has = k.GetDenomByFullName(ctx, keeper.ToFullName(keepertest.Alice, "testdenom2"))
 	require.False(t, has)
 }

@@ -13,16 +13,20 @@ option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
 message GenesisState {
   // params defines all the parameters of the module.
   Params params = 1 [
+    json_name="params",
+    (gogoproto.moretags) = "yaml:\"params\"",
     (gogoproto.nullable) = false,
     (amino.dont_omitempty) = true
   ];
 
   repeated FactoryDenom factory_denoms = 2 [
+    json_name="factory_denoms",
     (gogoproto.moretags) = "yaml:\"factory_denoms\"",
     (gogoproto.nullable) = false
   ];
 
-  repeated GenesisLiquidityPool liquidityPools = 3 [
+  repeated GenesisLiquidityPool liquidity_pools = 3 [
+    json_name="liquidity_pools",
     (gogoproto.moretags) = "yaml:\"liquidity_pools\"",
     (gogoproto.nullable) = false
   ];

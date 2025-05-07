@@ -7,6 +7,9 @@ const (
 	// StoreKey defines the primary module store key
 	StoreKey = ModuleName
 
-	PoolFactoryLiquidity = "pool_factory_liquidity"
-	PoolUnlocking        = "pool_unlocking"
+	PoolFactoryLiquidity    = "pool_factory_liquidity"
+	PoolFactoryProtocolFees = "pool_factory_protocol_fees"
+	PoolUnlocking           = "pool_unlocking"
+	PoolOffers              = "pool_factory_offers"
+	PoolVestings            = "pool_factory_vesting"
 )

@@ -5,13 +5,13 @@ import (
 	"cosmossdk.io/math"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
+	"github.com/kopi-money/kopi/trading"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) GetPool(ctx context.Context, req *types.QueryPoolRequest) (*types.QueryPoolResponse, error) {
+func (k Keeper) QueryPool(ctx context.Context, req *types.QueryPoolRequest) (*types.QueryPoolResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -44,6 +44,8 @@ func (k Keeper) GetPool(ctx context.Context, req *types.QueryPoolRequest) (*type
 	}
 
 	price := normalizedKCoin.Quo(normalizedFactory) // C
+	supply := k.BankKeeper.GetSupply(ctx, req.FullName).Amount
+	marketCap := supply.ToLegacyDec().Mul(price)
 
 	return &types.QueryPoolResponse{
 		KcoinDenom:        pool.KCoin,
@@ -52,6 +54,7 @@ func (k Keeper) GetPool(ctx context.Context, req *types.QueryPoolRequest) (*type
 		UserKcoinAmount:   userKCoinAmount,
 		UserFactoryAmount: userFactoryAmount,
 		Price:             price.String(),
+		Marketcap:         marketCap.String(),
 		CreatedAt:         pool.CreatedAt,
 	}, nil
 }
@@ -60,10 +63,10 @@ func adjustToNormal(amount math.LegacyDec, exponent uint64) math.LegacyDec {
 	return amount.Quo(math.LegacyNewDec(10).Power(exponent)) // C
 }
 
-func (k Keeper) GetPoolLiquidityAddress(ctx context.Context, req *types.QueryPoolLiquidityAddressRequest) (*types.QueryPoolLiquidityAddressResponse, error) {
+func (k Keeper) QueryPoolLiquidityAddress(ctx context.Context, req *types.QueryPoolLiquidityAddressRequest) (*types.QueryPoolLiquidityAddressResponse, error) {
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get highest usd reference: %w", err)
+		return nil, fmt.Errorf("get highest usd reference: %w", err)
 	}
 
 	var (
@@ -99,10 +102,10 @@ func (k Keeper) GetPoolLiquidityAddress(ctx context.Context, req *types.QueryPoo
 	return &response, nil
 }
 
-func (k Keeper) GetPoolLiquidityAddressByDenom(ctx context.Context, req *types.QueryPoolLiquidityAddressRequestByDenom) (*types.PoolLiquidityAddress, error) {
+func (k Keeper) QueryPoolLiquidityAddressByDenom(ctx context.Context, req *types.QueryPoolLiquidityAddressRequestByDenom) (*types.PoolLiquidityAddress, error) {
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get highest usd reference: %w", err)
+		return nil, fmt.Errorf("get highest usd reference: %w", err)
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, req.FullName)
@@ -138,7 +141,7 @@ func (k Keeper) QuerySimulateAddingLiquidityKCoin(ctx context.Context, req *type
 		return nil, types.ErrDenomDoesNotExists
 	}
 
-	amount, err := dexkeeper.ParseAmount(req.Amount)
+	amount, err := trading.ParseAmount(req.Amount)
 	if err != nil {
 		return nil, fmt.Errorf("parse amount: %w", err)
 	}
@@ -170,7 +173,7 @@ func (k Keeper) QuerySimulateAddingLiquidityFactoryToken(ctx context.Context, re
 		return nil, types.ErrDenomDoesNotExists
 	}
 
-	amount, err := dexkeeper.ParseAmount(req.Amount)
+	amount, err := trading.ParseAmount(req.Amount)
 	if err != nil {
 		return nil, fmt.Errorf("parse amount: %w", err)
 	}

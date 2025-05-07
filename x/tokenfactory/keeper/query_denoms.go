@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) Denoms(ctx context.Context, req *types.QueryDenomsRequest) (*types.QueryDenomsResponse, error) {
+func (k Keeper) QueryDenoms(ctx context.Context, req *types.QueryDenomsRequest) (*types.QueryDenomsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -21,27 +21,29 @@ func (k Keeper) Denoms(ctx context.Context, req *types.QueryDenomsRequest) (*typ
 		ctx,
 		k.factoryDenoms,
 		req.Pagination,
-		func(key string, value types.FactoryDenom) (*types.FactoryDenomData, error) {
-			supply := k.BankKeeper.GetSupply(ctx, value.FullName)
-			_, hasPool := k.liquidityPools.Get(ctx, value.FullName)
+		func(key string, denom types.FactoryDenom) (types.FactoryDenomData, error) {
+			supply := k.BankKeeper.GetSupply(ctx, denom.FullName)
+			_, hasPool := k.liquidityPools.Get(ctx, denom.FullName)
 
-			return &types.FactoryDenomData{
-				Admin:       value.Admin,
-				DisplayName: value.DisplayName,
-				FullName:    value.FullName,
-				Description: value.Description,
-				IconHash:    value.IconHash,
-				Symbol:      value.Symbol,
-				Exponent:    strconv.Itoa(int(value.Exponent)),
-				Supply:      supply.Amount.String(),
-				HasPool:     hasPool,
-				Mintable:    value.Mintable,
+			return types.FactoryDenomData{
+				Admin:         denom.Admin,
+				DisplayName:   denom.DisplayName,
+				FullName:      denom.FullName,
+				Description:   denom.Description,
+				Website:       denom.Website,
+				IconHash:      denom.IconHash,
+				Symbol:        denom.Symbol,
+				Exponent:      strconv.Itoa(int(denom.Exponent)),
+				Supply:        supply.Amount.String(),
+				HasPool:       hasPool,
+				Mintable:      denom.Mintable,
+				CategoryIndex: denom.CategoryIndex,
 			}, nil
 		},
 	)
 
 	if err != nil {
-		return nil, fmt.Errorf("could not get factory denoms from pagination: %w", err)
+		return nil, fmt.Errorf("get factory denoms from pagination: %w", err)
 	}
 
 	return &types.QueryDenomsResponse{

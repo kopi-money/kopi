@@ -22,6 +22,9 @@ var (
 	PrefixLiquidityProviderShares      = collections.NewPrefix(3)
 	PrefixLiquidityUnlockings          = collections.NewPrefix(4)
 	PrefixLiquidityUnlockingsNextIndex = collections.NewPrefix(5)
+	PrefixOffers                       = collections.NewPrefix(6)
+	PrefixOffersNextIndex              = collections.NewPrefix(7)
+	PrefixVestings                     = collections.NewPrefix(8)
 )
 
 type (
@@ -33,6 +36,7 @@ type (
 		AccountKeeper types.AccountKeeper
 		BankKeeper    types.BankKeeper
 		DenomKeeper   types.DenomKeeper
+		DexKeeper     types.DexKeeper
 
 		// the address capable of executing a MsgUpdateParams message. Typically, this
 		// should be the x/gov module account.
@@ -45,6 +49,10 @@ type (
 		liquidityProviderShares      *cache.NestedMapCache[string, string, types.ProviderShare]
 		liquidityUnlockings          *cache.MapCache[uint64, types.LiquidityUnlocking]
 		liquidityUnlockingsNextIndex *cache.ItemCache[uint64]
+		offers                       *cache.MapCache[uint64, types.Offer]
+		offersNextIndex              *cache.ItemCache[uint64]
+		vestings                     *cache.MapCache[uint64, types.Vesting]
+		vestingsNextIndex            *cache.ItemCache[uint64]
 
 		caches *cache.Caches
 	}
@@ -57,6 +65,7 @@ func NewKeeper(
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	denomKeeper types.DenomKeeper,
+	dexKeeper types.DexKeeper,
 	authority string,
 
 ) Keeper {
@@ -75,6 +84,7 @@ func NewKeeper(
 		AccountKeeper: accountKeeper,
 		BankKeeper:    bankKeeper,
 		DenomKeeper:   denomKeeper,
+		DexKeeper:     dexKeeper,
 
 		caches: caches,
 
@@ -126,6 +136,40 @@ func NewKeeper(
 			sb,
 			PrefixLiquidityUnlockingsNextIndex,
 			"liquidity_unlockings_next_index",
+			collections.Uint64Value,
+			caches,
+		),
+
+		offers: cache.NewMapCache(
+			sb,
+			PrefixOffers,
+			"offers",
+			collections.Uint64Key,
+			codec.CollValue[types.Offer](cdc),
+			caches,
+		),
+
+		offersNextIndex: cache.NewItemCache(
+			sb,
+			PrefixOffersNextIndex,
+			"offers_next_index",
+			collections.Uint64Value,
+			caches,
+		),
+
+		vestings: cache.NewMapCache(
+			sb,
+			PrefixVestings,
+			"vestings",
+			collections.Uint64Key,
+			codec.CollValue[types.Vesting](cdc),
+			caches,
+		),
+
+		vestingsNextIndex: cache.NewItemCache(
+			sb,
+			PrefixOffersNextIndex,
+			"vestings_next_index",
 			collections.Uint64Value,
 			caches,
 		),

@@ -27,10 +27,18 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Params defines the parameters for the module.
 type Params struct {
-	MinimumUnlockInSeconds int64                       `protobuf:"varint,1,opt,name=minimum_unlock_in_seconds,json=minimumUnlockInSeconds,proto3" json:"minimum_unlock_in_seconds,omitempty"`
-	CreationFee            cosmossdk_io_math.Int       `protobuf:"bytes,2,opt,name=creation_fee,json=creationFee,proto3,customtype=cosmossdk.io/math.Int" json:"creation_fee"`
-	ReserveFee             cosmossdk_io_math.LegacyDec `protobuf:"bytes,3,opt,name=reserve_fee,json=reserveFee,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"reserve_fee"`
-	MinimumPoolSize        cosmossdk_io_math.Int       `protobuf:"bytes,4,opt,name=minimum_pool_size,json=minimumPoolSize,proto3,customtype=cosmossdk.io/math.Int" json:"minimum_pool_size"`
+	MinimumUnlockInSeconds    int64                       `protobuf:"varint,1,opt,name=minimum_unlock_in_seconds,json=minimumUnlockInSeconds,proto3" json:"minimum_unlock_in_seconds,omitempty"`
+	MaximumVestingUnlockSteps int64                       `protobuf:"varint,7,opt,name=maximum_vesting_unlock_steps,json=maximumVestingUnlockSteps,proto3" json:"maximum_vesting_unlock_steps,omitempty"`
+	CreationFee               cosmossdk_io_math.Int       `protobuf:"bytes,2,opt,name=creation_fee,json=creationFee,proto3,customtype=cosmossdk.io/math.Int" json:"creation_fee"`
+	ReserveFeeShare           cosmossdk_io_math.LegacyDec `protobuf:"bytes,3,opt,name=reserve_fee_share,json=reserveFeeShare,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"reserve_fee_share"`
+	MinimumPoolSize           cosmossdk_io_math.Int       `protobuf:"bytes,4,opt,name=minimum_pool_size,json=minimumPoolSize,proto3,customtype=cosmossdk.io/math.Int" json:"minimum_pool_size"`
+	MinimumPoolFee            cosmossdk_io_math.LegacyDec `protobuf:"bytes,6,opt,name=minimum_pool_fee,json=minimumPoolFee,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"minimum_pool_fee"`
+	MaximumPoolFee            cosmossdk_io_math.LegacyDec `protobuf:"bytes,11,opt,name=maximum_pool_fee,json=maximumPoolFee,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"maximum_pool_fee"`
+	MinimumPoolMovingValue    cosmossdk_io_math.Int       `protobuf:"bytes,12,opt,name=minimum_pool_moving_value,json=minimumPoolMovingValue,proto3,customtype=cosmossdk.io/math.Int" json:"minimum_pool_moving_value"`
+	Categories                Categories                  `protobuf:"bytes,5,opt,name=categories,proto3" json:"categories"`
+	ChangeSecondsDescription  int64                       `protobuf:"varint,8,opt,name=change_seconds_description,json=changeSecondsDescription,proto3" json:"change_seconds_description,omitempty"`
+	ChangeSecondsWebsite      int64                       `protobuf:"varint,9,opt,name=change_seconds_website,json=changeSecondsWebsite,proto3" json:"change_seconds_website,omitempty"`
+	ChangeSecondsImage        int64                       `protobuf:"varint,10,opt,name=change_seconds_image,json=changeSecondsImage,proto3" json:"change_seconds_image,omitempty"`
 }
 
 func (m *Params) Reset()         { *m = Params{} }
@@ -73,6 +81,41 @@ func (m *Params) GetMinimumUnlockInSeconds() int64 {
 	return 0
 }
 
+func (m *Params) GetMaximumVestingUnlockSteps() int64 {
+	if m != nil {
+		return m.MaximumVestingUnlockSteps
+	}
+	return 0
+}
+
+func (m *Params) GetCategories() Categories {
+	if m != nil {
+		return m.Categories
+	}
+	return Categories{}
+}
+
+func (m *Params) GetChangeSecondsDescription() int64 {
+	if m != nil {
+		return m.ChangeSecondsDescription
+	}
+	return 0
+}
+
+func (m *Params) GetChangeSecondsWebsite() int64 {
+	if m != nil {
+		return m.ChangeSecondsWebsite
+	}
+	return 0
+}
+
+func (m *Params) GetChangeSecondsImage() int64 {
+	if m != nil {
+		return m.ChangeSecondsImage
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*Params)(nil), "kopi.tokenfactory.Params")
 }
@@ -80,29 +123,42 @@ func init() {
 func init() { proto.RegisterFile("kopi/tokenfactory/params.proto", fileDescriptor_860ba1fb1372309d) }
 
 var fileDescriptor_860ba1fb1372309d = []byte{
-	// 352 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xcb, 0xce, 0x2f, 0xc8,
-	0xd4, 0x2f, 0xc9, 0xcf, 0x4e, 0xcd, 0x4b, 0x4b, 0x4c, 0x2e, 0xc9, 0x2f, 0xaa, 0xd4, 0x2f, 0x48,
-	0x2c, 0x4a, 0xcc, 0x2d, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x04, 0xc9, 0xeb, 0x21,
-	0xcb, 0x4b, 0x09, 0x26, 0xe6, 0x66, 0xe6, 0xe5, 0xeb, 0x83, 0x49, 0x88, 0x2a, 0x29, 0x91, 0xf4,
-	0xfc, 0xf4, 0x7c, 0x30, 0x53, 0x1f, 0xc4, 0x82, 0x88, 0x2a, 0xed, 0x66, 0xe2, 0x62, 0x0b, 0x00,
-	0x1b, 0x26, 0x64, 0xc9, 0x25, 0x99, 0x9b, 0x99, 0x97, 0x99, 0x5b, 0x9a, 0x1b, 0x5f, 0x9a, 0x97,
-	0x93, 0x9f, 0x9c, 0x1d, 0x9f, 0x99, 0x17, 0x5f, 0x9c, 0x9a, 0x9c, 0x9f, 0x97, 0x52, 0x2c, 0xc1,
-	0xa8, 0xc0, 0xa8, 0xc1, 0x1c, 0x24, 0x06, 0x55, 0x10, 0x0a, 0x96, 0xf7, 0xcc, 0x0b, 0x86, 0xc8,
-	0x0a, 0x39, 0x70, 0xf1, 0x24, 0x17, 0xa5, 0x26, 0x96, 0x64, 0xe6, 0xe7, 0xc5, 0xa7, 0xa5, 0xa6,
-	0x4a, 0x30, 0x29, 0x30, 0x6a, 0xf0, 0x38, 0xc9, 0x9e, 0xb8, 0x27, 0xcf, 0x70, 0xeb, 0x9e, 0xbc,
-	0x68, 0x72, 0x7e, 0x71, 0x6e, 0x7e, 0x71, 0x71, 0x4a, 0xb6, 0x5e, 0x66, 0xbe, 0x7e, 0x6e, 0x62,
-	0x49, 0x86, 0x9e, 0x67, 0x5e, 0x49, 0x10, 0x37, 0x4c, 0x8b, 0x5b, 0x6a, 0xaa, 0x90, 0x0b, 0x17,
-	0x77, 0x51, 0x6a, 0x71, 0x6a, 0x51, 0x59, 0x2a, 0xd8, 0x00, 0x66, 0xb0, 0x01, 0xca, 0x50, 0x03,
-	0xa4, 0x31, 0x0d, 0xf0, 0x49, 0x4d, 0x4f, 0x4c, 0xae, 0x74, 0x49, 0x4d, 0x0e, 0xe2, 0x82, 0xea,
-	0x03, 0x99, 0xe2, 0xc9, 0x25, 0x08, 0xf3, 0x42, 0x41, 0x7e, 0x7e, 0x4e, 0x7c, 0x71, 0x66, 0x55,
-	0xaa, 0x04, 0x0b, 0x31, 0x8e, 0xe1, 0x87, 0xea, 0x0b, 0xc8, 0xcf, 0xcf, 0x09, 0xce, 0xac, 0x4a,
-	0xb5, 0x52, 0x7e, 0xb1, 0x40, 0x9e, 0xb1, 0xeb, 0xf9, 0x06, 0x2d, 0x29, 0x70, 0xe8, 0x57, 0xa0,
-	0x86, 0x3f, 0x24, 0xc8, 0x9c, 0x3c, 0x4f, 0x3c, 0x92, 0x63, 0xbc, 0xf0, 0x48, 0x8e, 0xf1, 0xc1,
-	0x23, 0x39, 0xc6, 0x09, 0x8f, 0xe5, 0x18, 0x2e, 0x3c, 0x96, 0x63, 0xb8, 0xf1, 0x58, 0x8e, 0x21,
-	0x4a, 0x3f, 0x3d, 0xb3, 0x24, 0xa3, 0x34, 0x49, 0x2f, 0x39, 0x3f, 0x57, 0x1f, 0x64, 0x80, 0x6e,
-	0x6e, 0x7e, 0x5e, 0x6a, 0xa5, 0x3e, 0x36, 0xb3, 0x4a, 0x2a, 0x0b, 0x52, 0x8b, 0x93, 0xd8, 0xc0,
-	0xf1, 0x61, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0x4a, 0xdf, 0x79, 0x70, 0xed, 0x01, 0x00, 0x00,
+	// 556 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x93, 0x4f, 0x6b, 0x13, 0x41,
+	0x18, 0x87, 0xb3, 0xb6, 0x46, 0x9d, 0x16, 0x6b, 0x86, 0x18, 0xb6, 0xd1, 0x6e, 0x82, 0xbd, 0x04,
+	0xc1, 0x5d, 0x51, 0x2f, 0x8a, 0xa0, 0xa4, 0xa5, 0x10, 0xb0, 0x58, 0x12, 0xac, 0xe2, 0x65, 0x99,
+	0x4c, 0xde, 0x6e, 0x86, 0x64, 0x66, 0x96, 0x9d, 0x49, 0x6c, 0xfa, 0x11, 0x3c, 0xf9, 0x11, 0xfc,
+	0x08, 0x7e, 0x8c, 0x1e, 0x7b, 0x14, 0x0f, 0x45, 0x92, 0x83, 0xe2, 0xa7, 0x90, 0x99, 0xdd, 0xb4,
+	0x49, 0xe3, 0x21, 0x5e, 0xc2, 0x92, 0xf7, 0xf7, 0x3c, 0xf3, 0xef, 0x7d, 0x91, 0xd7, 0x93, 0x31,
+	0x0b, 0xb4, 0xec, 0x81, 0x38, 0x22, 0x54, 0xcb, 0x64, 0x14, 0xc4, 0x24, 0x21, 0x5c, 0xf9, 0x71,
+	0x22, 0xb5, 0xc4, 0x05, 0x53, 0xf7, 0x67, 0xeb, 0xe5, 0x02, 0xe1, 0x4c, 0xc8, 0xc0, 0xfe, 0xa6,
+	0xa9, 0x72, 0x31, 0x92, 0x91, 0xb4, 0x9f, 0x81, 0xf9, 0xca, 0xfe, 0xad, 0x2e, 0xba, 0x29, 0xd1,
+	0x10, 0xc9, 0x64, 0x94, 0x26, 0x1e, 0xfc, 0xc9, 0xa3, 0xfc, 0x81, 0x5d, 0x0e, 0x3f, 0x47, 0x9b,
+	0x9c, 0x09, 0xc6, 0x07, 0x3c, 0x1c, 0x88, 0xbe, 0xa4, 0xbd, 0x90, 0x89, 0x50, 0x01, 0x95, 0xa2,
+	0xa3, 0x5c, 0xa7, 0xea, 0xd4, 0x56, 0x9a, 0xa5, 0x2c, 0xf0, 0xce, 0xd6, 0x1b, 0xa2, 0x95, 0x56,
+	0xf1, 0x2b, 0x74, 0x9f, 0x93, 0x63, 0x8b, 0x0e, 0x41, 0x69, 0x26, 0xa2, 0xa9, 0x42, 0x69, 0x88,
+	0x95, 0x7b, 0xc3, 0xd2, 0x9b, 0x59, 0xe6, 0x30, 0x8d, 0xa4, 0x92, 0x96, 0x09, 0xe0, 0xd7, 0x68,
+	0x9d, 0x26, 0x40, 0x34, 0x93, 0x22, 0x3c, 0x02, 0x70, 0xaf, 0x55, 0x9d, 0xda, 0x7a, 0x7d, 0xeb,
+	0xf4, 0xbc, 0x92, 0xfb, 0x71, 0x5e, 0xb9, 0x4b, 0xa5, 0xe2, 0x52, 0xa9, 0x4e, 0xcf, 0x67, 0x32,
+	0xe0, 0x44, 0x77, 0xfd, 0x86, 0xd0, 0xcd, 0xb5, 0x29, 0xb2, 0x07, 0x80, 0xdf, 0xa2, 0x42, 0x02,
+	0x0a, 0x92, 0x21, 0x18, 0x41, 0xa8, 0xba, 0x24, 0x01, 0x77, 0xc5, 0x6a, 0xb6, 0x33, 0xcd, 0xbd,
+	0x45, 0xcd, 0x1b, 0x88, 0x08, 0x1d, 0xed, 0x02, 0x6d, 0x6e, 0x64, 0xf4, 0x1e, 0x40, 0xcb, 0xb0,
+	0xb8, 0x81, 0x0a, 0xd3, 0xeb, 0x88, 0xa5, 0xec, 0x87, 0x8a, 0x9d, 0x80, 0xbb, 0xba, 0xcc, 0xbe,
+	0x36, 0x32, 0xee, 0x40, 0xca, 0x7e, 0x8b, 0x9d, 0x00, 0xde, 0x47, 0x77, 0xe6, 0x54, 0xe6, 0x84,
+	0xf9, 0xe5, 0xb7, 0x76, 0x7b, 0xc6, 0x67, 0x8e, 0x6a, 0x74, 0xd9, 0x6d, 0x5f, 0xe8, 0xd6, 0xfe,
+	0x47, 0x97, 0xc2, 0x53, 0xdd, 0x87, 0xcb, 0x77, 0xb7, 0x3a, 0x2e, 0x87, 0xe6, 0x01, 0x87, 0xa4,
+	0x3f, 0x00, 0x77, 0x7d, 0x99, 0x03, 0x97, 0x66, 0x36, 0xb8, 0x6f, 0xe9, 0x43, 0x03, 0xe3, 0x1d,
+	0x84, 0xb2, 0x76, 0x63, 0xa0, 0xdc, 0xeb, 0x55, 0xa7, 0xb6, 0xf6, 0x64, 0xcb, 0x5f, 0xe8, 0x67,
+	0x7f, 0xe7, 0x22, 0x54, 0x5f, 0x35, 0x2b, 0x35, 0x67, 0x30, 0xfc, 0x12, 0x95, 0x69, 0x97, 0x88,
+	0x08, 0xa6, 0xbd, 0x18, 0x76, 0x40, 0xd1, 0x84, 0xc5, 0xe6, 0xe5, 0xdd, 0x9b, 0xb6, 0xb3, 0xdc,
+	0x34, 0x91, 0xb5, 0xe3, 0xee, 0x65, 0x1d, 0x3f, 0x43, 0xa5, 0x2b, 0xf4, 0x27, 0x68, 0x2b, 0xa6,
+	0xc1, 0xbd, 0x65, 0xc9, 0xe2, 0x1c, 0xf9, 0x3e, 0xad, 0xe1, 0xc7, 0xa8, 0x78, 0x85, 0x62, 0x9c,
+	0x44, 0xe0, 0x22, 0xcb, 0xe0, 0x39, 0xa6, 0x61, 0x2a, 0x2f, 0xb6, 0x7f, 0x7f, 0xad, 0x38, 0x9f,
+	0x7f, 0x7d, 0x7b, 0x58, 0xb6, 0x23, 0x77, 0x3c, 0x3f, 0x74, 0xe9, 0x84, 0xd5, 0x1b, 0xa7, 0x63,
+	0xcf, 0x39, 0x1b, 0x7b, 0xce, 0xcf, 0xb1, 0xe7, 0x7c, 0x99, 0x78, 0xb9, 0xb3, 0x89, 0x97, 0xfb,
+	0x3e, 0xf1, 0x72, 0x1f, 0x83, 0x88, 0xe9, 0xee, 0xa0, 0xed, 0x53, 0xc9, 0x03, 0x23, 0x78, 0xc4,
+	0xa5, 0x80, 0x51, 0xf0, 0x2f, 0x97, 0x1e, 0xc5, 0xa0, 0xda, 0x79, 0x3b, 0xbe, 0x4f, 0xff, 0x06,
+	0x00, 0x00, 0xff, 0xff, 0xca, 0xf4, 0xbc, 0x6a, 0x3e, 0x04, 0x00, 0x00,
 }
 
 func (this *Params) Equal(that interface{}) bool {
@@ -127,13 +183,37 @@ func (this *Params) Equal(that interface{}) bool {
 	if this.MinimumUnlockInSeconds != that1.MinimumUnlockInSeconds {
 		return false
 	}
+	if this.MaximumVestingUnlockSteps != that1.MaximumVestingUnlockSteps {
+		return false
+	}
 	if !this.CreationFee.Equal(that1.CreationFee) {
 		return false
 	}
-	if !this.ReserveFee.Equal(that1.ReserveFee) {
+	if !this.ReserveFeeShare.Equal(that1.ReserveFeeShare) {
 		return false
 	}
 	if !this.MinimumPoolSize.Equal(that1.MinimumPoolSize) {
+		return false
+	}
+	if !this.MinimumPoolFee.Equal(that1.MinimumPoolFee) {
+		return false
+	}
+	if !this.MaximumPoolFee.Equal(that1.MaximumPoolFee) {
+		return false
+	}
+	if !this.MinimumPoolMovingValue.Equal(that1.MinimumPoolMovingValue) {
+		return false
+	}
+	if !this.Categories.Equal(&that1.Categories) {
+		return false
+	}
+	if this.ChangeSecondsDescription != that1.ChangeSecondsDescription {
+		return false
+	}
+	if this.ChangeSecondsWebsite != that1.ChangeSecondsWebsite {
+		return false
+	}
+	if this.ChangeSecondsImage != that1.ChangeSecondsImage {
 		return false
 	}
 	return true
@@ -159,6 +239,66 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	var l int
 	_ = l
 	{
+		size := m.MinimumPoolMovingValue.Size()
+		i -= size
+		if _, err := m.MinimumPoolMovingValue.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x62
+	{
+		size := m.MaximumPoolFee.Size()
+		i -= size
+		if _, err := m.MaximumPoolFee.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x5a
+	if m.ChangeSecondsImage != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ChangeSecondsImage))
+		i--
+		dAtA[i] = 0x50
+	}
+	if m.ChangeSecondsWebsite != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ChangeSecondsWebsite))
+		i--
+		dAtA[i] = 0x48
+	}
+	if m.ChangeSecondsDescription != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.ChangeSecondsDescription))
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.MaximumVestingUnlockSteps != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.MaximumVestingUnlockSteps))
+		i--
+		dAtA[i] = 0x38
+	}
+	{
+		size := m.MinimumPoolFee.Size()
+		i -= size
+		if _, err := m.MinimumPoolFee.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x32
+	{
+		size, err := m.Categories.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintParams(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x2a
+	{
 		size := m.MinimumPoolSize.Size()
 		i -= size
 		if _, err := m.MinimumPoolSize.MarshalTo(dAtA[i:]); err != nil {
@@ -169,9 +309,9 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x22
 	{
-		size := m.ReserveFee.Size()
+		size := m.ReserveFeeShare.Size()
 		i -= size
-		if _, err := m.ReserveFee.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.ReserveFeeShare.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintParams(dAtA, i, uint64(size))
@@ -218,9 +358,29 @@ func (m *Params) Size() (n int) {
 	}
 	l = m.CreationFee.Size()
 	n += 1 + l + sovParams(uint64(l))
-	l = m.ReserveFee.Size()
+	l = m.ReserveFeeShare.Size()
 	n += 1 + l + sovParams(uint64(l))
 	l = m.MinimumPoolSize.Size()
+	n += 1 + l + sovParams(uint64(l))
+	l = m.Categories.Size()
+	n += 1 + l + sovParams(uint64(l))
+	l = m.MinimumPoolFee.Size()
+	n += 1 + l + sovParams(uint64(l))
+	if m.MaximumVestingUnlockSteps != 0 {
+		n += 1 + sovParams(uint64(m.MaximumVestingUnlockSteps))
+	}
+	if m.ChangeSecondsDescription != 0 {
+		n += 1 + sovParams(uint64(m.ChangeSecondsDescription))
+	}
+	if m.ChangeSecondsWebsite != 0 {
+		n += 1 + sovParams(uint64(m.ChangeSecondsWebsite))
+	}
+	if m.ChangeSecondsImage != 0 {
+		n += 1 + sovParams(uint64(m.ChangeSecondsImage))
+	}
+	l = m.MaximumPoolFee.Size()
+	n += 1 + l + sovParams(uint64(l))
+	l = m.MinimumPoolMovingValue.Size()
 	n += 1 + l + sovParams(uint64(l))
 	return n
 }
@@ -314,7 +474,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ReserveFee", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ReserveFeeShare", wireType)
 			}
 			var byteLen int
 			for shift := uint(0); ; shift += 7 {
@@ -341,7 +501,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.ReserveFee.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.ReserveFeeShare.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -375,6 +535,214 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.MinimumPoolSize.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Categories", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Categories.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinimumPoolFee", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.MinimumPoolFee.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaximumVestingUnlockSteps", wireType)
+			}
+			m.MaximumVestingUnlockSteps = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MaximumVestingUnlockSteps |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ChangeSecondsDescription", wireType)
+			}
+			m.ChangeSecondsDescription = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ChangeSecondsDescription |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 9:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ChangeSecondsWebsite", wireType)
+			}
+			m.ChangeSecondsWebsite = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ChangeSecondsWebsite |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 10:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ChangeSecondsImage", wireType)
+			}
+			m.ChangeSecondsImage = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ChangeSecondsImage |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 11:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaximumPoolFee", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.MaximumPoolFee.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 12:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinimumPoolMovingValue", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.MinimumPoolMovingValue.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

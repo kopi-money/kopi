@@ -8,21 +8,29 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
 	reflect "reflect"
 	sync "sync"
 )
 
 var (
-	md_FactoryDenom              protoreflect.MessageDescriptor
-	fd_FactoryDenom_admin        protoreflect.FieldDescriptor
-	fd_FactoryDenom_display_name protoreflect.FieldDescriptor
-	fd_FactoryDenom_full_name    protoreflect.FieldDescriptor
-	fd_FactoryDenom_icon_hash    protoreflect.FieldDescriptor
-	fd_FactoryDenom_description  protoreflect.FieldDescriptor
-	fd_FactoryDenom_exponent     protoreflect.FieldDescriptor
-	fd_FactoryDenom_symbol       protoreflect.FieldDescriptor
-	fd_FactoryDenom_mintable     protoreflect.FieldDescriptor
+	md_FactoryDenom                         protoreflect.MessageDescriptor
+	fd_FactoryDenom_admin                   protoreflect.FieldDescriptor
+	fd_FactoryDenom_display_name            protoreflect.FieldDescriptor
+	fd_FactoryDenom_full_name               protoreflect.FieldDescriptor
+	fd_FactoryDenom_icon_hash               protoreflect.FieldDescriptor
+	fd_FactoryDenom_description             protoreflect.FieldDescriptor
+	fd_FactoryDenom_exponent                protoreflect.FieldDescriptor
+	fd_FactoryDenom_symbol                  protoreflect.FieldDescriptor
+	fd_FactoryDenom_mintable                protoreflect.FieldDescriptor
+	fd_FactoryDenom_category_index          protoreflect.FieldDescriptor
+	fd_FactoryDenom_website                 protoreflect.FieldDescriptor
+	fd_FactoryDenom_local_name              protoreflect.FieldDescriptor
+	fd_FactoryDenom_moved                   protoreflect.FieldDescriptor
+	fd_FactoryDenom_lsat_description_change protoreflect.FieldDescriptor
+	fd_FactoryDenom_last_website_change     protoreflect.FieldDescriptor
+	fd_FactoryDenom_last_image_change       protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -36,6 +44,13 @@ func init() {
 	fd_FactoryDenom_exponent = md_FactoryDenom.Fields().ByName("exponent")
 	fd_FactoryDenom_symbol = md_FactoryDenom.Fields().ByName("symbol")
 	fd_FactoryDenom_mintable = md_FactoryDenom.Fields().ByName("mintable")
+	fd_FactoryDenom_category_index = md_FactoryDenom.Fields().ByName("category_index")
+	fd_FactoryDenom_website = md_FactoryDenom.Fields().ByName("website")
+	fd_FactoryDenom_local_name = md_FactoryDenom.Fields().ByName("local_name")
+	fd_FactoryDenom_moved = md_FactoryDenom.Fields().ByName("moved")
+	fd_FactoryDenom_lsat_description_change = md_FactoryDenom.Fields().ByName("lsat_description_change")
+	fd_FactoryDenom_last_website_change = md_FactoryDenom.Fields().ByName("last_website_change")
+	fd_FactoryDenom_last_image_change = md_FactoryDenom.Fields().ByName("last_image_change")
 }
 
 var _ protoreflect.Message = (*fastReflection_FactoryDenom)(nil)
@@ -151,6 +166,48 @@ func (x *fastReflection_FactoryDenom) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
+	if x.CategoryIndex != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.CategoryIndex)
+		if !f(fd_FactoryDenom_category_index, value) {
+			return
+		}
+	}
+	if x.Website != "" {
+		value := protoreflect.ValueOfString(x.Website)
+		if !f(fd_FactoryDenom_website, value) {
+			return
+		}
+	}
+	if x.LocalName != "" {
+		value := protoreflect.ValueOfString(x.LocalName)
+		if !f(fd_FactoryDenom_local_name, value) {
+			return
+		}
+	}
+	if x.Moved != false {
+		value := protoreflect.ValueOfBool(x.Moved)
+		if !f(fd_FactoryDenom_moved, value) {
+			return
+		}
+	}
+	if x.LsatDescriptionChange != nil {
+		value := protoreflect.ValueOfMessage(x.LsatDescriptionChange.ProtoReflect())
+		if !f(fd_FactoryDenom_lsat_description_change, value) {
+			return
+		}
+	}
+	if x.LastWebsiteChange != nil {
+		value := protoreflect.ValueOfMessage(x.LastWebsiteChange.ProtoReflect())
+		if !f(fd_FactoryDenom_last_website_change, value) {
+			return
+		}
+	}
+	if x.LastImageChange != nil {
+		value := protoreflect.ValueOfMessage(x.LastImageChange.ProtoReflect())
+		if !f(fd_FactoryDenom_last_image_change, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -182,6 +239,20 @@ func (x *fastReflection_FactoryDenom) Has(fd protoreflect.FieldDescriptor) bool 
 		return x.Symbol != ""
 	case "kopi.tokenfactory.FactoryDenom.mintable":
 		return x.Mintable != false
+	case "kopi.tokenfactory.FactoryDenom.category_index":
+		return x.CategoryIndex != uint64(0)
+	case "kopi.tokenfactory.FactoryDenom.website":
+		return x.Website != ""
+	case "kopi.tokenfactory.FactoryDenom.local_name":
+		return x.LocalName != ""
+	case "kopi.tokenfactory.FactoryDenom.moved":
+		return x.Moved != false
+	case "kopi.tokenfactory.FactoryDenom.lsat_description_change":
+		return x.LsatDescriptionChange != nil
+	case "kopi.tokenfactory.FactoryDenom.last_website_change":
+		return x.LastWebsiteChange != nil
+	case "kopi.tokenfactory.FactoryDenom.last_image_change":
+		return x.LastImageChange != nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.FactoryDenom"))
@@ -214,6 +285,20 @@ func (x *fastReflection_FactoryDenom) Clear(fd protoreflect.FieldDescriptor) {
 		x.Symbol = ""
 	case "kopi.tokenfactory.FactoryDenom.mintable":
 		x.Mintable = false
+	case "kopi.tokenfactory.FactoryDenom.category_index":
+		x.CategoryIndex = uint64(0)
+	case "kopi.tokenfactory.FactoryDenom.website":
+		x.Website = ""
+	case "kopi.tokenfactory.FactoryDenom.local_name":
+		x.LocalName = ""
+	case "kopi.tokenfactory.FactoryDenom.moved":
+		x.Moved = false
+	case "kopi.tokenfactory.FactoryDenom.lsat_description_change":
+		x.LsatDescriptionChange = nil
+	case "kopi.tokenfactory.FactoryDenom.last_website_change":
+		x.LastWebsiteChange = nil
+	case "kopi.tokenfactory.FactoryDenom.last_image_change":
+		x.LastImageChange = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.FactoryDenom"))
@@ -254,6 +339,27 @@ func (x *fastReflection_FactoryDenom) Get(descriptor protoreflect.FieldDescripto
 	case "kopi.tokenfactory.FactoryDenom.mintable":
 		value := x.Mintable
 		return protoreflect.ValueOfBool(value)
+	case "kopi.tokenfactory.FactoryDenom.category_index":
+		value := x.CategoryIndex
+		return protoreflect.ValueOfUint64(value)
+	case "kopi.tokenfactory.FactoryDenom.website":
+		value := x.Website
+		return protoreflect.ValueOfString(value)
+	case "kopi.tokenfactory.FactoryDenom.local_name":
+		value := x.LocalName
+		return protoreflect.ValueOfString(value)
+	case "kopi.tokenfactory.FactoryDenom.moved":
+		value := x.Moved
+		return protoreflect.ValueOfBool(value)
+	case "kopi.tokenfactory.FactoryDenom.lsat_description_change":
+		value := x.LsatDescriptionChange
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "kopi.tokenfactory.FactoryDenom.last_website_change":
+		value := x.LastWebsiteChange
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "kopi.tokenfactory.FactoryDenom.last_image_change":
+		value := x.LastImageChange
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.FactoryDenom"))
@@ -290,6 +396,20 @@ func (x *fastReflection_FactoryDenom) Set(fd protoreflect.FieldDescriptor, value
 		x.Symbol = value.Interface().(string)
 	case "kopi.tokenfactory.FactoryDenom.mintable":
 		x.Mintable = value.Bool()
+	case "kopi.tokenfactory.FactoryDenom.category_index":
+		x.CategoryIndex = value.Uint()
+	case "kopi.tokenfactory.FactoryDenom.website":
+		x.Website = value.Interface().(string)
+	case "kopi.tokenfactory.FactoryDenom.local_name":
+		x.LocalName = value.Interface().(string)
+	case "kopi.tokenfactory.FactoryDenom.moved":
+		x.Moved = value.Bool()
+	case "kopi.tokenfactory.FactoryDenom.lsat_description_change":
+		x.LsatDescriptionChange = value.Message().Interface().(*timestamppb.Timestamp)
+	case "kopi.tokenfactory.FactoryDenom.last_website_change":
+		x.LastWebsiteChange = value.Message().Interface().(*timestamppb.Timestamp)
+	case "kopi.tokenfactory.FactoryDenom.last_image_change":
+		x.LastImageChange = value.Message().Interface().(*timestamppb.Timestamp)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.FactoryDenom"))
@@ -310,6 +430,21 @@ func (x *fastReflection_FactoryDenom) Set(fd protoreflect.FieldDescriptor, value
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_FactoryDenom) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "kopi.tokenfactory.FactoryDenom.lsat_description_change":
+		if x.LsatDescriptionChange == nil {
+			x.LsatDescriptionChange = new(timestamppb.Timestamp)
+		}
+		return protoreflect.ValueOfMessage(x.LsatDescriptionChange.ProtoReflect())
+	case "kopi.tokenfactory.FactoryDenom.last_website_change":
+		if x.LastWebsiteChange == nil {
+			x.LastWebsiteChange = new(timestamppb.Timestamp)
+		}
+		return protoreflect.ValueOfMessage(x.LastWebsiteChange.ProtoReflect())
+	case "kopi.tokenfactory.FactoryDenom.last_image_change":
+		if x.LastImageChange == nil {
+			x.LastImageChange = new(timestamppb.Timestamp)
+		}
+		return protoreflect.ValueOfMessage(x.LastImageChange.ProtoReflect())
 	case "kopi.tokenfactory.FactoryDenom.admin":
 		panic(fmt.Errorf("field admin of message kopi.tokenfactory.FactoryDenom is not mutable"))
 	case "kopi.tokenfactory.FactoryDenom.display_name":
@@ -326,6 +461,14 @@ func (x *fastReflection_FactoryDenom) Mutable(fd protoreflect.FieldDescriptor) p
 		panic(fmt.Errorf("field symbol of message kopi.tokenfactory.FactoryDenom is not mutable"))
 	case "kopi.tokenfactory.FactoryDenom.mintable":
 		panic(fmt.Errorf("field mintable of message kopi.tokenfactory.FactoryDenom is not mutable"))
+	case "kopi.tokenfactory.FactoryDenom.category_index":
+		panic(fmt.Errorf("field category_index of message kopi.tokenfactory.FactoryDenom is not mutable"))
+	case "kopi.tokenfactory.FactoryDenom.website":
+		panic(fmt.Errorf("field website of message kopi.tokenfactory.FactoryDenom is not mutable"))
+	case "kopi.tokenfactory.FactoryDenom.local_name":
+		panic(fmt.Errorf("field local_name of message kopi.tokenfactory.FactoryDenom is not mutable"))
+	case "kopi.tokenfactory.FactoryDenom.moved":
+		panic(fmt.Errorf("field moved of message kopi.tokenfactory.FactoryDenom is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.FactoryDenom"))
@@ -355,6 +498,23 @@ func (x *fastReflection_FactoryDenom) NewField(fd protoreflect.FieldDescriptor) 
 		return protoreflect.ValueOfString("")
 	case "kopi.tokenfactory.FactoryDenom.mintable":
 		return protoreflect.ValueOfBool(false)
+	case "kopi.tokenfactory.FactoryDenom.category_index":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "kopi.tokenfactory.FactoryDenom.website":
+		return protoreflect.ValueOfString("")
+	case "kopi.tokenfactory.FactoryDenom.local_name":
+		return protoreflect.ValueOfString("")
+	case "kopi.tokenfactory.FactoryDenom.moved":
+		return protoreflect.ValueOfBool(false)
+	case "kopi.tokenfactory.FactoryDenom.lsat_description_change":
+		m := new(timestamppb.Timestamp)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "kopi.tokenfactory.FactoryDenom.last_website_change":
+		m := new(timestamppb.Timestamp)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "kopi.tokenfactory.FactoryDenom.last_image_change":
+		m := new(timestamppb.Timestamp)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.tokenfactory.FactoryDenom"))
@@ -454,6 +614,32 @@ func (x *fastReflection_FactoryDenom) ProtoMethods() *protoiface.Methods {
 		if x.Mintable {
 			n += 2
 		}
+		if x.CategoryIndex != 0 {
+			n += 1 + runtime.Sov(uint64(x.CategoryIndex))
+		}
+		l = len(x.Website)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.LocalName)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.Moved {
+			n += 2
+		}
+		if x.LsatDescriptionChange != nil {
+			l = options.Size(x.LsatDescriptionChange)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.LastWebsiteChange != nil {
+			l = options.Size(x.LastWebsiteChange)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.LastImageChange != nil {
+			l = options.Size(x.LastImageChange)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -482,6 +668,77 @@ func (x *fastReflection_FactoryDenom) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.Moved {
+			i--
+			if x.Moved {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x78
+		}
+		if len(x.LocalName) > 0 {
+			i -= len(x.LocalName)
+			copy(dAtA[i:], x.LocalName)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.LocalName)))
+			i--
+			dAtA[i] = 0x72
+		}
+		if x.LastImageChange != nil {
+			encoded, err := options.Marshal(x.LastImageChange)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x6a
+		}
+		if x.LastWebsiteChange != nil {
+			encoded, err := options.Marshal(x.LastWebsiteChange)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x62
+		}
+		if x.LsatDescriptionChange != nil {
+			encoded, err := options.Marshal(x.LsatDescriptionChange)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x5a
+		}
+		if len(x.Website) > 0 {
+			i -= len(x.Website)
+			copy(dAtA[i:], x.Website)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Website)))
+			i--
+			dAtA[i] = 0x52
+		}
+		if x.CategoryIndex != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.CategoryIndex))
+			i--
+			dAtA[i] = 0x48
 		}
 		if x.Mintable {
 			i--
@@ -820,6 +1077,217 @@ func (x *fastReflection_FactoryDenom) ProtoMethods() *protoiface.Methods {
 					}
 				}
 				x.Mintable = bool(v != 0)
+			case 9:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field CategoryIndex", wireType)
+				}
+				x.CategoryIndex = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.CategoryIndex |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 10:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Website", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Website = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 14:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LocalName", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.LocalName = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 15:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Moved", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.Moved = bool(v != 0)
+			case 11:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LsatDescriptionChange", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.LsatDescriptionChange == nil {
+					x.LsatDescriptionChange = &timestamppb.Timestamp{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.LsatDescriptionChange); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 12:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LastWebsiteChange", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.LastWebsiteChange == nil {
+					x.LastWebsiteChange = &timestamppb.Timestamp{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.LastWebsiteChange); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 13:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LastImageChange", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.LastImageChange == nil {
+					x.LastImageChange = &timestamppb.Timestamp{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.LastImageChange); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -873,14 +1341,21 @@ type FactoryDenom struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Admin       string `protobuf:"bytes,1,opt,name=admin,proto3" json:"admin,omitempty"`
-	DisplayName string `protobuf:"bytes,2,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
-	FullName    string `protobuf:"bytes,3,opt,name=full_name,json=fullName,proto3" json:"full_name,omitempty"`
-	IconHash    string `protobuf:"bytes,4,opt,name=icon_hash,json=iconHash,proto3" json:"icon_hash,omitempty"`
-	Description string `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	Exponent    uint64 `protobuf:"varint,6,opt,name=exponent,proto3" json:"exponent,omitempty"`
-	Symbol      string `protobuf:"bytes,7,opt,name=symbol,proto3" json:"symbol,omitempty"`
-	Mintable    bool   `protobuf:"varint,8,opt,name=mintable,proto3" json:"mintable,omitempty"`
+	Admin                 string                 `protobuf:"bytes,1,opt,name=admin,proto3" json:"admin,omitempty"`
+	DisplayName           string                 `protobuf:"bytes,2,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
+	FullName              string                 `protobuf:"bytes,3,opt,name=full_name,json=fullName,proto3" json:"full_name,omitempty"`
+	IconHash              string                 `protobuf:"bytes,4,opt,name=icon_hash,json=iconHash,proto3" json:"icon_hash,omitempty"`
+	Description           string                 `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	Exponent              uint64                 `protobuf:"varint,6,opt,name=exponent,proto3" json:"exponent,omitempty"`
+	Symbol                string                 `protobuf:"bytes,7,opt,name=symbol,proto3" json:"symbol,omitempty"`
+	Mintable              bool                   `protobuf:"varint,8,opt,name=mintable,proto3" json:"mintable,omitempty"`
+	CategoryIndex         uint64                 `protobuf:"varint,9,opt,name=category_index,json=categoryIndex,proto3" json:"category_index,omitempty"`
+	Website               string                 `protobuf:"bytes,10,opt,name=website,proto3" json:"website,omitempty"`
+	LocalName             string                 `protobuf:"bytes,14,opt,name=local_name,json=localName,proto3" json:"local_name,omitempty"`
+	Moved                 bool                   `protobuf:"varint,15,opt,name=moved,proto3" json:"moved,omitempty"`
+	LsatDescriptionChange *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=lsat_description_change,json=lsatDescriptionChange,proto3" json:"lsat_description_change,omitempty"`
+	LastWebsiteChange     *timestamppb.Timestamp `protobuf:"bytes,12,opt,name=last_website_change,json=lastWebsiteChange,proto3" json:"last_website_change,omitempty"`
+	LastImageChange       *timestamppb.Timestamp `protobuf:"bytes,13,opt,name=last_image_change,json=lastImageChange,proto3" json:"last_image_change,omitempty"`
 }
 
 func (x *FactoryDenom) Reset() {
@@ -959,41 +1434,121 @@ func (x *FactoryDenom) GetMintable() bool {
 	return false
 }
 
+func (x *FactoryDenom) GetCategoryIndex() uint64 {
+	if x != nil {
+		return x.CategoryIndex
+	}
+	return 0
+}
+
+func (x *FactoryDenom) GetWebsite() string {
+	if x != nil {
+		return x.Website
+	}
+	return ""
+}
+
+func (x *FactoryDenom) GetLocalName() string {
+	if x != nil {
+		return x.LocalName
+	}
+	return ""
+}
+
+func (x *FactoryDenom) GetMoved() bool {
+	if x != nil {
+		return x.Moved
+	}
+	return false
+}
+
+func (x *FactoryDenom) GetLsatDescriptionChange() *timestamppb.Timestamp {
+	if x != nil {
+		return x.LsatDescriptionChange
+	}
+	return nil
+}
+
+func (x *FactoryDenom) GetLastWebsiteChange() *timestamppb.Timestamp {
+	if x != nil {
+		return x.LastWebsiteChange
+	}
+	return nil
+}
+
+func (x *FactoryDenom) GetLastImageChange() *timestamppb.Timestamp {
+	if x != nil {
+		return x.LastImageChange
+	}
+	return nil
+}
+
 var File_kopi_tokenfactory_denoms_proto protoreflect.FileDescriptor
 
 var file_kopi_tokenfactory_denoms_proto_rawDesc = []byte{
 	0x0a, 0x1e, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74,
 	0x6f, 0x72, 0x79, 0x2f, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x12, 0x11, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74,
-	0x6f, 0x72, 0x79, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67,
-	0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xf3, 0x01, 0x0a, 0x0c, 0x46, 0x61,
-	0x63, 0x74, 0x6f, 0x72, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x14, 0x0a, 0x05, 0x61, 0x64,
-	0x6d, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x61, 0x64, 0x6d, 0x69, 0x6e,
-	0x12, 0x21, 0x0a, 0x0c, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x5f, 0x6e, 0x61, 0x6d, 0x65,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x4e,
-	0x61, 0x6d, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x66, 0x75, 0x6c, 0x6c, 0x5f, 0x6e, 0x61, 0x6d, 0x65,
-	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x66, 0x75, 0x6c, 0x6c, 0x4e, 0x61, 0x6d, 0x65,
-	0x12, 0x1b, 0x0a, 0x09, 0x69, 0x63, 0x6f, 0x6e, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x18, 0x04, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x08, 0x69, 0x63, 0x6f, 0x6e, 0x48, 0x61, 0x73, 0x68, 0x12, 0x20, 0x0a,
-	0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x05, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12,
-	0x1a, 0x0a, 0x08, 0x65, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x18, 0x06, 0x20, 0x01, 0x28,
-	0x04, 0x52, 0x08, 0x65, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x73,
-	0x79, 0x6d, 0x62, 0x6f, 0x6c, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x79, 0x6d,
-	0x62, 0x6f, 0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x6d, 0x69, 0x6e, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x18,
-	0x08, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x6d, 0x69, 0x6e, 0x74, 0x61, 0x62, 0x6c, 0x65, 0x42,
-	0xad, 0x01, 0x0a, 0x15, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b,
-	0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x42, 0x0b, 0x44, 0x65, 0x6e, 0x6f, 0x6d,
-	0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x22, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
-	0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f,
-	0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0xa2, 0x02, 0x03, 0x4b,
-	0x54, 0x58, 0xaa, 0x02, 0x11, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x66,
-	0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0xca, 0x02, 0x11, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x54, 0x6f,
-	0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0xe2, 0x02, 0x1d, 0x4b, 0x6f, 0x70,
-	0x69, 0x5c, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x5c, 0x47,
-	0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x12, 0x4b, 0x6f, 0x70,
-	0x69, 0x3a, 0x3a, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x62,
-	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x72, 0x79, 0x1a, 0x1f, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x75, 0x66, 0x2f, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f,
+	0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xcb, 0x05, 0x0a, 0x0c, 0x46,
+	0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x14, 0x0a, 0x05, 0x61,
+	0x64, 0x6d, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x61, 0x64, 0x6d, 0x69,
+	0x6e, 0x12, 0x21, 0x0a, 0x0c, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79, 0x5f, 0x6e, 0x61, 0x6d,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x69, 0x73, 0x70, 0x6c, 0x61, 0x79,
+	0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x66, 0x75, 0x6c, 0x6c, 0x5f, 0x6e, 0x61, 0x6d,
+	0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x66, 0x75, 0x6c, 0x6c, 0x4e, 0x61, 0x6d,
+	0x65, 0x12, 0x1b, 0x0a, 0x09, 0x69, 0x63, 0x6f, 0x6e, 0x5f, 0x68, 0x61, 0x73, 0x68, 0x18, 0x04,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x69, 0x63, 0x6f, 0x6e, 0x48, 0x61, 0x73, 0x68, 0x12, 0x20,
+	0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x05, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e,
+	0x12, 0x1a, 0x0a, 0x08, 0x65, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x18, 0x06, 0x20, 0x01,
+	0x28, 0x04, 0x52, 0x08, 0x65, 0x78, 0x70, 0x6f, 0x6e, 0x65, 0x6e, 0x74, 0x12, 0x16, 0x0a, 0x06,
+	0x73, 0x79, 0x6d, 0x62, 0x6f, 0x6c, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x79,
+	0x6d, 0x62, 0x6f, 0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x6d, 0x69, 0x6e, 0x74, 0x61, 0x62, 0x6c, 0x65,
+	0x18, 0x08, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x6d, 0x69, 0x6e, 0x74, 0x61, 0x62, 0x6c, 0x65,
+	0x12, 0x25, 0x0a, 0x0e, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x5f, 0x69, 0x6e, 0x64,
+	0x65, 0x78, 0x18, 0x09, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0d, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f,
+	0x72, 0x79, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x18, 0x0a, 0x07, 0x77, 0x65, 0x62, 0x73, 0x69,
+	0x74, 0x65, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x77, 0x65, 0x62, 0x73, 0x69, 0x74,
+	0x65, 0x12, 0x1d, 0x0a, 0x0a, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18,
+	0x0e, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x6c, 0x6f, 0x63, 0x61, 0x6c, 0x4e, 0x61, 0x6d, 0x65,
+	0x12, 0x14, 0x0a, 0x05, 0x6d, 0x6f, 0x76, 0x65, 0x64, 0x18, 0x0f, 0x20, 0x01, 0x28, 0x08, 0x52,
+	0x05, 0x6d, 0x6f, 0x76, 0x65, 0x64, 0x12, 0x7e, 0x0a, 0x17, 0x6c, 0x73, 0x61, 0x74, 0x5f, 0x64,
+	0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x63, 0x68, 0x61, 0x6e, 0x67,
+	0x65, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74,
+	0x61, 0x6d, 0x70, 0x42, 0x2a, 0xc8, 0xde, 0x1f, 0x00, 0xf2, 0xde, 0x1f, 0x1e, 0x79, 0x61, 0x6d,
+	0x6c, 0x3a, 0x22, 0x6c, 0x73, 0x61, 0x74, 0x5f, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74,
+	0x69, 0x6f, 0x6e, 0x5f, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x22, 0x90, 0xdf, 0x1f, 0x01, 0x52,
+	0x15, 0x6c, 0x73, 0x61, 0x74, 0x44, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e,
+	0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x12, 0x72, 0x0a, 0x13, 0x6c, 0x61, 0x73, 0x74, 0x5f, 0x77,
+	0x65, 0x62, 0x73, 0x69, 0x74, 0x65, 0x5f, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x18, 0x0c, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x42,
+	0x26, 0xc8, 0xde, 0x1f, 0x00, 0xf2, 0xde, 0x1f, 0x1a, 0x79, 0x61, 0x6d, 0x6c, 0x3a, 0x22, 0x6c,
+	0x61, 0x73, 0x74, 0x5f, 0x77, 0x65, 0x62, 0x73, 0x69, 0x74, 0x65, 0x5f, 0x63, 0x68, 0x61, 0x6e,
+	0x67, 0x65, 0x22, 0x90, 0xdf, 0x1f, 0x01, 0x52, 0x11, 0x6c, 0x61, 0x73, 0x74, 0x57, 0x65, 0x62,
+	0x73, 0x69, 0x74, 0x65, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x12, 0x6c, 0x0a, 0x11, 0x6c, 0x61,
+	0x73, 0x74, 0x5f, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x5f, 0x63, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x18,
+	0x0d, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d,
+	0x70, 0x42, 0x24, 0xc8, 0xde, 0x1f, 0x00, 0xf2, 0xde, 0x1f, 0x18, 0x79, 0x61, 0x6d, 0x6c, 0x3a,
+	0x22, 0x6c, 0x61, 0x73, 0x74, 0x5f, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x5f, 0x63, 0x68, 0x61, 0x6e,
+	0x67, 0x65, 0x22, 0x90, 0xdf, 0x1f, 0x01, 0x52, 0x0f, 0x6c, 0x61, 0x73, 0x74, 0x49, 0x6d, 0x61,
+	0x67, 0x65, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x42, 0xad, 0x01, 0x0a, 0x15, 0x63, 0x6f, 0x6d,
+	0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f,
+	0x72, 0x79, 0x42, 0x0b, 0x44, 0x65, 0x6e, 0x6f, 0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50,
+	0x01, 0x5a, 0x22, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
+	0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61,
+	0x63, 0x74, 0x6f, 0x72, 0x79, 0xa2, 0x02, 0x03, 0x4b, 0x54, 0x58, 0xaa, 0x02, 0x11, 0x4b, 0x6f,
+	0x70, 0x69, 0x2e, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0xca,
+	0x02, 0x11, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x66, 0x61, 0x63, 0x74,
+	0x6f, 0x72, 0x79, 0xe2, 0x02, 0x1d, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x54, 0x6f, 0x6b, 0x65, 0x6e,
+	0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64,
+	0x61, 0x74, 0x61, 0xea, 0x02, 0x12, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x54, 0x6f, 0x6b, 0x65,
+	0x6e, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x79, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1010,14 +1565,18 @@ func file_kopi_tokenfactory_denoms_proto_rawDescGZIP() []byte {
 
 var file_kopi_tokenfactory_denoms_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_kopi_tokenfactory_denoms_proto_goTypes = []interface{}{
-	(*FactoryDenom)(nil), // 0: kopi.tokenfactory.FactoryDenom
+	(*FactoryDenom)(nil),          // 0: kopi.tokenfactory.FactoryDenom
+	(*timestamppb.Timestamp)(nil), // 1: google.protobuf.Timestamp
 }
 var file_kopi_tokenfactory_denoms_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: kopi.tokenfactory.FactoryDenom.lsat_description_change:type_name -> google.protobuf.Timestamp
+	1, // 1: kopi.tokenfactory.FactoryDenom.last_website_change:type_name -> google.protobuf.Timestamp
+	1, // 2: kopi.tokenfactory.FactoryDenom.last_image_change:type_name -> google.protobuf.Timestamp
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_kopi_tokenfactory_denoms_proto_init() }
