@@ -22,8 +22,7 @@ message GenesisLoan {
   ];
 }
 
-// Used inside the genesis to store loan data per denom including all loans
-message Loans {
+message GenesisLoans {
   string denom = 1;
 
   bytes loan_sum = 2 [
@@ -41,7 +40,8 @@ message Loans {
   ];
 }
 
-// Used in production, loans are stored seperately with a different key
+
+// Used in production, loans are stored separately with a different key
 message LoanSum {
   string denom = 1;
   uint64 num_loans = 2;

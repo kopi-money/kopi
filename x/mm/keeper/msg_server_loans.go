@@ -2,29 +2,18 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	"fmt"
 	"strconv"
-	"strings"
-
-	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/mm/types"
 )
 
 func (k msgServer) Borrow(ctx context.Context, msg *types.MsgBorrow) (*types.Void, error) {
-	amountStr := strings.ReplaceAll(msg.Amount, ",", "")
-	amount, ok := math.NewIntFromString(amountStr)
-	if !ok {
-		return nil, types.ErrInvalidAmountFormat
-	}
-
-	if amount.LT(math.ZeroInt()) {
-		return nil, types.ErrNegativeAmount
-	}
-
-	if amount.IsZero() {
-		return nil, types.ErrZeroAmount
+	amount, err := parseAmount(msg.Amount, false)
+	if err != nil {
+		return nil, err
 	}
 
 	address, err := sdk.AccAddressFromBech32(msg.Creator)
@@ -34,7 +23,7 @@ func (k msgServer) Borrow(ctx context.Context, msg *types.MsgBorrow) (*types.Voi
 
 	_, _, err = k.Keeper.Borrow(ctx, address, msg.Denom, amount)
 	if err != nil {
-		return nil, fmt.Errorf("could not execute borrow: %w", err)
+		return nil, fmt.Errorf("execute borrow: %w", err)
 	}
 
 	return &types.Void{}, nil
@@ -46,7 +35,7 @@ func (k Keeper) Borrow(ctx context.Context, address sdk.AccAddress, denom string
 		return math.Int{}, math.Int{}, types.ErrInvalidDepositDenom
 	}
 
-	if borrowAmount.LT(math.ZeroInt()) {
+	if borrowAmount.IsNegative() {
 		return math.Int{}, math.Int{}, types.ErrNegativeAmount
 	}
 
@@ -70,7 +59,7 @@ func (k Keeper) Borrow(ctx context.Context, address sdk.AccAddress, denom string
 		return math.Int{}, math.Int{}, types.ErrCollateralBorrowLimitExceeded
 	}
 
-	if cAsset.MinimumLoanSize.GT(math.ZeroInt()) && borrowAmount.LT(cAsset.MinimumLoanSize) {
+	if cAsset.MinimumLoanSize.IsPositive() && borrowAmount.LT(cAsset.MinimumLoanSize) {
 		return math.Int{}, math.Int{}, types.ErrLoanSizeTooSmall
 	}
 
@@ -102,7 +91,7 @@ func (k Keeper) Borrow(ctx context.Context, address sdk.AccAddress, denom string
 
 func (k msgServer) RepayLoan(ctx context.Context, msg *types.MsgRepayLoan) (*types.Void, error) {
 	loanValue := k.GetLoanValue(ctx, msg.Denom, msg.Creator)
-	if loanValue.IsZero() {
+	if !loanValue.IsPositive() {
 		return nil, types.ErrNoLoanFound
 	}
 
@@ -114,29 +103,16 @@ func (k msgServer) RepayLoan(ctx context.Context, msg *types.MsgRepayLoan) (*typ
 }
 
 func (k msgServer) PartiallyRepayLoan(ctx context.Context, msg *types.MsgPartiallyRepayLoan) (*types.Void, error) {
-	if _, err := k.DenomKeeper.GetCAssetByBaseName(ctx, msg.Denom); err != nil {
-		return nil, types.ErrInvalidDepositDenom
-	}
-
 	if _, found := k.loans.Get(ctx, msg.Denom, msg.Creator); !found {
 		return nil, types.ErrNoLoanFound
 	}
 
-	amountStr := strings.ReplaceAll(msg.Amount, ",", "")
-	repayAmount, ok := math.NewIntFromString(amountStr)
-	if !ok {
-		return nil, types.ErrInvalidAmountFormat
+	repayAmount, err := parseAmount(msg.Amount, false)
+	if err != nil {
+		return nil, err
 	}
 
-	if repayAmount.IsNegative() {
-		return nil, types.ErrNegativeAmount
-	}
-
-	if repayAmount.IsZero() {
-		return nil, types.ErrZeroAmount
-	}
-
-	if err := k.Repay(ctx, msg.Denom, msg.Creator, repayAmount); err != nil {
+	if err = k.Repay(ctx, msg.Denom, msg.Creator, repayAmount); err != nil {
 		return nil, fmt.Errorf("failed to repay loan %v: %v", msg.Denom, err)
 	}
 
@@ -160,7 +136,7 @@ func (k Keeper) Repay(ctx context.Context, denom, address string, repayAmount ma
 
 	coins := sdk.NewCoins(sdk.NewCoin(denom, repayAmount))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolVault, coins); err != nil {
-		return fmt.Errorf("could not send coins from account to module: %w", err)
+		return fmt.Errorf("send coins from account to module: %w", err)
 	}
 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(

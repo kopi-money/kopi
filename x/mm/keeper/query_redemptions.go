@@ -32,7 +32,7 @@ func (k Keeper) GetRedemptionRequest(ctx context.Context, req *types.GetRedempti
 func (k Keeper) GetRedemptionStatsRequest(ctx context.Context, _ *types.GetRedemptionStatsRequestQuery) (*types.GetRedemptionStatsRequestResponse, error) {
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get reference denom: %w", err)
+		return nil, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	var (

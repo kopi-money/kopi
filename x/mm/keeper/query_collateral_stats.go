@@ -15,7 +15,7 @@ import (
 func (k Keeper) GetCollateralStats(ctx context.Context, _ *types.GetCollateralStatsQuery) (*types.GetCollateralStatsResponse, error) {
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get reference denom: %w", err)
+		return nil, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	var (
@@ -30,12 +30,12 @@ func (k Keeper) GetCollateralStats(ctx context.Context, _ *types.GetCollateralSt
 		sum := k.getCollateralSum(ctx, denom.DexDenom)
 		sumUSD, err = k.DenomKeeper.GetValueIn(ctx, denom.DexDenom, referenceDenom, sum.ToLegacyDec())
 		if err != nil {
-			return nil, fmt.Errorf("could not get collateral sum in usd: %w", err)
+			return nil, fmt.Errorf("get collateral sum in usd: %w", err)
 		}
 
 		depositCap, err = k.DenomKeeper.GetDepositCap(ctx, denom.DexDenom)
 		if err != nil {
-			return nil, fmt.Errorf("could not get deposit cap: %w", err)
+			return nil, fmt.Errorf("get deposit cap: %w", err)
 		}
 
 		depositCapUsed := math.LegacyZeroDec()
@@ -46,7 +46,7 @@ func (k Keeper) GetCollateralStats(ctx context.Context, _ *types.GetCollateralSt
 		totalUSD = totalUSD.Add(sumUSD)
 		priceUSD, err = k.DenomKeeper.CalculatePrice(ctx, denom.DexDenom, referenceDenom)
 		if err != nil {
-			return nil, fmt.Errorf("could not get price in usd: %w", err)
+			return nil, fmt.Errorf("get price in usd (%v): %w", denom.DexDenom, err)
 		}
 
 		stats = append(stats, &types.CollateralDenomStats{
@@ -110,7 +110,7 @@ func (k Keeper) GetCollateralUserStats(ctx context.Context, req *types.GetCollat
 
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get reference denom: %w", err)
+		return nil, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	var (
@@ -129,7 +129,7 @@ func (k Keeper) GetCollateralUserStats(ctx context.Context, req *types.GetCollat
 
 		depositCap, err = k.DenomKeeper.GetDepositCap(ctx, denom.DexDenom)
 		if err != nil {
-			return nil, fmt.Errorf("could not get deposit cap: %w", err)
+			return nil, fmt.Errorf("get deposit cap: %w", err)
 		}
 
 		collateralSum := k.getCollateralSum(ctx, denom.DexDenom)
@@ -145,7 +145,7 @@ func (k Keeper) GetCollateralUserStats(ctx context.Context, req *types.GetCollat
 
 		priceUSD, err = k.DenomKeeper.CalculatePrice(ctx, denom.DexDenom, referenceDenom)
 		if err != nil {
-			return nil, fmt.Errorf("could not get price in usd: %w", err)
+			return nil, fmt.Errorf("get price in usd: %w", err)
 		}
 
 		totalUSD = totalUSD.Add(collateralSumUSD)
@@ -180,13 +180,13 @@ func (k Keeper) GetCollateralDenomUserStats(ctx context.Context, req *types.GetC
 
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get reference denom: %w", err)
+		return nil, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	available := k.BankKeeper.SpendableCoin(ctx, address, req.Denom)
 	availableUSD, err := k.DenomKeeper.GetValueIn(ctx, req.Denom, referenceDenom, available.Amount.ToLegacyDec())
 	if err != nil {
-		return nil, fmt.Errorf("could not get available value in usd: %w", err)
+		return nil, fmt.Errorf("get available value in usd: %w", err)
 	}
 
 	collateral, has := k.collateral.Get(ctx, req.Denom, req.Address)
@@ -196,7 +196,7 @@ func (k Keeper) GetCollateralDenomUserStats(ctx context.Context, req *types.GetC
 
 	providedUSD, err := k.DenomKeeper.GetValueIn(ctx, req.Denom, referenceDenom, collateral.Amount.ToLegacyDec())
 	if err != nil {
-		return nil, fmt.Errorf("could not get provided value in usd: %w", err)
+		return nil, fmt.Errorf("get provided value in usd: %w", err)
 	}
 
 	return &types.GetCollateralDenomUserStatsResponse{
@@ -214,12 +214,12 @@ func (k Keeper) GetWithdrawableCollateral(ctx context.Context, req *types.GetWit
 
 	withdrawable, err := k.CalcWithdrawableCollateralAmount(ctx, req.Address, req.Denom)
 	if err != nil {
-		return nil, fmt.Errorf("could not calculate withdrawable amount: %w", err)
+		return nil, fmt.Errorf("calculate withdrawable amount: %w", err)
 	}
 
 	withdrawableUSD, err := k.DenomKeeper.GetValueInUSD(ctx, req.Denom, withdrawable)
 	if err != nil {
-		return nil, fmt.Errorf("could not convert withdrawable amount to usd: %w", err)
+		return nil, fmt.Errorf("convert withdrawable amount to usd: %w", err)
 	}
 
 	return &types.GetWithdrawableCollateralResponse{

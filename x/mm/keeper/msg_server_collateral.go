@@ -21,7 +21,7 @@ func (k msgServer) AddCollateral(ctx context.Context, msg *types.MsgAddCollatera
 	}
 
 	if _, err = k.Keeper.AddCollateral(ctx, address, msg.Denom, amount); err != nil {
-		return nil, fmt.Errorf("could not add collateral: %w", err)
+		return nil, fmt.Errorf("add collateral: %w", err)
 	}
 
 	return &types.Void{}, nil
@@ -58,7 +58,7 @@ func (k Keeper) AddCollateral(ctx context.Context, address sdk.AccAddress, denom
 
 	coins := sdk.NewCoins(sdk.NewCoin(denom, amount))
 	if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, address, types.PoolCollateral, coins); err != nil {
-		return math.Int{}, fmt.Errorf("could not send coins to module: %w", err)
+		return math.Int{}, fmt.Errorf("send coins to module: %w", err)
 	}
 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
@@ -84,7 +84,7 @@ func (k msgServer) RemoveCollateral(ctx context.Context, msg *types.MsgRemoveCol
 	}
 
 	if _, err = k.WithdrawCollateral(ctx, address, msg.Denom, amount); err != nil {
-		return nil, fmt.Errorf("could not withdraw collateral: %w", err)
+		return nil, fmt.Errorf("withdraw collateral: %w", err)
 	}
 
 	return &types.Void{}, nil
@@ -97,7 +97,7 @@ func (k Keeper) WithdrawCollateral(ctx context.Context, address sdk.AccAddress, 
 
 	withdrawableAmount, err := k.CalcWithdrawableCollateralAmount(ctx, address.String(), denom)
 	if err != nil {
-		return math.Int{}, fmt.Errorf("could not calculate withdrawable amount: %w", err)
+		return math.Int{}, fmt.Errorf("calculate withdrawable amount: %w", err)
 	}
 
 	if amount.ToLegacyDec().GT(withdrawableAmount) {
@@ -116,7 +116,7 @@ func (k Keeper) WithdrawCollateral(ctx context.Context, address sdk.AccAddress, 
 
 	coins := sdk.NewCoins(sdk.NewCoin(denom, amount))
 	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolCollateral, address, coins); err != nil {
-		return math.Int{}, fmt.Errorf("could not send coins to user wallet: %w", err)
+		return math.Int{}, fmt.Errorf("send coins to user wallet: %w", err)
 	}
 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(

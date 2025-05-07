@@ -15,7 +15,7 @@ import (
 func (k Keeper) GetMarketStats(ctx context.Context, _ *types.GetMarketStatsQuery) (*types.GetMarketStatsResponse, error) {
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get reference denom: %w", err)
+		return nil, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	var (
@@ -139,7 +139,7 @@ func (k Keeper) getDepositUserStats(ctx context.Context, address string) (math.L
 
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("could not get reference denom: %w", err)
+		return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	var (
@@ -195,7 +195,7 @@ func (k Keeper) getUserLoansSumBase(ctx context.Context, address string) (math.L
 func (k Keeper) getUserLoansSumUSD(ctx context.Context, address string) (math.LegacyDec, math.LegacyDec, error) {
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("could not get reference denom: %w", err)
+		return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	var (
@@ -228,7 +228,7 @@ func (k Keeper) getUserLoansSumUSD(ctx context.Context, address string) (math.Le
 func (k Keeper) getCollateralUserSumUSD(ctx context.Context, address string) (math.LegacyDec, math.LegacyDec, error) {
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("could not get reference denom: %w", err)
+		return math.LegacyDec{}, math.LegacyDec{}, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	var (

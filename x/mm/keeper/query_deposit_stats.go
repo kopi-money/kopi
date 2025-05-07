@@ -15,7 +15,7 @@ import (
 func (k Keeper) GetDepositStats(ctx context.Context, _ *types.GetDepositStatsQuery) (*types.GetDepositStatsResponse, error) {
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get reference denom: %w", err)
+		return nil, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	var (
@@ -121,12 +121,10 @@ func (k Keeper) GetDepositStats(ctx context.Context, _ *types.GetDepositStatsQue
 	}, nil
 }
 
-func (k Keeper) GetDepositUserStats(goCtx context.Context, req *types.GetDepositUserStatsQuery) (*types.GetDepositUserStatsResponse, error) {
+func (k Keeper) GetDepositUserStats(ctx context.Context, req *types.GetDepositUserStatsQuery) (*types.GetDepositUserStatsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	acc, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
@@ -135,7 +133,7 @@ func (k Keeper) GetDepositUserStats(goCtx context.Context, req *types.GetDeposit
 
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get reference denom: %w", err)
+		return nil, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	var (
@@ -226,7 +224,7 @@ func (k Keeper) GetDepositUserDenomStats(ctx context.Context, req *types.GetDepo
 
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get reference denom: %w", err)
+		return nil, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	cAsset, err := k.DenomKeeper.GetCAssetByBaseName(ctx, req.Denom)

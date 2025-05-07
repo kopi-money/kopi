@@ -17,7 +17,7 @@ import (
 var _ protoreflect.List = (*_GenesisState_2_list)(nil)
 
 type _GenesisState_2_list struct {
-	list *[]*Loans
+	list *[]*GenesisLoans
 }
 
 func (x *_GenesisState_2_list) Len() int {
@@ -33,18 +33,18 @@ func (x *_GenesisState_2_list) Get(i int) protoreflect.Value {
 
 func (x *_GenesisState_2_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Loans)
+	concreteValue := valueUnwrapped.Interface().(*GenesisLoans)
 	(*x.list)[i] = concreteValue
 }
 
 func (x *_GenesisState_2_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Loans)
+	concreteValue := valueUnwrapped.Interface().(*GenesisLoans)
 	*x.list = append(*x.list, concreteValue)
 }
 
 func (x *_GenesisState_2_list) AppendMutable() protoreflect.Value {
-	v := new(Loans)
+	v := new(GenesisLoans)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
@@ -57,7 +57,7 @@ func (x *_GenesisState_2_list) Truncate(n int) {
 }
 
 func (x *_GenesisState_2_list) NewElement() protoreflect.Value {
-	v := new(Loans)
+	v := new(GenesisLoans)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
@@ -68,7 +68,7 @@ func (x *_GenesisState_2_list) IsValid() bool {
 var _ protoreflect.List = (*_GenesisState_3_list)(nil)
 
 type _GenesisState_3_list struct {
-	list *[]*Collaterals
+	list *[]*GenesisCollateral
 }
 
 func (x *_GenesisState_3_list) Len() int {
@@ -84,18 +84,18 @@ func (x *_GenesisState_3_list) Get(i int) protoreflect.Value {
 
 func (x *_GenesisState_3_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Collaterals)
+	concreteValue := valueUnwrapped.Interface().(*GenesisCollateral)
 	(*x.list)[i] = concreteValue
 }
 
 func (x *_GenesisState_3_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Collaterals)
+	concreteValue := valueUnwrapped.Interface().(*GenesisCollateral)
 	*x.list = append(*x.list, concreteValue)
 }
 
 func (x *_GenesisState_3_list) AppendMutable() protoreflect.Value {
-	v := new(Collaterals)
+	v := new(GenesisCollateral)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
@@ -108,7 +108,7 @@ func (x *_GenesisState_3_list) Truncate(n int) {
 }
 
 func (x *_GenesisState_3_list) NewElement() protoreflect.Value {
-	v := new(Collaterals)
+	v := new(GenesisCollateral)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
@@ -119,7 +119,7 @@ func (x *_GenesisState_3_list) IsValid() bool {
 var _ protoreflect.List = (*_GenesisState_4_list)(nil)
 
 type _GenesisState_4_list struct {
-	list *[]*DenomRedemption
+	list *[]*GenesisRedemption
 }
 
 func (x *_GenesisState_4_list) Len() int {
@@ -135,18 +135,18 @@ func (x *_GenesisState_4_list) Get(i int) protoreflect.Value {
 
 func (x *_GenesisState_4_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*DenomRedemption)
+	concreteValue := valueUnwrapped.Interface().(*GenesisRedemption)
 	(*x.list)[i] = concreteValue
 }
 
 func (x *_GenesisState_4_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*DenomRedemption)
+	concreteValue := valueUnwrapped.Interface().(*GenesisRedemption)
 	*x.list = append(*x.list, concreteValue)
 }
 
 func (x *_GenesisState_4_list) AppendMutable() protoreflect.Value {
-	v := new(DenomRedemption)
+	v := new(GenesisRedemption)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
@@ -159,7 +159,7 @@ func (x *_GenesisState_4_list) Truncate(n int) {
 }
 
 func (x *_GenesisState_4_list) NewElement() protoreflect.Value {
-	v := new(DenomRedemption)
+	v := new(GenesisRedemption)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
@@ -168,12 +168,12 @@ func (x *_GenesisState_4_list) IsValid() bool {
 }
 
 var (
-	md_GenesisState                   protoreflect.MessageDescriptor
-	fd_GenesisState_params            protoreflect.FieldDescriptor
-	fd_GenesisState_loans             protoreflect.FieldDescriptor
-	fd_GenesisState_collaterals       protoreflect.FieldDescriptor
-	fd_GenesisState_denom_redemptions protoreflect.FieldDescriptor
-	fd_GenesisState_next_loan_index   protoreflect.FieldDescriptor
+	md_GenesisState                 protoreflect.MessageDescriptor
+	fd_GenesisState_params          protoreflect.FieldDescriptor
+	fd_GenesisState_loans           protoreflect.FieldDescriptor
+	fd_GenesisState_collaterals     protoreflect.FieldDescriptor
+	fd_GenesisState_redemptions     protoreflect.FieldDescriptor
+	fd_GenesisState_next_loan_index protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -182,7 +182,7 @@ func init() {
 	fd_GenesisState_params = md_GenesisState.Fields().ByName("params")
 	fd_GenesisState_loans = md_GenesisState.Fields().ByName("loans")
 	fd_GenesisState_collaterals = md_GenesisState.Fields().ByName("collaterals")
-	fd_GenesisState_denom_redemptions = md_GenesisState.Fields().ByName("denom_redemptions")
+	fd_GenesisState_redemptions = md_GenesisState.Fields().ByName("redemptions")
 	fd_GenesisState_next_loan_index = md_GenesisState.Fields().ByName("next_loan_index")
 }
 
@@ -269,9 +269,9 @@ func (x *fastReflection_GenesisState) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
-	if len(x.DenomRedemptions) != 0 {
-		value := protoreflect.ValueOfList(&_GenesisState_4_list{list: &x.DenomRedemptions})
-		if !f(fd_GenesisState_denom_redemptions, value) {
+	if len(x.Redemptions) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_4_list{list: &x.Redemptions})
+		if !f(fd_GenesisState_redemptions, value) {
 			return
 		}
 	}
@@ -302,8 +302,8 @@ func (x *fastReflection_GenesisState) Has(fd protoreflect.FieldDescriptor) bool 
 		return len(x.Loans) != 0
 	case "kopi.mm.GenesisState.collaterals":
 		return len(x.Collaterals) != 0
-	case "kopi.mm.GenesisState.denom_redemptions":
-		return len(x.DenomRedemptions) != 0
+	case "kopi.mm.GenesisState.redemptions":
+		return len(x.Redemptions) != 0
 	case "kopi.mm.GenesisState.next_loan_index":
 		return x.NextLoanIndex != uint64(0)
 	default:
@@ -328,8 +328,8 @@ func (x *fastReflection_GenesisState) Clear(fd protoreflect.FieldDescriptor) {
 		x.Loans = nil
 	case "kopi.mm.GenesisState.collaterals":
 		x.Collaterals = nil
-	case "kopi.mm.GenesisState.denom_redemptions":
-		x.DenomRedemptions = nil
+	case "kopi.mm.GenesisState.redemptions":
+		x.Redemptions = nil
 	case "kopi.mm.GenesisState.next_loan_index":
 		x.NextLoanIndex = uint64(0)
 	default:
@@ -363,11 +363,11 @@ func (x *fastReflection_GenesisState) Get(descriptor protoreflect.FieldDescripto
 		}
 		listValue := &_GenesisState_3_list{list: &x.Collaterals}
 		return protoreflect.ValueOfList(listValue)
-	case "kopi.mm.GenesisState.denom_redemptions":
-		if len(x.DenomRedemptions) == 0 {
+	case "kopi.mm.GenesisState.redemptions":
+		if len(x.Redemptions) == 0 {
 			return protoreflect.ValueOfList(&_GenesisState_4_list{})
 		}
-		listValue := &_GenesisState_4_list{list: &x.DenomRedemptions}
+		listValue := &_GenesisState_4_list{list: &x.Redemptions}
 		return protoreflect.ValueOfList(listValue)
 	case "kopi.mm.GenesisState.next_loan_index":
 		value := x.NextLoanIndex
@@ -402,10 +402,10 @@ func (x *fastReflection_GenesisState) Set(fd protoreflect.FieldDescriptor, value
 		lv := value.List()
 		clv := lv.(*_GenesisState_3_list)
 		x.Collaterals = *clv.list
-	case "kopi.mm.GenesisState.denom_redemptions":
+	case "kopi.mm.GenesisState.redemptions":
 		lv := value.List()
 		clv := lv.(*_GenesisState_4_list)
-		x.DenomRedemptions = *clv.list
+		x.Redemptions = *clv.list
 	case "kopi.mm.GenesisState.next_loan_index":
 		x.NextLoanIndex = value.Uint()
 	default:
@@ -435,21 +435,21 @@ func (x *fastReflection_GenesisState) Mutable(fd protoreflect.FieldDescriptor) p
 		return protoreflect.ValueOfMessage(x.Params.ProtoReflect())
 	case "kopi.mm.GenesisState.loans":
 		if x.Loans == nil {
-			x.Loans = []*Loans{}
+			x.Loans = []*GenesisLoans{}
 		}
 		value := &_GenesisState_2_list{list: &x.Loans}
 		return protoreflect.ValueOfList(value)
 	case "kopi.mm.GenesisState.collaterals":
 		if x.Collaterals == nil {
-			x.Collaterals = []*Collaterals{}
+			x.Collaterals = []*GenesisCollateral{}
 		}
 		value := &_GenesisState_3_list{list: &x.Collaterals}
 		return protoreflect.ValueOfList(value)
-	case "kopi.mm.GenesisState.denom_redemptions":
-		if x.DenomRedemptions == nil {
-			x.DenomRedemptions = []*DenomRedemption{}
+	case "kopi.mm.GenesisState.redemptions":
+		if x.Redemptions == nil {
+			x.Redemptions = []*GenesisRedemption{}
 		}
-		value := &_GenesisState_4_list{list: &x.DenomRedemptions}
+		value := &_GenesisState_4_list{list: &x.Redemptions}
 		return protoreflect.ValueOfList(value)
 	case "kopi.mm.GenesisState.next_loan_index":
 		panic(fmt.Errorf("field next_loan_index of message kopi.mm.GenesisState is not mutable"))
@@ -470,13 +470,13 @@ func (x *fastReflection_GenesisState) NewField(fd protoreflect.FieldDescriptor) 
 		m := new(Params)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
 	case "kopi.mm.GenesisState.loans":
-		list := []*Loans{}
+		list := []*GenesisLoans{}
 		return protoreflect.ValueOfList(&_GenesisState_2_list{list: &list})
 	case "kopi.mm.GenesisState.collaterals":
-		list := []*Collaterals{}
+		list := []*GenesisCollateral{}
 		return protoreflect.ValueOfList(&_GenesisState_3_list{list: &list})
-	case "kopi.mm.GenesisState.denom_redemptions":
-		list := []*DenomRedemption{}
+	case "kopi.mm.GenesisState.redemptions":
+		list := []*GenesisRedemption{}
 		return protoreflect.ValueOfList(&_GenesisState_4_list{list: &list})
 	case "kopi.mm.GenesisState.next_loan_index":
 		return protoreflect.ValueOfUint64(uint64(0))
@@ -565,8 +565,8 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
-		if len(x.DenomRedemptions) > 0 {
-			for _, e := range x.DenomRedemptions {
+		if len(x.Redemptions) > 0 {
+			for _, e := range x.Redemptions {
 				l = options.Size(e)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
@@ -608,9 +608,9 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x28
 		}
-		if len(x.DenomRedemptions) > 0 {
-			for iNdEx := len(x.DenomRedemptions) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.DenomRedemptions[iNdEx])
+		if len(x.Redemptions) > 0 {
+			for iNdEx := len(x.Redemptions) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.Redemptions[iNdEx])
 				if err != nil {
 					return protoiface.MarshalOutput{
 						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -784,7 +784,7 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Loans = append(x.Loans, &Loans{})
+				x.Loans = append(x.Loans, &GenesisLoans{})
 				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Loans[len(x.Loans)-1]); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
@@ -818,14 +818,14 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Collaterals = append(x.Collaterals, &Collaterals{})
+				x.Collaterals = append(x.Collaterals, &GenesisCollateral{})
 				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Collaterals[len(x.Collaterals)-1]); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
 			case 4:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DenomRedemptions", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Redemptions", wireType)
 				}
 				var msglen int
 				for shift := uint(0); ; shift += 7 {
@@ -852,8 +852,8 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.DenomRedemptions = append(x.DenomRedemptions, &DenomRedemption{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.DenomRedemptions[len(x.DenomRedemptions)-1]); err != nil {
+				x.Redemptions = append(x.Redemptions, &GenesisRedemption{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Redemptions[len(x.Redemptions)-1]); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
@@ -931,11 +931,11 @@ type GenesisState struct {
 	unknownFields protoimpl.UnknownFields
 
 	// params defines all the parameters of the module.
-	Params           *Params            `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
-	Loans            []*Loans           `protobuf:"bytes,2,rep,name=loans,proto3" json:"loans,omitempty"`
-	Collaterals      []*Collaterals     `protobuf:"bytes,3,rep,name=collaterals,proto3" json:"collaterals,omitempty"`
-	DenomRedemptions []*DenomRedemption `protobuf:"bytes,4,rep,name=denom_redemptions,json=denomRedemptions,proto3" json:"denom_redemptions,omitempty"`
-	NextLoanIndex    uint64             `protobuf:"varint,5,opt,name=next_loan_index,json=nextLoanIndex,proto3" json:"next_loan_index,omitempty"`
+	Params        *Params              `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
+	Loans         []*GenesisLoans      `protobuf:"bytes,2,rep,name=loans,proto3" json:"loans,omitempty"`
+	Collaterals   []*GenesisCollateral `protobuf:"bytes,3,rep,name=collaterals,proto3" json:"collaterals,omitempty"`
+	Redemptions   []*GenesisRedemption `protobuf:"bytes,4,rep,name=redemptions,proto3" json:"redemptions,omitempty"`
+	NextLoanIndex uint64               `protobuf:"varint,5,opt,name=next_loan_index,json=nextLoanIndex,proto3" json:"next_loan_index,omitempty"`
 }
 
 func (x *GenesisState) Reset() {
@@ -965,23 +965,23 @@ func (x *GenesisState) GetParams() *Params {
 	return nil
 }
 
-func (x *GenesisState) GetLoans() []*Loans {
+func (x *GenesisState) GetLoans() []*GenesisLoans {
 	if x != nil {
 		return x.Loans
 	}
 	return nil
 }
 
-func (x *GenesisState) GetCollaterals() []*Collaterals {
+func (x *GenesisState) GetCollaterals() []*GenesisCollateral {
 	if x != nil {
 		return x.Collaterals
 	}
 	return nil
 }
 
-func (x *GenesisState) GetDenomRedemptions() []*DenomRedemption {
+func (x *GenesisState) GetRedemptions() []*GenesisRedemption {
 	if x != nil {
-		return x.DenomRedemptions
+		return x.Redemptions
 	}
 	return nil
 }
@@ -1006,33 +1006,33 @@ var file_kopi_mm_genesis_proto_rawDesc = []byte{
 	0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x6d,
 	0x6d, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x19,
 	0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x6d, 0x6d, 0x2f, 0x72, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69,
-	0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xa1, 0x02, 0x0a, 0x0c, 0x47, 0x65,
+	0x6f, 0x6e, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xa5, 0x02, 0x0a, 0x0c, 0x47, 0x65,
 	0x6e, 0x65, 0x73, 0x69, 0x73, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x32, 0x0a, 0x06, 0x70, 0x61,
 	0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x6b, 0x6f, 0x70,
 	0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x09, 0xc8, 0xde, 0x1f,
-	0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x2a,
-	0x0a, 0x05, 0x6c, 0x6f, 0x61, 0x6e, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0e, 0x2e,
-	0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x4c, 0x6f, 0x61, 0x6e, 0x73, 0x42, 0x04, 0xc8,
-	0xde, 0x1f, 0x00, 0x52, 0x05, 0x6c, 0x6f, 0x61, 0x6e, 0x73, 0x12, 0x3c, 0x0a, 0x0b, 0x63, 0x6f,
-	0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32,
-	0x14, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74,
-	0x65, 0x72, 0x61, 0x6c, 0x73, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0b, 0x63, 0x6f, 0x6c,
-	0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x73, 0x12, 0x4b, 0x0a, 0x11, 0x64, 0x65, 0x6e, 0x6f,
-	0x6d, 0x5f, 0x72, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x04, 0x20,
-	0x03, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x44, 0x65,
-	0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x04, 0xc8,
-	0xde, 0x1f, 0x00, 0x52, 0x10, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x52, 0x65, 0x64, 0x65, 0x6d, 0x70,
-	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x26, 0x0a, 0x0f, 0x6e, 0x65, 0x78, 0x74, 0x5f, 0x6c, 0x6f,
-	0x61, 0x6e, 0x5f, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x05, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0d,
-	0x6e, 0x65, 0x78, 0x74, 0x4c, 0x6f, 0x61, 0x6e, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x42, 0x72, 0x0a,
-	0x0b, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x42, 0x0c, 0x47, 0x65,
-	0x6e, 0x65, 0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x18, 0x63, 0x6f,
-	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b,
-	0x6f, 0x70, 0x69, 0x2f, 0x6d, 0x6d, 0xa2, 0x02, 0x03, 0x4b, 0x4d, 0x58, 0xaa, 0x02, 0x07, 0x4b,
-	0x6f, 0x70, 0x69, 0x2e, 0x4d, 0x6d, 0xca, 0x02, 0x07, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x4d, 0x6d,
-	0xe2, 0x02, 0x13, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x4d, 0x6d, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65,
-	0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x4d,
-	0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x31,
+	0x0a, 0x05, 0x6c, 0x6f, 0x61, 0x6e, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x15, 0x2e,
+	0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x4c,
+	0x6f, 0x61, 0x6e, 0x73, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x05, 0x6c, 0x6f, 0x61, 0x6e,
+	0x73, 0x12, 0x42, 0x0a, 0x0b, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72, 0x61, 0x6c, 0x73,
+	0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d,
+	0x2e, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x43, 0x6f, 0x6c, 0x6c, 0x61, 0x74, 0x65, 0x72,
+	0x61, 0x6c, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0b, 0x63, 0x6f, 0x6c, 0x6c, 0x61, 0x74,
+	0x65, 0x72, 0x61, 0x6c, 0x73, 0x12, 0x42, 0x0a, 0x0b, 0x72, 0x65, 0x64, 0x65, 0x6d, 0x70, 0x74,
+	0x69, 0x6f, 0x6e, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x6b, 0x6f, 0x70,
+	0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x52, 0x65, 0x64, 0x65,
+	0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0b, 0x72, 0x65,
+	0x64, 0x65, 0x6d, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x26, 0x0a, 0x0f, 0x6e, 0x65, 0x78,
+	0x74, 0x5f, 0x6c, 0x6f, 0x61, 0x6e, 0x5f, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x05, 0x20, 0x01,
+	0x28, 0x04, 0x52, 0x0d, 0x6e, 0x65, 0x78, 0x74, 0x4c, 0x6f, 0x61, 0x6e, 0x49, 0x6e, 0x64, 0x65,
+	0x78, 0x42, 0x72, 0x0a, 0x0b, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d,
+	0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01,
+	0x5a, 0x18, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61,
+	0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x6d, 0x6d, 0xa2, 0x02, 0x03, 0x4b, 0x4d, 0x58,
+	0xaa, 0x02, 0x07, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x4d, 0x6d, 0xca, 0x02, 0x07, 0x4b, 0x6f, 0x70,
+	0x69, 0x5c, 0x4d, 0x6d, 0xe2, 0x02, 0x13, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x4d, 0x6d, 0x5c, 0x47,
+	0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x08, 0x4b, 0x6f, 0x70,
+	0x69, 0x3a, 0x3a, 0x4d, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1049,17 +1049,17 @@ func file_kopi_mm_genesis_proto_rawDescGZIP() []byte {
 
 var file_kopi_mm_genesis_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_kopi_mm_genesis_proto_goTypes = []interface{}{
-	(*GenesisState)(nil),    // 0: kopi.mm.GenesisState
-	(*Params)(nil),          // 1: kopi.mm.Params
-	(*Loans)(nil),           // 2: kopi.mm.Loans
-	(*Collaterals)(nil),     // 3: kopi.mm.Collaterals
-	(*DenomRedemption)(nil), // 4: kopi.mm.DenomRedemption
+	(*GenesisState)(nil),      // 0: kopi.mm.GenesisState
+	(*Params)(nil),            // 1: kopi.mm.Params
+	(*GenesisLoans)(nil),      // 2: kopi.mm.GenesisLoans
+	(*GenesisCollateral)(nil), // 3: kopi.mm.GenesisCollateral
+	(*GenesisRedemption)(nil), // 4: kopi.mm.GenesisRedemption
 }
 var file_kopi_mm_genesis_proto_depIdxs = []int32{
 	1, // 0: kopi.mm.GenesisState.params:type_name -> kopi.mm.Params
-	2, // 1: kopi.mm.GenesisState.loans:type_name -> kopi.mm.Loans
-	3, // 2: kopi.mm.GenesisState.collaterals:type_name -> kopi.mm.Collaterals
-	4, // 3: kopi.mm.GenesisState.denom_redemptions:type_name -> kopi.mm.DenomRedemption
+	2, // 1: kopi.mm.GenesisState.loans:type_name -> kopi.mm.GenesisLoans
+	3, // 2: kopi.mm.GenesisState.collaterals:type_name -> kopi.mm.GenesisCollateral
+	4, // 3: kopi.mm.GenesisState.redemptions:type_name -> kopi.mm.GenesisRedemption
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name

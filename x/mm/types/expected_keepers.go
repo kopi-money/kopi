@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+	"github.com/kopi-money/kopi/trading"
 
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/cache"
@@ -58,10 +59,10 @@ type DenomKeeper interface {
 type DexKeeper interface {
 	cache.Cache
 
-	ExecuteBuy(cctx dextypes.TradeContext) (dextypes.TradeResult, error)
-	GetDenomValue(ctx context.Context, denom string) (math.LegacyDec, error)
+	ExecuteBuy(cctx dextypes.TradeContext) (trading.TradeResult, error)
 	GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int
+	GetDenomLiquidityValueInBase(ctx context.Context, denom string) (math.LegacyDec, error)
 	GetAllOrdersByAddress(ctx context.Context, address string) []dextypes.Order
 	NewOrdersCaches(ctx context.Context) *dextypes.OrdersCaches
-	SimulateSell(ctx dextypes.TradeContext) (dextypes.TradeSimulationResult, error)
+	SimulateSell(ctx context.Context, amount math.Int, denomGiving, denomReceiving string) (dextypes.TradeSimulationResult, error)
 }

@@ -18,12 +18,12 @@ func (k Keeper) GetCreditLineUsage(ctx context.Context, req *types.GetCreditLine
 
 	userLoanSum, _, err := k.getUserLoansSumUSD(ctx, req.Address)
 	if err != nil {
-		return nil, fmt.Errorf("could not get user loan sum: %w", err)
+		return nil, fmt.Errorf("get user loan sum: %w", err)
 	}
 
 	_, collateralUserSum, err := k.getCollateralUserSumUSD(ctx, req.Address)
 	if err != nil {
-		return nil, fmt.Errorf("could not get user loan sum: %w", err)
+		return nil, fmt.Errorf("get user loan sum: %w", err)
 	}
 
 	creditLineUsage := math.LegacyZeroDec()
@@ -39,7 +39,7 @@ func (k Keeper) GetCreditLineUsage(ctx context.Context, req *types.GetCreditLine
 func (k Keeper) CalculateCreditLineUsage(ctx context.Context, address string) (math.LegacyDec, error) {
 	_, collateralUserSum, err := k.getCollateralUserSumUSD(ctx, address)
 	if err != nil {
-		return math.LegacyDec{}, fmt.Errorf("could not get user loan sum: %w", err)
+		return math.LegacyDec{}, fmt.Errorf("get user loan sum: %w", err)
 	}
 
 	if !collateralUserSum.IsPositive() {
@@ -48,7 +48,7 @@ func (k Keeper) CalculateCreditLineUsage(ctx context.Context, address string) (m
 
 	userLoanSum, _, err := k.getUserLoansSumUSD(ctx, address)
 	if err != nil {
-		return math.LegacyDec{}, fmt.Errorf("could not get user loan sum: %w", err)
+		return math.LegacyDec{}, fmt.Errorf("get user loan sum: %w", err)
 	}
 
 	return userLoanSum.Quo(collateralUserSum), nil // C

@@ -24,7 +24,7 @@ func (k Keeper) FullBalance(ctx context.Context, req *types.QueryFullBalanceRequ
 
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get reference denom: %w", err)
+		return nil, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	var (

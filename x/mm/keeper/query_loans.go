@@ -22,7 +22,7 @@ func (k Keeper) GetLoansByDenom(ctx context.Context, req *types.GetLoansByDenomQ
 
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get reference denom: %w", err)
+		return nil, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	var (
@@ -62,7 +62,7 @@ func (k Keeper) GetLoansByDenom(ctx context.Context, req *types.GetLoansByDenomQ
 func (k Keeper) GetLoansStats(ctx context.Context, _ *types.GetLoanStatsQuery) (*types.GetLoanStatsResponse, error) {
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get reference denom: %w", err)
+		return nil, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	var (
@@ -122,7 +122,7 @@ func (k Keeper) GetUserLoans(ctx context.Context, req *types.GetUserLoansQuery) 
 
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get reference denom: %w", err)
+		return nil, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	var (
@@ -213,7 +213,7 @@ func (k Keeper) GetNumLoans(ctx context.Context, _ *types.GetNumLoansQuery) (*ty
 func (k Keeper) GetValueLoans(ctx context.Context, _ *types.GetValueLoansQuery) (*types.GetValueLoansResponse, error) {
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("could not get reference denom: %w", err)
+		return nil, fmt.Errorf("get reference denom: %w", err)
 	}
 
 	valueUSD := math.LegacyZeroDec()
@@ -223,7 +223,7 @@ func (k Keeper) GetValueLoans(ctx context.Context, _ *types.GetValueLoansQuery) 
 		var value math.LegacyDec
 		value, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, loanSum.LoanSum)
 		if err != nil {
-			return nil, fmt.Errorf("could not get value in usd: %w", err)
+			return nil, fmt.Errorf("get value in usd: %w", err)
 		}
 
 		valueUSD = valueUSD.Add(value)
@@ -251,12 +251,12 @@ func (k Keeper) GetAvailableToBorrow(ctx context.Context, req *types.GetAvailabl
 
 	cAsset, err := k.DenomKeeper.GetCAssetByBaseName(ctx, req.Denom)
 	if err != nil {
-		return nil, fmt.Errorf("could not get c asset asset: %w", err)
+		return nil, fmt.Errorf("get c asset asset: %w", err)
 	}
 
 	availableByCollateral, err := k.CalculateBorrowableAmount(ctx, req.Address, req.Denom)
 	if err != nil {
-		return nil, fmt.Errorf("could not calculate borrowable amount: %w", err)
+		return nil, fmt.Errorf("calculate borrowable amount: %w", err)
 	}
 
 	availableBorrowLimit := k.availableToBorrowForDenom(ctx, cAsset)

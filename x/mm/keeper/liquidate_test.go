@@ -48,7 +48,6 @@ func TestLiquidate1(t *testing.T) {
 		DenomGiving:    constants.BaseCurrency,
 		DenomReceiving: constants.KUSD,
 		Amount:         "10_000_000000",
-		MaxPrice:       "",
 	})
 	require.NoError(t, err)
 

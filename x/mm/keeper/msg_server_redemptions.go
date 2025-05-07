@@ -37,37 +37,32 @@ func (k msgServer) CreateRedemptionRequest(ctx context.Context, msg *types.MsgCr
 }
 
 func (k Keeper) CreateRedemptionRequest(ctx context.Context, address sdk.AccAddress, cAsset denomtypes.CAsset, amount math.Int, fee math.LegacyDec) error {
-	sdkCtx := sdk.UnwrapSDKContext(ctx)
-
-	_, has := k.redemptions.Get(ctx, cAsset.BaseDexDenom, address.String())
-	if has {
+	if _, has := k.redemptions.Get(ctx, cAsset.BaseDexDenom, address.String()); has {
 		return types.ErrRedemptionRequestAlreadyExists
 
 	}
 
-	spendable := k.BankKeeper.SpendableCoin(ctx, address, cAsset.DexDenom).Amount
-	if spendable.LT(amount) {
-		k.Logger().Info(fmt.Sprintf("%v < %v", spendable.Int64(), amount.Int64()))
+	if k.BankKeeper.SpendableCoin(ctx, address, cAsset.DexDenom).Amount.LT(amount) {
 		return types.ErrNotEnoughFunds
 	}
 
 	coins := sdk.NewCoins(sdk.NewCoin(cAsset.DexDenom, amount))
 	if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, address, types.PoolRedemption, coins); err != nil {
-		return fmt.Errorf("could not send coins from account to module: %w", err)
+		return fmt.Errorf("send coins from account to module: %w", err)
 	}
 
 	redemption := types.Redemption{
-		AddedAt: sdkCtx.BlockHeight(),
+		AddedAt: sdk.UnwrapSDKContext(ctx).BlockHeight(),
 		Address: address.String(),
 		Amount:  amount,
 		Fee:     fee,
 	}
 
 	if err := k.SetRedemption(ctx, cAsset.BaseDexDenom, redemption); err != nil {
-		return fmt.Errorf("could not set redemption request: %w", err)
+		return fmt.Errorf("set redemption request: %w", err)
 	}
 
-	sdkCtx.EventManager().EmitEvent(
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 		sdk.NewEvent("redemption_request_created",
 			sdk.Attribute{Key: "address", Value: address.String()},
 			sdk.Attribute{Key: "denom", Value: cAsset.BaseDexDenom},
@@ -79,9 +74,7 @@ func (k Keeper) CreateRedemptionRequest(ctx context.Context, address sdk.AccAddr
 	return nil
 }
 
-func (k msgServer) CancelRedemptionRequest(goCtx context.Context, msg *types.MsgCancelRedemptionRequest) (*types.Void, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) CancelRedemptionRequest(ctx context.Context, msg *types.MsgCancelRedemptionRequest) (*types.Void, error) {
 	cAsset, err := k.DenomKeeper.GetCAssetByName(ctx, msg.Denom)
 	if err != nil {
 		return nil, err
@@ -100,7 +93,7 @@ func (k msgServer) CancelRedemptionRequest(goCtx context.Context, msg *types.Msg
 
 	k.redemptions.Remove(ctx, cAsset.BaseDexDenom, msg.Creator)
 
-	ctx.EventManager().EmitEvent(
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 		sdk.NewEvent("redemption_request_canceled",
 			sdk.Attribute{Key: "address", Value: msg.Creator},
 			sdk.Attribute{Key: "denom", Value: msg.Denom},
@@ -110,9 +103,7 @@ func (k msgServer) CancelRedemptionRequest(goCtx context.Context, msg *types.Msg
 	return &types.Void{}, nil
 }
 
-func (k msgServer) UpdateRedemptionRequest(goCtx context.Context, msg *types.MsgUpdateRedemptionRequest) (*types.Void, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k msgServer) UpdateRedemptionRequest(ctx context.Context, msg *types.MsgUpdateRedemptionRequest) (*types.Void, error) {
 	fee, err := k.checkFee(ctx, msg.Fee)
 	if err != nil {
 		return nil, fmt.Errorf("invalid fee: %w", err)
@@ -136,7 +127,7 @@ func (k msgServer) UpdateRedemptionRequest(goCtx context.Context, msg *types.Msg
 	address, _ := sdk.AccAddressFromBech32(msg.Creator)
 	coins := sdk.NewCoins(sdk.NewCoin(cAsset.DexDenom, redemption.Amount))
 	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolRedemption, address, coins); err != nil {
-		return nil, fmt.Errorf("could not send coins from redemption pool to user: %w", err)
+		return nil, fmt.Errorf("send coins from redemption pool to user: %w", err)
 	}
 
 	if k.BankKeeper.SpendableCoin(ctx, address, cAsset.DexDenom).Amount.LT(cAssetAmount) {
@@ -145,17 +136,17 @@ func (k msgServer) UpdateRedemptionRequest(goCtx context.Context, msg *types.Msg
 
 	coins = sdk.NewCoins(sdk.NewCoin(cAsset.DexDenom, cAssetAmount))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, address, types.PoolRedemption, coins); err != nil {
-		return nil, fmt.Errorf("could not send coins from user to redemption pool: %w", err)
+		return nil, fmt.Errorf("send coins from user to redemption pool: %w", err)
 	}
 
 	redemption.Fee = fee
 	redemption.Amount = cAssetAmount
 
 	if err = k.SetRedemption(ctx, cAsset.BaseDexDenom, redemption); err != nil {
-		return nil, fmt.Errorf("could not set redemption: %w", err)
+		return nil, fmt.Errorf("set redemption: %w", err)
 	}
 
-	ctx.EventManager().EmitEvent(
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 		sdk.NewEvent("redemption_request_updated",
 			sdk.Attribute{Key: "address", Value: msg.Creator},
 			sdk.Attribute{Key: "denom", Value: msg.Denom},
@@ -181,13 +172,11 @@ func (k Keeper) checkFee(ctx context.Context, priorityStr string) (math.LegacyDe
 		return priority, err
 	}
 
-	minimumFee := k.GetMinimumRedemptionFee(ctx)
-	if priority.LT(minimumFee) {
+	if k.GetMinimumRedemptionFee(ctx).GT(priority) {
 		return priority, types.ErrRedemptionFeeTooLow
 	}
 
-	maximumFee := k.GetMaximumRedemptionFee(ctx)
-	if priority.GT(maximumFee) {
+	if k.GetMaximumRedemptionFee(ctx).LT(priority) {
 		return priority, types.ErrRedemptionFeeTooHigh
 	}
 

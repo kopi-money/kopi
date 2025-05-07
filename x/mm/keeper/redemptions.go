@@ -31,25 +31,6 @@ func (k Keeper) GetRedemptionSum(ctx context.Context, denom string) math.Int {
 	return k.BankKeeper.SpendableCoins(ctx, acc.GetAddress()).AmountOf(denom)
 }
 
-func (k Keeper) GetDenomRedemptions(ctx context.Context) (list []types.DenomRedemption) {
-	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
-		var redemptions []types.Redemption
-
-		iterator := k.RedemptionIterator(ctx, cAsset.BaseDexDenom)
-		for iterator.Valid() {
-			redemption := iterator.GetNext()
-			redemptions = append(redemptions, redemption)
-		}
-
-		list = append(list, types.DenomRedemption{
-			Denom:       cAsset.BaseDexDenom,
-			Redemptions: redemptions,
-		})
-	}
-
-	return
-}
-
 // SetRedemption set a specific withdrawals in the store
 func (k Keeper) updateRedemption(ctx context.Context, denom string, redemption types.Redemption) error {
 	if redemption.Amount.LTE(math.ZeroInt()) {
@@ -57,7 +38,7 @@ func (k Keeper) updateRedemption(ctx context.Context, denom string, redemption t
 		return nil
 	} else {
 		if err := k.SetRedemption(ctx, denom, redemption); err != nil {
-			return fmt.Errorf("could not set redemption: %w", err)
+			return fmt.Errorf("set redemption: %w", err)
 		}
 
 		return nil
@@ -83,7 +64,7 @@ func (k Keeper) removeRedemption(ctx context.Context, denom, address string) {
 func (k Keeper) HandleRedemptions(ctx context.Context) error {
 	for _, CAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		if err := k.handleRedemptionsForCAsset(ctx, CAsset); err != nil {
-			return fmt.Errorf("could not handle withdrawals for CAsset %v: %w", CAsset.DexDenom, err)
+			return fmt.Errorf("handle withdrawals for CAsset %v: %w", CAsset.DexDenom, err)
 		}
 	}
 
@@ -139,7 +120,7 @@ func (k Keeper) handleSingleRedemption(ctx context.Context, cAsset denomtypes.CA
 	// Update the entry and process the payout
 	entry.Amount = entry.Amount.Sub(redemptionAmountCAsset.RoundInt())
 	if err := k.updateRedemption(ctx, cAsset.BaseDexDenom, entry); err != nil {
-		return math.LegacyDec{}, fmt.Errorf("could not update redemption request: %w", err)
+		return math.LegacyDec{}, fmt.Errorf("update redemption request: %w", err)
 	}
 
 	// subtract the priority cost set by the user to be handled with higher priority
@@ -247,4 +228,23 @@ func (k Keeper) handleRedemptionFee(ctx context.Context, cAsset denomtypes.CAsse
 	)
 
 	return nil
+}
+
+func (k Keeper) exportRedemptions(ctx context.Context) (list []types.GenesisRedemption) {
+	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
+		iterator := k.RedemptionIterator(ctx, cAsset.BaseDexDenom)
+		for iterator.Valid() {
+			redemption := iterator.GetNext()
+
+			list = append(list, types.GenesisRedemption{
+				Denom:   cAsset.BaseDexDenom,
+				Address: redemption.Address,
+				AddedAt: redemption.AddedAt,
+				Amount:  redemption.Amount,
+				Fee:     redemption.Fee,
+			})
+		}
+	}
+
+	return
 }

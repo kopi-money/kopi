@@ -1017,83 +1017,83 @@ func (x *fastReflection_GenesisLoan) ProtoMethods() *protoiface.Methods {
 	}
 }
 
-var _ protoreflect.List = (*_Loans_4_list)(nil)
+var _ protoreflect.List = (*_GenesisLoans_4_list)(nil)
 
-type _Loans_4_list struct {
+type _GenesisLoans_4_list struct {
 	list *[]*GenesisLoan
 }
 
-func (x *_Loans_4_list) Len() int {
+func (x *_GenesisLoans_4_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_Loans_4_list) Get(i int) protoreflect.Value {
+func (x *_GenesisLoans_4_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
 }
 
-func (x *_Loans_4_list) Set(i int, value protoreflect.Value) {
+func (x *_GenesisLoans_4_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*GenesisLoan)
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_Loans_4_list) Append(value protoreflect.Value) {
+func (x *_GenesisLoans_4_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*GenesisLoan)
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_Loans_4_list) AppendMutable() protoreflect.Value {
+func (x *_GenesisLoans_4_list) AppendMutable() protoreflect.Value {
 	v := new(GenesisLoan)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_Loans_4_list) Truncate(n int) {
+func (x *_GenesisLoans_4_list) Truncate(n int) {
 	for i := n; i < len(*x.list); i++ {
 		(*x.list)[i] = nil
 	}
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_Loans_4_list) NewElement() protoreflect.Value {
+func (x *_GenesisLoans_4_list) NewElement() protoreflect.Value {
 	v := new(GenesisLoan)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_Loans_4_list) IsValid() bool {
+func (x *_GenesisLoans_4_list) IsValid() bool {
 	return x.list != nil
 }
 
 var (
-	md_Loans            protoreflect.MessageDescriptor
-	fd_Loans_denom      protoreflect.FieldDescriptor
-	fd_Loans_loan_sum   protoreflect.FieldDescriptor
-	fd_Loans_weight_sum protoreflect.FieldDescriptor
-	fd_Loans_loans      protoreflect.FieldDescriptor
+	md_GenesisLoans            protoreflect.MessageDescriptor
+	fd_GenesisLoans_denom      protoreflect.FieldDescriptor
+	fd_GenesisLoans_loan_sum   protoreflect.FieldDescriptor
+	fd_GenesisLoans_weight_sum protoreflect.FieldDescriptor
+	fd_GenesisLoans_loans      protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_kopi_mm_loans_proto_init()
-	md_Loans = File_kopi_mm_loans_proto.Messages().ByName("Loans")
-	fd_Loans_denom = md_Loans.Fields().ByName("denom")
-	fd_Loans_loan_sum = md_Loans.Fields().ByName("loan_sum")
-	fd_Loans_weight_sum = md_Loans.Fields().ByName("weight_sum")
-	fd_Loans_loans = md_Loans.Fields().ByName("loans")
+	md_GenesisLoans = File_kopi_mm_loans_proto.Messages().ByName("GenesisLoans")
+	fd_GenesisLoans_denom = md_GenesisLoans.Fields().ByName("denom")
+	fd_GenesisLoans_loan_sum = md_GenesisLoans.Fields().ByName("loan_sum")
+	fd_GenesisLoans_weight_sum = md_GenesisLoans.Fields().ByName("weight_sum")
+	fd_GenesisLoans_loans = md_GenesisLoans.Fields().ByName("loans")
 }
 
-var _ protoreflect.Message = (*fastReflection_Loans)(nil)
+var _ protoreflect.Message = (*fastReflection_GenesisLoans)(nil)
 
-type fastReflection_Loans Loans
+type fastReflection_GenesisLoans GenesisLoans
 
-func (x *Loans) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_Loans)(x)
+func (x *GenesisLoans) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_GenesisLoans)(x)
 }
 
-func (x *Loans) slowProtoReflect() protoreflect.Message {
+func (x *GenesisLoans) slowProtoReflect() protoreflect.Message {
 	mi := &file_kopi_mm_loans_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1105,43 +1105,43 @@ func (x *Loans) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Loans_messageType fastReflection_Loans_messageType
-var _ protoreflect.MessageType = fastReflection_Loans_messageType{}
+var _fastReflection_GenesisLoans_messageType fastReflection_GenesisLoans_messageType
+var _ protoreflect.MessageType = fastReflection_GenesisLoans_messageType{}
 
-type fastReflection_Loans_messageType struct{}
+type fastReflection_GenesisLoans_messageType struct{}
 
-func (x fastReflection_Loans_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_Loans)(nil)
+func (x fastReflection_GenesisLoans_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_GenesisLoans)(nil)
 }
-func (x fastReflection_Loans_messageType) New() protoreflect.Message {
-	return new(fastReflection_Loans)
+func (x fastReflection_GenesisLoans_messageType) New() protoreflect.Message {
+	return new(fastReflection_GenesisLoans)
 }
-func (x fastReflection_Loans_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_Loans
+func (x fastReflection_GenesisLoans_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_GenesisLoans
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_Loans) Descriptor() protoreflect.MessageDescriptor {
-	return md_Loans
+func (x *fastReflection_GenesisLoans) Descriptor() protoreflect.MessageDescriptor {
+	return md_GenesisLoans
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_Loans) Type() protoreflect.MessageType {
-	return _fastReflection_Loans_messageType
+func (x *fastReflection_GenesisLoans) Type() protoreflect.MessageType {
+	return _fastReflection_GenesisLoans_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_Loans) New() protoreflect.Message {
-	return new(fastReflection_Loans)
+func (x *fastReflection_GenesisLoans) New() protoreflect.Message {
+	return new(fastReflection_GenesisLoans)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_Loans) Interface() protoreflect.ProtoMessage {
-	return (*Loans)(x)
+func (x *fastReflection_GenesisLoans) Interface() protoreflect.ProtoMessage {
+	return (*GenesisLoans)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -1149,28 +1149,28 @@ func (x *fastReflection_Loans) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_Loans) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_GenesisLoans) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Denom != "" {
 		value := protoreflect.ValueOfString(x.Denom)
-		if !f(fd_Loans_denom, value) {
+		if !f(fd_GenesisLoans_denom, value) {
 			return
 		}
 	}
 	if len(x.LoanSum) != 0 {
 		value := protoreflect.ValueOfBytes(x.LoanSum)
-		if !f(fd_Loans_loan_sum, value) {
+		if !f(fd_GenesisLoans_loan_sum, value) {
 			return
 		}
 	}
 	if len(x.WeightSum) != 0 {
 		value := protoreflect.ValueOfBytes(x.WeightSum)
-		if !f(fd_Loans_weight_sum, value) {
+		if !f(fd_GenesisLoans_weight_sum, value) {
 			return
 		}
 	}
 	if len(x.Loans) != 0 {
-		value := protoreflect.ValueOfList(&_Loans_4_list{list: &x.Loans})
-		if !f(fd_Loans_loans, value) {
+		value := protoreflect.ValueOfList(&_GenesisLoans_4_list{list: &x.Loans})
+		if !f(fd_GenesisLoans_loans, value) {
 			return
 		}
 	}
@@ -1187,21 +1187,21 @@ func (x *fastReflection_Loans) Range(f func(protoreflect.FieldDescriptor, protor
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_Loans) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_GenesisLoans) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "kopi.mm.Loans.denom":
+	case "kopi.mm.GenesisLoans.denom":
 		return x.Denom != ""
-	case "kopi.mm.Loans.loan_sum":
+	case "kopi.mm.GenesisLoans.loan_sum":
 		return len(x.LoanSum) != 0
-	case "kopi.mm.Loans.weight_sum":
+	case "kopi.mm.GenesisLoans.weight_sum":
 		return len(x.WeightSum) != 0
-	case "kopi.mm.Loans.loans":
+	case "kopi.mm.GenesisLoans.loans":
 		return len(x.Loans) != 0
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.Loans"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.GenesisLoans"))
 		}
-		panic(fmt.Errorf("message kopi.mm.Loans does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message kopi.mm.GenesisLoans does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1211,21 +1211,21 @@ func (x *fastReflection_Loans) Has(fd protoreflect.FieldDescriptor) bool {
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Loans) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_GenesisLoans) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "kopi.mm.Loans.denom":
+	case "kopi.mm.GenesisLoans.denom":
 		x.Denom = ""
-	case "kopi.mm.Loans.loan_sum":
+	case "kopi.mm.GenesisLoans.loan_sum":
 		x.LoanSum = nil
-	case "kopi.mm.Loans.weight_sum":
+	case "kopi.mm.GenesisLoans.weight_sum":
 		x.WeightSum = nil
-	case "kopi.mm.Loans.loans":
+	case "kopi.mm.GenesisLoans.loans":
 		x.Loans = nil
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.Loans"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.GenesisLoans"))
 		}
-		panic(fmt.Errorf("message kopi.mm.Loans does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message kopi.mm.GenesisLoans does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1235,28 +1235,28 @@ func (x *fastReflection_Loans) Clear(fd protoreflect.FieldDescriptor) {
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_Loans) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_GenesisLoans) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "kopi.mm.Loans.denom":
+	case "kopi.mm.GenesisLoans.denom":
 		value := x.Denom
 		return protoreflect.ValueOfString(value)
-	case "kopi.mm.Loans.loan_sum":
+	case "kopi.mm.GenesisLoans.loan_sum":
 		value := x.LoanSum
 		return protoreflect.ValueOfBytes(value)
-	case "kopi.mm.Loans.weight_sum":
+	case "kopi.mm.GenesisLoans.weight_sum":
 		value := x.WeightSum
 		return protoreflect.ValueOfBytes(value)
-	case "kopi.mm.Loans.loans":
+	case "kopi.mm.GenesisLoans.loans":
 		if len(x.Loans) == 0 {
-			return protoreflect.ValueOfList(&_Loans_4_list{})
+			return protoreflect.ValueOfList(&_GenesisLoans_4_list{})
 		}
-		listValue := &_Loans_4_list{list: &x.Loans}
+		listValue := &_GenesisLoans_4_list{list: &x.Loans}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.Loans"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.GenesisLoans"))
 		}
-		panic(fmt.Errorf("message kopi.mm.Loans does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message kopi.mm.GenesisLoans does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -1270,23 +1270,23 @@ func (x *fastReflection_Loans) Get(descriptor protoreflect.FieldDescriptor) prot
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Loans) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_GenesisLoans) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "kopi.mm.Loans.denom":
+	case "kopi.mm.GenesisLoans.denom":
 		x.Denom = value.Interface().(string)
-	case "kopi.mm.Loans.loan_sum":
+	case "kopi.mm.GenesisLoans.loan_sum":
 		x.LoanSum = value.Bytes()
-	case "kopi.mm.Loans.weight_sum":
+	case "kopi.mm.GenesisLoans.weight_sum":
 		x.WeightSum = value.Bytes()
-	case "kopi.mm.Loans.loans":
+	case "kopi.mm.GenesisLoans.loans":
 		lv := value.List()
-		clv := lv.(*_Loans_4_list)
+		clv := lv.(*_GenesisLoans_4_list)
 		x.Loans = *clv.list
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.Loans"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.GenesisLoans"))
 		}
-		panic(fmt.Errorf("message kopi.mm.Loans does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message kopi.mm.GenesisLoans does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1300,57 +1300,57 @@ func (x *fastReflection_Loans) Set(fd protoreflect.FieldDescriptor, value protor
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Loans) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_GenesisLoans) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "kopi.mm.Loans.loans":
+	case "kopi.mm.GenesisLoans.loans":
 		if x.Loans == nil {
 			x.Loans = []*GenesisLoan{}
 		}
-		value := &_Loans_4_list{list: &x.Loans}
+		value := &_GenesisLoans_4_list{list: &x.Loans}
 		return protoreflect.ValueOfList(value)
-	case "kopi.mm.Loans.denom":
-		panic(fmt.Errorf("field denom of message kopi.mm.Loans is not mutable"))
-	case "kopi.mm.Loans.loan_sum":
-		panic(fmt.Errorf("field loan_sum of message kopi.mm.Loans is not mutable"))
-	case "kopi.mm.Loans.weight_sum":
-		panic(fmt.Errorf("field weight_sum of message kopi.mm.Loans is not mutable"))
+	case "kopi.mm.GenesisLoans.denom":
+		panic(fmt.Errorf("field denom of message kopi.mm.GenesisLoans is not mutable"))
+	case "kopi.mm.GenesisLoans.loan_sum":
+		panic(fmt.Errorf("field loan_sum of message kopi.mm.GenesisLoans is not mutable"))
+	case "kopi.mm.GenesisLoans.weight_sum":
+		panic(fmt.Errorf("field weight_sum of message kopi.mm.GenesisLoans is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.Loans"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.GenesisLoans"))
 		}
-		panic(fmt.Errorf("message kopi.mm.Loans does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message kopi.mm.GenesisLoans does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_Loans) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_GenesisLoans) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "kopi.mm.Loans.denom":
+	case "kopi.mm.GenesisLoans.denom":
 		return protoreflect.ValueOfString("")
-	case "kopi.mm.Loans.loan_sum":
+	case "kopi.mm.GenesisLoans.loan_sum":
 		return protoreflect.ValueOfBytes(nil)
-	case "kopi.mm.Loans.weight_sum":
+	case "kopi.mm.GenesisLoans.weight_sum":
 		return protoreflect.ValueOfBytes(nil)
-	case "kopi.mm.Loans.loans":
+	case "kopi.mm.GenesisLoans.loans":
 		list := []*GenesisLoan{}
-		return protoreflect.ValueOfList(&_Loans_4_list{list: &list})
+		return protoreflect.ValueOfList(&_GenesisLoans_4_list{list: &list})
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.Loans"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.mm.GenesisLoans"))
 		}
-		panic(fmt.Errorf("message kopi.mm.Loans does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message kopi.mm.GenesisLoans does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_Loans) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_GenesisLoans) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in kopi.mm.Loans", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in kopi.mm.GenesisLoans", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -1358,7 +1358,7 @@ func (x *fastReflection_Loans) WhichOneof(d protoreflect.OneofDescriptor) protor
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_Loans) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_GenesisLoans) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -1369,7 +1369,7 @@ func (x *fastReflection_Loans) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Loans) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_GenesisLoans) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -1381,7 +1381,7 @@ func (x *fastReflection_Loans) SetUnknown(fields protoreflect.RawFields) {
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_Loans) IsValid() bool {
+func (x *fastReflection_GenesisLoans) IsValid() bool {
 	return x != nil
 }
 
@@ -1391,9 +1391,9 @@ func (x *fastReflection_Loans) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_Loans) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_GenesisLoans) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*Loans)
+		x := input.Message.Interface().(*GenesisLoans)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1433,7 +1433,7 @@ func (x *fastReflection_Loans) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*Loans)
+		x := input.Message.Interface().(*GenesisLoans)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1500,7 +1500,7 @@ func (x *fastReflection_Loans) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*Loans)
+		x := input.Message.Interface().(*GenesisLoans)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1532,10 +1532,10 @@ func (x *fastReflection_Loans) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Loans: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GenesisLoans: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Loans: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: GenesisLoans: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -2414,8 +2414,7 @@ func (x *GenesisLoan) GetWeight() []byte {
 	return nil
 }
 
-// Used inside the genesis to store loan data per denom including all loans
-type Loans struct {
+type GenesisLoans struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -2426,8 +2425,8 @@ type Loans struct {
 	Loans     []*GenesisLoan `protobuf:"bytes,4,rep,name=loans,proto3" json:"loans,omitempty"`
 }
 
-func (x *Loans) Reset() {
-	*x = Loans{}
+func (x *GenesisLoans) Reset() {
+	*x = GenesisLoans{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_kopi_mm_loans_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -2435,46 +2434,46 @@ func (x *Loans) Reset() {
 	}
 }
 
-func (x *Loans) String() string {
+func (x *GenesisLoans) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Loans) ProtoMessage() {}
+func (*GenesisLoans) ProtoMessage() {}
 
-// Deprecated: Use Loans.ProtoReflect.Descriptor instead.
-func (*Loans) Descriptor() ([]byte, []int) {
+// Deprecated: Use GenesisLoans.ProtoReflect.Descriptor instead.
+func (*GenesisLoans) Descriptor() ([]byte, []int) {
 	return file_kopi_mm_loans_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *Loans) GetDenom() string {
+func (x *GenesisLoans) GetDenom() string {
 	if x != nil {
 		return x.Denom
 	}
 	return ""
 }
 
-func (x *Loans) GetLoanSum() []byte {
+func (x *GenesisLoans) GetLoanSum() []byte {
 	if x != nil {
 		return x.LoanSum
 	}
 	return nil
 }
 
-func (x *Loans) GetWeightSum() []byte {
+func (x *GenesisLoans) GetWeightSum() []byte {
 	if x != nil {
 		return x.WeightSum
 	}
 	return nil
 }
 
-func (x *Loans) GetLoans() []*GenesisLoan {
+func (x *GenesisLoans) GetLoans() []*GenesisLoan {
 	if x != nil {
 		return x.Loans
 	}
 	return nil
 }
 
-// Used in production, loans are stored seperately with a different key
+// Used in production, loans are stored separately with a different key
 type LoanSum struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -2553,40 +2552,41 @@ var file_kopi_mm_loans_proto_rawDesc = []byte{
 	0x0a, 0x06, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23,
 	0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64,
 	0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79,
-	0x44, 0x65, 0x63, 0x52, 0x06, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x22, 0xd3, 0x01, 0x0a, 0x05,
-	0x4c, 0x6f, 0x61, 0x6e, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x3e, 0x0a, 0x08, 0x6c,
-	0x6f, 0x61, 0x6e, 0x5f, 0x73, 0x75, 0x6d, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8,
-	0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b,
-	0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44,
-	0x65, 0x63, 0x52, 0x07, 0x6c, 0x6f, 0x61, 0x6e, 0x53, 0x75, 0x6d, 0x12, 0x42, 0x0a, 0x0a, 0x77,
-	0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x73, 0x75, 0x6d, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x42,
-	0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
-	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
-	0x79, 0x44, 0x65, 0x63, 0x52, 0x09, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x53, 0x75, 0x6d, 0x12,
-	0x30, 0x0a, 0x05, 0x6c, 0x6f, 0x61, 0x6e, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x14,
-	0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73,
-	0x4c, 0x6f, 0x61, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x05, 0x6c, 0x6f, 0x61, 0x6e,
-	0x73, 0x22, 0xc0, 0x01, 0x0a, 0x07, 0x4c, 0x6f, 0x61, 0x6e, 0x53, 0x75, 0x6d, 0x12, 0x14, 0x0a,
-	0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65,
-	0x6e, 0x6f, 0x6d, 0x12, 0x1b, 0x0a, 0x09, 0x6e, 0x75, 0x6d, 0x5f, 0x6c, 0x6f, 0x61, 0x6e, 0x73,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x08, 0x6e, 0x75, 0x6d, 0x4c, 0x6f, 0x61, 0x6e, 0x73,
-	0x12, 0x3e, 0x0a, 0x08, 0x6c, 0x6f, 0x61, 0x6e, 0x5f, 0x73, 0x75, 0x6d, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d,
-	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
-	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x07, 0x6c, 0x6f, 0x61, 0x6e, 0x53, 0x75, 0x6d,
-	0x12, 0x42, 0x0a, 0x0a, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x73, 0x75, 0x6d, 0x18, 0x04,
+	0x44, 0x65, 0x63, 0x52, 0x06, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x22, 0xda, 0x01, 0x0a, 0x0c,
+	0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x4c, 0x6f, 0x61, 0x6e, 0x73, 0x12, 0x14, 0x0a, 0x05,
+	0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e,
+	0x6f, 0x6d, 0x12, 0x3e, 0x0a, 0x08, 0x6c, 0x6f, 0x61, 0x6e, 0x5f, 0x73, 0x75, 0x6d, 0x18, 0x02,
 	0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e,
-	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x09, 0x77, 0x65, 0x69, 0x67, 0x68,
-	0x74, 0x53, 0x75, 0x6d, 0x42, 0x70, 0x0a, 0x0b, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69,
-	0x2e, 0x6d, 0x6d, 0x42, 0x0a, 0x4c, 0x6f, 0x61, 0x6e, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50,
-	0x01, 0x5a, 0x18, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
-	0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x6d, 0x6d, 0xa2, 0x02, 0x03, 0x4b, 0x4d,
-	0x58, 0xaa, 0x02, 0x07, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x4d, 0x6d, 0xca, 0x02, 0x07, 0x4b, 0x6f,
-	0x70, 0x69, 0x5c, 0x4d, 0x6d, 0xe2, 0x02, 0x13, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x4d, 0x6d, 0x5c,
-	0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x08, 0x4b, 0x6f,
-	0x70, 0x69, 0x3a, 0x3a, 0x4d, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x07, 0x6c, 0x6f, 0x61, 0x6e, 0x53,
+	0x75, 0x6d, 0x12, 0x42, 0x0a, 0x0a, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x5f, 0x73, 0x75, 0x6d,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74,
+	0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x09, 0x77, 0x65, 0x69,
+	0x67, 0x68, 0x74, 0x53, 0x75, 0x6d, 0x12, 0x30, 0x0a, 0x05, 0x6c, 0x6f, 0x61, 0x6e, 0x73, 0x18,
+	0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x2e,
+	0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x4c, 0x6f, 0x61, 0x6e, 0x42, 0x04, 0xc8, 0xde, 0x1f,
+	0x00, 0x52, 0x05, 0x6c, 0x6f, 0x61, 0x6e, 0x73, 0x22, 0xc0, 0x01, 0x0a, 0x07, 0x4c, 0x6f, 0x61,
+	0x6e, 0x53, 0x75, 0x6d, 0x12, 0x14, 0x0a, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x05, 0x64, 0x65, 0x6e, 0x6f, 0x6d, 0x12, 0x1b, 0x0a, 0x09, 0x6e, 0x75,
+	0x6d, 0x5f, 0x6c, 0x6f, 0x61, 0x6e, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x08, 0x6e,
+	0x75, 0x6d, 0x4c, 0x6f, 0x61, 0x6e, 0x73, 0x12, 0x3e, 0x0a, 0x08, 0x6c, 0x6f, 0x61, 0x6e, 0x5f,
+	0x73, 0x75, 0x6d, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda,
+	0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f,
+	0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x07,
+	0x6c, 0x6f, 0x61, 0x6e, 0x53, 0x75, 0x6d, 0x12, 0x42, 0x0a, 0x0a, 0x77, 0x65, 0x69, 0x67, 0x68,
+	0x74, 0x5f, 0x73, 0x75, 0x6d, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f,
+	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63,
+	0x52, 0x09, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x53, 0x75, 0x6d, 0x42, 0x70, 0x0a, 0x0b, 0x63,
+	0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x6d, 0x6d, 0x42, 0x0a, 0x4c, 0x6f, 0x61, 0x6e,
+	0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x18, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f,
+	0x6d, 0x6d, 0xa2, 0x02, 0x03, 0x4b, 0x4d, 0x58, 0xaa, 0x02, 0x07, 0x4b, 0x6f, 0x70, 0x69, 0x2e,
+	0x4d, 0x6d, 0xca, 0x02, 0x07, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x4d, 0x6d, 0xe2, 0x02, 0x13, 0x4b,
+	0x6f, 0x70, 0x69, 0x5c, 0x4d, 0x6d, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61,
+	0x74, 0x61, 0xea, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x4d, 0x6d, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -2603,13 +2603,13 @@ func file_kopi_mm_loans_proto_rawDescGZIP() []byte {
 
 var file_kopi_mm_loans_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_kopi_mm_loans_proto_goTypes = []interface{}{
-	(*Loan)(nil),        // 0: kopi.mm.Loan
-	(*GenesisLoan)(nil), // 1: kopi.mm.GenesisLoan
-	(*Loans)(nil),       // 2: kopi.mm.Loans
-	(*LoanSum)(nil),     // 3: kopi.mm.LoanSum
+	(*Loan)(nil),         // 0: kopi.mm.Loan
+	(*GenesisLoan)(nil),  // 1: kopi.mm.GenesisLoan
+	(*GenesisLoans)(nil), // 2: kopi.mm.GenesisLoans
+	(*LoanSum)(nil),      // 3: kopi.mm.LoanSum
 }
 var file_kopi_mm_loans_proto_depIdxs = []int32{
-	1, // 0: kopi.mm.Loans.loans:type_name -> kopi.mm.GenesisLoan
+	1, // 0: kopi.mm.GenesisLoans.loans:type_name -> kopi.mm.GenesisLoan
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
@@ -2648,7 +2648,7 @@ func file_kopi_mm_loans_proto_init() {
 			}
 		}
 		file_kopi_mm_loans_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Loans); i {
+			switch v := v.(*GenesisLoans); i {
 			case 0:
 				return &v.state
 			case 1:

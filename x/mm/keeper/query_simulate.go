@@ -49,7 +49,7 @@ func (k Keeper) SimulateRedemption(ctx context.Context, req *types.SimulateRedem
 	moduleAccount := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault)
 	available := k.BankKeeper.SpendableCoins(ctx, moduleAccount.GetAddress()).AmountOf(cAsset.BaseDexDenom)
 
-	grossRedemptionAmountBase, redemptionAmountCAsset := k.CalculateAvailableRedemptionAmount(ctx, cAsset, amount.ToLegacyDec(), available.ToLegacyDec())
+	grossRedemptionAmountBase, redemptionAmountCAsset, _ := k.CalculateAvailableRedemptionAmount(ctx, cAsset, amount.ToLegacyDec(), available.ToLegacyDec())
 	maximumRedemptionAmount := k.CalculateRedemptionAmount(ctx, cAsset, amount.ToLegacyDec())
 
 	return &types.SimulateRedemptionResponse{

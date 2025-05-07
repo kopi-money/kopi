@@ -647,7 +647,7 @@ func TestLoans17(t *testing.T) {
 	require.NoError(t, keepertest.PartiallyRepayLoan(ctx, msg, &types.MsgPartiallyRepayLoan{
 		Creator: keepertest.Alice,
 		Denom:   constants.KUSD,
-		Amount:  "1",
+		Amount:  "991",
 	}))
 
 	require.NoError(t, checkLoanSum(k.GetLoanSumWithDefault(ctx, constants.KUSD)))
@@ -659,7 +659,7 @@ func TestLoans17(t *testing.T) {
 
 		coins := sdk.NewCoins(sdk.NewCoin(constants.BaseCurrency, math.ZeroInt()))
 		if err = k.BankKeeper.SendCoinsFromModuleToAccount(innerCtx, types.PoolCollateral, acc, coins); err != nil {
-			return fmt.Errorf("could not send coins to user wallet: %w", err)
+			return fmt.Errorf("send coins to user wallet: %w", err)
 		}
 
 		return nil

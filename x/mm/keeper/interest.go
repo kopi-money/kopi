@@ -24,8 +24,7 @@ func (k Keeper) CalculateInterestRateForDenom(ctx context.Context, denom string)
 
 func (k Keeper) CalculateInterestRate(ctx context.Context, cAsset denomtypes.CAsset) math.LegacyDec {
 	utilityRate := k.calculateUtilityRate(ctx, cAsset)
-	interestRate := k.calculateInterestRate(ctx, utilityRate)
-	return interestRate
+	return k.calculateInterestRate(ctx, utilityRate)
 }
 
 func (k Keeper) calculateInterestRate(ctx context.Context, utilityRate math.LegacyDec) math.LegacyDec {
@@ -54,7 +53,7 @@ func (k Keeper) calculateUtilityRate(ctx context.Context, cAsset denomtypes.CAss
 func (k Keeper) ApplyInterest(ctx context.Context) error {
 	blocksPerYear, err := k.BlockspeedKeeper.BlocksPerYear(ctx)
 	if err != nil {
-		return fmt.Errorf("could not get blockspeed: %w", err)
+		return fmt.Errorf("get blockspeed: %w", err)
 	}
 
 	for _, CAsset := range k.DenomKeeper.GetCAssets(ctx) {

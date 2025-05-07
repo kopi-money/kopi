@@ -12,34 +12,6 @@ import (
 	"github.com/kopi-money/kopi/x/mm/types"
 )
 
-// GetGenesisLoans is used for genesis export
-func (k Keeper) GetGenesisLoans(ctx context.Context) (denomLoans []types.Loans) {
-	for _, denom := range k.DenomKeeper.GetCAssets(ctx) {
-		var loans []types.GenesisLoan
-		iterator := k.LoanIterator(ctx, denom.BaseDexDenom)
-		for iterator.Valid() {
-			keyValue := iterator.GetNextKeyValue()
-			loan := keyValue.Value().Value()
-
-			loans = append(loans, types.GenesisLoan{
-				Index:   loan.Index,
-				Address: keyValue.Key(),
-				Weight:  loan.Weight,
-			})
-		}
-
-		loanSum := k.GetLoanSumWithDefault(ctx, denom.BaseDexDenom)
-		denomLoans = append(denomLoans, types.Loans{
-			Denom:     denom.BaseDexDenom,
-			Loans:     loans,
-			WeightSum: loanSum.WeightSum,
-			LoanSum:   loanSum.LoanSum,
-		})
-	}
-
-	return
-}
-
 func (k Keeper) loadLoanWithDefault(ctx context.Context, denom, address string) types.Loan {
 	loan, has := k.loans.Get(ctx, denom, address)
 	if has {
@@ -187,12 +159,12 @@ func (k Keeper) getBorrowers(ctx context.Context) (borrowers []string) {
 func (k Keeper) CalcAvailableToBorrow(ctx context.Context, address, denom string) (math.Int, error) {
 	borrowable, err := k.CalculateBorrowableAmount(ctx, address, denom)
 	if err != nil {
-		return math.Int{}, fmt.Errorf("could not calculate borrowable amount: %w", err)
+		return math.Int{}, fmt.Errorf("calculate borrowable amount: %w", err)
 	}
 
 	cAsset, err := k.DenomKeeper.GetCAssetByBaseName(ctx, denom)
 	if err != nil {
-		return math.Int{}, fmt.Errorf("could not get c asset asset: %w", err)
+		return math.Int{}, fmt.Errorf("get c asset asset: %w", err)
 	}
 
 	available := k.availableToBorrowForDenom(ctx, cAsset)
@@ -253,6 +225,33 @@ func (k Keeper) updateLoan(ctx context.Context, denom, address string, valueChan
 
 	k.SetLoanSum(ctx, loanSum)
 	return loanIndex, numLoanChange == -1
+}
+
+func (k Keeper) exportLoans(ctx context.Context) (denomLoans []types.GenesisLoans) {
+	for _, denom := range k.DenomKeeper.GetCAssets(ctx) {
+		var loans []types.GenesisLoan
+		iterator := k.LoanIterator(ctx, denom.BaseDexDenom)
+		for iterator.Valid() {
+			keyValue := iterator.GetNextKeyValue()
+			loan := keyValue.Value().Value()
+
+			loans = append(loans, types.GenesisLoan{
+				Index:   loan.Index,
+				Address: keyValue.Key(),
+				Weight:  loan.Weight,
+			})
+		}
+
+		loanSum := k.GetLoanSumWithDefault(ctx, denom.BaseDexDenom)
+		denomLoans = append(denomLoans, types.GenesisLoans{
+			Denom:     denom.BaseDexDenom,
+			Loans:     loans,
+			WeightSum: loanSum.WeightSum,
+			LoanSum:   loanSum.LoanSum,
+		})
+	}
+
+	return
 }
 
 func calculateLoanValue(loanSum types.LoanSum, weight math.LegacyDec) math.LegacyDec {

@@ -163,7 +163,7 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 // The begin block implementation is optional.
 func (am AppModule) BeginBlock(ctx context.Context) error {
 	if err := am.keeper.Initialize(ctx); err != nil {
-		return fmt.Errorf("could not initialize mm module: %w", err)
+		return fmt.Errorf("initialize mm module: %w", err)
 	}
 
 	return nil
