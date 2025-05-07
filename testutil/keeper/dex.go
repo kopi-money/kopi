@@ -42,25 +42,26 @@ func DexKeeper(t *testing.T) (dexkeeper.Keeper, context.Context, *Keys) {
 		govtypes.ModuleName:        {authtypes.Burner},
 		distrtypes.ModuleName:      nil,
 		// this line is used by starport scaffolding # stargate/app/maccPerms
-		dextypes.PoolLiquidity:                 nil,
-		dextypes.PoolTrade:                     nil,
-		dextypes.PoolOrders:                    nil,
-		dextypes.PoolReserve:                   nil,
-		dextypes.PoolFeeIncome:                 nil,
-		dextypes.PoolFeeLeftovers:              nil,
-		denomtypes.ModuleName:                  nil,
-		minttypes.ModuleName:                   nil,
-		mmtypes.PoolCollateral:                 nil,
-		mmtypes.PoolVault:                      nil,
-		mmtypes.PoolRedemption:                 nil,
-		mmtypes.ModuleName:                     {authtypes.Minter},
-		reservetypes.ModuleName:                {authtypes.Minter, authtypes.Burner},
-		swaptypes.ModuleName:                   {authtypes.Minter, authtypes.Burner},
-		strategiestypes.PoolArbitrage:          {authtypes.Minter, authtypes.Burner},
-		strategiestypes.PoolAutomationFunds:    nil,
-		tokenfactorytypes.ModuleName:           {authtypes.Burner, authtypes.Minter},
-		tokenfactorytypes.PoolFactoryLiquidity: nil,
-		tokenfactorytypes.PoolUnlocking:        nil,
+		dextypes.PoolLiquidity:                    nil,
+		dextypes.PoolTrade:                        nil,
+		dextypes.PoolOrders:                       nil,
+		dextypes.PoolReserve:                      nil,
+		dextypes.PoolFeeIncome:                    nil,
+		dextypes.PoolFeeLeftovers:                 nil,
+		denomtypes.ModuleName:                     nil,
+		minttypes.ModuleName:                      nil,
+		mmtypes.PoolCollateral:                    nil,
+		mmtypes.PoolVault:                         nil,
+		mmtypes.PoolRedemption:                    nil,
+		mmtypes.ModuleName:                        {authtypes.Minter},
+		reservetypes.ModuleName:                   {authtypes.Minter, authtypes.Burner},
+		swaptypes.ModuleName:                      {authtypes.Minter, authtypes.Burner},
+		strategiestypes.PoolArbitrage:             {authtypes.Minter, authtypes.Burner},
+		strategiestypes.PoolAutomationFunds:       nil,
+		tokenfactorytypes.ModuleName:              {authtypes.Burner, authtypes.Minter},
+		tokenfactorytypes.PoolFactoryLiquidity:    nil,
+		tokenfactorytypes.PoolUnlocking:           nil,
+		tokenfactorytypes.PoolFactoryProtocolFees: nil,
 	}
 
 	blackListAddrs := map[string]bool{
@@ -283,7 +284,7 @@ func RemoveLiquidityWithPayout(ctx context.Context, k dextypes.MsgServer, addres
 }
 
 type LiquidityI interface {
-	AddLiquidity(context.Context, sdk.AccAddress, string, math.Int) (math.Int, error)
+	AddLiquidity(context.Context, sdk.AccAddress, string, math.Int) error
 	GetPoolLiquidity(context.Context, string) math.Int
 }
 
@@ -292,8 +293,7 @@ func TestAddLiquidity(ctx context.Context, k LiquidityI, t *testing.T, address, 
 	require.NoError(t, err)
 
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		_, err = k.AddLiquidity(innerCtx, addr, denom, math.NewInt(amount))
-		return err
+		return k.AddLiquidity(innerCtx, addr, denom, math.NewInt(amount))
 	}))
 
 	require.Equal(t, k.GetPoolLiquidity(ctx, denom).Int64(), amount)

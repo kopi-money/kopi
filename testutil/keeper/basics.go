@@ -102,8 +102,7 @@ func SetLiquidity(ctx context.Context, k SetLiquidityBankKeeper, dexkeeper dexke
 	for _, data := range pool {
 		require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 			AddFunds(ctx, t, k, data.Denom, acc.GetAddress().String(), data.Amount.Int64())
-			_, err := dexkeeper.AddLiquidity(innerCtx, acc.GetAddress(), data.Denom, data.Amount)
-			return err
+			return dexkeeper.AddLiquidity(innerCtx, acc.GetAddress(), data.Denom, data.Amount)
 		}))
 	}
 }

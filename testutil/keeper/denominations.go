@@ -131,6 +131,20 @@ func DenomKeeper(t *testing.T) (denomkeeper.Keeper, context.Context, *Keys) {
 			MinOrderSize: math.NewInt(1000),
 			Exponent:     6,
 		},
+		denomtypes.DexDenom{
+			Name:                  "uusdc",
+			MinLiquidity:          math.NewInt(1000),
+			MinOrderSize:          math.NewInt(1000),
+			ExtraVirtualLiquidity: mathIntPtr(100000000000),
+			Exponent:              6,
+		},
+		denomtypes.DexDenom{
+			Name:                  "uosmo",
+			MinLiquidity:          math.NewInt(1000),
+			MinOrderSize:          math.NewInt(1000),
+			ExtraVirtualLiquidity: mathIntPtr(1000000),
+			Exponent:              6,
+		},
 	)
 
 	params.StrategyDenoms = denomtypes.StrategyDenoms{
@@ -292,7 +306,7 @@ func createDefaultDexDenoms() []denomtypes.DexDenom {
 	return []denomtypes.DexDenom{
 		{
 			Name:         constants.BaseCurrency,
-			MinLiquidity: math.NewInt(1_000_000_000),
+			MinLiquidity: math.NewInt(10_000_000),
 			MinOrderSize: math.NewInt(1),
 			Exponent:     6,
 		},
@@ -403,4 +417,9 @@ func SetMinimumLiquidity(ctx context.Context, k SetMinimumLiquidityKeeper, denom
 	return cache.Transact(ctx, func(innerCtx context.Context) error {
 		return k.DexUpdateMinimumLiquidity(innerCtx, denom, minLiquidity)
 	})
+}
+
+func mathIntPtr(value int64) *math.Int {
+	i := math.NewInt(value)
+	return &i
 }
