@@ -15,6 +15,8 @@ import (
 	"github.com/kopi-money/kopi/x/mm/types"
 )
 
+const minimumPayoutAmount = 100_000
+
 func (k Keeper) LoadRedemptionRequest(ctx context.Context, denom, address string) (types.Redemption, bool) {
 	return k.redemptions.Get(ctx, denom, address)
 }
@@ -129,7 +131,7 @@ func (k Keeper) handleRedemptionsForCAsset(ctx context.Context, cAsset denomtype
 }
 
 func (k Keeper) handleSingleRedemption(ctx context.Context, cAsset denomtypes.CAsset, entry types.Redemption, available math.LegacyDec) (math.LegacyDec, error) {
-	grossRedemptionAmountBase, redemptionAmountCAsset := k.CalculateAvailableRedemptionAmount(ctx, cAsset, entry.Amount.ToLegacyDec(), available)
+	grossRedemptionAmountBase, redemptionAmountCAsset, payoutshare := k.CalculateAvailableRedemptionAmount(ctx, cAsset, entry.Amount.ToLegacyDec(), available)
 	if grossRedemptionAmountBase.IsZero() {
 		return math.LegacyZeroDec(), nil
 	}
@@ -145,6 +147,13 @@ func (k Keeper) handleSingleRedemption(ctx context.Context, cAsset denomtypes.CA
 	redemptionAmount := grossRedemptionAmountBase.Sub(feeCost)
 	if err := k.handleRedemptionFee(ctx, cAsset, feeCost); err != nil {
 		return math.LegacyDec{}, err
+	}
+
+	payoutAmount := redemptionAmount.TruncateInt()
+	// If the payout amount is not for the full requested amount, only proceed if the payout amount is above the minimum
+	// payout. This is to prevent sending dust.
+	if payoutshare.LT(math.LegacyOneDec()) && payoutAmount.LT(math.NewInt(minimumPayoutAmount)) {
+		return math.LegacyZeroDec(), nil
 	}
 
 	// send redeemed coins (sub fee) to user
@@ -196,16 +205,16 @@ func (k Keeper) CalculateRedemptionAmount(ctx context.Context, cAsset denomtypes
 	return redemptionValue
 }
 
-func (k Keeper) CalculateAvailableRedemptionAmount(ctx context.Context, cAsset denomtypes.CAsset, requestedCAssetAmount, available math.LegacyDec) (math.LegacyDec, math.LegacyDec) {
+func (k Keeper) CalculateAvailableRedemptionAmount(ctx context.Context, cAsset denomtypes.CAsset, requestedCAssetAmount, available math.LegacyDec) (math.LegacyDec, math.LegacyDec, math.LegacyDec) {
 	redemptionValue := k.CalculateRedemptionAmount(ctx, cAsset, requestedCAssetAmount)
 	if redemptionValue.IsZero() {
-		return math.LegacyZeroDec(), math.LegacyZeroDec()
+		return math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec()
 	}
 
 	// how much of what is requested can be paid out
 	redeemAmount := math.LegacyMinDec(redemptionValue, available)
 	if redeemAmount.IsZero() {
-		return math.LegacyZeroDec(), math.LegacyZeroDec()
+		return math.LegacyZeroDec(), math.LegacyZeroDec(), math.LegacyZeroDec()
 	}
 
 	// the share of what is paid out in relation to what has been requested
@@ -213,18 +222,19 @@ func (k Keeper) CalculateAvailableRedemptionAmount(ctx context.Context, cAsset d
 
 	// how much of the given cAssets have been used
 	usedCAssets := requestedCAssetAmount.Mul(requestedShare)
-	return redeemAmount, usedCAssets
+	return redeemAmount, usedCAssets, requestedShare
 }
 
 func (k Keeper) handleRedemptionFee(ctx context.Context, cAsset denomtypes.CAsset, amount math.LegacyDec) error {
-	if amount.LTE(math.LegacyZeroDec()) {
+	protocolShare := k.GetParams(ctx).ProtocolShare
+	protocolAmount := protocolShare.Mul(amount)
+	protocolAmountInt := protocolAmount.TruncateInt()
+
+	if !protocolAmountInt.IsPositive() {
 		return nil
 	}
 
-	protocolShare := k.GetParams(ctx).ProtocolShare
-	protocolAmount := protocolShare.Mul(amount)
-
-	coins := sdk.NewCoins(sdk.NewCoin(cAsset.BaseDexDenom, protocolAmount.TruncateInt()))
+	coins := sdk.NewCoins(sdk.NewCoin(cAsset.BaseDexDenom, protocolAmountInt))
 	if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolVault, dextypes.PoolReserve, coins); err != nil {
 		return err
 	}
