@@ -253,6 +253,9 @@ var (
 		{Account: tokenfactorytypes.ModuleName, Permissions: []string{authtypes.Burner, authtypes.Minter}},
 		{Account: tokenfactorytypes.PoolFactoryLiquidity, Permissions: []string{authtypes.Burner, authtypes.Minter}},
 		{Account: tokenfactorytypes.PoolUnlocking, Permissions: []string{authtypes.Burner, authtypes.Minter}},
+		{Account: tokenfactorytypes.PoolFactoryProtocolFees},
+		{Account: tokenfactorytypes.PoolOffers},
+		{Account: tokenfactorytypes.PoolVestings},
 
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
