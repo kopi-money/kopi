@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/kopi-money/kopi/trading"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"

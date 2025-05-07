@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/kopi-money/kopi/trading"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -53,16 +54,16 @@ func (k Keeper) CheckMint(ctx context.Context, kCoin string, maxMintAmount math.
 
 	mintCoins := sdk.NewCoins(sdk.NewCoin(kCoin, mintAmount))
 	if err = k.BankKeeper.MintCoins(ctx, types.ModuleName, mintCoins); err != nil {
-		return fmt.Errorf("could not mint new kcoin %v: %w", kCoin, err)
+		return fmt.Errorf("mint new kcoin %v: %w", kCoin, err)
 	}
 
 	moduleAddress := k.AccountKeeper.GetModuleAccount(ctx, types.ModuleName).GetAddress()
 
 	tradeCtx := dextypes.TradeContext{
+		TradeAmount:         mintAmount,
 		Context:             ctx,
 		CoinSource:          moduleAddress.String(),
 		CoinTarget:          moduleAddress.String(),
-		TradeAmount:         mintAmount,
 		TradeDenomGiving:    kCoin,
 		TradeDenomReceiving: constants.BaseCurrency,
 		TradeBalances:       dexkeeper.NewTradeBalances(),

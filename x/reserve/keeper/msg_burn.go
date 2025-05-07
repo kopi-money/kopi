@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/kopi-money/kopi/trading"
 
-	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	"github.com/kopi-money/kopi/x/reserve/types"
 )
 
 func (k msgServer) Burn(ctx context.Context, msg *types.MsgBurn) (*types.Void, error) {
-	amount, err := dexkeeper.ParseAmount(msg.Amount)
+	amount, err := trading.ParseAmount(msg.Amount)
 	if err != nil {
 		return nil, err
 	}

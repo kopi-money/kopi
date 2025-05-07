@@ -11,6 +11,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/kopi/trading"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	swaptypes "github.com/kopi-money/kopi/x/swap/types"
