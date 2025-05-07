@@ -212,13 +212,17 @@ func (k Keeper) CreateRatio(ctx context.Context, factorStr string, exponent uint
 		return math.LegacyDec{}, err
 	}
 
+	return k.CreateRatioFromReference(ctx, referenceFactor, referenceDenom, exponent)
+}
+
+func (k Keeper) CreateRatioFromReference(ctx context.Context, referenceFactor math.LegacyDec, referenceDenom string, exponent uint64) (math.LegacyDec, error) {
 	if !referenceFactor.IsPositive() {
 		return math.LegacyDec{}, types.ErrInvalidFactor
 	}
 
-	if referenceDenom != constants.BaseCurrency && referenceDenom != "" {
+	if referenceDenom != "" {
 		var otherRatio types.Ratio
-		otherRatio, err = k.GetRatio(ctx, referenceDenom)
+		otherRatio, err := k.GetRatio(ctx, referenceDenom)
 		if err != nil {
 			return math.LegacyDec{}, fmt.Errorf("unable to find ratio for %s: %w", referenceDenom, err)
 		}

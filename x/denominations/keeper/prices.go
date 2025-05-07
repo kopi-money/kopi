@@ -47,7 +47,7 @@ func (k Keeper) CalculatePrice(ctx context.Context, denomGiving, denomReceiving 
 func (k Keeper) GetPriceInUSD(ctx context.Context, denom string) (math.LegacyDec, error) {
 	referenceDenom, err := k.GetHighestUSDReference(ctx)
 	if err != nil {
-		return math.LegacyDec{}, fmt.Errorf("could not get highest usd reference: %w", err)
+		return math.LegacyDec{}, fmt.Errorf("get highest usd reference: %w", err)
 	}
 
 	return k.CalculatePrice(ctx, denom, referenceDenom)
@@ -56,7 +56,7 @@ func (k Keeper) GetPriceInUSD(ctx context.Context, denom string) (math.LegacyDec
 func (k Keeper) GetValueInFromUSD(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error) {
 	referenceDenom, err := k.GetHighestUSDReference(ctx)
 	if err != nil {
-		return math.LegacyDec{}, fmt.Errorf("could not get highest usd reference: %w", err)
+		return math.LegacyDec{}, fmt.Errorf("get highest usd reference: %w", err)
 	}
 
 	return k.GetValueIn(ctx, referenceDenom, denom, amount)

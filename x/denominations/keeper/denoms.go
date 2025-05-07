@@ -148,7 +148,7 @@ func (k Keeper) Exponent(ctx context.Context, denom string) (uint64, error) {
 		}
 	}
 
-	return 0, fmt.Errorf("could not find gien denom: %v", denom)
+	return 0, fmt.Errorf("find gien denom: %v", denom)
 }
 
 func (k Keeper) MaxSupply(ctx context.Context, kCoinName string) math.Int {
@@ -336,16 +336,18 @@ func (k Keeper) GetArbitrageDenoms(ctx context.Context) []types.ArbitrageDenom {
 }
 
 func (k Keeper) RemoveDenom(ctx context.Context, denom string) error {
+	k.RemoveRatio(ctx, denom)
+
 	params := k.GetParams(ctx)
 
-	var filtered []types.DexDenom
+	var filteredDenoms []types.DexDenom
 	for _, dexDenom := range params.DexDenoms {
 		if dexDenom.Name != denom {
-			filtered = append(filtered, dexDenom)
+			filteredDenoms = append(filteredDenoms, dexDenom)
 		}
 	}
 
-	params.DexDenoms = filtered
+	params.DexDenoms = filteredDenoms
 	return k.SetParams(ctx, params)
 }
 

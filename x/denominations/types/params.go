@@ -355,7 +355,7 @@ func validateDexDenoms(p Params) error {
 
 	for _, dexDenom := range p.DexDenoms {
 		if err := validateDexDenom(dexDenom); err != nil {
-			return fmt.Errorf("error validating dex denom %v: %w", dexDenom.Name, err)
+			return fmt.Errorf("error validating dex denom '%v': %w", dexDenom.Name, err)
 		}
 
 		if _, has := seen[dexDenom.Name]; has {
