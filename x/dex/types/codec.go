@@ -25,7 +25,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgUpdateTradeFee{},
 		&MsgUpdateOrderFee{},
 		&MsgUpdateReserveShare{},
-		&MsgUpdateVirtualLiquidityDecay{},
+		&MsgUpdatePriceIncreasingFactor{},
 		&MsgUpdateMaxOrderLife{},
 		&MsgUpdateTradeAmountDecay{},
 		&MsgUpdateDiscountLevels{},

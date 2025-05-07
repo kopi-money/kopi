@@ -10,7 +10,7 @@ var (
 	TradeFee              = math.LegacyNewDecWithPrec(1, 3)      // 0.001 -> 0.1%
 	OrderFee              = math.LegacyNewDecWithPrec(5, 3)      // 0.005 -> 0.5%
 	ReserveShare          = math.LegacyNewDecWithPrec(5, 1)      // 0.5 -> 50%
-	VirtualLiquidityDecay = math.LegacyNewDecWithPrec(999997, 6) // 0.999997
+	PriceIncreasingFactor = math.LegacyNewDecWithPrec(999997, 6) // 0.999997
 	TradeAmountDecay      = math.LegacyNewDecWithPrec(95, 2)     // 0.95
 	MaxOrderLife          = 60 * 60 * 24 * 7
 	DiscountLevels        = []DiscountLevel{
@@ -23,7 +23,8 @@ var (
 			Discount:    math.LegacyNewDecWithPrec(1, 1),
 		},
 	}
-	LiquidityChangeDecayFromDeposits = math.LegacyNewDecWithPrec(9999, 4)
+	LiquidityChangeDecayFromDeposits       = math.LegacyNewDecWithPrec(9999, 4)
+	MinimumLiquidityLockInBlocks     int64 = 0
 )
 
 // DefaultParams returns a default set of parameters
@@ -31,12 +32,13 @@ func DefaultParams() Params {
 	return Params{
 		TradeFee:                         TradeFee,
 		OrderFee:                         OrderFee,
-		VirtualLiquidityDecay:            VirtualLiquidityDecay,
+		PriceIncreasingFactor:            PriceIncreasingFactor,
 		ReserveShare:                     ReserveShare,
 		MaxOrderLife:                     uint64(MaxOrderLife),
 		TradeAmountDecay:                 TradeAmountDecay,
 		DiscountLevels:                   DiscountLevels,
 		LiquidityChangeDecayFromDeposits: LiquidityChangeDecayFromDeposits,
+		MinimumLiquidityLockInBlocks:     MinimumLiquidityLockInBlocks,
 	}
 }
 
@@ -54,7 +56,7 @@ func (p Params) Validate() error {
 		return fmt.Errorf("invalid order fee: %w", err)
 	}
 
-	if err := validateVirtualLiquidityDecay(p.VirtualLiquidityDecay); err != nil {
+	if err := validatePriceIncreasingFactor(p.PriceIncreasingFactor); err != nil {
 		return fmt.Errorf("invalid virtual liquidity decay: %w", err)
 	}
 
@@ -70,7 +72,7 @@ func (p Params) Validate() error {
 		return fmt.Errorf("invalid trade amount decay: %w", err)
 	}
 
-	if p.LiquidityChangeDecayFromDeposits.IsNil() {
+	if p.LiquidityChangeDecayFromDeposits.IsNil() || p.LiquidityChangeDecayFromDeposits.IsZero() {
 		p.LiquidityChangeDecayFromDeposits = LiquidityChangeDecayFromDeposits
 	}
 
@@ -116,7 +118,7 @@ func validateLessThanOne(d any) error {
 	return nil
 }
 
-func validateVirtualLiquidityDecay(d any) error {
+func validatePriceIncreasingFactor(d any) error {
 	v, ok := d.(math.LegacyDec)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", d)

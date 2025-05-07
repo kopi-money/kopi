@@ -3,40 +3,40 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"github.com/kopi-money/kopi/trading"
 	"strings"
 
-	"github.com/kopi-money/kopi/constants"
 	"github.com/kopi-money/kopi/x/dex/types"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-type TradeFunc func(types.TradeContext) (types.TradeResult, error)
+type TradeFunc func(types.TradeContext) (trading.TradeResult, error)
 
 func (k msgServer) Sell(ctx context.Context, msg *types.MsgSell) (*types.MsgTradeResponse, error) {
-	return k.trade(ctx, msg.Creator, msg.DenomGiving, msg.DenomReceiving, msg.Amount, msg.MaxPrice, msg.MinimumTradeAmount, k.ExecuteSell)
+	return k.trade(ctx, msg.Creator, msg.DenomGiving, msg.DenomReceiving, msg.Amount, msg.MinimumTradeAmount, msg.MaxPrice, k.ExecuteSell)
 }
 
 func (k msgServer) Buy(ctx context.Context, msg *types.MsgBuy) (*types.MsgTradeResponse, error) {
-	return k.trade(ctx, msg.Creator, msg.DenomGiving, msg.DenomReceiving, msg.Amount, msg.MaxPrice, msg.MinimumTradeAmount, k.ExecuteBuy)
+	return k.trade(ctx, msg.Creator, msg.DenomGiving, msg.DenomReceiving, msg.Amount, msg.MinimumTradeAmount, msg.MaxPrice, k.ExecuteBuy)
 }
 
-func (k msgServer) trade(ctx context.Context, creator, denomGiving, denomReceiving, amountString, maxPriceString, minimumTradeAmountString string, tradeFunc TradeFunc) (*types.MsgTradeResponse, error) {
+func (k msgServer) trade(ctx context.Context, creator, denomGiving, denomReceiving, amountString, minimumTradeAmountString string, maxPrice *types.MaxPrice, tradeFunc TradeFunc) (*types.MsgTradeResponse, error) {
 	if denomGiving == denomReceiving {
 		return nil, types.ErrSameDenom
 	}
 
-	tradeAmount, err := ParseAmount(amountString)
+	tradeAmount, err := trading.ParseAmount(amountString)
 	if err != nil {
-		return nil, fmt.Errorf("could not parse amount: %w", err)
+		return nil, fmt.Errorf("parse amount: %w", err)
 	}
 
 	if tradeAmount.IsZero() {
 		return nil, types.ErrZeroAmount
 	}
 
-	maxPrice, err := stringToDec(maxPriceString)
+	maxPriceDec, err := trading.ParseMaxPrice(maxPrice.GetMaxPrice(), maxPrice.GetFeeIncluded())
 	if err != nil {
 		return nil, err
 	}
@@ -55,44 +55,31 @@ func (k msgServer) trade(ctx context.Context, creator, denomGiving, denomReceivi
 
 	tradeCtx := types.TradeContext{
 		Context:                ctx,
+		MaxPrice:               maxPriceDec,
+		TradeAmount:            tradeAmount,
+		MinimumTradeAmount:     minimumTradeAmount,
+		Fee:                    &tradeFee,
 		CoinSource:             creator,
 		CoinTarget:             creator,
-		TradeAmount:            tradeAmount,
 		MaximumAvailableAmount: k.BankKeeper.SpendableCoin(ctx, address, denomGiving).Amount,
-		MaxPrice:               maxPrice,
-		MinimumTradeAmount:     minimumTradeAmount,
 		TradeDenomGiving:       denomGiving,
 		TradeDenomReceiving:    denomReceiving,
-		ProtocolTrade:          false,
 		TradeBalances:          NewTradeBalances(),
-		Fee:                    k.getTradeFee(ctx, tradeFee, creator, denomGiving, denomReceiving, false),
 	}
 
 	tradeResult, err := tradeFunc(tradeCtx)
 	if err != nil {
-		return nil, fmt.Errorf("could not execute trade: %w", err)
+		return nil, fmt.Errorf("execute trade: %w", err)
 	}
 
 	if err = tradeCtx.TradeBalances.Settle(ctx, k.BankKeeper); err != nil {
-		return nil, fmt.Errorf("could not settle balances: %w", err)
+		return nil, fmt.Errorf("settle balances: %w", err)
 	}
 
 	return &types.MsgTradeResponse{
-		AmountGiven:    tradeResult.AmountGiven.String(),
-		AmountReceived: tradeResult.AmountReceived.String(),
+		AmountGiven:    tradeResult.AmountGiven().String(),
+		AmountReceived: tradeResult.AmountReceived().String(),
 	}, nil
-}
-
-func (k Keeper) getTradeFee(ctx context.Context, fee math.LegacyDec, discountAddress, denomGiving, denomReceiving string, excludeFromDiscount bool) math.LegacyDec {
-	discount := k.getTradeDiscount(ctx, discountAddress, excludeFromDiscount)
-	discount = math.LegacyOneDec().Sub(discount)
-	fee = fee.Mul(discount)
-
-	if denomGiving != constants.BaseCurrency && denomReceiving != constants.BaseCurrency {
-		fee = fee.Quo(math.LegacyNewDec(2)) // C
-	}
-
-	return fee
 }
 
 func stringToDec(decString string) (*math.LegacyDec, error) {

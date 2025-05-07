@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-const minimumPayout = 1000
+const MinimumPayout = 1000
 
 func (k Keeper) CheckEpoch(ctx context.Context) error {
 	if k.shouldStartNewEpoch(ctx) {
@@ -107,7 +107,7 @@ func (k Keeper) CreateNewSnapshot(ctx context.Context) error {
 
 // TODO: replace with more efficient way to delete entries
 func (k Keeper) DeleteOldSnapshot(ctx context.Context) error {
-	addresses, err := k.liquidityPositions.OuterKeys(ctx)
+	addresses, err := k.epochShares.OuterKeys(ctx)
 	if err != nil {
 		return fmt.Errorf("get outer keys: %w", err)
 	}
@@ -213,7 +213,7 @@ func (k Keeper) handleEpochDepositPayout(epochPayouts *types.EpochPayouts, still
 	coinsToSend := sdk.NewCoins()
 	for _, denom := range epochPayouts.Denoms() {
 		amount := epochPayouts.GetTruncated(denom)
-		if stillExists && amount.LT(math.LegacyNewDec(minimumPayout)) {
+		if stillExists && amount.LT(math.LegacyNewDec(MinimumPayout)) {
 			continue
 		}
 
@@ -227,7 +227,7 @@ func (k Keeper) handleEpochDepositPayout(epochPayouts *types.EpochPayouts, still
 func (k Keeper) handleEpochDepositAutoCompound(ctx context.Context, address string, positionIndex uint64, epochPayouts *types.EpochPayouts, sendToDex sdk.Coins) sdk.Coins {
 	for _, denom := range epochPayouts.Denoms() {
 		amount := epochPayouts.GetTruncated(denom)
-		if amount.LT(math.LegacyNewDec(minimumPayout)) {
+		if amount.LT(math.LegacyNewDec(MinimumPayout)) {
 			continue
 		}
 
@@ -344,4 +344,39 @@ func (k Keeper) rewardsToUSD(ctx context.Context, newFunds types.EpochLeftovers)
 	}
 
 	return sum
+}
+
+func (k Keeper) exportEpochSharesToGenesis(ctx context.Context) (list []types.GenesisEpochShares) {
+	addresses, _ := k.epochShares.OuterKeys(ctx)
+	for _, address := range addresses {
+		iterator := k.epochShares.Iterator(ctx, nil, address)
+		for iterator.Valid() {
+			keyValue := iterator.GetNextKeyValue()
+			list = append(list, types.GenesisEpochShares{
+				Address:       address,
+				PositionIndex: keyValue.Key(),
+				Shares:        keyValue.Value().Value().Shares,
+			})
+		}
+	}
+
+	return
+}
+
+func (k Keeper) exportEpochLeftoversToGenesis(ctx context.Context) (list []types.GenesisEpochLeftover) {
+	addresses, _ := k.epochLeftovers.OuterKeys(ctx)
+	for _, address := range addresses {
+		iterator := k.epochLeftovers.Iterator(ctx, nil, address)
+		for iterator.Valid() {
+			keyValue := iterator.GetNextKeyValue()
+
+			list = append(list, types.GenesisEpochLeftover{
+				Address:       address,
+				PositionIndex: keyValue.Key(),
+				Leftovers:     keyValue.Value().Value().Leftovers,
+			})
+		}
+	}
+
+	return
 }

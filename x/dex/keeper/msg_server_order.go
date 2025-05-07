@@ -5,6 +5,7 @@ import (
 	"cosmossdk.io/math"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/kopi-money/kopi/trading"
 	"github.com/kopi-money/kopi/x/dex/types"
 )
 
@@ -17,7 +18,7 @@ func (k Keeper) AddOrder(ctx context.Context, creator, denomGiving, denomReceivi
 		return nil, types.ErrSameDenom
 	}
 
-	amount, err := ParseAmount(amountString)
+	amount, err := trading.ParseAmount(amountString)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +63,7 @@ func (k Keeper) AddOrder(ctx context.Context, creator, denomGiving, denomReceivi
 		tradeAmountString = "0"
 	}
 
-	tradeAmount, err := ParseAmount(tradeAmountString)
+	tradeAmount, err := trading.ParseAmount(tradeAmountString)
 	if err != nil {
 		return nil, err
 	}

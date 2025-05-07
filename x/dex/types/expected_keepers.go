@@ -40,6 +40,7 @@ type ParamSubspace interface {
 }
 
 type DenomKeeper interface {
+	CalculateParity(ctx context.Context, kCoin string) (*math.LegacyDec, string, error)
 	CalculatePrice(ctx context.Context, denomGiving, denomReceiving string) (math.LegacyDec, error)
 	ConvertToExponent(ctx context.Context, denom string, amount math.LegacyDec, targetExponent uint64) (math.LegacyDec, error)
 	Denoms(ctx context.Context) []string
@@ -47,6 +48,7 @@ type DenomKeeper interface {
 	GetAllRatios(ctx context.Context) []denomtypes.Ratio
 	GetAuthority() string
 	GetCAssetByBaseName(ctx context.Context, baseDenom string) (denomtypes.CAsset, error)
+	//GetDenomValue(ctx context.Context, denom string) (math.LegacyDec, error)
 	GetHighestUSDReference(ctx context.Context) (string, error)
 	GetRatio(ctx context.Context, denom string) (denomtypes.Ratio, error)
 	GetPriceInUSD(ctx context.Context, denom string) (math.LegacyDec, error)
@@ -54,6 +56,7 @@ type DenomKeeper interface {
 	GetValueInFromUSD(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
 	GetValueInBase(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
 	GetValueInUSD(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
+	IsAboveParity(ctx context.Context, kCoin string) (bool, error)
 	IsCollateralDenom(ctx context.Context, denom string) bool
 	IsKCoin(ctx context.Context, denom string) bool
 	IsNativeDenom(ctx context.Context, denom string) bool

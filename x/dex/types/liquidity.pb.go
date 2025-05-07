@@ -25,7 +25,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type GenesisLiquidity struct {
+type GenesisLiquidityEntry struct {
 	Index         uint64                `protobuf:"varint,1,opt,name=index,proto3" json:"index,omitempty"`
 	Address       string                `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
 	Amount        cosmossdk_io_math.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=cosmossdk.io/math.Int" json:"amount"`
@@ -33,18 +33,18 @@ type GenesisLiquidity struct {
 	Denom         string                `protobuf:"bytes,5,opt,name=denom,proto3" json:"denom,omitempty"`
 }
 
-func (m *GenesisLiquidity) Reset()         { *m = GenesisLiquidity{} }
-func (m *GenesisLiquidity) String() string { return proto.CompactTextString(m) }
-func (*GenesisLiquidity) ProtoMessage()    {}
-func (*GenesisLiquidity) Descriptor() ([]byte, []int) {
+func (m *GenesisLiquidityEntry) Reset()         { *m = GenesisLiquidityEntry{} }
+func (m *GenesisLiquidityEntry) String() string { return proto.CompactTextString(m) }
+func (*GenesisLiquidityEntry) ProtoMessage()    {}
+func (*GenesisLiquidityEntry) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7e59490814d0a3d9, []int{0}
 }
-func (m *GenesisLiquidity) XXX_Unmarshal(b []byte) error {
+func (m *GenesisLiquidityEntry) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GenesisLiquidity) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GenesisLiquidityEntry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GenesisLiquidity.Marshal(b, m, deterministic)
+		return xxx_messageInfo_GenesisLiquidityEntry.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -54,40 +54,40 @@ func (m *GenesisLiquidity) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
-func (m *GenesisLiquidity) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GenesisLiquidity.Merge(m, src)
+func (m *GenesisLiquidityEntry) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GenesisLiquidityEntry.Merge(m, src)
 }
-func (m *GenesisLiquidity) XXX_Size() int {
+func (m *GenesisLiquidityEntry) XXX_Size() int {
 	return m.Size()
 }
-func (m *GenesisLiquidity) XXX_DiscardUnknown() {
-	xxx_messageInfo_GenesisLiquidity.DiscardUnknown(m)
+func (m *GenesisLiquidityEntry) XXX_DiscardUnknown() {
+	xxx_messageInfo_GenesisLiquidityEntry.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GenesisLiquidity proto.InternalMessageInfo
+var xxx_messageInfo_GenesisLiquidityEntry proto.InternalMessageInfo
 
-func (m *GenesisLiquidity) GetIndex() uint64 {
+func (m *GenesisLiquidityEntry) GetIndex() uint64 {
 	if m != nil {
 		return m.Index
 	}
 	return 0
 }
 
-func (m *GenesisLiquidity) GetAddress() string {
+func (m *GenesisLiquidityEntry) GetAddress() string {
 	if m != nil {
 		return m.Address
 	}
 	return ""
 }
 
-func (m *GenesisLiquidity) GetPositionIndex() uint64 {
+func (m *GenesisLiquidityEntry) GetPositionIndex() uint64 {
 	if m != nil {
 		return m.PositionIndex
 	}
 	return 0
 }
 
-func (m *GenesisLiquidity) GetDenom() string {
+func (m *GenesisLiquidityEntry) GetDenom() string {
 	if m != nil {
 		return m.Denom
 	}
@@ -159,6 +159,7 @@ type GenesisLiquidityPositions struct {
 	Address       string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 	PositionIndex uint64 `protobuf:"varint,2,opt,name=position_index,json=positionIndex,proto3" json:"position_index,omitempty"`
 	AutoCompound  bool   `protobuf:"varint,3,opt,name=auto_compound,json=autoCompound,proto3" json:"auto_compound,omitempty"`
+	CreatedAt     int64  `protobuf:"varint,4,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 }
 
 func (m *GenesisLiquidityPositions) Reset()         { *m = GenesisLiquidityPositions{} }
@@ -215,8 +216,16 @@ func (m *GenesisLiquidityPositions) GetAutoCompound() bool {
 	return false
 }
 
+func (m *GenesisLiquidityPositions) GetCreatedAt() int64 {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return 0
+}
+
 type LiquidityPosition struct {
-	AutoCompound bool `protobuf:"varint,1,opt,name=auto_compound,json=autoCompound,proto3" json:"auto_compound,omitempty"`
+	AutoCompound bool  `protobuf:"varint,1,opt,name=auto_compound,json=autoCompound,proto3" json:"auto_compound,omitempty"`
+	CreatedAt    int64 `protobuf:"varint,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 }
 
 func (m *LiquidityPosition) Reset()         { *m = LiquidityPosition{} }
@@ -259,6 +268,66 @@ func (m *LiquidityPosition) GetAutoCompound() bool {
 	return false
 }
 
+func (m *LiquidityPosition) GetCreatedAt() int64 {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return 0
+}
+
+type GenesisLiquidityAddressSum struct {
+	Address string                `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	Denom   string                `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+	Sum     cosmossdk_io_math.Int `protobuf:"bytes,3,opt,name=sum,proto3,customtype=cosmossdk.io/math.Int" json:"sum"`
+}
+
+func (m *GenesisLiquidityAddressSum) Reset()         { *m = GenesisLiquidityAddressSum{} }
+func (m *GenesisLiquidityAddressSum) String() string { return proto.CompactTextString(m) }
+func (*GenesisLiquidityAddressSum) ProtoMessage()    {}
+func (*GenesisLiquidityAddressSum) Descriptor() ([]byte, []int) {
+	return fileDescriptor_7e59490814d0a3d9, []int{4}
+}
+func (m *GenesisLiquidityAddressSum) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GenesisLiquidityAddressSum) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GenesisLiquidityAddressSum.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GenesisLiquidityAddressSum) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GenesisLiquidityAddressSum.Merge(m, src)
+}
+func (m *GenesisLiquidityAddressSum) XXX_Size() int {
+	return m.Size()
+}
+func (m *GenesisLiquidityAddressSum) XXX_DiscardUnknown() {
+	xxx_messageInfo_GenesisLiquidityAddressSum.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GenesisLiquidityAddressSum proto.InternalMessageInfo
+
+func (m *GenesisLiquidityAddressSum) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+func (m *GenesisLiquidityAddressSum) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
 type LiquiditySum struct {
 	Sum cosmossdk_io_math.Int `protobuf:"bytes,1,opt,name=sum,proto3,customtype=cosmossdk.io/math.Int" json:"sum"`
 }
@@ -267,7 +336,7 @@ func (m *LiquiditySum) Reset()         { *m = LiquiditySum{} }
 func (m *LiquiditySum) String() string { return proto.CompactTextString(m) }
 func (*LiquiditySum) ProtoMessage()    {}
 func (*LiquiditySum) Descriptor() ([]byte, []int) {
-	return fileDescriptor_7e59490814d0a3d9, []int{4}
+	return fileDescriptor_7e59490814d0a3d9, []int{5}
 }
 func (m *LiquiditySum) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -296,15 +365,60 @@ func (m *LiquiditySum) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_LiquiditySum proto.InternalMessageInfo
 
+type GenesisMovingLiquidity struct {
+	Denom  string                      `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Amount cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=amount,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"amount"`
+}
+
+func (m *GenesisMovingLiquidity) Reset()         { *m = GenesisMovingLiquidity{} }
+func (m *GenesisMovingLiquidity) String() string { return proto.CompactTextString(m) }
+func (*GenesisMovingLiquidity) ProtoMessage()    {}
+func (*GenesisMovingLiquidity) Descriptor() ([]byte, []int) {
+	return fileDescriptor_7e59490814d0a3d9, []int{6}
+}
+func (m *GenesisMovingLiquidity) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GenesisMovingLiquidity) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GenesisMovingLiquidity.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GenesisMovingLiquidity) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GenesisMovingLiquidity.Merge(m, src)
+}
+func (m *GenesisMovingLiquidity) XXX_Size() int {
+	return m.Size()
+}
+func (m *GenesisMovingLiquidity) XXX_DiscardUnknown() {
+	xxx_messageInfo_GenesisMovingLiquidity.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GenesisMovingLiquidity proto.InternalMessageInfo
+
+func (m *GenesisMovingLiquidity) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
 type MovingLiquidity struct {
-	DepositAmount cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=deposit_amount,json=depositAmount,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"deposit_amount"`
+	Amount cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=amount,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"amount"`
 }
 
 func (m *MovingLiquidity) Reset()         { *m = MovingLiquidity{} }
 func (m *MovingLiquidity) String() string { return proto.CompactTextString(m) }
 func (*MovingLiquidity) ProtoMessage()    {}
 func (*MovingLiquidity) Descriptor() ([]byte, []int) {
-	return fileDescriptor_7e59490814d0a3d9, []int{5}
+	return fileDescriptor_7e59490814d0a3d9, []int{7}
 }
 func (m *MovingLiquidity) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -334,48 +448,54 @@ func (m *MovingLiquidity) XXX_DiscardUnknown() {
 var xxx_messageInfo_MovingLiquidity proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*GenesisLiquidity)(nil), "kopi.dex.GenesisLiquidity")
+	proto.RegisterType((*GenesisLiquidityEntry)(nil), "kopi.dex.GenesisLiquidityEntry")
 	proto.RegisterType((*Liquidity)(nil), "kopi.dex.Liquidity")
 	proto.RegisterType((*GenesisLiquidityPositions)(nil), "kopi.dex.GenesisLiquidityPositions")
 	proto.RegisterType((*LiquidityPosition)(nil), "kopi.dex.LiquidityPosition")
+	proto.RegisterType((*GenesisLiquidityAddressSum)(nil), "kopi.dex.GenesisLiquidityAddressSum")
 	proto.RegisterType((*LiquiditySum)(nil), "kopi.dex.LiquiditySum")
+	proto.RegisterType((*GenesisMovingLiquidity)(nil), "kopi.dex.GenesisMovingLiquidity")
 	proto.RegisterType((*MovingLiquidity)(nil), "kopi.dex.MovingLiquidity")
 }
 
 func init() { proto.RegisterFile("kopi/dex/liquidity.proto", fileDescriptor_7e59490814d0a3d9) }
 
 var fileDescriptor_7e59490814d0a3d9 = []byte{
-	// 429 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x53, 0x4f, 0x8b, 0xd3, 0x40,
-	0x14, 0xcf, 0xec, 0x6e, 0xd7, 0xdd, 0xa1, 0x5d, 0x35, 0x54, 0x88, 0x2b, 0x66, 0x4b, 0x16, 0xa5,
-	0x17, 0x33, 0x07, 0x11, 0xbc, 0xa9, 0xab, 0x20, 0x2b, 0x2b, 0x48, 0xbc, 0x09, 0x52, 0xd2, 0xcc,
-	0x98, 0x0e, 0xed, 0xcc, 0x8b, 0x99, 0x19, 0x4d, 0x8e, 0x7e, 0x03, 0xaf, 0x7e, 0x11, 0x3f, 0x43,
-	0x8f, 0x3d, 0x8a, 0x87, 0x22, 0xed, 0x17, 0x91, 0x4c, 0x52, 0xff, 0xa5, 0xe0, 0x75, 0x6f, 0xf3,
-	0xde, 0xfb, 0xfd, 0x79, 0xf3, 0x4b, 0x06, 0x7b, 0x53, 0xc8, 0x38, 0xa1, 0xac, 0x20, 0x33, 0xfe,
-	0xde, 0x70, 0xca, 0x75, 0x19, 0x66, 0x39, 0x68, 0x70, 0x0f, 0xaa, 0x49, 0x48, 0x59, 0x71, 0xdc,
-	0x4f, 0x21, 0x05, 0xdb, 0x24, 0xd5, 0xa9, 0x9e, 0x1f, 0xfb, 0x29, 0x40, 0x3a, 0x63, 0xc4, 0x56,
-	0x63, 0xf3, 0x8e, 0x7c, 0xcc, 0xe3, 0x2c, 0x63, 0xb9, 0xaa, 0xe7, 0xc1, 0x57, 0x84, 0xaf, 0x3d,
-	0x67, 0x92, 0x29, 0xae, 0x2e, 0x36, 0xd2, 0x6e, 0x1f, 0x77, 0xb8, 0xa4, 0xac, 0xf0, 0xd0, 0x00,
-	0x0d, 0xf7, 0xa2, 0xba, 0x70, 0x3d, 0x7c, 0x25, 0xa6, 0x34, 0x67, 0x4a, 0x79, 0x3b, 0x03, 0x34,
-	0x3c, 0x8c, 0x36, 0xa5, 0xfb, 0x00, 0xef, 0xc7, 0x02, 0x8c, 0xd4, 0xde, 0xee, 0x00, 0x0d, 0xbb,
-	0x67, 0xb7, 0xe7, 0xcb, 0x13, 0xe7, 0xfb, 0xf2, 0xe4, 0x46, 0x02, 0x4a, 0x80, 0x52, 0x74, 0x1a,
-	0x72, 0x20, 0x22, 0xd6, 0x93, 0xf0, 0x5c, 0xea, 0xa8, 0x01, 0xbb, 0x77, 0xf0, 0x51, 0x06, 0x8a,
-	0x6b, 0x0e, 0x72, 0x54, 0xfb, 0xed, 0x59, 0xbf, 0xde, 0xa6, 0x7b, 0x6e, 0x7d, 0xfb, 0xb8, 0x43,
-	0x99, 0x04, 0xe1, 0x75, 0xac, 0x6b, 0x5d, 0x04, 0x5f, 0x10, 0x3e, 0xbc, 0xa4, 0x1b, 0x07, 0x9f,
-	0x10, 0xbe, 0xf9, 0x6f, 0xa8, 0xaf, 0x1a, 0x84, 0xfa, 0x73, 0x2b, 0xf4, 0xf7, 0x56, 0x6d, 0xf9,
-	0x9d, 0x6d, 0x81, 0x9c, 0xe2, 0x5e, 0x6c, 0x34, 0x8c, 0x12, 0x10, 0x19, 0x18, 0x49, 0xed, 0x1d,
-	0x0e, 0xa2, 0x6e, 0xd5, 0x7c, 0xda, 0xf4, 0x82, 0x87, 0xf8, 0x7a, 0xcb, 0xbb, 0xcd, 0x44, 0x5b,
-	0x98, 0x8f, 0x70, 0xf7, 0x17, 0xf3, 0xb5, 0x11, 0x2e, 0xc1, 0xbb, 0xca, 0x08, 0x0b, 0xfd, 0x6f,
-	0x50, 0x15, 0x32, 0x78, 0x8b, 0xaf, 0xbe, 0x84, 0x0f, 0x5c, 0xa6, 0xbf, 0xbf, 0xcf, 0x0b, 0x7c,
-	0x44, 0x99, 0xbd, 0xc5, 0xa8, 0xc9, 0xbd, 0x96, 0x3b, 0x6d, 0xe4, 0x6e, 0xb5, 0xe5, 0x2e, 0x58,
-	0x1a, 0x27, 0xe5, 0x33, 0x96, 0x44, 0xbd, 0x86, 0xfa, 0xc4, 0x32, 0xcf, 0x1e, 0xcf, 0x57, 0x3e,
-	0x5a, 0xac, 0x7c, 0xf4, 0x63, 0xe5, 0xa3, 0xcf, 0x6b, 0xdf, 0x59, 0xac, 0x7d, 0xe7, 0xdb, 0xda,
-	0x77, 0xde, 0xdc, 0x4d, 0xb9, 0x9e, 0x98, 0x71, 0x98, 0x80, 0x20, 0xd5, 0xbb, 0xb8, 0x27, 0x40,
-	0xb2, 0xd2, 0x1e, 0x49, 0x61, 0x9f, 0x8f, 0x2e, 0x33, 0xa6, 0xc6, 0xfb, 0xf6, 0xdf, 0xbf, 0xff,
-	0x33, 0x00, 0x00, 0xff, 0xff, 0x20, 0xa7, 0x41, 0x0e, 0x57, 0x03, 0x00, 0x00,
+	// 491 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x54, 0xc1, 0x6e, 0xd3, 0x40,
+	0x10, 0xcd, 0xba, 0x4d, 0x69, 0x46, 0x29, 0x08, 0x2b, 0x45, 0x26, 0xa8, 0x6e, 0xe4, 0x0a, 0x94,
+	0x0b, 0xf6, 0x01, 0x71, 0xe2, 0x00, 0x2d, 0x20, 0x54, 0xa9, 0x20, 0x64, 0x0e, 0x48, 0x5c, 0x22,
+	0xc7, 0xbb, 0xb8, 0xab, 0x74, 0x77, 0x8c, 0x77, 0x0d, 0xf1, 0x81, 0x7f, 0xe0, 0xca, 0x8d, 0xff,
+	0xe0, 0x07, 0x7a, 0xec, 0x11, 0x71, 0xa8, 0x50, 0xf2, 0x23, 0xc8, 0x6b, 0x27, 0xa4, 0x09, 0x82,
+	0x72, 0xe3, 0xb6, 0xf3, 0x66, 0xf4, 0xde, 0x9b, 0x9d, 0xd1, 0x80, 0x33, 0xc2, 0x94, 0x07, 0x94,
+	0x8d, 0x83, 0x13, 0xfe, 0x2e, 0xe7, 0x94, 0xeb, 0xc2, 0x4f, 0x33, 0xd4, 0x68, 0x6f, 0x96, 0x19,
+	0x9f, 0xb2, 0x71, 0xb7, 0x93, 0x60, 0x82, 0x06, 0x0c, 0xca, 0x57, 0x95, 0xef, 0xba, 0x09, 0x62,
+	0x72, 0xc2, 0x02, 0x13, 0x0d, 0xf3, 0xb7, 0xc1, 0x87, 0x2c, 0x4a, 0x53, 0x96, 0xa9, 0x2a, 0xef,
+	0x7d, 0x25, 0xb0, 0xfd, 0x8c, 0x49, 0xa6, 0xb8, 0x3a, 0x9a, 0x51, 0x3f, 0x95, 0x3a, 0x2b, 0xec,
+	0x0e, 0x34, 0xb9, 0xa4, 0x6c, 0xec, 0x90, 0x1e, 0xe9, 0xaf, 0x87, 0x55, 0x60, 0x3b, 0x70, 0x25,
+	0xa2, 0x34, 0x63, 0x4a, 0x39, 0x56, 0x8f, 0xf4, 0x5b, 0xe1, 0x2c, 0xb4, 0xef, 0xc3, 0x46, 0x24,
+	0x30, 0x97, 0xda, 0x59, 0xeb, 0x91, 0x7e, 0xfb, 0x60, 0xe7, 0xf4, 0x7c, 0xb7, 0xf1, 0xfd, 0x7c,
+	0x77, 0x3b, 0x46, 0x25, 0x50, 0x29, 0x3a, 0xf2, 0x39, 0x06, 0x22, 0xd2, 0xc7, 0xfe, 0xa1, 0xd4,
+	0x61, 0x5d, 0x6c, 0xdf, 0x86, 0xab, 0x29, 0x2a, 0xae, 0x39, 0xca, 0x41, 0xa5, 0xb7, 0x6e, 0xf4,
+	0xb6, 0x66, 0xe8, 0xa1, 0xd1, 0xed, 0x40, 0x93, 0x32, 0x89, 0xc2, 0x69, 0x1a, 0xd5, 0x2a, 0xf0,
+	0x3e, 0x13, 0x68, 0xcd, 0x6d, 0xff, 0x5f, 0x8e, 0xbd, 0x2f, 0x04, 0x6e, 0x2e, 0xff, 0xec, 0xcb,
+	0xba, 0x42, 0x2d, 0xba, 0x22, 0x17, 0x5d, 0xad, 0xd2, 0x5b, 0xbf, 0xfb, 0x90, 0x3d, 0xd8, 0x8a,
+	0x72, 0x8d, 0x83, 0x18, 0x45, 0x8a, 0xb9, 0xa4, 0xa6, 0x87, 0xcd, 0xb0, 0x5d, 0x82, 0x8f, 0x6b,
+	0xcc, 0xde, 0x01, 0x88, 0x33, 0x16, 0x69, 0x46, 0x07, 0x91, 0x36, 0x36, 0xd7, 0xc2, 0x56, 0x8d,
+	0xec, 0x6b, 0xef, 0x35, 0x5c, 0x5f, 0xb1, 0xb6, 0x4a, 0x4c, 0xfe, 0x4a, 0x6c, 0x2d, 0x13, 0x7f,
+	0x84, 0xee, 0x72, 0xeb, 0xfb, 0x55, 0x7b, 0xaf, 0x72, 0xf1, 0x87, 0xde, 0xe7, 0x53, 0xb6, 0x16,
+	0xa6, 0x6c, 0x07, 0xb0, 0xa6, 0x72, 0x71, 0xb9, 0x21, 0x95, 0x95, 0xde, 0x43, 0x68, 0xcf, 0x75,
+	0x4b, 0xc1, 0x9a, 0x80, 0x5c, 0x9a, 0x60, 0x04, 0x37, 0x6a, 0xff, 0xcf, 0xf1, 0x3d, 0x97, 0xc9,
+	0x85, 0x1d, 0xab, 0x1c, 0x92, 0x45, 0x87, 0x0f, 0xe6, 0x9b, 0x64, 0x19, 0x8d, 0xbd, 0x5a, 0xe3,
+	0xd6, 0xaa, 0xc6, 0x11, 0x4b, 0xa2, 0xb8, 0x78, 0xc2, 0xe2, 0xd9, 0x3e, 0x79, 0x2f, 0xe0, 0xda,
+	0xb2, 0xca, 0x2f, 0x3e, 0xf2, 0xcf, 0x7c, 0x07, 0x8f, 0x4e, 0x27, 0x2e, 0x39, 0x9b, 0xb8, 0xe4,
+	0xc7, 0xc4, 0x25, 0x9f, 0xa6, 0x6e, 0xe3, 0x6c, 0xea, 0x36, 0xbe, 0x4d, 0xdd, 0xc6, 0x9b, 0x3b,
+	0x09, 0xd7, 0xc7, 0xf9, 0xd0, 0x8f, 0x51, 0x04, 0xe5, 0xdd, 0xb8, 0x2b, 0x50, 0xb2, 0xc2, 0x3c,
+	0x83, 0xb1, 0x39, 0x2f, 0xba, 0x48, 0x99, 0x1a, 0x6e, 0x98, 0xdb, 0x70, 0xef, 0x67, 0x00, 0x00,
+	0x00, 0xff, 0xff, 0x9a, 0x4e, 0x92, 0xd0, 0x77, 0x04, 0x00, 0x00,
 }
 
-func (m *GenesisLiquidity) Marshal() (dAtA []byte, err error) {
+func (m *GenesisLiquidityEntry) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -385,12 +505,12 @@ func (m *GenesisLiquidity) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GenesisLiquidity) MarshalTo(dAtA []byte) (int, error) {
+func (m *GenesisLiquidityEntry) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GenesisLiquidity) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *GenesisLiquidityEntry) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -502,6 +622,11 @@ func (m *GenesisLiquidityPositions) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	_ = i
 	var l int
 	_ = l
+	if m.CreatedAt != 0 {
+		i = encodeVarintLiquidity(dAtA, i, uint64(m.CreatedAt))
+		i--
+		dAtA[i] = 0x20
+	}
 	if m.AutoCompound {
 		i--
 		if m.AutoCompound {
@@ -547,6 +672,11 @@ func (m *LiquidityPosition) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.CreatedAt != 0 {
+		i = encodeVarintLiquidity(dAtA, i, uint64(m.CreatedAt))
+		i--
+		dAtA[i] = 0x10
+	}
 	if m.AutoCompound {
 		i--
 		if m.AutoCompound {
@@ -556,6 +686,53 @@ func (m *LiquidityPosition) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		}
 		i--
 		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GenesisLiquidityAddressSum) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GenesisLiquidityAddressSum) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GenesisLiquidityAddressSum) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.Sum.Size()
+		i -= size
+		if _, err := m.Sum.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintLiquidity(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintLiquidity(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintLiquidity(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -593,6 +770,46 @@ func (m *LiquiditySum) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *GenesisMovingLiquidity) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GenesisMovingLiquidity) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GenesisMovingLiquidity) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.Amount.Size()
+		i -= size
+		if _, err := m.Amount.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintLiquidity(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintLiquidity(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *MovingLiquidity) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -614,9 +831,9 @@ func (m *MovingLiquidity) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	var l int
 	_ = l
 	{
-		size := m.DepositAmount.Size()
+		size := m.Amount.Size()
 		i -= size
-		if _, err := m.DepositAmount.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.Amount.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintLiquidity(dAtA, i, uint64(size))
@@ -637,7 +854,7 @@ func encodeVarintLiquidity(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *GenesisLiquidity) Size() (n int) {
+func (m *GenesisLiquidityEntry) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -699,6 +916,9 @@ func (m *GenesisLiquidityPositions) Size() (n int) {
 	if m.AutoCompound {
 		n += 2
 	}
+	if m.CreatedAt != 0 {
+		n += 1 + sovLiquidity(uint64(m.CreatedAt))
+	}
 	return n
 }
 
@@ -711,6 +931,28 @@ func (m *LiquidityPosition) Size() (n int) {
 	if m.AutoCompound {
 		n += 2
 	}
+	if m.CreatedAt != 0 {
+		n += 1 + sovLiquidity(uint64(m.CreatedAt))
+	}
+	return n
+}
+
+func (m *GenesisLiquidityAddressSum) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovLiquidity(uint64(l))
+	}
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovLiquidity(uint64(l))
+	}
+	l = m.Sum.Size()
+	n += 1 + l + sovLiquidity(uint64(l))
 	return n
 }
 
@@ -725,13 +967,28 @@ func (m *LiquiditySum) Size() (n int) {
 	return n
 }
 
+func (m *GenesisMovingLiquidity) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovLiquidity(uint64(l))
+	}
+	l = m.Amount.Size()
+	n += 1 + l + sovLiquidity(uint64(l))
+	return n
+}
+
 func (m *MovingLiquidity) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = m.DepositAmount.Size()
+	l = m.Amount.Size()
 	n += 1 + l + sovLiquidity(uint64(l))
 	return n
 }
@@ -742,7 +999,7 @@ func sovLiquidity(x uint64) (n int) {
 func sozLiquidity(x uint64) (n int) {
 	return sovLiquidity(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *GenesisLiquidity) Unmarshal(dAtA []byte) error {
+func (m *GenesisLiquidityEntry) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -765,10 +1022,10 @@ func (m *GenesisLiquidity) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GenesisLiquidity: wiretype end group for non-group")
+			return fmt.Errorf("proto: GenesisLiquidityEntry: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GenesisLiquidity: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: GenesisLiquidityEntry: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1180,6 +1437,25 @@ func (m *GenesisLiquidityPositions) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.AutoCompound = bool(v != 0)
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
+			}
+			m.CreatedAt = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowLiquidity
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CreatedAt |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipLiquidity(dAtA[iNdEx:])
@@ -1250,6 +1526,172 @@ func (m *LiquidityPosition) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.AutoCompound = bool(v != 0)
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
+			}
+			m.CreatedAt = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowLiquidity
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CreatedAt |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipLiquidity(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthLiquidity
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GenesisLiquidityAddressSum) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowLiquidity
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GenesisLiquidityAddressSum: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GenesisLiquidityAddressSum: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowLiquidity
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthLiquidity
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthLiquidity
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowLiquidity
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthLiquidity
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthLiquidity
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sum", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowLiquidity
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthLiquidity
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthLiquidity
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Sum.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipLiquidity(dAtA[iNdEx:])
@@ -1354,6 +1796,121 @@ func (m *LiquiditySum) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *GenesisMovingLiquidity) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowLiquidity
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GenesisMovingLiquidity: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GenesisMovingLiquidity: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowLiquidity
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthLiquidity
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthLiquidity
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowLiquidity
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthLiquidity
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthLiquidity
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipLiquidity(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthLiquidity
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *MovingLiquidity) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1385,7 +1942,7 @@ func (m *MovingLiquidity) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DepositAmount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
 			}
 			var byteLen int
 			for shift := uint(0); ; shift += 7 {
@@ -1412,7 +1969,7 @@ func (m *MovingLiquidity) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.DepositAmount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

@@ -27,7 +27,7 @@ message Params {
     (gogoproto.nullable)   = false
   ];
 
-  bytes virtual_liquidity_decay = 4 [
+  bytes price_increasing_factor = 4 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
@@ -55,4 +55,6 @@ message Params {
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
+
+  int64 minimum_liquidity_lock_in_blocks = 11;
 }

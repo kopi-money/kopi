@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"github.com/kopi-money/kopi/trading"
 	"strconv"
 
 	"cosmossdk.io/math"
@@ -12,18 +13,18 @@ import (
 )
 
 func (k msgServer) AddLiquidity(ctx context.Context, msg *types.MsgAddLiquidity) (*types.MsgAddLiquidityResponse, error) {
-	amount, err := ParseAmount(msg.Amount)
+	amount, err := trading.ParseAmount(msg.Amount)
 	if err != nil {
-		return nil, fmt.Errorf("could not parse amount: %w", err)
+		return nil, fmt.Errorf("parse amount: %w", err)
 	}
 
 	if err = k.precheckTrade(ctx, msg.Creator, msg.Denom, &amount, false); err != nil {
-		return nil, fmt.Errorf("could not validate message: %w", err)
+		return nil, fmt.Errorf("validate message: %w", err)
 	}
 
 	acc, _ := sdk.AccAddressFromBech32(msg.Creator)
-	if _, err = k.Keeper.AddLiquidityWithCompound(ctx, acc, msg.Denom, amount, msg.AutoCompound); err != nil {
-		return nil, fmt.Errorf("could not add liquidity: %w", err)
+	if err = k.Keeper.AddLiquidityWithCompound(ctx, acc, msg.Denom, amount, msg.AutoCompound); err != nil {
+		return nil, fmt.Errorf("add liquidity: %w", err)
 	}
 
 	return &types.MsgAddLiquidityResponse{}, nil
@@ -151,6 +152,18 @@ func (k Keeper) RemoveLiquidityForAddress(ctx context.Context, accAddr sdk.AccAd
 	iterator := k.liquidityEntries.Iterator(ctx, nil, denom)
 	for iterator.Valid() {
 		liq := iterator.GetNext()
+		if liq.Address != address {
+			continue
+		}
+
+		canUnlock, err := k.canUnlock(ctx, address, liq.PositionIndex)
+		if err != nil {
+			return math.Int{}, fmt.Errorf("can unlock: %w", err)
+		}
+
+		if !canUnlock {
+			continue
+		}
 
 		if liq.Address == address && (positionIndex == nil || *positionIndex == liq.PositionIndex) {
 			var amountRemovedForPosition math.Int
@@ -196,9 +209,10 @@ func (k Keeper) RemoveLiquidityForAddress(ctx context.Context, accAddr sdk.AccAd
 
 	coins := sdk.NewCoins(sdk.NewCoin(denom, removed))
 	if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolLiquidity, accAddr, coins); err != nil {
-		return math.Int{}, fmt.Errorf("could not send coins from module to account: %w", err)
+		return math.Int{}, fmt.Errorf("send coins from module to account: %w", err)
 	}
 
+	k.capMovingLiquidity(ctx, denom)
 	return removed, nil
 }
 

@@ -28,7 +28,10 @@ func (lps LiquidityProviders) amountSum() math.Int {
 	return sum
 }
 
-func (k Keeper) determineLiquidityProviders(ctx types.TradeStepContext, amountToReceiveLeft math.Int, denomTo string, receivingAddress string, protocolTrade bool) (LiquidityProviders, math.Int, error) {
+// determineLiquidityProviders is called when executing a trade: When, for example, a user trades kUSD to XKP, this
+// function determines which XKP liquidity entries to use. The liquidity providers will in return receive the kUSD given
+// into the global pool.
+func (k Keeper) determineLiquidityProviders(ctx types.TradeContext, amountToReceiveLeft math.Int, denomTo string, receivingAddress string, protocolTrade bool) (LiquidityProviders, math.Int, error) {
 	var (
 		liquidityProviders LiquidityProviders
 		liquidityUsed      math.Int
@@ -70,15 +73,16 @@ func (k Keeper) determineLiquidityProviders(ctx types.TradeStepContext, amountTo
 
 		k.AddLiquidityAddressSum(ctx, liq.Address, denomTo, liquidityUsed.Neg())
 		if liq.Amount.IsZero() {
-			k.RemoveLiquidity(ctx.TradeContext.Context, denomTo, liq.Index)
+			k.RemoveLiquidity(ctx, denomTo, liq.Index)
 			deleteIndexes = append(deleteIndexes, index)
 		} else {
-			k.SetLiquidity(ctx.TradeContext.Context, denomTo, liq)
+			k.SetLiquidity(ctx, denomTo, liq)
 			liquidityList[index] = liq
 		}
 	}
 
-	ctx.OrdersCaches.LiquidityPool.Set(ctx.OrdersCaches.LiquidityPool.Get().Sub(sdk.NewCoin(denomTo, sumUsed)))
+	// The data stored in cache has to be be updated too the be aligned with what is stored in storage.
+	ctx.OrdersCaches.SubtractLiquidity(denomTo, sumUsed)
 	liquidityList = removeIndexes(liquidityList, deleteIndexes)
 	ctx.OrdersCaches.LiquidityMap.Set(denomTo, liquidityList)
 	ctx.TradeBalances.AddTransfer(
@@ -86,6 +90,9 @@ func (k Keeper) determineLiquidityProviders(ctx types.TradeStepContext, amountTo
 		ctx.OrdersCaches.AccPoolTrade.Get().String(),
 		denomTo, sumUsed,
 	)
+
+	movLiq := k.capMovingLiquidity(ctx, denomTo)
+	ctx.OrdersCaches.MovingLiquidity.Set(denomTo, movLiq)
 
 	return liquidityProviders, amountToReceiveLeft, nil
 }
@@ -100,7 +107,9 @@ func removeIndexes(liquidityList []types.Liquidity, indexes []int) []types.Liqui
 	return liquidityList
 }
 
-func (k Keeper) distributeGivenFunds(ctx types.TradeStepContext, ordersCaches *types.OrdersCaches, liquidityProviders LiquidityProviders, fundsToDistribute, fundsTaken math.Int, denom string) error {
+// distributeGivenFunds is called when executing a trade. When, for example, a user trades kUSD to XKP and XKP has been
+// removed from the pool, the liquidity providers whose liquidity is used are given kUSD in exchange in this function.
+func (k Keeper) distributeGivenFunds(ctx types.TradeContext, ordersCaches *types.OrdersCaches, liquidityProviders LiquidityProviders, fundsToDistribute, fundsTaken math.Int, denom string) error {
 	var (
 		liquidityEntries           = ordersCaches.LiquidityMap.Get(denom)
 		fundsToDistributeRemaining = fundsToDistribute
@@ -128,30 +137,25 @@ func (k Keeper) distributeGivenFunds(ctx types.TradeStepContext, ordersCaches *t
 
 		if eligable.IsPositive() {
 			positionIndex := liquidityProvider.positionIndex
-			if k.addressIsExcluded(ctx, liquidityProvider.address) {
-				positionIndex = 0
-			}
-
 			if positionIndex > 0 {
 				sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 					sdk.NewEvent("liquidity_swap",
 						sdk.Attribute{Key: "position_index", Value: strconv.Itoa(int(liquidityProvider.positionIndex))},
-						sdk.Attribute{Key: "denom_received", Value: ctx.StepDenomGiving},
-						sdk.Attribute{Key: "denom_used", Value: ctx.StepDenomReceiving},
+						sdk.Attribute{Key: "denom_received", Value: ctx.TradeDenomReceiving},
+						sdk.Attribute{Key: "denom_used", Value: ctx.TradeDenomGiving},
 						sdk.Attribute{Key: "liquidity_used", Value: taken.String()},
 						sdk.Attribute{Key: "liquidity_received", Value: eligable.String()},
 					),
 				)
 			}
 
-			liquidityEntries, _ = k.addLiquidity(ctx.TradeContext.Context, denom, liquidityProvider.address, eligable, liquidityEntries, positionIndex)
+			liquidityEntries, _ = k.addLiquidity(ctx.Context, denom, liquidityProvider.address, eligable, liquidityEntries, positionIndex)
 			fundsToDistributeRemaining = fundsToDistributeRemaining.Sub(eligable)
 		}
-
 	}
 
 	ordersCaches.LiquidityMap.Set(denom, liquidityEntries)
-	ctx.OrdersCaches.LiquidityPool.Set(ctx.OrdersCaches.LiquidityPool.Get().Add(sdk.NewCoin(denom, fundsToDistribute)))
+	ctx.OrdersCaches.AddLiquidity(denom, fundsToDistribute)
 	ctx.TradeBalances.AddTransfer(
 		ordersCaches.AccPoolTrade.Get().String(),
 		ordersCaches.AccPoolLiquidity.Get().String(),

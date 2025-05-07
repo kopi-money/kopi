@@ -57,8 +57,8 @@ func (k Keeper) getProviderFee(ctx context.Context) math.LegacyDec {
 	return k.GetTradeFee(ctx).Mul(k.GetReserveFeeShare(ctx))
 }
 
-func (k Keeper) getVirtualLiquidityDecay(ctx context.Context) math.LegacyDec {
-	return k.GetParams(ctx).VirtualLiquidityDecay
+func (k Keeper) getPriceIncreasingFactor(ctx context.Context) math.LegacyDec {
+	return k.GetParams(ctx).PriceIncreasingFactor
 }
 
 func (k Keeper) getEpochLength(ctx context.Context) uint64 {
@@ -75,4 +75,9 @@ func (k Keeper) getLiquiditySpreadDecayFromDeposits(ctx context.Context) math.Le
 	}
 
 	return params.LiquidityChangeDecayFromDeposits
+}
+
+func (k Keeper) getMinimumLiquidityLockInBlocks(ctx context.Context) int64 {
+	params := k.GetParams(ctx)
+	return params.MinimumLiquidityLockInBlocks
 }

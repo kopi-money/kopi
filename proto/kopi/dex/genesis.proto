@@ -3,6 +3,7 @@ syntax = "proto3";
 package kopi.dex;
 
 import "gogoproto/gogo.proto";
+import "kopi/dex/epochs.proto";
 import "kopi/dex/params.proto";
 import "kopi/dex/liquidity.proto";
 import "kopi/dex/order.proto";
@@ -14,17 +15,53 @@ option go_package = "github.com/kopi-money/kopi/x/dex/types";
 
 // GenesisState defines the dex module's genesis state.
 message GenesisState {
-  Params        params = 1 [(gogoproto.nullable) = false];
+  Params params = 1 [
+    (gogoproto.nullable) = false
+  ];
 
-  repeated GenesisLiquidity       liquidity_list = 2 [(gogoproto.nullable) = false];
-  repeated GenesisLiquidityPositions liquidity_positions_list = 8 [(gogoproto.nullable) = false];
-  repeated Order                  orderList = 3 [(gogoproto.nullable) = false];
-  repeated WalletTradeAmount      wallet_trade_amount = 4 [(gogoproto.nullable) = false];
+  repeated GenesisLiquidityEntry liquidity_entries = 2 [
+    (gogoproto.nullable) = false
+  ];
 
-  uint64 liquidity_next_index = 5;
-  uint64 order_next_index = 6;
-  uint64 liquidity_deposit_next_index = 7;
+  repeated GenesisLiquidityPositions liquidity_positions = 3 [
+    (gogoproto.nullable) = false
+  ];
 
+  repeated GenesisLiquidityAddressSum liquidity_address_sums = 4 [
+    (gogoproto.nullable) = false
+  ];
+
+  repeated Order orders = 5 [
+    (gogoproto.nullable) = false
+  ];
+
+  repeated GenesisWalletTradeAmount wallet_trade_amounts = 6 [
+    (gogoproto.nullable) = false
+  ];
+
+  repeated GenesisEpochShares epoch_shares = 7 [
+    (gogoproto.nullable) = false
+  ];
+
+  repeated GenesisEpochLeftover epoch_leftovers = 8 [
+    (gogoproto.nullable) = false
+  ];
+
+  EpochShares epoch_shares_sum = 9 [
+    (gogoproto.nullable) = false
+  ];
+
+  EpochStartTime epoch_start_time = 10 [
+    (gogoproto.nullable) = false
+  ];
+
+  repeated GenesisMovingLiquidity moving_liquidity = 11 [
+    (gogoproto.nullable) = false
+  ];
+
+  uint64 liquidity_next_index = 12;
+  uint64 order_next_index = 13;
+  uint64 liquidity_positions_next_index = 14;
 
   // this line is used by starport scaffolding # genesis/proto/state
 }

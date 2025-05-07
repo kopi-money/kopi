@@ -5,10 +5,16 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/dex/types";
 
-message WalletTradeAmount {
+message GenesisWalletTradeAmount {
   string address = 1;
-
   bytes amount = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message WalletTradeAmount {
+  bytes amount = 1 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];

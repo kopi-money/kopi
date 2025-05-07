@@ -20,8 +20,7 @@ func (k Keeper) AddTradeAmount(ctx context.Context, address string, amount math.
 	tradeAmount, has := k.tradeAmounts.Get(ctx, address)
 	if !has {
 		tradeAmount = types.WalletTradeAmount{
-			Address: address,
-			Amount:  math.LegacyZeroDec(),
+			Amount: math.LegacyZeroDec(),
 		}
 	}
 
@@ -34,18 +33,19 @@ func (k Keeper) TradeAmountDecay(ctx context.Context) {
 	decayFactor := k.GetParams(ctx).TradeAmountDecay
 
 	for iterator.Valid() {
-		tradeAmount := iterator.GetNext()
+		keyValue := iterator.GetNextKeyValue()
+		tradeAmount := keyValue.Value().Value()
 
 		if tradeAmount.Amount.IsNil() || tradeAmount.Amount.LT(math.LegacyNewDec(1_000_000)) {
-			k.tradeAmounts.Remove(ctx, tradeAmount.Address)
+			k.tradeAmounts.Remove(ctx, keyValue.Key())
 		} else {
 			tradeAmount.Amount = tradeAmount.Amount.Mul(decayFactor)
-			k.tradeAmounts.Set(ctx, tradeAmount.Address, tradeAmount)
+			k.tradeAmounts.Set(ctx, keyValue.Key(), *tradeAmount)
 		}
 	}
 }
 
-func (k Keeper) getTradeDiscount(ctx context.Context, address string, excludeFromDiscount bool) math.LegacyDec {
+func (k Keeper) getTradeDiscount(ctx context.Context, discountLevels []types.DiscountLevel, address string, excludeFromDiscount bool) math.LegacyDec {
 	if excludeFromDiscount {
 		return math.LegacyZeroDec()
 	}
@@ -63,7 +63,6 @@ func (k Keeper) getTradeDiscount(ctx context.Context, address string, excludeFro
 		return math.LegacyZeroDec()
 	}
 
-	discountLevels := k.GetParams(ctx).DiscountLevels
 	discountAmount := math.LegacyZeroDec()
 	discount := math.LegacyZeroDec()
 
@@ -76,4 +75,18 @@ func (k Keeper) getTradeDiscount(ctx context.Context, address string, excludeFro
 	}
 
 	return discount
+}
+
+func (k Keeper) exportTradeAmountsToGenesis(ctx context.Context) (list []types.GenesisWalletTradeAmount) {
+	iterator := k.tradeAmounts.Iterator(ctx, nil)
+	for iterator.Valid() {
+		keyValue := iterator.GetNextKeyValue()
+
+		list = append(list, types.GenesisWalletTradeAmount{
+			Address: keyValue.Key(),
+			Amount:  keyValue.Value().Value().Amount,
+		})
+	}
+
+	return nil
 }

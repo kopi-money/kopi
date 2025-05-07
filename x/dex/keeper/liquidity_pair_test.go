@@ -34,10 +34,8 @@ func TestLiquidityPairs1(t *testing.T) {
 	liq = k.GetPoolLiquidity(ctx, constants.KUSD)
 	require.Equal(t, int64(0), liq.Int64())
 
-	pair, err := k.GetLiquidityPair(ctx, constants.KUSD)
+	_, err = k.GetLiquidityPair(ctx, constants.KUSD)
 	require.NoError(t, err)
-	require.Equal(t, math.LegacyZeroDec(), pair.VirtualBase)
-	require.Equal(t, math.LegacyNewDec(0), pair.VirtualOther)
 
 	// Add 1 kUSD
 	// Expected:
@@ -54,10 +52,8 @@ func TestLiquidityPairs1(t *testing.T) {
 	liq = k.GetPoolLiquidity(ctx, constants.KUSD)
 	require.Equal(t, int64(1), liq.Int64())
 
-	pair, err = k.GetLiquidityPair(ctx, constants.KUSD)
+	_, err = k.GetLiquidityPair(ctx, constants.KUSD)
 	require.NoError(t, err)
-	require.Equal(t, math.LegacyNewDec(0), pair.VirtualBase)
-	require.Equal(t, math.LegacyNewDec(0), pair.VirtualOther)
 
 	ratio, err := k.DenomKeeper.GetRatio(ctx, constants.KUSD)
 	require.NoError(t, err)
@@ -79,10 +75,8 @@ func TestLiquidityPairs1(t *testing.T) {
 	liq = k.GetPoolLiquidity(ctx, constants.KUSD)
 	require.Equal(t, int64(2), liq.Int64())
 
-	pair, err = k.GetLiquidityPair(ctx, constants.KUSD)
+	_, err = k.GetLiquidityPair(ctx, constants.KUSD)
 	require.NoError(t, err)
-	require.Equal(t, int64(0), pair.VirtualBase.TruncateInt().Int64())
-	require.Equal(t, int64(0), pair.VirtualOther.TruncateInt().Int64())
 
 	ratio, err = k.DenomKeeper.GetRatio(ctx, constants.KUSD)
 	require.NoError(t, err)
@@ -104,10 +98,8 @@ func TestLiquidityPairs1(t *testing.T) {
 	liq = k.GetPoolLiquidity(ctx, constants.KUSD)
 	require.Equal(t, int64(2), liq.Int64())
 
-	pair, err = k.GetLiquidityPair(ctx, constants.KUSD)
+	_, err = k.GetLiquidityPair(ctx, constants.KUSD)
 	require.NoError(t, err)
-	require.Equal(t, math.LegacyNewDec(0), pair.VirtualBase)
-	require.Equal(t, math.LegacyNewDec(0), pair.VirtualOther)
 
 	// Remove 4 XKP
 	// Expected:
@@ -124,14 +116,6 @@ func TestLiquidityPairs1(t *testing.T) {
 	liq = k.GetPoolLiquidity(ctx, constants.KUSD)
 	require.Equal(t, int64(2), liq.Int64())
 
-	pair, err = k.GetLiquidityPair(ctx, constants.KUSD)
+	_, err = k.GetLiquidityPair(ctx, constants.KUSD)
 	require.NoError(t, err)
-	require.Equal(t, int64(0), pair.VirtualBase.TruncateInt().Int64())
-	require.Equal(t, int64(0), pair.VirtualOther.TruncateInt().Int64())
-}
-
-func TestLiquidityPairs2(t *testing.T) {
-	_, msg, ctx := keepertest.SetupDexMsgServer(t)
-	err := keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1)
-	require.NotNil(t, err)
 }

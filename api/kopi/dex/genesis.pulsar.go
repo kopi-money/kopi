@@ -16,7 +16,7 @@ import (
 var _ protoreflect.List = (*_GenesisState_2_list)(nil)
 
 type _GenesisState_2_list struct {
-	list *[]*GenesisLiquidity
+	list *[]*GenesisLiquidityEntry
 }
 
 func (x *_GenesisState_2_list) Len() int {
@@ -32,18 +32,18 @@ func (x *_GenesisState_2_list) Get(i int) protoreflect.Value {
 
 func (x *_GenesisState_2_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*GenesisLiquidity)
+	concreteValue := valueUnwrapped.Interface().(*GenesisLiquidityEntry)
 	(*x.list)[i] = concreteValue
 }
 
 func (x *_GenesisState_2_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*GenesisLiquidity)
+	concreteValue := valueUnwrapped.Interface().(*GenesisLiquidityEntry)
 	*x.list = append(*x.list, concreteValue)
 }
 
 func (x *_GenesisState_2_list) AppendMutable() protoreflect.Value {
-	v := new(GenesisLiquidity)
+	v := new(GenesisLiquidityEntry)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
@@ -56,7 +56,7 @@ func (x *_GenesisState_2_list) Truncate(n int) {
 }
 
 func (x *_GenesisState_2_list) NewElement() protoreflect.Value {
-	v := new(GenesisLiquidity)
+	v := new(GenesisLiquidityEntry)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
@@ -64,61 +64,10 @@ func (x *_GenesisState_2_list) IsValid() bool {
 	return x.list != nil
 }
 
-var _ protoreflect.List = (*_GenesisState_8_list)(nil)
-
-type _GenesisState_8_list struct {
-	list *[]*GenesisLiquidityPositions
-}
-
-func (x *_GenesisState_8_list) Len() int {
-	if x.list == nil {
-		return 0
-	}
-	return len(*x.list)
-}
-
-func (x *_GenesisState_8_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
-}
-
-func (x *_GenesisState_8_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*GenesisLiquidityPositions)
-	(*x.list)[i] = concreteValue
-}
-
-func (x *_GenesisState_8_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*GenesisLiquidityPositions)
-	*x.list = append(*x.list, concreteValue)
-}
-
-func (x *_GenesisState_8_list) AppendMutable() protoreflect.Value {
-	v := new(GenesisLiquidityPositions)
-	*x.list = append(*x.list, v)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_GenesisState_8_list) Truncate(n int) {
-	for i := n; i < len(*x.list); i++ {
-		(*x.list)[i] = nil
-	}
-	*x.list = (*x.list)[:n]
-}
-
-func (x *_GenesisState_8_list) NewElement() protoreflect.Value {
-	v := new(GenesisLiquidityPositions)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
-}
-
-func (x *_GenesisState_8_list) IsValid() bool {
-	return x.list != nil
-}
-
 var _ protoreflect.List = (*_GenesisState_3_list)(nil)
 
 type _GenesisState_3_list struct {
-	list *[]*Order
+	list *[]*GenesisLiquidityPositions
 }
 
 func (x *_GenesisState_3_list) Len() int {
@@ -134,18 +83,18 @@ func (x *_GenesisState_3_list) Get(i int) protoreflect.Value {
 
 func (x *_GenesisState_3_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Order)
+	concreteValue := valueUnwrapped.Interface().(*GenesisLiquidityPositions)
 	(*x.list)[i] = concreteValue
 }
 
 func (x *_GenesisState_3_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Order)
+	concreteValue := valueUnwrapped.Interface().(*GenesisLiquidityPositions)
 	*x.list = append(*x.list, concreteValue)
 }
 
 func (x *_GenesisState_3_list) AppendMutable() protoreflect.Value {
-	v := new(Order)
+	v := new(GenesisLiquidityPositions)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
@@ -158,7 +107,7 @@ func (x *_GenesisState_3_list) Truncate(n int) {
 }
 
 func (x *_GenesisState_3_list) NewElement() protoreflect.Value {
-	v := new(Order)
+	v := new(GenesisLiquidityPositions)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
@@ -169,7 +118,7 @@ func (x *_GenesisState_3_list) IsValid() bool {
 var _ protoreflect.List = (*_GenesisState_4_list)(nil)
 
 type _GenesisState_4_list struct {
-	list *[]*WalletTradeAmount
+	list *[]*GenesisLiquidityAddressSum
 }
 
 func (x *_GenesisState_4_list) Len() int {
@@ -185,18 +134,18 @@ func (x *_GenesisState_4_list) Get(i int) protoreflect.Value {
 
 func (x *_GenesisState_4_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*WalletTradeAmount)
+	concreteValue := valueUnwrapped.Interface().(*GenesisLiquidityAddressSum)
 	(*x.list)[i] = concreteValue
 }
 
 func (x *_GenesisState_4_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*WalletTradeAmount)
+	concreteValue := valueUnwrapped.Interface().(*GenesisLiquidityAddressSum)
 	*x.list = append(*x.list, concreteValue)
 }
 
 func (x *_GenesisState_4_list) AppendMutable() protoreflect.Value {
-	v := new(WalletTradeAmount)
+	v := new(GenesisLiquidityAddressSum)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
@@ -209,7 +158,7 @@ func (x *_GenesisState_4_list) Truncate(n int) {
 }
 
 func (x *_GenesisState_4_list) NewElement() protoreflect.Value {
-	v := new(WalletTradeAmount)
+	v := new(GenesisLiquidityAddressSum)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
@@ -217,29 +166,296 @@ func (x *_GenesisState_4_list) IsValid() bool {
 	return x.list != nil
 }
 
+var _ protoreflect.List = (*_GenesisState_5_list)(nil)
+
+type _GenesisState_5_list struct {
+	list *[]*Order
+}
+
+func (x *_GenesisState_5_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_5_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_5_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*Order)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_5_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*Order)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_5_list) AppendMutable() protoreflect.Value {
+	v := new(Order)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_5_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_5_list) NewElement() protoreflect.Value {
+	v := new(Order)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_5_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_GenesisState_6_list)(nil)
+
+type _GenesisState_6_list struct {
+	list *[]*GenesisWalletTradeAmount
+}
+
+func (x *_GenesisState_6_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_6_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_6_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*GenesisWalletTradeAmount)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_6_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*GenesisWalletTradeAmount)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_6_list) AppendMutable() protoreflect.Value {
+	v := new(GenesisWalletTradeAmount)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_6_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_6_list) NewElement() protoreflect.Value {
+	v := new(GenesisWalletTradeAmount)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_6_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_GenesisState_7_list)(nil)
+
+type _GenesisState_7_list struct {
+	list *[]*GenesisEpochShares
+}
+
+func (x *_GenesisState_7_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_7_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_7_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*GenesisEpochShares)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_7_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*GenesisEpochShares)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_7_list) AppendMutable() protoreflect.Value {
+	v := new(GenesisEpochShares)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_7_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_7_list) NewElement() protoreflect.Value {
+	v := new(GenesisEpochShares)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_7_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_GenesisState_8_list)(nil)
+
+type _GenesisState_8_list struct {
+	list *[]*GenesisEpochLeftover
+}
+
+func (x *_GenesisState_8_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_8_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_8_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*GenesisEpochLeftover)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_8_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*GenesisEpochLeftover)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_8_list) AppendMutable() protoreflect.Value {
+	v := new(GenesisEpochLeftover)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_8_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_8_list) NewElement() protoreflect.Value {
+	v := new(GenesisEpochLeftover)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_8_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_GenesisState_11_list)(nil)
+
+type _GenesisState_11_list struct {
+	list *[]*GenesisMovingLiquidity
+}
+
+func (x *_GenesisState_11_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_GenesisState_11_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+}
+
+func (x *_GenesisState_11_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*GenesisMovingLiquidity)
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_GenesisState_11_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.Message()
+	concreteValue := valueUnwrapped.Interface().(*GenesisMovingLiquidity)
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_GenesisState_11_list) AppendMutable() protoreflect.Value {
+	v := new(GenesisMovingLiquidity)
+	*x.list = append(*x.list, v)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_11_list) Truncate(n int) {
+	for i := n; i < len(*x.list); i++ {
+		(*x.list)[i] = nil
+	}
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_GenesisState_11_list) NewElement() protoreflect.Value {
+	v := new(GenesisMovingLiquidity)
+	return protoreflect.ValueOfMessage(v.ProtoReflect())
+}
+
+func (x *_GenesisState_11_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
-	md_GenesisState                              protoreflect.MessageDescriptor
-	fd_GenesisState_params                       protoreflect.FieldDescriptor
-	fd_GenesisState_liquidity_list               protoreflect.FieldDescriptor
-	fd_GenesisState_liquidity_positions_list     protoreflect.FieldDescriptor
-	fd_GenesisState_orderList                    protoreflect.FieldDescriptor
-	fd_GenesisState_wallet_trade_amount          protoreflect.FieldDescriptor
-	fd_GenesisState_liquidity_next_index         protoreflect.FieldDescriptor
-	fd_GenesisState_order_next_index             protoreflect.FieldDescriptor
-	fd_GenesisState_liquidity_deposit_next_index protoreflect.FieldDescriptor
+	md_GenesisState                                protoreflect.MessageDescriptor
+	fd_GenesisState_params                         protoreflect.FieldDescriptor
+	fd_GenesisState_liquidity_entries              protoreflect.FieldDescriptor
+	fd_GenesisState_liquidity_positions            protoreflect.FieldDescriptor
+	fd_GenesisState_liquidity_address_sums         protoreflect.FieldDescriptor
+	fd_GenesisState_orders                         protoreflect.FieldDescriptor
+	fd_GenesisState_wallet_trade_amounts           protoreflect.FieldDescriptor
+	fd_GenesisState_epoch_shares                   protoreflect.FieldDescriptor
+	fd_GenesisState_epoch_leftovers                protoreflect.FieldDescriptor
+	fd_GenesisState_epoch_shares_sum               protoreflect.FieldDescriptor
+	fd_GenesisState_epoch_start_time               protoreflect.FieldDescriptor
+	fd_GenesisState_moving_liquidity               protoreflect.FieldDescriptor
+	fd_GenesisState_liquidity_next_index           protoreflect.FieldDescriptor
+	fd_GenesisState_order_next_index               protoreflect.FieldDescriptor
+	fd_GenesisState_liquidity_positions_next_index protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_kopi_dex_genesis_proto_init()
 	md_GenesisState = File_kopi_dex_genesis_proto.Messages().ByName("GenesisState")
 	fd_GenesisState_params = md_GenesisState.Fields().ByName("params")
-	fd_GenesisState_liquidity_list = md_GenesisState.Fields().ByName("liquidity_list")
-	fd_GenesisState_liquidity_positions_list = md_GenesisState.Fields().ByName("liquidity_positions_list")
-	fd_GenesisState_orderList = md_GenesisState.Fields().ByName("orderList")
-	fd_GenesisState_wallet_trade_amount = md_GenesisState.Fields().ByName("wallet_trade_amount")
+	fd_GenesisState_liquidity_entries = md_GenesisState.Fields().ByName("liquidity_entries")
+	fd_GenesisState_liquidity_positions = md_GenesisState.Fields().ByName("liquidity_positions")
+	fd_GenesisState_liquidity_address_sums = md_GenesisState.Fields().ByName("liquidity_address_sums")
+	fd_GenesisState_orders = md_GenesisState.Fields().ByName("orders")
+	fd_GenesisState_wallet_trade_amounts = md_GenesisState.Fields().ByName("wallet_trade_amounts")
+	fd_GenesisState_epoch_shares = md_GenesisState.Fields().ByName("epoch_shares")
+	fd_GenesisState_epoch_leftovers = md_GenesisState.Fields().ByName("epoch_leftovers")
+	fd_GenesisState_epoch_shares_sum = md_GenesisState.Fields().ByName("epoch_shares_sum")
+	fd_GenesisState_epoch_start_time = md_GenesisState.Fields().ByName("epoch_start_time")
+	fd_GenesisState_moving_liquidity = md_GenesisState.Fields().ByName("moving_liquidity")
 	fd_GenesisState_liquidity_next_index = md_GenesisState.Fields().ByName("liquidity_next_index")
 	fd_GenesisState_order_next_index = md_GenesisState.Fields().ByName("order_next_index")
-	fd_GenesisState_liquidity_deposit_next_index = md_GenesisState.Fields().ByName("liquidity_deposit_next_index")
+	fd_GenesisState_liquidity_positions_next_index = md_GenesisState.Fields().ByName("liquidity_positions_next_index")
 }
 
 var _ protoreflect.Message = (*fastReflection_GenesisState)(nil)
@@ -313,27 +529,63 @@ func (x *fastReflection_GenesisState) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
-	if len(x.LiquidityList) != 0 {
-		value := protoreflect.ValueOfList(&_GenesisState_2_list{list: &x.LiquidityList})
-		if !f(fd_GenesisState_liquidity_list, value) {
+	if len(x.LiquidityEntries) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_2_list{list: &x.LiquidityEntries})
+		if !f(fd_GenesisState_liquidity_entries, value) {
 			return
 		}
 	}
-	if len(x.LiquidityPositionsList) != 0 {
-		value := protoreflect.ValueOfList(&_GenesisState_8_list{list: &x.LiquidityPositionsList})
-		if !f(fd_GenesisState_liquidity_positions_list, value) {
+	if len(x.LiquidityPositions) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_3_list{list: &x.LiquidityPositions})
+		if !f(fd_GenesisState_liquidity_positions, value) {
 			return
 		}
 	}
-	if len(x.OrderList) != 0 {
-		value := protoreflect.ValueOfList(&_GenesisState_3_list{list: &x.OrderList})
-		if !f(fd_GenesisState_orderList, value) {
+	if len(x.LiquidityAddressSums) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_4_list{list: &x.LiquidityAddressSums})
+		if !f(fd_GenesisState_liquidity_address_sums, value) {
 			return
 		}
 	}
-	if len(x.WalletTradeAmount) != 0 {
-		value := protoreflect.ValueOfList(&_GenesisState_4_list{list: &x.WalletTradeAmount})
-		if !f(fd_GenesisState_wallet_trade_amount, value) {
+	if len(x.Orders) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_5_list{list: &x.Orders})
+		if !f(fd_GenesisState_orders, value) {
+			return
+		}
+	}
+	if len(x.WalletTradeAmounts) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_6_list{list: &x.WalletTradeAmounts})
+		if !f(fd_GenesisState_wallet_trade_amounts, value) {
+			return
+		}
+	}
+	if len(x.EpochShares) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_7_list{list: &x.EpochShares})
+		if !f(fd_GenesisState_epoch_shares, value) {
+			return
+		}
+	}
+	if len(x.EpochLeftovers) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_8_list{list: &x.EpochLeftovers})
+		if !f(fd_GenesisState_epoch_leftovers, value) {
+			return
+		}
+	}
+	if x.EpochSharesSum != nil {
+		value := protoreflect.ValueOfMessage(x.EpochSharesSum.ProtoReflect())
+		if !f(fd_GenesisState_epoch_shares_sum, value) {
+			return
+		}
+	}
+	if x.EpochStartTime != nil {
+		value := protoreflect.ValueOfMessage(x.EpochStartTime.ProtoReflect())
+		if !f(fd_GenesisState_epoch_start_time, value) {
+			return
+		}
+	}
+	if len(x.MovingLiquidity) != 0 {
+		value := protoreflect.ValueOfList(&_GenesisState_11_list{list: &x.MovingLiquidity})
+		if !f(fd_GenesisState_moving_liquidity, value) {
 			return
 		}
 	}
@@ -349,9 +601,9 @@ func (x *fastReflection_GenesisState) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
-	if x.LiquidityDepositNextIndex != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.LiquidityDepositNextIndex)
-		if !f(fd_GenesisState_liquidity_deposit_next_index, value) {
+	if x.LiquidityPositionsNextIndex != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.LiquidityPositionsNextIndex)
+		if !f(fd_GenesisState_liquidity_positions_next_index, value) {
 			return
 		}
 	}
@@ -372,20 +624,32 @@ func (x *fastReflection_GenesisState) Has(fd protoreflect.FieldDescriptor) bool 
 	switch fd.FullName() {
 	case "kopi.dex.GenesisState.params":
 		return x.Params != nil
-	case "kopi.dex.GenesisState.liquidity_list":
-		return len(x.LiquidityList) != 0
-	case "kopi.dex.GenesisState.liquidity_positions_list":
-		return len(x.LiquidityPositionsList) != 0
-	case "kopi.dex.GenesisState.orderList":
-		return len(x.OrderList) != 0
-	case "kopi.dex.GenesisState.wallet_trade_amount":
-		return len(x.WalletTradeAmount) != 0
+	case "kopi.dex.GenesisState.liquidity_entries":
+		return len(x.LiquidityEntries) != 0
+	case "kopi.dex.GenesisState.liquidity_positions":
+		return len(x.LiquidityPositions) != 0
+	case "kopi.dex.GenesisState.liquidity_address_sums":
+		return len(x.LiquidityAddressSums) != 0
+	case "kopi.dex.GenesisState.orders":
+		return len(x.Orders) != 0
+	case "kopi.dex.GenesisState.wallet_trade_amounts":
+		return len(x.WalletTradeAmounts) != 0
+	case "kopi.dex.GenesisState.epoch_shares":
+		return len(x.EpochShares) != 0
+	case "kopi.dex.GenesisState.epoch_leftovers":
+		return len(x.EpochLeftovers) != 0
+	case "kopi.dex.GenesisState.epoch_shares_sum":
+		return x.EpochSharesSum != nil
+	case "kopi.dex.GenesisState.epoch_start_time":
+		return x.EpochStartTime != nil
+	case "kopi.dex.GenesisState.moving_liquidity":
+		return len(x.MovingLiquidity) != 0
 	case "kopi.dex.GenesisState.liquidity_next_index":
 		return x.LiquidityNextIndex != uint64(0)
 	case "kopi.dex.GenesisState.order_next_index":
 		return x.OrderNextIndex != uint64(0)
-	case "kopi.dex.GenesisState.liquidity_deposit_next_index":
-		return x.LiquidityDepositNextIndex != uint64(0)
+	case "kopi.dex.GenesisState.liquidity_positions_next_index":
+		return x.LiquidityPositionsNextIndex != uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.GenesisState"))
@@ -404,20 +668,32 @@ func (x *fastReflection_GenesisState) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	case "kopi.dex.GenesisState.params":
 		x.Params = nil
-	case "kopi.dex.GenesisState.liquidity_list":
-		x.LiquidityList = nil
-	case "kopi.dex.GenesisState.liquidity_positions_list":
-		x.LiquidityPositionsList = nil
-	case "kopi.dex.GenesisState.orderList":
-		x.OrderList = nil
-	case "kopi.dex.GenesisState.wallet_trade_amount":
-		x.WalletTradeAmount = nil
+	case "kopi.dex.GenesisState.liquidity_entries":
+		x.LiquidityEntries = nil
+	case "kopi.dex.GenesisState.liquidity_positions":
+		x.LiquidityPositions = nil
+	case "kopi.dex.GenesisState.liquidity_address_sums":
+		x.LiquidityAddressSums = nil
+	case "kopi.dex.GenesisState.orders":
+		x.Orders = nil
+	case "kopi.dex.GenesisState.wallet_trade_amounts":
+		x.WalletTradeAmounts = nil
+	case "kopi.dex.GenesisState.epoch_shares":
+		x.EpochShares = nil
+	case "kopi.dex.GenesisState.epoch_leftovers":
+		x.EpochLeftovers = nil
+	case "kopi.dex.GenesisState.epoch_shares_sum":
+		x.EpochSharesSum = nil
+	case "kopi.dex.GenesisState.epoch_start_time":
+		x.EpochStartTime = nil
+	case "kopi.dex.GenesisState.moving_liquidity":
+		x.MovingLiquidity = nil
 	case "kopi.dex.GenesisState.liquidity_next_index":
 		x.LiquidityNextIndex = uint64(0)
 	case "kopi.dex.GenesisState.order_next_index":
 		x.OrderNextIndex = uint64(0)
-	case "kopi.dex.GenesisState.liquidity_deposit_next_index":
-		x.LiquidityDepositNextIndex = uint64(0)
+	case "kopi.dex.GenesisState.liquidity_positions_next_index":
+		x.LiquidityPositionsNextIndex = uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.GenesisState"))
@@ -437,29 +713,59 @@ func (x *fastReflection_GenesisState) Get(descriptor protoreflect.FieldDescripto
 	case "kopi.dex.GenesisState.params":
 		value := x.Params
 		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "kopi.dex.GenesisState.liquidity_list":
-		if len(x.LiquidityList) == 0 {
+	case "kopi.dex.GenesisState.liquidity_entries":
+		if len(x.LiquidityEntries) == 0 {
 			return protoreflect.ValueOfList(&_GenesisState_2_list{})
 		}
-		listValue := &_GenesisState_2_list{list: &x.LiquidityList}
+		listValue := &_GenesisState_2_list{list: &x.LiquidityEntries}
 		return protoreflect.ValueOfList(listValue)
-	case "kopi.dex.GenesisState.liquidity_positions_list":
-		if len(x.LiquidityPositionsList) == 0 {
-			return protoreflect.ValueOfList(&_GenesisState_8_list{})
-		}
-		listValue := &_GenesisState_8_list{list: &x.LiquidityPositionsList}
-		return protoreflect.ValueOfList(listValue)
-	case "kopi.dex.GenesisState.orderList":
-		if len(x.OrderList) == 0 {
+	case "kopi.dex.GenesisState.liquidity_positions":
+		if len(x.LiquidityPositions) == 0 {
 			return protoreflect.ValueOfList(&_GenesisState_3_list{})
 		}
-		listValue := &_GenesisState_3_list{list: &x.OrderList}
+		listValue := &_GenesisState_3_list{list: &x.LiquidityPositions}
 		return protoreflect.ValueOfList(listValue)
-	case "kopi.dex.GenesisState.wallet_trade_amount":
-		if len(x.WalletTradeAmount) == 0 {
+	case "kopi.dex.GenesisState.liquidity_address_sums":
+		if len(x.LiquidityAddressSums) == 0 {
 			return protoreflect.ValueOfList(&_GenesisState_4_list{})
 		}
-		listValue := &_GenesisState_4_list{list: &x.WalletTradeAmount}
+		listValue := &_GenesisState_4_list{list: &x.LiquidityAddressSums}
+		return protoreflect.ValueOfList(listValue)
+	case "kopi.dex.GenesisState.orders":
+		if len(x.Orders) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_5_list{})
+		}
+		listValue := &_GenesisState_5_list{list: &x.Orders}
+		return protoreflect.ValueOfList(listValue)
+	case "kopi.dex.GenesisState.wallet_trade_amounts":
+		if len(x.WalletTradeAmounts) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_6_list{})
+		}
+		listValue := &_GenesisState_6_list{list: &x.WalletTradeAmounts}
+		return protoreflect.ValueOfList(listValue)
+	case "kopi.dex.GenesisState.epoch_shares":
+		if len(x.EpochShares) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_7_list{})
+		}
+		listValue := &_GenesisState_7_list{list: &x.EpochShares}
+		return protoreflect.ValueOfList(listValue)
+	case "kopi.dex.GenesisState.epoch_leftovers":
+		if len(x.EpochLeftovers) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_8_list{})
+		}
+		listValue := &_GenesisState_8_list{list: &x.EpochLeftovers}
+		return protoreflect.ValueOfList(listValue)
+	case "kopi.dex.GenesisState.epoch_shares_sum":
+		value := x.EpochSharesSum
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "kopi.dex.GenesisState.epoch_start_time":
+		value := x.EpochStartTime
+		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "kopi.dex.GenesisState.moving_liquidity":
+		if len(x.MovingLiquidity) == 0 {
+			return protoreflect.ValueOfList(&_GenesisState_11_list{})
+		}
+		listValue := &_GenesisState_11_list{list: &x.MovingLiquidity}
 		return protoreflect.ValueOfList(listValue)
 	case "kopi.dex.GenesisState.liquidity_next_index":
 		value := x.LiquidityNextIndex
@@ -467,8 +773,8 @@ func (x *fastReflection_GenesisState) Get(descriptor protoreflect.FieldDescripto
 	case "kopi.dex.GenesisState.order_next_index":
 		value := x.OrderNextIndex
 		return protoreflect.ValueOfUint64(value)
-	case "kopi.dex.GenesisState.liquidity_deposit_next_index":
-		value := x.LiquidityDepositNextIndex
+	case "kopi.dex.GenesisState.liquidity_positions_next_index":
+		value := x.LiquidityPositionsNextIndex
 		return protoreflect.ValueOfUint64(value)
 	default:
 		if descriptor.IsExtension() {
@@ -492,28 +798,48 @@ func (x *fastReflection_GenesisState) Set(fd protoreflect.FieldDescriptor, value
 	switch fd.FullName() {
 	case "kopi.dex.GenesisState.params":
 		x.Params = value.Message().Interface().(*Params)
-	case "kopi.dex.GenesisState.liquidity_list":
+	case "kopi.dex.GenesisState.liquidity_entries":
 		lv := value.List()
 		clv := lv.(*_GenesisState_2_list)
-		x.LiquidityList = *clv.list
-	case "kopi.dex.GenesisState.liquidity_positions_list":
-		lv := value.List()
-		clv := lv.(*_GenesisState_8_list)
-		x.LiquidityPositionsList = *clv.list
-	case "kopi.dex.GenesisState.orderList":
+		x.LiquidityEntries = *clv.list
+	case "kopi.dex.GenesisState.liquidity_positions":
 		lv := value.List()
 		clv := lv.(*_GenesisState_3_list)
-		x.OrderList = *clv.list
-	case "kopi.dex.GenesisState.wallet_trade_amount":
+		x.LiquidityPositions = *clv.list
+	case "kopi.dex.GenesisState.liquidity_address_sums":
 		lv := value.List()
 		clv := lv.(*_GenesisState_4_list)
-		x.WalletTradeAmount = *clv.list
+		x.LiquidityAddressSums = *clv.list
+	case "kopi.dex.GenesisState.orders":
+		lv := value.List()
+		clv := lv.(*_GenesisState_5_list)
+		x.Orders = *clv.list
+	case "kopi.dex.GenesisState.wallet_trade_amounts":
+		lv := value.List()
+		clv := lv.(*_GenesisState_6_list)
+		x.WalletTradeAmounts = *clv.list
+	case "kopi.dex.GenesisState.epoch_shares":
+		lv := value.List()
+		clv := lv.(*_GenesisState_7_list)
+		x.EpochShares = *clv.list
+	case "kopi.dex.GenesisState.epoch_leftovers":
+		lv := value.List()
+		clv := lv.(*_GenesisState_8_list)
+		x.EpochLeftovers = *clv.list
+	case "kopi.dex.GenesisState.epoch_shares_sum":
+		x.EpochSharesSum = value.Message().Interface().(*EpochShares)
+	case "kopi.dex.GenesisState.epoch_start_time":
+		x.EpochStartTime = value.Message().Interface().(*EpochStartTime)
+	case "kopi.dex.GenesisState.moving_liquidity":
+		lv := value.List()
+		clv := lv.(*_GenesisState_11_list)
+		x.MovingLiquidity = *clv.list
 	case "kopi.dex.GenesisState.liquidity_next_index":
 		x.LiquidityNextIndex = value.Uint()
 	case "kopi.dex.GenesisState.order_next_index":
 		x.OrderNextIndex = value.Uint()
-	case "kopi.dex.GenesisState.liquidity_deposit_next_index":
-		x.LiquidityDepositNextIndex = value.Uint()
+	case "kopi.dex.GenesisState.liquidity_positions_next_index":
+		x.LiquidityPositionsNextIndex = value.Uint()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.GenesisState"))
@@ -539,36 +865,70 @@ func (x *fastReflection_GenesisState) Mutable(fd protoreflect.FieldDescriptor) p
 			x.Params = new(Params)
 		}
 		return protoreflect.ValueOfMessage(x.Params.ProtoReflect())
-	case "kopi.dex.GenesisState.liquidity_list":
-		if x.LiquidityList == nil {
-			x.LiquidityList = []*GenesisLiquidity{}
+	case "kopi.dex.GenesisState.liquidity_entries":
+		if x.LiquidityEntries == nil {
+			x.LiquidityEntries = []*GenesisLiquidityEntry{}
 		}
-		value := &_GenesisState_2_list{list: &x.LiquidityList}
+		value := &_GenesisState_2_list{list: &x.LiquidityEntries}
 		return protoreflect.ValueOfList(value)
-	case "kopi.dex.GenesisState.liquidity_positions_list":
-		if x.LiquidityPositionsList == nil {
-			x.LiquidityPositionsList = []*GenesisLiquidityPositions{}
+	case "kopi.dex.GenesisState.liquidity_positions":
+		if x.LiquidityPositions == nil {
+			x.LiquidityPositions = []*GenesisLiquidityPositions{}
 		}
-		value := &_GenesisState_8_list{list: &x.LiquidityPositionsList}
+		value := &_GenesisState_3_list{list: &x.LiquidityPositions}
 		return protoreflect.ValueOfList(value)
-	case "kopi.dex.GenesisState.orderList":
-		if x.OrderList == nil {
-			x.OrderList = []*Order{}
+	case "kopi.dex.GenesisState.liquidity_address_sums":
+		if x.LiquidityAddressSums == nil {
+			x.LiquidityAddressSums = []*GenesisLiquidityAddressSum{}
 		}
-		value := &_GenesisState_3_list{list: &x.OrderList}
+		value := &_GenesisState_4_list{list: &x.LiquidityAddressSums}
 		return protoreflect.ValueOfList(value)
-	case "kopi.dex.GenesisState.wallet_trade_amount":
-		if x.WalletTradeAmount == nil {
-			x.WalletTradeAmount = []*WalletTradeAmount{}
+	case "kopi.dex.GenesisState.orders":
+		if x.Orders == nil {
+			x.Orders = []*Order{}
 		}
-		value := &_GenesisState_4_list{list: &x.WalletTradeAmount}
+		value := &_GenesisState_5_list{list: &x.Orders}
+		return protoreflect.ValueOfList(value)
+	case "kopi.dex.GenesisState.wallet_trade_amounts":
+		if x.WalletTradeAmounts == nil {
+			x.WalletTradeAmounts = []*GenesisWalletTradeAmount{}
+		}
+		value := &_GenesisState_6_list{list: &x.WalletTradeAmounts}
+		return protoreflect.ValueOfList(value)
+	case "kopi.dex.GenesisState.epoch_shares":
+		if x.EpochShares == nil {
+			x.EpochShares = []*GenesisEpochShares{}
+		}
+		value := &_GenesisState_7_list{list: &x.EpochShares}
+		return protoreflect.ValueOfList(value)
+	case "kopi.dex.GenesisState.epoch_leftovers":
+		if x.EpochLeftovers == nil {
+			x.EpochLeftovers = []*GenesisEpochLeftover{}
+		}
+		value := &_GenesisState_8_list{list: &x.EpochLeftovers}
+		return protoreflect.ValueOfList(value)
+	case "kopi.dex.GenesisState.epoch_shares_sum":
+		if x.EpochSharesSum == nil {
+			x.EpochSharesSum = new(EpochShares)
+		}
+		return protoreflect.ValueOfMessage(x.EpochSharesSum.ProtoReflect())
+	case "kopi.dex.GenesisState.epoch_start_time":
+		if x.EpochStartTime == nil {
+			x.EpochStartTime = new(EpochStartTime)
+		}
+		return protoreflect.ValueOfMessage(x.EpochStartTime.ProtoReflect())
+	case "kopi.dex.GenesisState.moving_liquidity":
+		if x.MovingLiquidity == nil {
+			x.MovingLiquidity = []*GenesisMovingLiquidity{}
+		}
+		value := &_GenesisState_11_list{list: &x.MovingLiquidity}
 		return protoreflect.ValueOfList(value)
 	case "kopi.dex.GenesisState.liquidity_next_index":
 		panic(fmt.Errorf("field liquidity_next_index of message kopi.dex.GenesisState is not mutable"))
 	case "kopi.dex.GenesisState.order_next_index":
 		panic(fmt.Errorf("field order_next_index of message kopi.dex.GenesisState is not mutable"))
-	case "kopi.dex.GenesisState.liquidity_deposit_next_index":
-		panic(fmt.Errorf("field liquidity_deposit_next_index of message kopi.dex.GenesisState is not mutable"))
+	case "kopi.dex.GenesisState.liquidity_positions_next_index":
+		panic(fmt.Errorf("field liquidity_positions_next_index of message kopi.dex.GenesisState is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.GenesisState"))
@@ -585,23 +945,41 @@ func (x *fastReflection_GenesisState) NewField(fd protoreflect.FieldDescriptor) 
 	case "kopi.dex.GenesisState.params":
 		m := new(Params)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
-	case "kopi.dex.GenesisState.liquidity_list":
-		list := []*GenesisLiquidity{}
+	case "kopi.dex.GenesisState.liquidity_entries":
+		list := []*GenesisLiquidityEntry{}
 		return protoreflect.ValueOfList(&_GenesisState_2_list{list: &list})
-	case "kopi.dex.GenesisState.liquidity_positions_list":
+	case "kopi.dex.GenesisState.liquidity_positions":
 		list := []*GenesisLiquidityPositions{}
-		return protoreflect.ValueOfList(&_GenesisState_8_list{list: &list})
-	case "kopi.dex.GenesisState.orderList":
-		list := []*Order{}
 		return protoreflect.ValueOfList(&_GenesisState_3_list{list: &list})
-	case "kopi.dex.GenesisState.wallet_trade_amount":
-		list := []*WalletTradeAmount{}
+	case "kopi.dex.GenesisState.liquidity_address_sums":
+		list := []*GenesisLiquidityAddressSum{}
 		return protoreflect.ValueOfList(&_GenesisState_4_list{list: &list})
+	case "kopi.dex.GenesisState.orders":
+		list := []*Order{}
+		return protoreflect.ValueOfList(&_GenesisState_5_list{list: &list})
+	case "kopi.dex.GenesisState.wallet_trade_amounts":
+		list := []*GenesisWalletTradeAmount{}
+		return protoreflect.ValueOfList(&_GenesisState_6_list{list: &list})
+	case "kopi.dex.GenesisState.epoch_shares":
+		list := []*GenesisEpochShares{}
+		return protoreflect.ValueOfList(&_GenesisState_7_list{list: &list})
+	case "kopi.dex.GenesisState.epoch_leftovers":
+		list := []*GenesisEpochLeftover{}
+		return protoreflect.ValueOfList(&_GenesisState_8_list{list: &list})
+	case "kopi.dex.GenesisState.epoch_shares_sum":
+		m := new(EpochShares)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "kopi.dex.GenesisState.epoch_start_time":
+		m := new(EpochStartTime)
+		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "kopi.dex.GenesisState.moving_liquidity":
+		list := []*GenesisMovingLiquidity{}
+		return protoreflect.ValueOfList(&_GenesisState_11_list{list: &list})
 	case "kopi.dex.GenesisState.liquidity_next_index":
 		return protoreflect.ValueOfUint64(uint64(0))
 	case "kopi.dex.GenesisState.order_next_index":
 		return protoreflect.ValueOfUint64(uint64(0))
-	case "kopi.dex.GenesisState.liquidity_deposit_next_index":
+	case "kopi.dex.GenesisState.liquidity_positions_next_index":
 		return protoreflect.ValueOfUint64(uint64(0))
 	default:
 		if fd.IsExtension() {
@@ -676,26 +1054,58 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 			l = options.Size(x.Params)
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if len(x.LiquidityList) > 0 {
-			for _, e := range x.LiquidityList {
+		if len(x.LiquidityEntries) > 0 {
+			for _, e := range x.LiquidityEntries {
 				l = options.Size(e)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
-		if len(x.LiquidityPositionsList) > 0 {
-			for _, e := range x.LiquidityPositionsList {
+		if len(x.LiquidityPositions) > 0 {
+			for _, e := range x.LiquidityPositions {
 				l = options.Size(e)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
-		if len(x.OrderList) > 0 {
-			for _, e := range x.OrderList {
+		if len(x.LiquidityAddressSums) > 0 {
+			for _, e := range x.LiquidityAddressSums {
 				l = options.Size(e)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
-		if len(x.WalletTradeAmount) > 0 {
-			for _, e := range x.WalletTradeAmount {
+		if len(x.Orders) > 0 {
+			for _, e := range x.Orders {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if len(x.WalletTradeAmounts) > 0 {
+			for _, e := range x.WalletTradeAmounts {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if len(x.EpochShares) > 0 {
+			for _, e := range x.EpochShares {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if len(x.EpochLeftovers) > 0 {
+			for _, e := range x.EpochLeftovers {
+				l = options.Size(e)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if x.EpochSharesSum != nil {
+			l = options.Size(x.EpochSharesSum)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.EpochStartTime != nil {
+			l = options.Size(x.EpochStartTime)
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if len(x.MovingLiquidity) > 0 {
+			for _, e := range x.MovingLiquidity {
 				l = options.Size(e)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
@@ -706,8 +1116,8 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 		if x.OrderNextIndex != 0 {
 			n += 1 + runtime.Sov(uint64(x.OrderNextIndex))
 		}
-		if x.LiquidityDepositNextIndex != 0 {
-			n += 1 + runtime.Sov(uint64(x.LiquidityDepositNextIndex))
+		if x.LiquidityPositionsNextIndex != 0 {
+			n += 1 + runtime.Sov(uint64(x.LiquidityPositionsNextIndex))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -738,9 +1148,68 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.LiquidityPositionsList) > 0 {
-			for iNdEx := len(x.LiquidityPositionsList) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.LiquidityPositionsList[iNdEx])
+		if x.LiquidityPositionsNextIndex != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.LiquidityPositionsNextIndex))
+			i--
+			dAtA[i] = 0x70
+		}
+		if x.OrderNextIndex != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.OrderNextIndex))
+			i--
+			dAtA[i] = 0x68
+		}
+		if x.LiquidityNextIndex != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.LiquidityNextIndex))
+			i--
+			dAtA[i] = 0x60
+		}
+		if len(x.MovingLiquidity) > 0 {
+			for iNdEx := len(x.MovingLiquidity) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.MovingLiquidity[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x5a
+			}
+		}
+		if x.EpochStartTime != nil {
+			encoded, err := options.Marshal(x.EpochStartTime)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x52
+		}
+		if x.EpochSharesSum != nil {
+			encoded, err := options.Marshal(x.EpochSharesSum)
+			if err != nil {
+				return protoiface.MarshalOutput{
+					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+					Buf:               input.Buf,
+				}, err
+			}
+			i -= len(encoded)
+			copy(dAtA[i:], encoded)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			i--
+			dAtA[i] = 0x4a
+		}
+		if len(x.EpochLeftovers) > 0 {
+			for iNdEx := len(x.EpochLeftovers) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.EpochLeftovers[iNdEx])
 				if err != nil {
 					return protoiface.MarshalOutput{
 						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -754,24 +1223,57 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				dAtA[i] = 0x42
 			}
 		}
-		if x.LiquidityDepositNextIndex != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.LiquidityDepositNextIndex))
-			i--
-			dAtA[i] = 0x38
+		if len(x.EpochShares) > 0 {
+			for iNdEx := len(x.EpochShares) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.EpochShares[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x3a
+			}
 		}
-		if x.OrderNextIndex != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.OrderNextIndex))
-			i--
-			dAtA[i] = 0x30
+		if len(x.WalletTradeAmounts) > 0 {
+			for iNdEx := len(x.WalletTradeAmounts) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.WalletTradeAmounts[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x32
+			}
 		}
-		if x.LiquidityNextIndex != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.LiquidityNextIndex))
-			i--
-			dAtA[i] = 0x28
+		if len(x.Orders) > 0 {
+			for iNdEx := len(x.Orders) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.Orders[iNdEx])
+				if err != nil {
+					return protoiface.MarshalOutput{
+						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+						Buf:               input.Buf,
+					}, err
+				}
+				i -= len(encoded)
+				copy(dAtA[i:], encoded)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i--
+				dAtA[i] = 0x2a
+			}
 		}
-		if len(x.WalletTradeAmount) > 0 {
-			for iNdEx := len(x.WalletTradeAmount) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.WalletTradeAmount[iNdEx])
+		if len(x.LiquidityAddressSums) > 0 {
+			for iNdEx := len(x.LiquidityAddressSums) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.LiquidityAddressSums[iNdEx])
 				if err != nil {
 					return protoiface.MarshalOutput{
 						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -785,9 +1287,9 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				dAtA[i] = 0x22
 			}
 		}
-		if len(x.OrderList) > 0 {
-			for iNdEx := len(x.OrderList) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.OrderList[iNdEx])
+		if len(x.LiquidityPositions) > 0 {
+			for iNdEx := len(x.LiquidityPositions) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.LiquidityPositions[iNdEx])
 				if err != nil {
 					return protoiface.MarshalOutput{
 						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -801,9 +1303,9 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				dAtA[i] = 0x1a
 			}
 		}
-		if len(x.LiquidityList) > 0 {
-			for iNdEx := len(x.LiquidityList) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.LiquidityList[iNdEx])
+		if len(x.LiquidityEntries) > 0 {
+			for iNdEx := len(x.LiquidityEntries) - 1; iNdEx >= 0; iNdEx-- {
+				encoded, err := options.Marshal(x.LiquidityEntries[iNdEx])
 				if err != nil {
 					return protoiface.MarshalOutput{
 						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -918,7 +1420,7 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 2:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LiquidityList", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LiquidityEntries", wireType)
 				}
 				var msglen int
 				for shift := uint(0); ; shift += 7 {
@@ -945,48 +1447,14 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.LiquidityList = append(x.LiquidityList, &GenesisLiquidity{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.LiquidityList[len(x.LiquidityList)-1]); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				iNdEx = postIndex
-			case 8:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LiquidityPositionsList", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.LiquidityPositionsList = append(x.LiquidityPositionsList, &GenesisLiquidityPositions{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.LiquidityPositionsList[len(x.LiquidityPositionsList)-1]); err != nil {
+				x.LiquidityEntries = append(x.LiquidityEntries, &GenesisLiquidityEntry{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.LiquidityEntries[len(x.LiquidityEntries)-1]); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
 			case 3:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OrderList", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LiquidityPositions", wireType)
 				}
 				var msglen int
 				for shift := uint(0); ; shift += 7 {
@@ -1013,14 +1481,14 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.OrderList = append(x.OrderList, &Order{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.OrderList[len(x.OrderList)-1]); err != nil {
+				x.LiquidityPositions = append(x.LiquidityPositions, &GenesisLiquidityPositions{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.LiquidityPositions[len(x.LiquidityPositions)-1]); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
 			case 4:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WalletTradeAmount", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LiquidityAddressSums", wireType)
 				}
 				var msglen int
 				for shift := uint(0); ; shift += 7 {
@@ -1047,12 +1515,254 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.WalletTradeAmount = append(x.WalletTradeAmount, &WalletTradeAmount{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.WalletTradeAmount[len(x.WalletTradeAmount)-1]); err != nil {
+				x.LiquidityAddressSums = append(x.LiquidityAddressSums, &GenesisLiquidityAddressSum{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.LiquidityAddressSums[len(x.LiquidityAddressSums)-1]); err != nil {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
 			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Orders", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Orders = append(x.Orders, &Order{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Orders[len(x.Orders)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 6:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WalletTradeAmounts", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.WalletTradeAmounts = append(x.WalletTradeAmounts, &GenesisWalletTradeAmount{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.WalletTradeAmounts[len(x.WalletTradeAmounts)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 7:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EpochShares", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.EpochShares = append(x.EpochShares, &GenesisEpochShares{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.EpochShares[len(x.EpochShares)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 8:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EpochLeftovers", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.EpochLeftovers = append(x.EpochLeftovers, &GenesisEpochLeftover{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.EpochLeftovers[len(x.EpochLeftovers)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 9:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EpochSharesSum", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.EpochSharesSum == nil {
+					x.EpochSharesSum = &EpochShares{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.EpochSharesSum); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 10:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EpochStartTime", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.EpochStartTime == nil {
+					x.EpochStartTime = &EpochStartTime{}
+				}
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.EpochStartTime); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 11:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MovingLiquidity", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.MovingLiquidity = append(x.MovingLiquidity, &GenesisMovingLiquidity{})
+				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.MovingLiquidity[len(x.MovingLiquidity)-1]); err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				iNdEx = postIndex
+			case 12:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LiquidityNextIndex", wireType)
 				}
@@ -1071,7 +1781,7 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 						break
 					}
 				}
-			case 6:
+			case 13:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OrderNextIndex", wireType)
 				}
@@ -1090,11 +1800,11 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 						break
 					}
 				}
-			case 7:
+			case 14:
 				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LiquidityDepositNextIndex", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field LiquidityPositionsNextIndex", wireType)
 				}
-				x.LiquidityDepositNextIndex = 0
+				x.LiquidityPositionsNextIndex = 0
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -1104,7 +1814,7 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.LiquidityDepositNextIndex |= uint64(b&0x7F) << shift
+					x.LiquidityPositionsNextIndex |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
@@ -1163,14 +1873,20 @@ type GenesisState struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Params                    *Params                      `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
-	LiquidityList             []*GenesisLiquidity          `protobuf:"bytes,2,rep,name=liquidity_list,json=liquidityList,proto3" json:"liquidity_list,omitempty"`
-	LiquidityPositionsList    []*GenesisLiquidityPositions `protobuf:"bytes,8,rep,name=liquidity_positions_list,json=liquidityPositionsList,proto3" json:"liquidity_positions_list,omitempty"`
-	OrderList                 []*Order                     `protobuf:"bytes,3,rep,name=orderList,proto3" json:"orderList,omitempty"`
-	WalletTradeAmount         []*WalletTradeAmount         `protobuf:"bytes,4,rep,name=wallet_trade_amount,json=walletTradeAmount,proto3" json:"wallet_trade_amount,omitempty"`
-	LiquidityNextIndex        uint64                       `protobuf:"varint,5,opt,name=liquidity_next_index,json=liquidityNextIndex,proto3" json:"liquidity_next_index,omitempty"`
-	OrderNextIndex            uint64                       `protobuf:"varint,6,opt,name=order_next_index,json=orderNextIndex,proto3" json:"order_next_index,omitempty"`
-	LiquidityDepositNextIndex uint64                       `protobuf:"varint,7,opt,name=liquidity_deposit_next_index,json=liquidityDepositNextIndex,proto3" json:"liquidity_deposit_next_index,omitempty"`
+	Params                      *Params                       `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
+	LiquidityEntries            []*GenesisLiquidityEntry      `protobuf:"bytes,2,rep,name=liquidity_entries,json=liquidityEntries,proto3" json:"liquidity_entries,omitempty"`
+	LiquidityPositions          []*GenesisLiquidityPositions  `protobuf:"bytes,3,rep,name=liquidity_positions,json=liquidityPositions,proto3" json:"liquidity_positions,omitempty"`
+	LiquidityAddressSums        []*GenesisLiquidityAddressSum `protobuf:"bytes,4,rep,name=liquidity_address_sums,json=liquidityAddressSums,proto3" json:"liquidity_address_sums,omitempty"`
+	Orders                      []*Order                      `protobuf:"bytes,5,rep,name=orders,proto3" json:"orders,omitempty"`
+	WalletTradeAmounts          []*GenesisWalletTradeAmount   `protobuf:"bytes,6,rep,name=wallet_trade_amounts,json=walletTradeAmounts,proto3" json:"wallet_trade_amounts,omitempty"`
+	EpochShares                 []*GenesisEpochShares         `protobuf:"bytes,7,rep,name=epoch_shares,json=epochShares,proto3" json:"epoch_shares,omitempty"`
+	EpochLeftovers              []*GenesisEpochLeftover       `protobuf:"bytes,8,rep,name=epoch_leftovers,json=epochLeftovers,proto3" json:"epoch_leftovers,omitempty"`
+	EpochSharesSum              *EpochShares                  `protobuf:"bytes,9,opt,name=epoch_shares_sum,json=epochSharesSum,proto3" json:"epoch_shares_sum,omitempty"`
+	EpochStartTime              *EpochStartTime               `protobuf:"bytes,10,opt,name=epoch_start_time,json=epochStartTime,proto3" json:"epoch_start_time,omitempty"`
+	MovingLiquidity             []*GenesisMovingLiquidity     `protobuf:"bytes,11,rep,name=moving_liquidity,json=movingLiquidity,proto3" json:"moving_liquidity,omitempty"`
+	LiquidityNextIndex          uint64                        `protobuf:"varint,12,opt,name=liquidity_next_index,json=liquidityNextIndex,proto3" json:"liquidity_next_index,omitempty"`
+	OrderNextIndex              uint64                        `protobuf:"varint,13,opt,name=order_next_index,json=orderNextIndex,proto3" json:"order_next_index,omitempty"`
+	LiquidityPositionsNextIndex uint64                        `protobuf:"varint,14,opt,name=liquidity_positions_next_index,json=liquidityPositionsNextIndex,proto3" json:"liquidity_positions_next_index,omitempty"`
 }
 
 func (x *GenesisState) Reset() {
@@ -1200,30 +1916,72 @@ func (x *GenesisState) GetParams() *Params {
 	return nil
 }
 
-func (x *GenesisState) GetLiquidityList() []*GenesisLiquidity {
+func (x *GenesisState) GetLiquidityEntries() []*GenesisLiquidityEntry {
 	if x != nil {
-		return x.LiquidityList
+		return x.LiquidityEntries
 	}
 	return nil
 }
 
-func (x *GenesisState) GetLiquidityPositionsList() []*GenesisLiquidityPositions {
+func (x *GenesisState) GetLiquidityPositions() []*GenesisLiquidityPositions {
 	if x != nil {
-		return x.LiquidityPositionsList
+		return x.LiquidityPositions
 	}
 	return nil
 }
 
-func (x *GenesisState) GetOrderList() []*Order {
+func (x *GenesisState) GetLiquidityAddressSums() []*GenesisLiquidityAddressSum {
 	if x != nil {
-		return x.OrderList
+		return x.LiquidityAddressSums
 	}
 	return nil
 }
 
-func (x *GenesisState) GetWalletTradeAmount() []*WalletTradeAmount {
+func (x *GenesisState) GetOrders() []*Order {
 	if x != nil {
-		return x.WalletTradeAmount
+		return x.Orders
+	}
+	return nil
+}
+
+func (x *GenesisState) GetWalletTradeAmounts() []*GenesisWalletTradeAmount {
+	if x != nil {
+		return x.WalletTradeAmounts
+	}
+	return nil
+}
+
+func (x *GenesisState) GetEpochShares() []*GenesisEpochShares {
+	if x != nil {
+		return x.EpochShares
+	}
+	return nil
+}
+
+func (x *GenesisState) GetEpochLeftovers() []*GenesisEpochLeftover {
+	if x != nil {
+		return x.EpochLeftovers
+	}
+	return nil
+}
+
+func (x *GenesisState) GetEpochSharesSum() *EpochShares {
+	if x != nil {
+		return x.EpochSharesSum
+	}
+	return nil
+}
+
+func (x *GenesisState) GetEpochStartTime() *EpochStartTime {
+	if x != nil {
+		return x.EpochStartTime
+	}
+	return nil
+}
+
+func (x *GenesisState) GetMovingLiquidity() []*GenesisMovingLiquidity {
+	if x != nil {
+		return x.MovingLiquidity
 	}
 	return nil
 }
@@ -1242,9 +2000,9 @@ func (x *GenesisState) GetOrderNextIndex() uint64 {
 	return 0
 }
 
-func (x *GenesisState) GetLiquidityDepositNextIndex() uint64 {
+func (x *GenesisState) GetLiquidityPositionsNextIndex() uint64 {
 	if x != nil {
-		return x.LiquidityDepositNextIndex
+		return x.LiquidityPositionsNextIndex
 	}
 	return 0
 }
@@ -1256,54 +2014,86 @@ var file_kopi_dex_genesis_proto_rawDesc = []byte{
 	0x69, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x08, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64,
 	0x65, 0x78, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f,
 	0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x15, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64,
-	0x65, 0x78, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a,
-	0x18, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0x2f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64,
-	0x69, 0x74, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x6b, 0x6f, 0x70, 0x69, 0x2f,
-	0x64, 0x65, 0x78, 0x2f, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a,
-	0x22, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0x2f, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74,
-	0x5f, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x22, 0x91, 0x04, 0x0a, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x53,
-	0x74, 0x61, 0x74, 0x65, 0x12, 0x2e, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x70, 0x61,
-	0x72, 0x61, 0x6d, 0x73, 0x12, 0x47, 0x0a, 0x0e, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74,
-	0x79, 0x5f, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x6b,
+	0x65, 0x78, 0x2f, 0x65, 0x70, 0x6f, 0x63, 0x68, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a,
+	0x15, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x18, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78,
+	0x2f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x1a, 0x14, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0x2f, 0x6f, 0x72, 0x64, 0x65, 0x72,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x22, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78,
+	0x2f, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x5f, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x61, 0x6d,
+	0x6f, 0x75, 0x6e, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xf6, 0x07, 0x0a, 0x0c, 0x47,
+	0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x2e, 0x0a, 0x06, 0x70,
+	0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x6b, 0x6f,
+	0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x04, 0xc8,
+	0xde, 0x1f, 0x00, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x52, 0x0a, 0x11, 0x6c,
+	0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x65, 0x6e, 0x74, 0x72, 0x69, 0x65, 0x73,
+	0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65,
+	0x78, 0x2e, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69,
+	0x74, 0x79, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x10, 0x6c,
+	0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x45, 0x6e, 0x74, 0x72, 0x69, 0x65, 0x73, 0x12,
+	0x5a, 0x0a, 0x13, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x70, 0x6f, 0x73,
+	0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x23, 0x2e, 0x6b,
 	0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x4c,
-	0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0d,
-	0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x63, 0x0a,
-	0x18, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x70, 0x6f, 0x73, 0x69, 0x74,
-	0x69, 0x6f, 0x6e, 0x73, 0x5f, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x08, 0x20, 0x03, 0x28, 0x0b, 0x32,
-	0x23, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e, 0x47, 0x65, 0x6e, 0x65, 0x73,
-	0x69, 0x73, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x50, 0x6f, 0x73, 0x69, 0x74,
-	0x69, 0x6f, 0x6e, 0x73, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x16, 0x6c, 0x69, 0x71, 0x75,
-	0x69, 0x64, 0x69, 0x74, 0x79, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x4c, 0x69,
-	0x73, 0x74, 0x12, 0x33, 0x0a, 0x09, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x4c, 0x69, 0x73, 0x74, 0x18,
-	0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78,
-	0x2e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x09, 0x6f, 0x72,
-	0x64, 0x65, 0x72, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x51, 0x0a, 0x13, 0x77, 0x61, 0x6c, 0x6c, 0x65,
-	0x74, 0x5f, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04,
-	0x20, 0x03, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e,
-	0x57, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x54, 0x72, 0x61, 0x64, 0x65, 0x41, 0x6d, 0x6f, 0x75, 0x6e,
-	0x74, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x11, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x54,
-	0x72, 0x61, 0x64, 0x65, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x30, 0x0a, 0x14, 0x6c, 0x69,
-	0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x6e, 0x65, 0x78, 0x74, 0x5f, 0x69, 0x6e, 0x64,
-	0x65, 0x78, 0x18, 0x05, 0x20, 0x01, 0x28, 0x04, 0x52, 0x12, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64,
-	0x69, 0x74, 0x79, 0x4e, 0x65, 0x78, 0x74, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x28, 0x0a, 0x10,
-	0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x6e, 0x65, 0x78, 0x74, 0x5f, 0x69, 0x6e, 0x64, 0x65, 0x78,
-	0x18, 0x06, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0e, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x4e, 0x65, 0x78,
-	0x74, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x3f, 0x0a, 0x1c, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64,
-	0x69, 0x74, 0x79, 0x5f, 0x64, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x5f, 0x6e, 0x65, 0x78, 0x74,
-	0x5f, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x07, 0x20, 0x01, 0x28, 0x04, 0x52, 0x19, 0x6c, 0x69,
-	0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x4e, 0x65,
-	0x78, 0x74, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x42, 0x78, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x6b,
-	0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73,
-	0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
-	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64,
-	0x65, 0x78, 0xa2, 0x02, 0x03, 0x4b, 0x44, 0x58, 0xaa, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x2e,
-	0x44, 0x65, 0x78, 0xca, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0xe2, 0x02,
-	0x14, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74,
-	0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x09, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x44, 0x65,
-	0x78, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e,
+	0x73, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x12, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69,
+	0x74, 0x79, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x60, 0x0a, 0x16, 0x6c,
+	0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
+	0x5f, 0x73, 0x75, 0x6d, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x24, 0x2e, 0x6b, 0x6f,
+	0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x4c, 0x69,
+	0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x75,
+	0x6d, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x14, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69,
+	0x74, 0x79, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x75, 0x6d, 0x73, 0x12, 0x2d, 0x0a,
+	0x06, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0f, 0x2e,
+	0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e, 0x4f, 0x72, 0x64, 0x65, 0x72, 0x42, 0x04,
+	0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x73, 0x12, 0x5a, 0x0a, 0x14,
+	0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x5f, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x61, 0x6d, 0x6f,
+	0x75, 0x6e, 0x74, 0x73, 0x18, 0x06, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x6b, 0x6f, 0x70,
+	0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x57, 0x61, 0x6c,
+	0x6c, 0x65, 0x74, 0x54, 0x72, 0x61, 0x64, 0x65, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x42, 0x04,
+	0xc8, 0xde, 0x1f, 0x00, 0x52, 0x12, 0x77, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x54, 0x72, 0x61, 0x64,
+	0x65, 0x41, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x73, 0x12, 0x45, 0x0a, 0x0c, 0x65, 0x70, 0x6f, 0x63,
+	0x68, 0x5f, 0x73, 0x68, 0x61, 0x72, 0x65, 0x73, 0x18, 0x07, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1c,
+	0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69,
+	0x73, 0x45, 0x70, 0x6f, 0x63, 0x68, 0x53, 0x68, 0x61, 0x72, 0x65, 0x73, 0x42, 0x04, 0xc8, 0xde,
+	0x1f, 0x00, 0x52, 0x0b, 0x65, 0x70, 0x6f, 0x63, 0x68, 0x53, 0x68, 0x61, 0x72, 0x65, 0x73, 0x12,
+	0x4d, 0x0a, 0x0f, 0x65, 0x70, 0x6f, 0x63, 0x68, 0x5f, 0x6c, 0x65, 0x66, 0x74, 0x6f, 0x76, 0x65,
+	0x72, 0x73, 0x18, 0x08, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e,
+	0x64, 0x65, 0x78, 0x2e, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x45, 0x70, 0x6f, 0x63, 0x68,
+	0x4c, 0x65, 0x66, 0x74, 0x6f, 0x76, 0x65, 0x72, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0e,
+	0x65, 0x70, 0x6f, 0x63, 0x68, 0x4c, 0x65, 0x66, 0x74, 0x6f, 0x76, 0x65, 0x72, 0x73, 0x12, 0x45,
+	0x0a, 0x10, 0x65, 0x70, 0x6f, 0x63, 0x68, 0x5f, 0x73, 0x68, 0x61, 0x72, 0x65, 0x73, 0x5f, 0x73,
+	0x75, 0x6d, 0x18, 0x09, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e,
+	0x64, 0x65, 0x78, 0x2e, 0x45, 0x70, 0x6f, 0x63, 0x68, 0x53, 0x68, 0x61, 0x72, 0x65, 0x73, 0x42,
+	0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x0e, 0x65, 0x70, 0x6f, 0x63, 0x68, 0x53, 0x68, 0x61, 0x72,
+	0x65, 0x73, 0x53, 0x75, 0x6d, 0x12, 0x48, 0x0a, 0x10, 0x65, 0x70, 0x6f, 0x63, 0x68, 0x5f, 0x73,
+	0x74, 0x61, 0x72, 0x74, 0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x18, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x2e, 0x45, 0x70, 0x6f, 0x63, 0x68,
+	0x53, 0x74, 0x61, 0x72, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52,
+	0x0e, 0x65, 0x70, 0x6f, 0x63, 0x68, 0x53, 0x74, 0x61, 0x72, 0x74, 0x54, 0x69, 0x6d, 0x65, 0x12,
+	0x51, 0x0a, 0x10, 0x6d, 0x6f, 0x76, 0x69, 0x6e, 0x67, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64,
+	0x69, 0x74, 0x79, 0x18, 0x0b, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x6b, 0x6f, 0x70, 0x69,
+	0x2e, 0x64, 0x65, 0x78, 0x2e, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x4d, 0x6f, 0x76, 0x69,
+	0x6e, 0x67, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x42, 0x04, 0xc8, 0xde, 0x1f,
+	0x00, 0x52, 0x0f, 0x6d, 0x6f, 0x76, 0x69, 0x6e, 0x67, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69,
+	0x74, 0x79, 0x12, 0x30, 0x0a, 0x14, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f,
+	0x6e, 0x65, 0x78, 0x74, 0x5f, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x04,
+	0x52, 0x12, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x4e, 0x65, 0x78, 0x74, 0x49,
+	0x6e, 0x64, 0x65, 0x78, 0x12, 0x28, 0x0a, 0x10, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x5f, 0x6e, 0x65,
+	0x78, 0x74, 0x5f, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x0d, 0x20, 0x01, 0x28, 0x04, 0x52, 0x0e,
+	0x6f, 0x72, 0x64, 0x65, 0x72, 0x4e, 0x65, 0x78, 0x74, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x43,
+	0x0a, 0x1e, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x70, 0x6f, 0x73, 0x69,
+	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x5f, 0x6e, 0x65, 0x78, 0x74, 0x5f, 0x69, 0x6e, 0x64, 0x65, 0x78,
+	0x18, 0x0e, 0x20, 0x01, 0x28, 0x04, 0x52, 0x1b, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74,
+	0x79, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x4e, 0x65, 0x78, 0x74, 0x49, 0x6e,
+	0x64, 0x65, 0x78, 0x42, 0x78, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e,
+	0x64, 0x65, 0x78, 0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74,
+	0x6f, 0x50, 0x01, 0x5a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
+	0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0xa2, 0x02,
+	0x03, 0x4b, 0x44, 0x58, 0xaa, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x44, 0x65, 0x78, 0xca,
+	0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0xe2, 0x02, 0x14, 0x4b, 0x6f, 0x70,
+	0x69, 0x5c, 0x44, 0x65, 0x78, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
+	0x61, 0xea, 0x02, 0x09, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x44, 0x65, 0x78, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1320,24 +2110,36 @@ func file_kopi_dex_genesis_proto_rawDescGZIP() []byte {
 
 var file_kopi_dex_genesis_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_kopi_dex_genesis_proto_goTypes = []interface{}{
-	(*GenesisState)(nil),              // 0: kopi.dex.GenesisState
-	(*Params)(nil),                    // 1: kopi.dex.Params
-	(*GenesisLiquidity)(nil),          // 2: kopi.dex.GenesisLiquidity
-	(*GenesisLiquidityPositions)(nil), // 3: kopi.dex.GenesisLiquidityPositions
-	(*Order)(nil),                     // 4: kopi.dex.Order
-	(*WalletTradeAmount)(nil),         // 5: kopi.dex.WalletTradeAmount
+	(*GenesisState)(nil),               // 0: kopi.dex.GenesisState
+	(*Params)(nil),                     // 1: kopi.dex.Params
+	(*GenesisLiquidityEntry)(nil),      // 2: kopi.dex.GenesisLiquidityEntry
+	(*GenesisLiquidityPositions)(nil),  // 3: kopi.dex.GenesisLiquidityPositions
+	(*GenesisLiquidityAddressSum)(nil), // 4: kopi.dex.GenesisLiquidityAddressSum
+	(*Order)(nil),                      // 5: kopi.dex.Order
+	(*GenesisWalletTradeAmount)(nil),   // 6: kopi.dex.GenesisWalletTradeAmount
+	(*GenesisEpochShares)(nil),         // 7: kopi.dex.GenesisEpochShares
+	(*GenesisEpochLeftover)(nil),       // 8: kopi.dex.GenesisEpochLeftover
+	(*EpochShares)(nil),                // 9: kopi.dex.EpochShares
+	(*EpochStartTime)(nil),             // 10: kopi.dex.EpochStartTime
+	(*GenesisMovingLiquidity)(nil),     // 11: kopi.dex.GenesisMovingLiquidity
 }
 var file_kopi_dex_genesis_proto_depIdxs = []int32{
-	1, // 0: kopi.dex.GenesisState.params:type_name -> kopi.dex.Params
-	2, // 1: kopi.dex.GenesisState.liquidity_list:type_name -> kopi.dex.GenesisLiquidity
-	3, // 2: kopi.dex.GenesisState.liquidity_positions_list:type_name -> kopi.dex.GenesisLiquidityPositions
-	4, // 3: kopi.dex.GenesisState.orderList:type_name -> kopi.dex.Order
-	5, // 4: kopi.dex.GenesisState.wallet_trade_amount:type_name -> kopi.dex.WalletTradeAmount
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	1,  // 0: kopi.dex.GenesisState.params:type_name -> kopi.dex.Params
+	2,  // 1: kopi.dex.GenesisState.liquidity_entries:type_name -> kopi.dex.GenesisLiquidityEntry
+	3,  // 2: kopi.dex.GenesisState.liquidity_positions:type_name -> kopi.dex.GenesisLiquidityPositions
+	4,  // 3: kopi.dex.GenesisState.liquidity_address_sums:type_name -> kopi.dex.GenesisLiquidityAddressSum
+	5,  // 4: kopi.dex.GenesisState.orders:type_name -> kopi.dex.Order
+	6,  // 5: kopi.dex.GenesisState.wallet_trade_amounts:type_name -> kopi.dex.GenesisWalletTradeAmount
+	7,  // 6: kopi.dex.GenesisState.epoch_shares:type_name -> kopi.dex.GenesisEpochShares
+	8,  // 7: kopi.dex.GenesisState.epoch_leftovers:type_name -> kopi.dex.GenesisEpochLeftover
+	9,  // 8: kopi.dex.GenesisState.epoch_shares_sum:type_name -> kopi.dex.EpochShares
+	10, // 9: kopi.dex.GenesisState.epoch_start_time:type_name -> kopi.dex.EpochStartTime
+	11, // 10: kopi.dex.GenesisState.moving_liquidity:type_name -> kopi.dex.GenesisMovingLiquidity
+	11, // [11:11] is the sub-list for method output_type
+	11, // [11:11] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_kopi_dex_genesis_proto_init() }
@@ -1345,6 +2147,7 @@ func file_kopi_dex_genesis_proto_init() {
 	if File_kopi_dex_genesis_proto != nil {
 		return
 	}
+	file_kopi_dex_epochs_proto_init()
 	file_kopi_dex_params_proto_init()
 	file_kopi_dex_liquidity_proto_init()
 	file_kopi_dex_order_proto_init()

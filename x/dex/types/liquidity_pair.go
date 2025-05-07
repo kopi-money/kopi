@@ -1,19 +1,24 @@
 package types
 
-import "cosmossdk.io/math"
+import (
+	"cosmossdk.io/math"
+	"github.com/kopi-money/kopi/trading"
+)
 
-func (lp LiquidityPair) GetActualVirtualBase() math.LegacyDec {
-	return lp.ActualBase.Add(lp.VirtualBase)
+func (tl TradeLiquidity) GetFull() math.LegacyDec {
+	return tl.Actual.Add(tl.Virtual)
 }
 
-func (lp LiquidityPair) GetActualVirtualOther() math.LegacyDec {
-	return lp.ActualOther.Add(lp.VirtualOther)
-}
+// AdjustToTradeValue determines what of the actual liquidity can be used and how much has to be filled using virtual.
+func (tl TradeLiquidity) AdjustToTradeValue(globalTradeValueBase math.LegacyDec) trading.Liquidity {
+	share := globalTradeValueBase.Quo(tl.TradeValueBase)
+	tradeValue := tl.TradeValue.Mul(share)
 
-func (lp LiquidityPair) GetFullBase() math.LegacyDec {
-	return lp.ActualBase.Add(lp.VirtualBase).Add(lp.ExtraBase)
-}
+	actualToUse := math.LegacyMinDec(tl.Actual, tradeValue)
+	virtualToUSe := tradeValue.Sub(actualToUse)
 
-func (lp LiquidityPair) GetFullOther() math.LegacyDec {
-	return lp.ActualOther.Add(lp.VirtualOther).Add(lp.ExtraOther)
+	return trading.Liquidity{
+		Actual:  actualToUse,
+		Virtual: virtualToUSe,
+	}
 }

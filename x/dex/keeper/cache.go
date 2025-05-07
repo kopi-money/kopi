@@ -41,12 +41,21 @@ func (k Keeper) NewOrdersCaches(ctx context.Context) *types.OrdersCaches {
 		func() math.LegacyDec {
 			return k.getProviderFee(ctx)
 		},
-		func() sdk.Coins {
+		func(denom string, _ ...any) math.Int {
 			acc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
-			return k.BankKeeper.SpendableCoins(ctx, acc.GetAddress())
+			return k.BankKeeper.SpendableCoins(ctx, acc.GetAddress()).AmountOf(denom)
 		},
 		func(denom string) []types.Liquidity {
 			return k.liquidityEntries.Iterator(ctx, nil, denom).GetAll()
+		},
+		func(denom string, _ ...any) math.LegacyDec {
+			return k.getMovingLiquidity(ctx, denom).Amount
+		},
+		func() []types.DiscountLevel {
+			return k.GetParams(ctx).DiscountLevels
+		},
+		func(denom string, _ ...any) math.LegacyDec {
+			return k.DenomKeeper.MinLiquidity(ctx, denom).ToLegacyDec()
 		},
 	)
 }

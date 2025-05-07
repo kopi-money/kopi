@@ -2,17 +2,31 @@ package types
 
 import (
 	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/measurement"
 )
 
 type LoadAccAddress func() sdk.AccAddress
 type LoadFee func() math.LegacyDec
-type LoadPoolBalance func() sdk.Coins
+type LoadPoolBalance func(string, ...any) math.Int
 type LoadLiquidityPair func(denom string) LiquidityPair
 type LoadLiquidity func(denom string) []Liquidity
+type LoadMovingLiquidity func(string, ...any) math.LegacyDec
+type LoadMinimumLiquidity func(string, ...any) math.LegacyDec
+type LoadDiscountLevels func() []DiscountLevel
+type LoadLiquidityAddressSum func(string, ...any) math.Int
 
-func NewOrderCaches(lat, lar, lal, lao, lafi LoadAccAddress, ltf, lrfs, lof, lpf LoadFee, lpbl LoadPoolBalance, ll LoadLiquidity) *OrdersCaches {
+func NewOrderCaches(
+	lat, lar, lal, lao, lafi LoadAccAddress,
+	ltf, lrfs, lof, lpf LoadFee,
+	lpbl LoadPoolBalance,
+	ll LoadLiquidity,
+	lml LoadMovingLiquidity,
+	ldl LoadDiscountLevels,
+	lvl LoadMinimumLiquidity,
+) *OrdersCaches {
+
 	return &OrdersCaches{
 		AccPoolTrade:     newItemCache(lat),
 		AccPoolReserve:   newItemCache(lar),
@@ -23,13 +37,16 @@ func NewOrderCaches(lat, lar, lal, lao, lafi LoadAccAddress, ltf, lrfs, lof, lpf
 		ReserveFeeShare:  newItemCache(lrfs),
 		OrderFee:         newItemCache(lof),
 		ProviderFee:      newItemCache(lpf),
-		LiquidityPool:    newItemCache(lpbl),
+		LiquidityPool:    NewMapCache(lpbl),
+		DiscountLevels:   newItemCache(ldl),
 		LiquidityMap:     newLiquidityMap(ll),
 
 		PriceAmountsSell:      make(map[Pair]math.LegacyDec),
 		PriceAmountsBuy:       make(map[Pair]math.LegacyDec),
 		PriceMaxAmounts:       make(map[string]math.LegacyDec),
+		MovingLiquidity:       NewMapCache(lml),
 		MaximumTradableAmount: make(map[string]*math.LegacyDec),
+		MinimumLiquidity:      NewMapCache(lvl),
 	}
 }
 
@@ -47,14 +64,39 @@ type OrdersCaches struct {
 	ReserveFeeShare       *ItemCache[math.LegacyDec]
 	OrderFee              *ItemCache[math.LegacyDec]
 	ProviderFee           *ItemCache[math.LegacyDec]
-	LiquidityPool         *ItemCache[sdk.Coins]
+	LiquidityPool         *MapCache[math.Int]
 	ReimbursementPool     *ItemCache[*AmountsMap]
+	DiscountLevels        *ItemCache[[]DiscountLevel]
 	PriceAmountsSell      map[Pair]math.LegacyDec
 	PriceAmountsBuy       map[Pair]math.LegacyDec
 	PriceMaxAmounts       map[string]math.LegacyDec
 	LiquidityMap          *LiquidityMap
 	MaximumTradableAmount map[string]*math.LegacyDec
+	MovingLiquidity       *MapCache[math.LegacyDec]
+	MinimumLiquidity      *MapCache[math.LegacyDec]
 	Measurement           *measurement.Measurement
+}
+
+func (oc *OrdersCaches) SubtractLiquidity(denom string, amount math.Int) {
+	newAmount := oc.LiquidityPool.Get(denom).Sub(amount)
+	if newAmount.IsNegative() {
+		panic(fmt.Sprintf("negative liquidity for %v", denom))
+	}
+	oc.LiquidityPool.Set(denom, newAmount)
+
+	movLiq := oc.MovingLiquidity.Get(denom)
+	movLiq = math.LegacyMaxDec(movLiq, math.LegacyZeroDec())
+
+	oc.MovingLiquidity.Set(denom, movLiq)
+}
+
+func (oc *OrdersCaches) AddLiquidity(denom string, amount math.Int) {
+	newAmount := oc.LiquidityPool.Get(denom).Add(amount)
+	oc.LiquidityPool.Set(denom, newAmount)
+
+	movLiq := oc.MovingLiquidity.Get(denom)
+	movLiq = movLiq.Add(amount.ToLegacyDec())
+	oc.MovingLiquidity.Set(denom, movLiq)
 }
 
 func (oc *OrdersCaches) Clear() {
@@ -84,6 +126,17 @@ func (oc *OrdersCaches) SetPreviousPrice(pair Pair, price math.LegacyDec, isBuy 
 			oc.PriceAmountsSell[pair] = price
 		}
 	}
+}
+
+func (oc *OrdersCaches) GetLiquidityAddressSum(denom, address string) math.Int {
+	sum := math.ZeroInt()
+	for _, entry := range oc.LiquidityMap.Get(denom) {
+		if entry.Address == address {
+			sum = sum.Add(entry.Amount)
+		}
+	}
+
+	return sum
 }
 
 type ItemCache[T any] struct {

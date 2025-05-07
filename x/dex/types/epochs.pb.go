@@ -29,6 +29,59 @@ var _ = time.Kitchen
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type GenesisEpochShares struct {
+	Address       string                      `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	PositionIndex uint64                      `protobuf:"varint,2,opt,name=position_index,json=positionIndex,proto3" json:"position_index,omitempty"`
+	Shares        cosmossdk_io_math.LegacyDec `protobuf:"bytes,3,opt,name=shares,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"shares"`
+}
+
+func (m *GenesisEpochShares) Reset()         { *m = GenesisEpochShares{} }
+func (m *GenesisEpochShares) String() string { return proto.CompactTextString(m) }
+func (*GenesisEpochShares) ProtoMessage()    {}
+func (*GenesisEpochShares) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d38acfe9a65a7cc6, []int{0}
+}
+func (m *GenesisEpochShares) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GenesisEpochShares) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GenesisEpochShares.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GenesisEpochShares) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GenesisEpochShares.Merge(m, src)
+}
+func (m *GenesisEpochShares) XXX_Size() int {
+	return m.Size()
+}
+func (m *GenesisEpochShares) XXX_DiscardUnknown() {
+	xxx_messageInfo_GenesisEpochShares.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GenesisEpochShares proto.InternalMessageInfo
+
+func (m *GenesisEpochShares) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+func (m *GenesisEpochShares) GetPositionIndex() uint64 {
+	if m != nil {
+		return m.PositionIndex
+	}
+	return 0
+}
+
 type EpochShares struct {
 	Shares cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=shares,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"shares"`
 }
@@ -37,7 +90,7 @@ func (m *EpochShares) Reset()         { *m = EpochShares{} }
 func (m *EpochShares) String() string { return proto.CompactTextString(m) }
 func (*EpochShares) ProtoMessage()    {}
 func (*EpochShares) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d38acfe9a65a7cc6, []int{0}
+	return fileDescriptor_d38acfe9a65a7cc6, []int{1}
 }
 func (m *EpochShares) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -66,6 +119,66 @@ func (m *EpochShares) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_EpochShares proto.InternalMessageInfo
 
+type GenesisEpochLeftover struct {
+	Address       string          `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	PositionIndex uint64          `protobuf:"varint,2,opt,name=position_index,json=positionIndex,proto3" json:"position_index,omitempty"`
+	Leftovers     []EpochLeftover `protobuf:"bytes,3,rep,name=leftovers,proto3" json:"leftovers"`
+}
+
+func (m *GenesisEpochLeftover) Reset()         { *m = GenesisEpochLeftover{} }
+func (m *GenesisEpochLeftover) String() string { return proto.CompactTextString(m) }
+func (*GenesisEpochLeftover) ProtoMessage()    {}
+func (*GenesisEpochLeftover) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d38acfe9a65a7cc6, []int{2}
+}
+func (m *GenesisEpochLeftover) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GenesisEpochLeftover) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GenesisEpochLeftover.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GenesisEpochLeftover) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GenesisEpochLeftover.Merge(m, src)
+}
+func (m *GenesisEpochLeftover) XXX_Size() int {
+	return m.Size()
+}
+func (m *GenesisEpochLeftover) XXX_DiscardUnknown() {
+	xxx_messageInfo_GenesisEpochLeftover.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GenesisEpochLeftover proto.InternalMessageInfo
+
+func (m *GenesisEpochLeftover) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+func (m *GenesisEpochLeftover) GetPositionIndex() uint64 {
+	if m != nil {
+		return m.PositionIndex
+	}
+	return 0
+}
+
+func (m *GenesisEpochLeftover) GetLeftovers() []EpochLeftover {
+	if m != nil {
+		return m.Leftovers
+	}
+	return nil
+}
+
 type EpochLeftover struct {
 	Denom  string                      `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
 	Amount cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=amount,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"amount"`
@@ -75,7 +188,7 @@ func (m *EpochLeftover) Reset()         { *m = EpochLeftover{} }
 func (m *EpochLeftover) String() string { return proto.CompactTextString(m) }
 func (*EpochLeftover) ProtoMessage()    {}
 func (*EpochLeftover) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d38acfe9a65a7cc6, []int{1}
+	return fileDescriptor_d38acfe9a65a7cc6, []int{3}
 }
 func (m *EpochLeftover) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -119,7 +232,7 @@ func (m *EpochLeftovers) Reset()         { *m = EpochLeftovers{} }
 func (m *EpochLeftovers) String() string { return proto.CompactTextString(m) }
 func (*EpochLeftovers) ProtoMessage()    {}
 func (*EpochLeftovers) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d38acfe9a65a7cc6, []int{2}
+	return fileDescriptor_d38acfe9a65a7cc6, []int{4}
 }
 func (m *EpochLeftovers) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -163,7 +276,7 @@ func (m *EpochStartTime) Reset()         { *m = EpochStartTime{} }
 func (m *EpochStartTime) String() string { return proto.CompactTextString(m) }
 func (*EpochStartTime) ProtoMessage()    {}
 func (*EpochStartTime) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d38acfe9a65a7cc6, []int{3}
+	return fileDescriptor_d38acfe9a65a7cc6, []int{5}
 }
 func (m *EpochStartTime) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -200,7 +313,9 @@ func (m *EpochStartTime) GetCreatedAt() time.Time {
 }
 
 func init() {
+	proto.RegisterType((*GenesisEpochShares)(nil), "kopi.dex.GenesisEpochShares")
 	proto.RegisterType((*EpochShares)(nil), "kopi.dex.EpochShares")
+	proto.RegisterType((*GenesisEpochLeftover)(nil), "kopi.dex.GenesisEpochLeftover")
 	proto.RegisterType((*EpochLeftover)(nil), "kopi.dex.EpochLeftover")
 	proto.RegisterType((*EpochLeftovers)(nil), "kopi.dex.EpochLeftovers")
 	proto.RegisterType((*EpochStartTime)(nil), "kopi.dex.EpochStartTime")
@@ -209,30 +324,80 @@ func init() {
 func init() { proto.RegisterFile("kopi/dex/epochs.proto", fileDescriptor_d38acfe9a65a7cc6) }
 
 var fileDescriptor_d38acfe9a65a7cc6 = []byte{
-	// 362 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x91, 0x31, 0xcf, 0xd3, 0x30,
-	0x10, 0x86, 0x63, 0xe0, 0xfb, 0xf4, 0xd5, 0x05, 0x86, 0xa8, 0x88, 0xa8, 0x48, 0x49, 0x15, 0x24,
-	0xd4, 0x05, 0x5b, 0x2a, 0x23, 0x0b, 0x04, 0x58, 0x50, 0x59, 0xd2, 0xb2, 0xb0, 0x20, 0x27, 0xb9,
-	0x26, 0x51, 0xeb, 0x5e, 0x14, 0xbb, 0xd0, 0xfe, 0x8b, 0xfe, 0xac, 0x8e, 0x1d, 0x11, 0x43, 0x41,
-	0xed, 0x1f, 0x41, 0x76, 0x12, 0xa1, 0xb2, 0xb1, 0xdd, 0x9d, 0xdf, 0x7b, 0x9f, 0xd3, 0x6b, 0xfa,
-	0x64, 0x89, 0x55, 0xc9, 0x33, 0xd8, 0x72, 0xa8, 0x30, 0x2d, 0x14, 0xab, 0x6a, 0xd4, 0xe8, 0xde,
-	0x99, 0x31, 0xcb, 0x60, 0x3b, 0x1c, 0xe4, 0x98, 0xa3, 0x1d, 0x72, 0x53, 0x35, 0xef, 0xc3, 0x20,
-	0x47, 0xcc, 0x57, 0xc0, 0x6d, 0x97, 0x6c, 0x16, 0x5c, 0x97, 0x12, 0x94, 0x16, 0xb2, 0x6a, 0x05,
-	0xfe, 0xbf, 0x82, 0xef, 0xb5, 0xa8, 0x2a, 0xa8, 0x5b, 0x40, 0xf8, 0x91, 0xf6, 0x3f, 0x18, 0xe0,
-	0xac, 0x10, 0x35, 0x28, 0xf7, 0x35, 0xbd, 0x55, 0xb6, 0xf2, 0xc8, 0x88, 0x8c, 0x1f, 0x46, 0xcf,
-	0x0f, 0xa7, 0xc0, 0xf9, 0x79, 0x0a, 0x9e, 0xa5, 0xa8, 0x24, 0x2a, 0x95, 0x2d, 0x59, 0x89, 0x5c,
-	0x0a, 0x5d, 0xb0, 0x29, 0xe4, 0x22, 0xdd, 0xbd, 0x87, 0x34, 0x6e, 0x57, 0xc2, 0x84, 0x3e, 0xb2,
-	0x5e, 0x53, 0x58, 0x68, 0xfc, 0x06, 0xb5, 0x3b, 0xa0, 0x37, 0x19, 0xac, 0x51, 0x5a, 0xb3, 0x5e,
-	0xdc, 0x34, 0x86, 0x21, 0x24, 0x6e, 0xd6, 0xda, 0xbb, 0xf7, 0x1f, 0x8c, 0x66, 0x25, 0xfc, 0x44,
-	0x1f, 0x5f, 0x31, 0xcc, 0xc9, 0xbd, 0x55, 0xd7, 0x78, 0x64, 0x74, 0x7f, 0xdc, 0x9f, 0x3c, 0x65,
-	0x5d, 0x6c, 0xec, 0x4a, 0x1c, 0x3d, 0x30, 0xa8, 0xf8, 0xaf, 0x3e, 0xfc, 0xdc, 0xda, 0xcd, 0xb4,
-	0xa8, 0xf5, 0xbc, 0x94, 0xe0, 0xbe, 0xa3, 0x34, 0xad, 0x41, 0x68, 0xc8, 0xbe, 0x0a, 0xed, 0xdd,
-	0x8c, 0xc8, 0xb8, 0x3f, 0x19, 0xb2, 0x26, 0x45, 0xd6, 0xa5, 0xc8, 0xe6, 0x5d, 0xcc, 0xd1, 0x9d,
-	0xb1, 0xdc, 0xff, 0x0a, 0x48, 0xdc, 0x6b, 0xf7, 0xde, 0xea, 0xe8, 0xcd, 0xe1, 0xec, 0x93, 0xe3,
-	0xd9, 0x27, 0xbf, 0xcf, 0x3e, 0xd9, 0x5f, 0x7c, 0xe7, 0x78, 0xf1, 0x9d, 0x1f, 0x17, 0xdf, 0xf9,
-	0xf2, 0x22, 0x2f, 0x75, 0xb1, 0x49, 0x58, 0x8a, 0x92, 0x9b, 0x23, 0x5f, 0x4a, 0x5c, 0xc3, 0xce,
-	0x96, 0x7c, 0x6b, 0xff, 0x5f, 0xef, 0x2a, 0x50, 0xc9, 0xad, 0x45, 0xbd, 0xfa, 0x13, 0x00, 0x00,
-	0xff, 0xff, 0x89, 0xaf, 0x3d, 0xcf, 0x18, 0x02, 0x00, 0x00,
+	// 436 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x53, 0xcd, 0x6e, 0x13, 0x31,
+	0x10, 0x8e, 0xe9, 0x0f, 0x8d, 0x43, 0x7b, 0x58, 0x05, 0xb1, 0x0a, 0xd2, 0x26, 0x0a, 0x02, 0xed,
+	0x05, 0x5b, 0x2a, 0x47, 0x2e, 0x10, 0x40, 0x08, 0x54, 0x2e, 0xdb, 0x72, 0xe1, 0x52, 0x39, 0xeb,
+	0xe9, 0xc6, 0x6a, 0xbd, 0x63, 0xd9, 0x0e, 0x24, 0x6f, 0x51, 0x21, 0x1e, 0xaa, 0xc7, 0x1e, 0x11,
+	0x87, 0x82, 0x92, 0x17, 0x41, 0xde, 0xec, 0xaa, 0x0d, 0x27, 0x2a, 0xf5, 0x36, 0xf3, 0xed, 0xcc,
+	0xf7, 0xa3, 0x1d, 0xd3, 0x87, 0xa7, 0x68, 0x14, 0x97, 0x30, 0xe3, 0x60, 0x30, 0x9f, 0x38, 0x66,
+	0x2c, 0x7a, 0x8c, 0x76, 0x02, 0xcc, 0x24, 0xcc, 0x7a, 0xdd, 0x02, 0x0b, 0xac, 0x40, 0x1e, 0xaa,
+	0xd5, 0xf7, 0x5e, 0xbf, 0x40, 0x2c, 0xce, 0x80, 0x57, 0xdd, 0x78, 0x7a, 0xc2, 0xbd, 0xd2, 0xe0,
+	0xbc, 0xd0, 0xa6, 0x1e, 0x48, 0xfe, 0x1d, 0xf8, 0x66, 0x85, 0x31, 0x60, 0x6b, 0x81, 0xe1, 0x77,
+	0x42, 0xa3, 0xf7, 0x50, 0x82, 0x53, 0xee, 0x5d, 0x10, 0x3e, 0x9c, 0x08, 0x0b, 0x2e, 0x8a, 0xe9,
+	0x7d, 0x21, 0xa5, 0x05, 0xe7, 0x62, 0x32, 0x20, 0x69, 0x3b, 0x6b, 0xda, 0xe8, 0x29, 0xdd, 0x33,
+	0xe8, 0x94, 0x57, 0x58, 0x1e, 0xab, 0x52, 0xc2, 0x2c, 0xbe, 0x37, 0x20, 0xe9, 0x66, 0xb6, 0xdb,
+	0xa0, 0x1f, 0x02, 0x18, 0xbd, 0xa4, 0xdb, 0xae, 0xa2, 0x8a, 0x37, 0x06, 0x24, 0x7d, 0x30, 0x7a,
+	0x72, 0x71, 0xd5, 0x6f, 0xfd, 0xba, 0xea, 0x3f, 0xce, 0xd1, 0x69, 0x74, 0x4e, 0x9e, 0x32, 0x85,
+	0x5c, 0x0b, 0x3f, 0x61, 0x07, 0x50, 0x88, 0x7c, 0xfe, 0x16, 0xf2, 0xac, 0x5e, 0x19, 0x7e, 0xa4,
+	0x9d, 0x9b, 0x66, 0xae, 0xb9, 0xc8, 0xed, 0xb9, 0x7e, 0x10, 0xda, 0xbd, 0x19, 0xf0, 0x00, 0x4e,
+	0x3c, 0x7e, 0x05, 0x7b, 0x17, 0x11, 0xdb, 0x67, 0x35, 0x59, 0x48, 0xb9, 0x91, 0x76, 0xf6, 0x1f,
+	0xb1, 0xe6, 0x7f, 0xb1, 0x35, 0xb1, 0xd1, 0x66, 0xb0, 0x9c, 0x5d, 0xcf, 0x0f, 0xc7, 0x74, 0x77,
+	0xdd, 0x4e, 0x97, 0x6e, 0x49, 0x28, 0x51, 0xd7, 0x66, 0x56, 0x4d, 0x88, 0x2e, 0x34, 0x4e, 0x4b,
+	0x5f, 0x59, 0xf8, 0xdf, 0xe8, 0xab, 0x95, 0xe1, 0x27, 0xba, 0xb7, 0xa6, 0xe1, 0xd6, 0x2d, 0x93,
+	0x5b, 0x5a, 0xfe, 0x5c, 0xd3, 0x1d, 0x7a, 0x61, 0xfd, 0x91, 0xd2, 0x10, 0xbd, 0xa1, 0x34, 0xb7,
+	0x20, 0x3c, 0xc8, 0x63, 0xe1, 0xe3, 0xad, 0x01, 0x49, 0x3b, 0xfb, 0x3d, 0xb6, 0xba, 0x38, 0xd6,
+	0x5c, 0x1c, 0x3b, 0x6a, 0x4e, 0x72, 0xb4, 0x13, 0x28, 0xcf, 0x7f, 0xf7, 0x49, 0xd6, 0xae, 0xf7,
+	0x5e, 0xfb, 0xd1, 0xab, 0x8b, 0x45, 0x42, 0x2e, 0x17, 0x09, 0xf9, 0xb3, 0x48, 0xc8, 0xf9, 0x32,
+	0x69, 0x5d, 0x2e, 0x93, 0xd6, 0xcf, 0x65, 0xd2, 0xfa, 0xf2, 0xac, 0x50, 0x7e, 0x32, 0x1d, 0xb3,
+	0x1c, 0x35, 0x0f, 0x26, 0x9f, 0x6b, 0x2c, 0x61, 0x5e, 0x95, 0x7c, 0x56, 0xbd, 0x15, 0x3f, 0x37,
+	0xe0, 0xc6, 0xdb, 0x95, 0xd4, 0x8b, 0xbf, 0x01, 0x00, 0x00, 0xff, 0xff, 0x94, 0x18, 0x8c, 0x40,
+	0x44, 0x03, 0x00, 0x00,
+}
+
+func (m *GenesisEpochShares) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GenesisEpochShares) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GenesisEpochShares) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.Shares.Size()
+		i -= size
+		if _, err := m.Shares.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintEpochs(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	if m.PositionIndex != 0 {
+		i = encodeVarintEpochs(dAtA, i, uint64(m.PositionIndex))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintEpochs(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *EpochShares) Marshal() (dAtA []byte, err error) {
@@ -265,6 +430,55 @@ func (m *EpochShares) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	i--
 	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *GenesisEpochLeftover) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GenesisEpochLeftover) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GenesisEpochLeftover) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Leftovers) > 0 {
+		for iNdEx := len(m.Leftovers) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Leftovers[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintEpochs(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if m.PositionIndex != 0 {
+		i = encodeVarintEpochs(dAtA, i, uint64(m.PositionIndex))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintEpochs(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -387,6 +601,24 @@ func encodeVarintEpochs(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *GenesisEpochShares) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovEpochs(uint64(l))
+	}
+	if m.PositionIndex != 0 {
+		n += 1 + sovEpochs(uint64(m.PositionIndex))
+	}
+	l = m.Shares.Size()
+	n += 1 + l + sovEpochs(uint64(l))
+	return n
+}
+
 func (m *EpochShares) Size() (n int) {
 	if m == nil {
 		return 0
@@ -395,6 +627,28 @@ func (m *EpochShares) Size() (n int) {
 	_ = l
 	l = m.Shares.Size()
 	n += 1 + l + sovEpochs(uint64(l))
+	return n
+}
+
+func (m *GenesisEpochLeftover) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovEpochs(uint64(l))
+	}
+	if m.PositionIndex != 0 {
+		n += 1 + sovEpochs(uint64(m.PositionIndex))
+	}
+	if len(m.Leftovers) > 0 {
+		for _, e := range m.Leftovers {
+			l = e.Size()
+			n += 1 + l + sovEpochs(uint64(l))
+		}
+	}
 	return n
 }
 
@@ -444,6 +698,140 @@ func sovEpochs(x uint64) (n int) {
 }
 func sozEpochs(x uint64) (n int) {
 	return sovEpochs(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *GenesisEpochShares) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowEpochs
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GenesisEpochShares: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GenesisEpochShares: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEpochs
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEpochs
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEpochs
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PositionIndex", wireType)
+			}
+			m.PositionIndex = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEpochs
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PositionIndex |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Shares", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEpochs
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthEpochs
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEpochs
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Shares.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipEpochs(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthEpochs
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *EpochShares) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -504,6 +892,141 @@ func (m *EpochShares) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.Shares.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipEpochs(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthEpochs
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GenesisEpochLeftover) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowEpochs
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GenesisEpochLeftover: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GenesisEpochLeftover: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEpochs
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEpochs
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEpochs
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PositionIndex", wireType)
+			}
+			m.PositionIndex = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEpochs
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PositionIndex |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Leftovers", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEpochs
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthEpochs
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthEpochs
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Leftovers = append(m.Leftovers, EpochLeftover{})
+			if err := m.Leftovers[len(m.Leftovers)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

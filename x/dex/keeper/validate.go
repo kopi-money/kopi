@@ -39,19 +39,3 @@ func (k Keeper) precheckTradeWithBalance(ctx context.Context, creator, denom str
 
 	return nil
 }
-
-func ParseAmount(amountStr string) (math.Int, error) {
-	amountStr = strings.ReplaceAll(amountStr, ",", "")
-	amountStr = strings.ReplaceAll(amountStr, "_", "")
-
-	amountInt, ok := math.NewIntFromString(amountStr)
-	if !ok {
-		return math.Int{}, fmt.Errorf("invalid amount string: '%v'", amountStr)
-	}
-
-	if amountInt.LT(math.ZeroInt()) {
-		return math.Int{}, types.ErrNegativeAmount
-	}
-
-	return amountInt, nil
-}

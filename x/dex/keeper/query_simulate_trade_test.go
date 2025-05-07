@@ -17,41 +17,38 @@ func TestSimulateTrade1(t *testing.T) {
 
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 10_000_000000))
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 10_000_000000))
+	setMovingLiqFixed(ctx, k)
 
 	_, err := k.QuerySimulateBuy(ctx, &types.QuerySimulateTradeRequest{
 		DenomGiving:    constants.BaseCurrency,
 		DenomReceiving: constants.KUSD,
-		Address:        keepertest.Alice,
+		Address:        keepertest.Bob,
 		Amount:         "2_500_000000",
 	})
-
-	require.NoError(t, err)
-
-	_, err = k.QuerySimulateBuy(ctx, &types.QuerySimulateTradeRequest{
-		DenomGiving:    constants.BaseCurrency,
-		DenomReceiving: constants.KUSD,
-		Address:        keepertest.Alice,
-		Amount:         "2_499_999999",
-	})
-
-	require.NoError(t, err)
-
-	_, err = k.QuerySimulateBuy(ctx, &types.QuerySimulateTradeRequest{
-		DenomGiving:    constants.BaseCurrency,
-		DenomReceiving: constants.KUSD,
-		Address:        keepertest.Alice,
-		Amount:         "10_000_000000",
-	})
-
 	require.Error(t, err)
 
 	_, err = k.QuerySimulateBuy(ctx, &types.QuerySimulateTradeRequest{
 		DenomGiving:    constants.BaseCurrency,
 		DenomReceiving: constants.KUSD,
-		Address:        keepertest.Alice,
+		Address:        keepertest.Bob,
+		Amount:         "2_499_999999",
+	})
+	require.NoError(t, err)
+
+	_, err = k.QuerySimulateBuy(ctx, &types.QuerySimulateTradeRequest{
+		DenomGiving:    constants.BaseCurrency,
+		DenomReceiving: constants.KUSD,
+		Address:        keepertest.Bob,
+		Amount:         "10_000_000000",
+	})
+	require.Error(t, err)
+
+	_, err = k.QuerySimulateBuy(ctx, &types.QuerySimulateTradeRequest{
+		DenomGiving:    constants.BaseCurrency,
+		DenomReceiving: constants.KUSD,
+		Address:        keepertest.Bob,
 		Amount:         "10000000001",
 	})
-
 	require.Error(t, err)
 }
 
@@ -74,6 +71,8 @@ func TestSimulateTrade2(t *testing.T) {
 		})
 		return err
 	}))
+
+	setMovingLiqFixed(ctx, k)
 
 	buyAmount := "2000000000000000000"
 	res, err := k.QuerySimulateBuy(ctx, &types.QuerySimulateTradeRequest{

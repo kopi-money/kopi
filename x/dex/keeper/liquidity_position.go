@@ -36,25 +36,15 @@ func (k Keeper) calcNetLiquidityValue(ctx context.Context) (math.LegacyDec, erro
 	return k.calcLiquidityValueSum(ctx, excludeAddresses)
 }
 
+// calcLiquidityValueSum returns the sum of all added liquidity excluding the liquidity held by the reserve. This
+// function is called when starting a new epoch.
 func (k Keeper) calcLiquidityValueSum(ctx context.Context, excludeAddresses []string) (math.LegacyDec, error) {
 	poolAcc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
 
 	poolLiquidity := k.BankKeeper.SpendableCoins(ctx, poolAcc.GetAddress())
 	for _, excludeAddress := range excludeAddresses {
 		coins := k.getLiquidityForAddress(ctx, excludeAddress)
-		for _, coin := range coins {
-			if coin.Amount.GT(poolLiquidity.AmountOf(coin.Denom)) {
-				excessAmount := coin.Amount.Sub(poolLiquidity.AmountOf(coin.Denom))
-				if err := k.dissolvePosition(ctx, excludeAddress, coin.Denom, excessAmount); err != nil {
-					return math.LegacyDec{}, fmt.Errorf("dissolve liquidity value (%v, %v): %w", excludeAddress, coin.Denom, err)
-				}
-
-				k.Logger().Warn(fmt.Sprintf("EA %v %v %v", excludeAddress, excessAmount, coin.Denom))
-				coin.Amount = poolLiquidity.AmountOf(coin.Denom)
-			}
-
-			poolLiquidity = poolLiquidity.Sub(coin)
-		}
+		poolLiquidity = poolLiquidity.Sub(coins...)
 	}
 
 	valueSum := math.LegacyZeroDec()
@@ -88,4 +78,41 @@ func (k Keeper) calculateLiquidityValueForPosition(ctx context.Context, position
 func (k Keeper) getBalance(ctx context.Context, moduleAcc string) sdk.Coins {
 	acc := k.AccountKeeper.GetModuleAccount(ctx, moduleAcc)
 	return k.BankKeeper.SpendableCoins(ctx, acc.GetAddress())
+}
+
+func (k Keeper) exportLiquidityPositions(ctx context.Context) (list []types.GenesisLiquidityPositions) {
+	addresses, _ := k.liquidityPositions.OuterKeys(ctx)
+	for _, address := range addresses {
+		iterator := k.liquidityPositions.Iterator(ctx, nil, address)
+		for iterator.Valid() {
+			keyValue := iterator.GetNextKeyValue()
+
+			list = append(list, types.GenesisLiquidityPositions{
+				Address:       address,
+				PositionIndex: keyValue.Key(),
+				AutoCompound:  keyValue.Value().Value().AutoCompound,
+				CreatedAt:     keyValue.Value().Value().CreatedAt,
+			})
+		}
+	}
+
+	return
+}
+
+func (k Keeper) exportLiquidityAddressSums(ctx context.Context) (list []types.GenesisLiquidityAddressSum) {
+	addresses, _ := k.liquidityAddressSum.OuterKeys(ctx)
+	for _, address := range addresses {
+		iterator := k.liquidityAddressSum.Iterator(ctx, nil, address)
+		for iterator.Valid() {
+			keyValue := iterator.GetNextKeyValue()
+
+			list = append(list, types.GenesisLiquidityAddressSum{
+				Address: address,
+				Denom:   keyValue.Key(),
+				Sum:     keyValue.Value().Value().Sum,
+			})
+		}
+	}
+
+	return
 }

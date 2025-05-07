@@ -25,13 +25,8 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type LiquidityPair struct {
-	Denom        string                      `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
-	ActualBase   cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=actual_base,json=actualBase,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"actual_base"`
-	ActualOther  cosmossdk_io_math.LegacyDec `protobuf:"bytes,3,opt,name=actual_other,json=actualOther,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"actual_other"`
-	VirtualBase  cosmossdk_io_math.LegacyDec `protobuf:"bytes,4,opt,name=virtual_base,json=virtualBase,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"virtual_base"`
-	VirtualOther cosmossdk_io_math.LegacyDec `protobuf:"bytes,5,opt,name=virtual_other,json=virtualOther,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"virtual_other"`
-	ExtraBase    cosmossdk_io_math.LegacyDec `protobuf:"bytes,6,opt,name=extra_base,json=extraBase,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"extra_base"`
-	ExtraOther   cosmossdk_io_math.LegacyDec `protobuf:"bytes,7,opt,name=extra_other,json=extraOther,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"extra_other"`
+	Base  TradeLiquidity `protobuf:"bytes,1,opt,name=base,proto3" json:"base"`
+	Other TradeLiquidity `protobuf:"bytes,2,opt,name=other,proto3" json:"other"`
 }
 
 func (m *LiquidityPair) Reset()         { *m = LiquidityPair{} }
@@ -67,41 +62,92 @@ func (m *LiquidityPair) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_LiquidityPair proto.InternalMessageInfo
 
-func (m *LiquidityPair) GetDenom() string {
+func (m *LiquidityPair) GetBase() TradeLiquidity {
 	if m != nil {
-		return m.Denom
+		return m.Base
 	}
-	return ""
+	return TradeLiquidity{}
 }
+
+func (m *LiquidityPair) GetOther() TradeLiquidity {
+	if m != nil {
+		return m.Other
+	}
+	return TradeLiquidity{}
+}
+
+type TradeLiquidity struct {
+	Actual                cosmossdk_io_math.LegacyDec `protobuf:"bytes,1,opt,name=actual,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"actual"`
+	TradeValue            cosmossdk_io_math.LegacyDec `protobuf:"bytes,2,opt,name=trade_value,json=tradeValue,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"trade_value"`
+	TradeValueBase        cosmossdk_io_math.LegacyDec `protobuf:"bytes,3,opt,name=trade_value_base,json=tradeValueBase,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"trade_value_base"`
+	MinimumTradeValueBase cosmossdk_io_math.LegacyDec `protobuf:"bytes,4,opt,name=minimum_trade_value_base,json=minimumTradeValueBase,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"minimum_trade_value_base"`
+	Virtual               cosmossdk_io_math.LegacyDec `protobuf:"bytes,5,opt,name=virtual,proto3,customtype=cosmossdk.io/math.LegacyDec" json:"virtual"`
+}
+
+func (m *TradeLiquidity) Reset()         { *m = TradeLiquidity{} }
+func (m *TradeLiquidity) String() string { return proto.CompactTextString(m) }
+func (*TradeLiquidity) ProtoMessage()    {}
+func (*TradeLiquidity) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fd23461d00577c6b, []int{1}
+}
+func (m *TradeLiquidity) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *TradeLiquidity) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_TradeLiquidity.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *TradeLiquidity) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TradeLiquidity.Merge(m, src)
+}
+func (m *TradeLiquidity) XXX_Size() int {
+	return m.Size()
+}
+func (m *TradeLiquidity) XXX_DiscardUnknown() {
+	xxx_messageInfo_TradeLiquidity.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TradeLiquidity proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterType((*LiquidityPair)(nil), "kopi.dex.LiquidityPair")
+	proto.RegisterType((*TradeLiquidity)(nil), "kopi.dex.TradeLiquidity")
 }
 
 func init() { proto.RegisterFile("kopi/dex/liquidity_pair.proto", fileDescriptor_fd23461d00577c6b) }
 
 var fileDescriptor_fd23461d00577c6b = []byte{
-	// 318 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x92, 0x41, 0x6b, 0xf2, 0x30,
-	0x18, 0xc7, 0x9b, 0xd7, 0x57, 0x37, 0xa3, 0x5e, 0x8a, 0x07, 0xd9, 0x58, 0x94, 0x0d, 0x86, 0x97,
-	0x35, 0x87, 0x7d, 0x81, 0x51, 0x64, 0xec, 0x20, 0x6c, 0x78, 0xdc, 0x45, 0x62, 0x1b, 0x6a, 0xd0,
-	0xfa, 0x74, 0x49, 0x1c, 0xed, 0xb7, 0xd8, 0xc7, 0xf2, 0x36, 0x8f, 0x63, 0x07, 0x19, 0xf6, 0x8b,
-	0x8c, 0x26, 0x2d, 0xbb, 0xd6, 0xdb, 0x93, 0x3c, 0xfc, 0x7f, 0xf9, 0x11, 0xfe, 0xf8, 0x6a, 0x05,
-	0x89, 0xa0, 0x21, 0x4f, 0xe9, 0x5a, 0xbc, 0x6d, 0x45, 0x28, 0x74, 0x36, 0x4f, 0x98, 0x90, 0x5e,
-	0x22, 0x41, 0x83, 0x7b, 0x5e, 0xac, 0xbd, 0x90, 0xa7, 0x17, 0xfd, 0x08, 0x22, 0x30, 0x97, 0xb4,
-	0x98, 0xec, 0xfe, 0xfa, 0xb3, 0x81, 0x7b, 0xd3, 0x2a, 0xf8, 0xc2, 0x84, 0x74, 0xfb, 0xb8, 0x19,
-	0xf2, 0x0d, 0xc4, 0x03, 0x34, 0x42, 0xe3, 0xf6, 0xcc, 0x1e, 0xdc, 0x09, 0xee, 0xb0, 0x40, 0x6f,
-	0xd9, 0x7a, 0xbe, 0x60, 0x8a, 0x0f, 0xfe, 0x8d, 0xd0, 0xb8, 0xeb, 0xdf, 0xec, 0x0e, 0x43, 0xe7,
-	0xfb, 0x30, 0xbc, 0x0c, 0x40, 0xc5, 0xa0, 0x54, 0xb8, 0xf2, 0x04, 0xd0, 0x98, 0xe9, 0xa5, 0x37,
-	0xe5, 0x11, 0x0b, 0xb2, 0x09, 0x0f, 0x66, 0xd8, 0xe6, 0x7c, 0xa6, 0xb8, 0xfb, 0x88, 0xbb, 0x25,
-	0x05, 0xf4, 0x92, 0xcb, 0x41, 0xa3, 0x3e, 0xa6, 0x7c, 0xfe, 0xb9, 0xc8, 0x15, 0x9c, 0x77, 0x21,
-	0xff, 0x74, 0xfe, 0x9f, 0xc0, 0x29, 0x83, 0xc6, 0xe7, 0x09, 0xf7, 0x2a, 0x8e, 0x15, 0x6a, 0xd6,
-	0x07, 0x55, 0x06, 0xd6, 0xc8, 0xc7, 0x98, 0xa7, 0x5a, 0x32, 0xeb, 0xd3, 0xaa, 0x8f, 0x69, 0x9b,
-	0x98, 0xb1, 0x99, 0xe0, 0x8e, 0x65, 0x58, 0x97, 0xb3, 0x13, 0xfe, 0xd8, 0xe4, 0x8c, 0x89, 0xff,
-	0xb0, 0x3b, 0x12, 0xb4, 0x3f, 0x12, 0xf4, 0x73, 0x24, 0xe8, 0x23, 0x27, 0xce, 0x3e, 0x27, 0xce,
-	0x57, 0x4e, 0x9c, 0xd7, 0xdb, 0x48, 0xe8, 0xe5, 0x76, 0xe1, 0x05, 0x10, 0xd3, 0xa2, 0x16, 0x77,
-	0x31, 0x6c, 0x78, 0x66, 0x46, 0x9a, 0x9a, 0x0a, 0xe9, 0x2c, 0xe1, 0x6a, 0xd1, 0x32, 0xd5, 0xb8,
-	0xff, 0x0d, 0x00, 0x00, 0xff, 0xff, 0xe3, 0xf2, 0x53, 0xac, 0x5b, 0x02, 0x00, 0x00,
+	// 339 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x92, 0x41, 0x4b, 0xf3, 0x30,
+	0x18, 0xc7, 0xdb, 0xbd, 0xdb, 0x5e, 0xc9, 0x74, 0x48, 0x51, 0x28, 0x8a, 0x99, 0x4c, 0x10, 0x2f,
+	0x26, 0x30, 0xbd, 0x89, 0x20, 0x65, 0xc7, 0x09, 0x32, 0x86, 0x07, 0x11, 0x4a, 0xd6, 0x86, 0x2e,
+	0x6c, 0x59, 0x6a, 0x9a, 0x8e, 0xf5, 0x5b, 0xf8, 0xb1, 0x76, 0xdc, 0x51, 0x3c, 0x0c, 0xd9, 0x3e,
+	0x88, 0x92, 0x6c, 0x55, 0x87, 0x97, 0xde, 0x1e, 0xf2, 0xfc, 0x7f, 0xbf, 0x84, 0x27, 0x0f, 0x38,
+	0x19, 0x8a, 0x98, 0xe1, 0x90, 0x4e, 0xf1, 0x88, 0xbd, 0xa4, 0x2c, 0x64, 0x2a, 0xf3, 0x63, 0xc2,
+	0x24, 0x8a, 0xa5, 0x50, 0xc2, 0xd9, 0xd1, 0x6d, 0x14, 0xd2, 0xe9, 0xd1, 0x41, 0x24, 0x22, 0x61,
+	0x0e, 0xb1, 0xae, 0xd6, 0xfd, 0x66, 0x06, 0xf6, 0x3a, 0x39, 0xf7, 0x40, 0x98, 0x74, 0x5a, 0xa0,
+	0xdc, 0x27, 0x09, 0x75, 0xed, 0x53, 0xfb, 0xa2, 0xd6, 0x72, 0x51, 0xce, 0xa3, 0x9e, 0x24, 0x21,
+	0xfd, 0xce, 0x7a, 0xe5, 0xd9, 0xa2, 0x61, 0x75, 0x4d, 0xd6, 0xb9, 0x06, 0x15, 0xa1, 0x06, 0x54,
+	0xba, 0xa5, 0x42, 0xd0, 0x3a, 0xdc, 0xfc, 0x2c, 0x81, 0xfa, 0x76, 0xdf, 0xb9, 0x01, 0x55, 0x12,
+	0xa8, 0x94, 0x8c, 0xcc, 0xf5, 0xbb, 0xde, 0x99, 0xce, 0xbf, 0x2f, 0x1a, 0xc7, 0x81, 0x48, 0xb8,
+	0x48, 0x92, 0x70, 0x88, 0x98, 0xc0, 0x9c, 0xa8, 0x01, 0xea, 0xd0, 0x88, 0x04, 0x59, 0x9b, 0x06,
+	0xdd, 0x0d, 0xe2, 0xb4, 0x41, 0x4d, 0x69, 0x9d, 0x3f, 0x21, 0xa3, 0x94, 0x9a, 0xb7, 0x14, 0x34,
+	0x00, 0xc3, 0x3d, 0x6a, 0xcc, 0xb9, 0x07, 0xfb, 0xbf, 0x2c, 0xbe, 0x99, 0xc5, 0xbf, 0xe2, 0xaa,
+	0xfa, 0x8f, 0xca, 0xd3, 0xa3, 0x79, 0x06, 0x2e, 0x67, 0x63, 0xc6, 0x53, 0xee, 0xff, 0xd1, 0x96,
+	0x8b, 0x6b, 0x0f, 0x37, 0x92, 0xde, 0xb6, 0xfd, 0x16, 0xfc, 0x9f, 0x30, 0x69, 0x06, 0x56, 0x29,
+	0x2e, 0xcb, 0x19, 0xef, 0x6e, 0xb6, 0x84, 0xf6, 0x7c, 0x09, 0xed, 0x8f, 0x25, 0xb4, 0x5f, 0x57,
+	0xd0, 0x9a, 0xaf, 0xa0, 0xf5, 0xb6, 0x82, 0xd6, 0xd3, 0x79, 0xc4, 0xd4, 0x20, 0xed, 0xa3, 0x40,
+	0x70, 0xac, 0x3f, 0xf3, 0x92, 0x8b, 0x31, 0xcd, 0x4c, 0x89, 0xa7, 0x66, 0xdb, 0x54, 0x16, 0xd3,
+	0xa4, 0x5f, 0x35, 0x5b, 0x74, 0xf5, 0x15, 0x00, 0x00, 0xff, 0xff, 0x11, 0x56, 0xdf, 0x42, 0x86,
+	0x02, 0x00, 0x00,
 }
 
 func (m *LiquidityPair) Marshal() (dAtA []byte, err error) {
@@ -125,29 +171,52 @@ func (m *LiquidityPair) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	var l int
 	_ = l
 	{
-		size := m.ExtraOther.Size()
-		i -= size
-		if _, err := m.ExtraOther.MarshalTo(dAtA[i:]); err != nil {
+		size, err := m.Other.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
 			return 0, err
 		}
+		i -= size
 		i = encodeVarintLiquidityPair(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x3a
+	dAtA[i] = 0x12
 	{
-		size := m.ExtraBase.Size()
-		i -= size
-		if _, err := m.ExtraBase.MarshalTo(dAtA[i:]); err != nil {
+		size, err := m.Base.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
 			return 0, err
 		}
+		i -= size
 		i = encodeVarintLiquidityPair(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x32
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *TradeLiquidity) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *TradeLiquidity) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *TradeLiquidity) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
 	{
-		size := m.VirtualOther.Size()
+		size := m.Virtual.Size()
 		i -= size
-		if _, err := m.VirtualOther.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.Virtual.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintLiquidityPair(dAtA, i, uint64(size))
@@ -155,9 +224,9 @@ func (m *LiquidityPair) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x2a
 	{
-		size := m.VirtualBase.Size()
+		size := m.MinimumTradeValueBase.Size()
 		i -= size
-		if _, err := m.VirtualBase.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.MinimumTradeValueBase.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintLiquidityPair(dAtA, i, uint64(size))
@@ -165,9 +234,9 @@ func (m *LiquidityPair) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x22
 	{
-		size := m.ActualOther.Size()
+		size := m.TradeValueBase.Size()
 		i -= size
-		if _, err := m.ActualOther.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.TradeValueBase.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintLiquidityPair(dAtA, i, uint64(size))
@@ -175,22 +244,25 @@ func (m *LiquidityPair) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x1a
 	{
-		size := m.ActualBase.Size()
+		size := m.TradeValue.Size()
 		i -= size
-		if _, err := m.ActualBase.MarshalTo(dAtA[i:]); err != nil {
+		if _, err := m.TradeValue.MarshalTo(dAtA[i:]); err != nil {
 			return 0, err
 		}
 		i = encodeVarintLiquidityPair(dAtA, i, uint64(size))
 	}
 	i--
 	dAtA[i] = 0x12
-	if len(m.Denom) > 0 {
-		i -= len(m.Denom)
-		copy(dAtA[i:], m.Denom)
-		i = encodeVarintLiquidityPair(dAtA, i, uint64(len(m.Denom)))
-		i--
-		dAtA[i] = 0xa
+	{
+		size := m.Actual.Size()
+		i -= size
+		if _, err := m.Actual.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintLiquidityPair(dAtA, i, uint64(size))
 	}
+	i--
+	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -211,21 +283,28 @@ func (m *LiquidityPair) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Denom)
-	if l > 0 {
-		n += 1 + l + sovLiquidityPair(uint64(l))
+	l = m.Base.Size()
+	n += 1 + l + sovLiquidityPair(uint64(l))
+	l = m.Other.Size()
+	n += 1 + l + sovLiquidityPair(uint64(l))
+	return n
+}
+
+func (m *TradeLiquidity) Size() (n int) {
+	if m == nil {
+		return 0
 	}
-	l = m.ActualBase.Size()
+	var l int
+	_ = l
+	l = m.Actual.Size()
 	n += 1 + l + sovLiquidityPair(uint64(l))
-	l = m.ActualOther.Size()
+	l = m.TradeValue.Size()
 	n += 1 + l + sovLiquidityPair(uint64(l))
-	l = m.VirtualBase.Size()
+	l = m.TradeValueBase.Size()
 	n += 1 + l + sovLiquidityPair(uint64(l))
-	l = m.VirtualOther.Size()
+	l = m.MinimumTradeValueBase.Size()
 	n += 1 + l + sovLiquidityPair(uint64(l))
-	l = m.ExtraBase.Size()
-	n += 1 + l + sovLiquidityPair(uint64(l))
-	l = m.ExtraOther.Size()
+	l = m.Virtual.Size()
 	n += 1 + l + sovLiquidityPair(uint64(l))
 	return n
 }
@@ -267,9 +346,9 @@ func (m *LiquidityPair) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Base", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowLiquidityPair
@@ -279,27 +358,111 @@ func (m *LiquidityPair) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthLiquidityPair
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthLiquidityPair
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Denom = string(dAtA[iNdEx:postIndex])
+			if err := m.Base.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ActualBase", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Other", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowLiquidityPair
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthLiquidityPair
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthLiquidityPair
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Other.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipLiquidityPair(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthLiquidityPair
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *TradeLiquidity) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowLiquidityPair
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: TradeLiquidity: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: TradeLiquidity: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Actual", wireType)
 			}
 			var byteLen int
 			for shift := uint(0); ; shift += 7 {
@@ -326,13 +489,46 @@ func (m *LiquidityPair) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.ActualBase.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Actual.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TradeValue", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowLiquidityPair
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthLiquidityPair
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthLiquidityPair
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.TradeValue.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ActualOther", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field TradeValueBase", wireType)
 			}
 			var byteLen int
 			for shift := uint(0); ; shift += 7 {
@@ -359,13 +555,13 @@ func (m *LiquidityPair) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.ActualOther.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.TradeValueBase.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field VirtualBase", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field MinimumTradeValueBase", wireType)
 			}
 			var byteLen int
 			for shift := uint(0); ; shift += 7 {
@@ -392,13 +588,13 @@ func (m *LiquidityPair) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.VirtualBase.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.MinimumTradeValueBase.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 5:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field VirtualOther", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Virtual", wireType)
 			}
 			var byteLen int
 			for shift := uint(0); ; shift += 7 {
@@ -425,73 +621,7 @@ func (m *LiquidityPair) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.VirtualOther.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ExtraBase", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowLiquidityPair
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthLiquidityPair
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthLiquidityPair
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.ExtraBase.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ExtraOther", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowLiquidityPair
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthLiquidityPair
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthLiquidityPair
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.ExtraOther.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if err := m.Virtual.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

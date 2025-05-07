@@ -23,18 +23,21 @@ func TestMovingLiquidity1(t *testing.T) {
 
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 50_000000_000000))
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 70_000000))
+	setMovingLiqFixed(ctx, k)
 
 	amount := math.NewInt(50_000000)
+	zeroDec := math.LegacyZeroDec()
+
 	tradeContext := types.TradeContext{
-		Context:             ctx,
 		TradeAmount:         amount,
+		Fee:                 &zeroDec,
+		Context:             ctx,
 		CoinSource:          keepertest.Bob,
 		CoinTarget:          keepertest.Bob,
 		TradeDenomGiving:    constants.KUSD,
 		TradeDenomReceiving: constants.BaseCurrency,
 		OrdersCaches:        k.NewOrdersCaches(ctx),
 		TradeBalances:       dexkeeper.NewTradeBalances(),
-		Fee:                 math.LegacyZeroDec(),
 	}
 
 	_ = cache.Transact(ctx, func(innerCtx context.Context) error {
@@ -42,14 +45,14 @@ func TestMovingLiquidity1(t *testing.T) {
 		return nil
 	})
 
-	res1, err := k.SimulateSell(tradeContext)
+	res1, err := k.SimulateSell(ctx, amount, constants.KUSD, constants.BaseCurrency)
 	require.NoError(t, err)
 	pricePaid1, err := res1.PricePaid()
 	require.NoError(t, err)
 
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 70_000000))
 
-	res2, err := k.SimulateSell(tradeContext)
+	res2, err := k.SimulateSell(tradeContext, amount, constants.KUSD, constants.BaseCurrency)
 	require.NoError(t, err)
 	pricePaid2, err := res2.PricePaid()
 	require.NoError(t, err)
@@ -59,7 +62,7 @@ func TestMovingLiquidity1(t *testing.T) {
 		return nil
 	})
 
-	res3, err := k.SimulateSell(tradeContext)
+	res3, err := k.SimulateSell(tradeContext, amount, constants.KUSD, constants.BaseCurrency)
 	require.NoError(t, err)
 	pricePaid3, err := res3.PricePaid()
 	require.NoError(t, err)
@@ -69,7 +72,7 @@ func TestMovingLiquidity1(t *testing.T) {
 		return nil
 	})
 
-	res4, err := k.SimulateSell(tradeContext)
+	res4, err := k.SimulateSell(tradeContext, amount, constants.KUSD, constants.BaseCurrency)
 	require.NoError(t, err)
 	pricePaid4, err := res4.PricePaid()
 	require.NoError(t, err)
@@ -81,10 +84,16 @@ func TestMovingLiquidity1(t *testing.T) {
 		return nil
 	})
 
-	res5, err := k.SimulateSell(tradeContext)
+	res5, err := k.SimulateSell(tradeContext, amount, constants.KUSD, constants.BaseCurrency)
 	require.NoError(t, err)
 	pricePaid5, err := res5.PricePaid()
 	require.NoError(t, err)
+
+	fmt.Println(pricePaid1)
+	fmt.Println(pricePaid2)
+	fmt.Println(pricePaid3)
+	fmt.Println(pricePaid4)
+	fmt.Println(pricePaid5)
 
 	require.True(t, pricePaid1.Equal(pricePaid2))
 	require.True(t, pricePaid1.GT(pricePaid3))

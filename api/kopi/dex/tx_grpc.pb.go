@@ -32,12 +32,13 @@ const (
 	Msg_UpdateTradeFee_FullMethodName              = "/kopi.dex.Msg/UpdateTradeFee"
 	Msg_UpdateOrderFee_FullMethodName              = "/kopi.dex.Msg/UpdateOrderFee"
 	Msg_UpdateReserveShare_FullMethodName          = "/kopi.dex.Msg/UpdateReserveShare"
-	Msg_UpdateVirtualLiquidityDecay_FullMethodName = "/kopi.dex.Msg/UpdateVirtualLiquidityDecay"
+	Msg_UpdatePriceIncreasingFactor_FullMethodName = "/kopi.dex.Msg/UpdatePriceIncreasingFactor"
 	Msg_UpdateMaxOrderLife_FullMethodName          = "/kopi.dex.Msg/UpdateMaxOrderLife"
 	Msg_UpdateTradeAmountDecay_FullMethodName      = "/kopi.dex.Msg/UpdateTradeAmountDecay"
 	Msg_UpdateDiscountLevels_FullMethodName        = "/kopi.dex.Msg/UpdateDiscountLevels"
 	Msg_UpdateEpochLength_FullMethodName           = "/kopi.dex.Msg/UpdateEpochLength"
 	Msg_UpdateLiquidityChangeDecay_FullMethodName  = "/kopi.dex.Msg/UpdateLiquidityChangeDecay"
+	Msg_UpdateMinimumLiquidityLock_FullMethodName  = "/kopi.dex.Msg/UpdateMinimumLiquidityLock"
 	Msg_RemoveDexDenom_FullMethodName              = "/kopi.dex.Msg/RemoveDexDenom"
 )
 
@@ -59,12 +60,13 @@ type MsgClient interface {
 	UpdateTradeFee(ctx context.Context, in *MsgUpdateTradeFee, opts ...grpc.CallOption) (*Void, error)
 	UpdateOrderFee(ctx context.Context, in *MsgUpdateOrderFee, opts ...grpc.CallOption) (*Void, error)
 	UpdateReserveShare(ctx context.Context, in *MsgUpdateReserveShare, opts ...grpc.CallOption) (*Void, error)
-	UpdateVirtualLiquidityDecay(ctx context.Context, in *MsgUpdateVirtualLiquidityDecay, opts ...grpc.CallOption) (*Void, error)
+	UpdatePriceIncreasingFactor(ctx context.Context, in *MsgUpdatePriceIncreasingFactor, opts ...grpc.CallOption) (*Void, error)
 	UpdateMaxOrderLife(ctx context.Context, in *MsgUpdateMaxOrderLife, opts ...grpc.CallOption) (*Void, error)
 	UpdateTradeAmountDecay(ctx context.Context, in *MsgUpdateTradeAmountDecay, opts ...grpc.CallOption) (*Void, error)
 	UpdateDiscountLevels(ctx context.Context, in *MsgUpdateDiscountLevels, opts ...grpc.CallOption) (*Void, error)
 	UpdateEpochLength(ctx context.Context, in *MsgUpdateEpochLength, opts ...grpc.CallOption) (*Void, error)
 	UpdateLiquidityChangeDecay(ctx context.Context, in *MsgUpdateLiquidityChangeDecay, opts ...grpc.CallOption) (*Void, error)
+	UpdateMinimumLiquidityLock(ctx context.Context, in *MsgUpdateMinimumLiquidityLock, opts ...grpc.CallOption) (*Void, error)
 	RemoveDexDenom(ctx context.Context, in *MsgRemoveDexDenom, opts ...grpc.CallOption) (*Void, error)
 }
 
@@ -193,9 +195,9 @@ func (c *msgClient) UpdateReserveShare(ctx context.Context, in *MsgUpdateReserve
 	return out, nil
 }
 
-func (c *msgClient) UpdateVirtualLiquidityDecay(ctx context.Context, in *MsgUpdateVirtualLiquidityDecay, opts ...grpc.CallOption) (*Void, error) {
+func (c *msgClient) UpdatePriceIncreasingFactor(ctx context.Context, in *MsgUpdatePriceIncreasingFactor, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
-	err := c.cc.Invoke(ctx, Msg_UpdateVirtualLiquidityDecay_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_UpdatePriceIncreasingFactor_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -247,6 +249,15 @@ func (c *msgClient) UpdateLiquidityChangeDecay(ctx context.Context, in *MsgUpdat
 	return out, nil
 }
 
+func (c *msgClient) UpdateMinimumLiquidityLock(ctx context.Context, in *MsgUpdateMinimumLiquidityLock, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateMinimumLiquidityLock_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) RemoveDexDenom(ctx context.Context, in *MsgRemoveDexDenom, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
 	err := c.cc.Invoke(ctx, Msg_RemoveDexDenom_FullMethodName, in, out, opts...)
@@ -274,12 +285,13 @@ type MsgServer interface {
 	UpdateTradeFee(context.Context, *MsgUpdateTradeFee) (*Void, error)
 	UpdateOrderFee(context.Context, *MsgUpdateOrderFee) (*Void, error)
 	UpdateReserveShare(context.Context, *MsgUpdateReserveShare) (*Void, error)
-	UpdateVirtualLiquidityDecay(context.Context, *MsgUpdateVirtualLiquidityDecay) (*Void, error)
+	UpdatePriceIncreasingFactor(context.Context, *MsgUpdatePriceIncreasingFactor) (*Void, error)
 	UpdateMaxOrderLife(context.Context, *MsgUpdateMaxOrderLife) (*Void, error)
 	UpdateTradeAmountDecay(context.Context, *MsgUpdateTradeAmountDecay) (*Void, error)
 	UpdateDiscountLevels(context.Context, *MsgUpdateDiscountLevels) (*Void, error)
 	UpdateEpochLength(context.Context, *MsgUpdateEpochLength) (*Void, error)
 	UpdateLiquidityChangeDecay(context.Context, *MsgUpdateLiquidityChangeDecay) (*Void, error)
+	UpdateMinimumLiquidityLock(context.Context, *MsgUpdateMinimumLiquidityLock) (*Void, error)
 	RemoveDexDenom(context.Context, *MsgRemoveDexDenom) (*Void, error)
 	mustEmbedUnimplementedMsgServer()
 }
@@ -327,8 +339,8 @@ func (UnimplementedMsgServer) UpdateOrderFee(context.Context, *MsgUpdateOrderFee
 func (UnimplementedMsgServer) UpdateReserveShare(context.Context, *MsgUpdateReserveShare) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateReserveShare not implemented")
 }
-func (UnimplementedMsgServer) UpdateVirtualLiquidityDecay(context.Context, *MsgUpdateVirtualLiquidityDecay) (*Void, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateVirtualLiquidityDecay not implemented")
+func (UnimplementedMsgServer) UpdatePriceIncreasingFactor(context.Context, *MsgUpdatePriceIncreasingFactor) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePriceIncreasingFactor not implemented")
 }
 func (UnimplementedMsgServer) UpdateMaxOrderLife(context.Context, *MsgUpdateMaxOrderLife) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateMaxOrderLife not implemented")
@@ -344,6 +356,9 @@ func (UnimplementedMsgServer) UpdateEpochLength(context.Context, *MsgUpdateEpoch
 }
 func (UnimplementedMsgServer) UpdateLiquidityChangeDecay(context.Context, *MsgUpdateLiquidityChangeDecay) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateLiquidityChangeDecay not implemented")
+}
+func (UnimplementedMsgServer) UpdateMinimumLiquidityLock(context.Context, *MsgUpdateMinimumLiquidityLock) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateMinimumLiquidityLock not implemented")
 }
 func (UnimplementedMsgServer) RemoveDexDenom(context.Context, *MsgRemoveDexDenom) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveDexDenom not implemented")
@@ -595,20 +610,20 @@ func _Msg_UpdateReserveShare_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_UpdateVirtualLiquidityDecay_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpdateVirtualLiquidityDecay)
+func _Msg_UpdatePriceIncreasingFactor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdatePriceIncreasingFactor)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).UpdateVirtualLiquidityDecay(ctx, in)
+		return srv.(MsgServer).UpdatePriceIncreasingFactor(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_UpdateVirtualLiquidityDecay_FullMethodName,
+		FullMethod: Msg_UpdatePriceIncreasingFactor_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdateVirtualLiquidityDecay(ctx, req.(*MsgUpdateVirtualLiquidityDecay))
+		return srv.(MsgServer).UpdatePriceIncreasingFactor(ctx, req.(*MsgUpdatePriceIncreasingFactor))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -703,6 +718,24 @@ func _Msg_UpdateLiquidityChangeDecay_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateMinimumLiquidityLock_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateMinimumLiquidityLock)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateMinimumLiquidityLock(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateMinimumLiquidityLock_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateMinimumLiquidityLock(ctx, req.(*MsgUpdateMinimumLiquidityLock))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_RemoveDexDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgRemoveDexDenom)
 	if err := dec(in); err != nil {
@@ -781,8 +814,8 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_UpdateReserveShare_Handler,
 		},
 		{
-			MethodName: "UpdateVirtualLiquidityDecay",
-			Handler:    _Msg_UpdateVirtualLiquidityDecay_Handler,
+			MethodName: "UpdatePriceIncreasingFactor",
+			Handler:    _Msg_UpdatePriceIncreasingFactor_Handler,
 		},
 		{
 			MethodName: "UpdateMaxOrderLife",
@@ -803,6 +836,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateLiquidityChangeDecay",
 			Handler:    _Msg_UpdateLiquidityChangeDecay_Handler,
+		},
+		{
+			MethodName: "UpdateMinimumLiquidityLock",
+			Handler:    _Msg_UpdateMinimumLiquidityLock_Handler,
 		},
 		{
 			MethodName: "RemoveDexDenom",

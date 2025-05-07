@@ -3,6 +3,8 @@ package keeper_test
 import (
 	"context"
 	"fmt"
+	"github.com/kopi-money/kopi/measurement"
+	"github.com/kopi-money/kopi/trading"
 	"math/rand"
 	"strconv"
 	"testing"
@@ -84,16 +86,13 @@ func TestOrders2(t *testing.T) {
 
 func executeOrders(ctx context.Context, k dexkeeper.Keeper) error {
 	return cache.TransactWithNewMultiStore(ctx, func(innerCtx context.Context) error {
-		eventManager := sdk.UnwrapSDKContext(innerCtx).EventManager()
-		blockHeight := sdk.UnwrapSDKContext(innerCtx).BlockHeight()
-
-		return k.ExecuteOrders(innerCtx, eventManager, blockHeight)
+		return k.ExecuteOrders(innerCtx)
 	})
 }
 
-func executeOrder(ctx context.Context, k dexkeeper.Keeper, order *types.Order) (types.TradeResult, bool, error) {
+func executeOrder(ctx context.Context, k dexkeeper.Keeper, order *types.Order) (trading.TradeResult, bool, error) {
 	var (
-		tradeResult   types.TradeResult
+		tradeResult   trading.TradeResult
 		fullyExecuted bool
 	)
 
@@ -101,7 +100,7 @@ func executeOrder(ctx context.Context, k dexkeeper.Keeper, order *types.Order) (
 		fee := k.GetJoinedFee(ctx)
 		var innerErr error
 
-		tradeResult, fullyExecuted, innerErr = k.ExecuteOrder(innerCtx, k.NewOrdersCaches(ctx), fee, order)
+		tradeResult, _, fullyExecuted, innerErr = k.ExecuteOrder(innerCtx, k.NewOrdersCaches(ctx), fee, order)
 		return innerErr
 	})
 
@@ -667,11 +666,11 @@ func TestOrders22(t *testing.T) {
 	liqBase = k.LiquidityIterator(ctx, constants.BaseCurrency).GetAll()
 	require.Equal(t, 2, len(liqBase))
 	require.Equal(t, int64(10_000), liqBase[0].Amount.Int64())
-	require.Equal(t, int64(995), liqBase[1].Amount.Int64())
+	require.Equal(t, int64(1_000), liqBase[1].Amount.Int64())
 
 	liqOther = k.LiquidityIterator(ctx, constants.KUSD).GetAll()
 	require.Equal(t, 1, len(liqOther))
-	require.Equal(t, int64(9_753), liqOther[0].Amount.Int64())
+	require.Equal(t, int64(9_751), liqOther[0].Amount.Int64())
 
 	require.True(t, liquidityBalanced(ctx, k))
 	require.NoError(t, checkCache(ctx, k))
@@ -821,23 +820,23 @@ func TestOrders28(t *testing.T) {
 		Creator:        keepertest.Dave,
 		DenomGiving:    constants.KUSD,
 		DenomReceiving: constants.BaseCurrency,
-		Amount:         "200000",
+		Amount:         "200_000",
 		MaxPrice:       "0.5",
 		IsBuyOrder:     true,
 	}))
 
 	order, has := k.GetOrder(ctx, 1)
 	require.True(t, has)
-	require.Equal(t, int64(100604), order.AmountLocked.Int64())
+	require.Equal(t, int64(100_604), order.AmountLocked.Int64())
 
 	require.NoError(t, executeOrders(ctx, k))
 
 	order, has = k.GetOrder(ctx, 1)
 	require.True(t, has)
-	require.Equal(t, int64(98_095), order.AmountLocked.Int64())
+	require.Equal(t, int64(98_088), order.AmountLocked.Int64())
 	require.Equal(t, int64(200_000), order.AmountRequested.Int64())
-	require.Equal(t, int64(9_950), order.AmountReceived.Int64())
-	require.Equal(t, int64(2_509), order.AmountGiven.Int64())
+	require.Equal(t, int64(2_516), order.AmountGiven.Int64())
+	require.Equal(t, int64(10_000), order.AmountReceived.Int64())
 }
 
 func TestOrders31(t *testing.T) {
@@ -864,10 +863,10 @@ func TestOrders31(t *testing.T) {
 	require.NoError(t, err)
 
 	require.True(t, fullyExecuted)
-	require.Equal(t, int64(10_000), tradeResult.AmountGiven.Int64())
-	require.Equal(t, int64(2_479), tradeResult.AmountReceived.Int64())
+	require.Equal(t, int64(10_000), tradeResult.AmountGiven().Int64())
+	require.Equal(t, int64(2_484), tradeResult.AmountReceived().Int64())
 
-	pricePaid, err := tradeResult.PricePaid()
+	pricePaid, err := tradeResult.PricePaidRounded()
 	require.NoError(t, err)
 	require.True(t, math.LegacyOneDec().Quo(pricePaid).LT(math.LegacyNewDec(5))) // C
 }
@@ -896,10 +895,10 @@ func TestOrders32(t *testing.T) {
 	require.NoError(t, err)
 
 	require.True(t, fullyExecuted)
-	require.Equal(t, int64(10_000), tradeResult.AmountGiven.Int64())
-	require.Equal(t, int64(39_642), tradeResult.AmountReceived.Int64())
+	require.Equal(t, int64(10_000), tradeResult.AmountGiven().Int64())
+	require.Equal(t, int64(39_720), tradeResult.AmountReceived().Int64())
 
-	pricePaid, err := tradeResult.PricePaid()
+	pricePaid, err := tradeResult.PricePaidRounded()
 	require.NoError(t, err)
 	require.True(t, math.LegacyOneDec().Quo(pricePaid).GT(math.LegacyNewDecWithPrec(35, 1))) // C
 }
@@ -927,14 +926,12 @@ func TestOrders33(t *testing.T) {
 
 	tradeResult, fullyExecuted, err := executeOrder(ctx, k, &order)
 	require.NoError(t, err)
-	require.False(t, tradeResult.AmountGiven.IsNil())
-	require.False(t, tradeResult.AmountReceived.IsNil())
 
 	require.True(t, fullyExecuted)
-	require.Equal(t, int64(10_091), tradeResult.AmountGiven.Int64())
-	require.Equal(t, int64(40_000), tradeResult.AmountReceived.Int64())
+	require.Equal(t, int64(10_071), tradeResult.AmountGiven().Int64())
+	require.Equal(t, int64(40_000), tradeResult.AmountReceived().Int64())
 
-	pricePaid, err := tradeResult.PricePaid()
+	pricePaid, err := tradeResult.PricePaidRounded()
 	require.NoError(t, err)
 	require.True(t, pricePaid.LT(math.LegacyNewDecWithPrec(3, 1)))
 }
@@ -962,14 +959,14 @@ func TestOrders34(t *testing.T) {
 
 	tradeResult, fullyExecuted, err := executeOrder(ctx, k, &order)
 	require.NoError(t, err)
-	require.False(t, tradeResult.AmountGiven.IsNil())
-	require.False(t, tradeResult.AmountReceived.IsNil())
+	require.False(t, tradeResult.AmountGiven().IsNil())
+	require.False(t, tradeResult.AmountReceived().IsNil())
 
 	require.True(t, fullyExecuted)
-	require.Equal(t, int64(40_361), tradeResult.AmountGiven.Int64())
-	require.Equal(t, int64(10_000), tradeResult.AmountReceived.Int64())
+	require.Equal(t, int64(40_282), tradeResult.AmountGiven().Int64())
+	require.Equal(t, int64(10_000), tradeResult.AmountReceived().Int64())
 
-	pricePaid, err := tradeResult.PricePaid()
+	pricePaid, err := tradeResult.PricePaidRounded()
 	require.NoError(t, err)
 	require.True(t, pricePaid.LT(math.LegacyNewDec(5)))
 }
@@ -1030,8 +1027,8 @@ func TestOrders36(t *testing.T) {
 	require.NoError(t, err)
 
 	require.False(t, fullyExecuted)
-	require.True(t, tradeResult.AmountGiven.IsNil())
-	require.True(t, tradeResult.AmountReceived.IsNil())
+	require.True(t, tradeResult.AmountGiven().IsNil())
+	require.True(t, tradeResult.AmountReceived().IsNil())
 }
 
 func TestOrders37(t *testing.T) {
@@ -1058,8 +1055,8 @@ func TestOrders37(t *testing.T) {
 	require.NoError(t, err)
 
 	require.False(t, fullyExecuted)
-	require.True(t, tradeResult.AmountGiven.IsNil())
-	require.True(t, tradeResult.AmountReceived.IsNil())
+	require.True(t, tradeResult.AmountGiven().IsNil())
+	require.True(t, tradeResult.AmountReceived().IsNil())
 }
 
 func TestOrders38(t *testing.T) {
@@ -1119,6 +1116,10 @@ func TestOrders38(t *testing.T) {
 
 func TestOrders39(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 6_485173_588126)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.KUSD, keepertest.Alice, 1_032352_408229)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, "uwusdc", keepertest.Alice, 13569_619822)
 
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 6_485173_588126))
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.KUSD, 1_032352_408229))

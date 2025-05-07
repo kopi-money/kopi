@@ -70,13 +70,14 @@ var (
 	fd_Params_trade_fee                            protoreflect.FieldDescriptor
 	fd_Params_order_fee                            protoreflect.FieldDescriptor
 	fd_Params_reserve_share                        protoreflect.FieldDescriptor
-	fd_Params_virtual_liquidity_decay              protoreflect.FieldDescriptor
+	fd_Params_price_increasing_factor              protoreflect.FieldDescriptor
 	fd_Params_trade_amount_decay                   protoreflect.FieldDescriptor
 	fd_Params_discount_levels                      protoreflect.FieldDescriptor
 	fd_Params_max_order_life                       protoreflect.FieldDescriptor
 	fd_Params_trade_base_value                     protoreflect.FieldDescriptor
 	fd_Params_epoch_length                         protoreflect.FieldDescriptor
 	fd_Params_liquidity_change_decay_from_deposits protoreflect.FieldDescriptor
+	fd_Params_minimum_liquidity_lock_in_blocks     protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -85,13 +86,14 @@ func init() {
 	fd_Params_trade_fee = md_Params.Fields().ByName("trade_fee")
 	fd_Params_order_fee = md_Params.Fields().ByName("order_fee")
 	fd_Params_reserve_share = md_Params.Fields().ByName("reserve_share")
-	fd_Params_virtual_liquidity_decay = md_Params.Fields().ByName("virtual_liquidity_decay")
+	fd_Params_price_increasing_factor = md_Params.Fields().ByName("price_increasing_factor")
 	fd_Params_trade_amount_decay = md_Params.Fields().ByName("trade_amount_decay")
 	fd_Params_discount_levels = md_Params.Fields().ByName("discount_levels")
 	fd_Params_max_order_life = md_Params.Fields().ByName("max_order_life")
 	fd_Params_trade_base_value = md_Params.Fields().ByName("trade_base_value")
 	fd_Params_epoch_length = md_Params.Fields().ByName("epoch_length")
 	fd_Params_liquidity_change_decay_from_deposits = md_Params.Fields().ByName("liquidity_change_decay_from_deposits")
+	fd_Params_minimum_liquidity_lock_in_blocks = md_Params.Fields().ByName("minimum_liquidity_lock_in_blocks")
 }
 
 var _ protoreflect.Message = (*fastReflection_Params)(nil)
@@ -177,9 +179,9 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
-	if len(x.VirtualLiquidityDecay) != 0 {
-		value := protoreflect.ValueOfBytes(x.VirtualLiquidityDecay)
-		if !f(fd_Params_virtual_liquidity_decay, value) {
+	if len(x.PriceIncreasingFactor) != 0 {
+		value := protoreflect.ValueOfBytes(x.PriceIncreasingFactor)
+		if !f(fd_Params_price_increasing_factor, value) {
 			return
 		}
 	}
@@ -219,6 +221,12 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 			return
 		}
 	}
+	if x.MinimumLiquidityLockInBlocks != int64(0) {
+		value := protoreflect.ValueOfInt64(x.MinimumLiquidityLockInBlocks)
+		if !f(fd_Params_minimum_liquidity_lock_in_blocks, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -240,8 +248,8 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 		return len(x.OrderFee) != 0
 	case "kopi.dex.Params.reserve_share":
 		return len(x.ReserveShare) != 0
-	case "kopi.dex.Params.virtual_liquidity_decay":
-		return len(x.VirtualLiquidityDecay) != 0
+	case "kopi.dex.Params.price_increasing_factor":
+		return len(x.PriceIncreasingFactor) != 0
 	case "kopi.dex.Params.trade_amount_decay":
 		return len(x.TradeAmountDecay) != 0
 	case "kopi.dex.Params.discount_levels":
@@ -254,6 +262,8 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.EpochLength != uint64(0)
 	case "kopi.dex.Params.liquidity_change_decay_from_deposits":
 		return len(x.LiquidityChangeDecayFromDeposits) != 0
+	case "kopi.dex.Params.minimum_liquidity_lock_in_blocks":
+		return x.MinimumLiquidityLockInBlocks != int64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.Params"))
@@ -276,8 +286,8 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 		x.OrderFee = nil
 	case "kopi.dex.Params.reserve_share":
 		x.ReserveShare = nil
-	case "kopi.dex.Params.virtual_liquidity_decay":
-		x.VirtualLiquidityDecay = nil
+	case "kopi.dex.Params.price_increasing_factor":
+		x.PriceIncreasingFactor = nil
 	case "kopi.dex.Params.trade_amount_decay":
 		x.TradeAmountDecay = nil
 	case "kopi.dex.Params.discount_levels":
@@ -290,6 +300,8 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 		x.EpochLength = uint64(0)
 	case "kopi.dex.Params.liquidity_change_decay_from_deposits":
 		x.LiquidityChangeDecayFromDeposits = nil
+	case "kopi.dex.Params.minimum_liquidity_lock_in_blocks":
+		x.MinimumLiquidityLockInBlocks = int64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.Params"))
@@ -315,8 +327,8 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 	case "kopi.dex.Params.reserve_share":
 		value := x.ReserveShare
 		return protoreflect.ValueOfBytes(value)
-	case "kopi.dex.Params.virtual_liquidity_decay":
-		value := x.VirtualLiquidityDecay
+	case "kopi.dex.Params.price_increasing_factor":
+		value := x.PriceIncreasingFactor
 		return protoreflect.ValueOfBytes(value)
 	case "kopi.dex.Params.trade_amount_decay":
 		value := x.TradeAmountDecay
@@ -339,6 +351,9 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 	case "kopi.dex.Params.liquidity_change_decay_from_deposits":
 		value := x.LiquidityChangeDecayFromDeposits
 		return protoreflect.ValueOfBytes(value)
+	case "kopi.dex.Params.minimum_liquidity_lock_in_blocks":
+		value := x.MinimumLiquidityLockInBlocks
+		return protoreflect.ValueOfInt64(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.Params"))
@@ -365,8 +380,8 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 		x.OrderFee = value.Bytes()
 	case "kopi.dex.Params.reserve_share":
 		x.ReserveShare = value.Bytes()
-	case "kopi.dex.Params.virtual_liquidity_decay":
-		x.VirtualLiquidityDecay = value.Bytes()
+	case "kopi.dex.Params.price_increasing_factor":
+		x.PriceIncreasingFactor = value.Bytes()
 	case "kopi.dex.Params.trade_amount_decay":
 		x.TradeAmountDecay = value.Bytes()
 	case "kopi.dex.Params.discount_levels":
@@ -381,6 +396,8 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 		x.EpochLength = value.Uint()
 	case "kopi.dex.Params.liquidity_change_decay_from_deposits":
 		x.LiquidityChangeDecayFromDeposits = value.Bytes()
+	case "kopi.dex.Params.minimum_liquidity_lock_in_blocks":
+		x.MinimumLiquidityLockInBlocks = value.Int()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.Params"))
@@ -413,8 +430,8 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 		panic(fmt.Errorf("field order_fee of message kopi.dex.Params is not mutable"))
 	case "kopi.dex.Params.reserve_share":
 		panic(fmt.Errorf("field reserve_share of message kopi.dex.Params is not mutable"))
-	case "kopi.dex.Params.virtual_liquidity_decay":
-		panic(fmt.Errorf("field virtual_liquidity_decay of message kopi.dex.Params is not mutable"))
+	case "kopi.dex.Params.price_increasing_factor":
+		panic(fmt.Errorf("field price_increasing_factor of message kopi.dex.Params is not mutable"))
 	case "kopi.dex.Params.trade_amount_decay":
 		panic(fmt.Errorf("field trade_amount_decay of message kopi.dex.Params is not mutable"))
 	case "kopi.dex.Params.max_order_life":
@@ -425,6 +442,8 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 		panic(fmt.Errorf("field epoch_length of message kopi.dex.Params is not mutable"))
 	case "kopi.dex.Params.liquidity_change_decay_from_deposits":
 		panic(fmt.Errorf("field liquidity_change_decay_from_deposits of message kopi.dex.Params is not mutable"))
+	case "kopi.dex.Params.minimum_liquidity_lock_in_blocks":
+		panic(fmt.Errorf("field minimum_liquidity_lock_in_blocks of message kopi.dex.Params is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.Params"))
@@ -444,7 +463,7 @@ func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protor
 		return protoreflect.ValueOfBytes(nil)
 	case "kopi.dex.Params.reserve_share":
 		return protoreflect.ValueOfBytes(nil)
-	case "kopi.dex.Params.virtual_liquidity_decay":
+	case "kopi.dex.Params.price_increasing_factor":
 		return protoreflect.ValueOfBytes(nil)
 	case "kopi.dex.Params.trade_amount_decay":
 		return protoreflect.ValueOfBytes(nil)
@@ -459,6 +478,8 @@ func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protor
 		return protoreflect.ValueOfUint64(uint64(0))
 	case "kopi.dex.Params.liquidity_change_decay_from_deposits":
 		return protoreflect.ValueOfBytes(nil)
+	case "kopi.dex.Params.minimum_liquidity_lock_in_blocks":
+		return protoreflect.ValueOfInt64(int64(0))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: kopi.dex.Params"))
@@ -540,7 +561,7 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.VirtualLiquidityDecay)
+		l = len(x.PriceIncreasingFactor)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -567,6 +588,9 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		l = len(x.LiquidityChangeDecayFromDeposits)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.MinimumLiquidityLockInBlocks != 0 {
+			n += 1 + runtime.Sov(uint64(x.MinimumLiquidityLockInBlocks))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -596,6 +620,11 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.MinimumLiquidityLockInBlocks != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.MinimumLiquidityLockInBlocks))
+			i--
+			dAtA[i] = 0x58
 		}
 		if len(x.LiquidityChangeDecayFromDeposits) > 0 {
 			i -= len(x.LiquidityChangeDecayFromDeposits)
@@ -644,10 +673,10 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x2a
 		}
-		if len(x.VirtualLiquidityDecay) > 0 {
-			i -= len(x.VirtualLiquidityDecay)
-			copy(dAtA[i:], x.VirtualLiquidityDecay)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.VirtualLiquidityDecay)))
+		if len(x.PriceIncreasingFactor) > 0 {
+			i -= len(x.PriceIncreasingFactor)
+			copy(dAtA[i:], x.PriceIncreasingFactor)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.PriceIncreasingFactor)))
 			i--
 			dAtA[i] = 0x22
 		}
@@ -825,7 +854,7 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 4:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field VirtualLiquidityDecay", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PriceIncreasingFactor", wireType)
 				}
 				var byteLen int
 				for shift := uint(0); ; shift += 7 {
@@ -852,9 +881,9 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.VirtualLiquidityDecay = append(x.VirtualLiquidityDecay[:0], dAtA[iNdEx:postIndex]...)
-				if x.VirtualLiquidityDecay == nil {
-					x.VirtualLiquidityDecay = []byte{}
+				x.PriceIncreasingFactor = append(x.PriceIncreasingFactor[:0], dAtA[iNdEx:postIndex]...)
+				if x.PriceIncreasingFactor == nil {
+					x.PriceIncreasingFactor = []byte{}
 				}
 				iNdEx = postIndex
 			case 5:
@@ -1031,6 +1060,25 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 					x.LiquidityChangeDecayFromDeposits = []byte{}
 				}
 				iNdEx = postIndex
+			case 11:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field MinimumLiquidityLockInBlocks", wireType)
+				}
+				x.MinimumLiquidityLockInBlocks = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.MinimumLiquidityLockInBlocks |= int64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -1088,7 +1136,7 @@ type Params struct {
 	TradeFee              []byte           `protobuf:"bytes,1,opt,name=trade_fee,json=tradeFee,proto3" json:"trade_fee,omitempty"`
 	OrderFee              []byte           `protobuf:"bytes,2,opt,name=order_fee,json=orderFee,proto3" json:"order_fee,omitempty"`
 	ReserveShare          []byte           `protobuf:"bytes,3,opt,name=reserve_share,json=reserveShare,proto3" json:"reserve_share,omitempty"`
-	VirtualLiquidityDecay []byte           `protobuf:"bytes,4,opt,name=virtual_liquidity_decay,json=virtualLiquidityDecay,proto3" json:"virtual_liquidity_decay,omitempty"`
+	PriceIncreasingFactor []byte           `protobuf:"bytes,4,opt,name=price_increasing_factor,json=priceIncreasingFactor,proto3" json:"price_increasing_factor,omitempty"`
 	TradeAmountDecay      []byte           `protobuf:"bytes,5,opt,name=trade_amount_decay,json=tradeAmountDecay,proto3" json:"trade_amount_decay,omitempty"`
 	DiscountLevels        []*DiscountLevel `protobuf:"bytes,6,rep,name=discount_levels,json=discountLevels,proto3" json:"discount_levels,omitempty"`
 	MaxOrderLife          uint64           `protobuf:"varint,7,opt,name=max_order_life,json=maxOrderLife,proto3" json:"max_order_life,omitempty"`
@@ -1096,6 +1144,7 @@ type Params struct {
 	TradeBaseValue                   []byte `protobuf:"bytes,8,opt,name=trade_base_value,json=tradeBaseValue,proto3" json:"trade_base_value,omitempty"`
 	EpochLength                      uint64 `protobuf:"varint,9,opt,name=epoch_length,json=epochLength,proto3" json:"epoch_length,omitempty"`
 	LiquidityChangeDecayFromDeposits []byte `protobuf:"bytes,10,opt,name=liquidity_change_decay_from_deposits,json=liquidityChangeDecayFromDeposits,proto3" json:"liquidity_change_decay_from_deposits,omitempty"`
+	MinimumLiquidityLockInBlocks     int64  `protobuf:"varint,11,opt,name=minimum_liquidity_lock_in_blocks,json=minimumLiquidityLockInBlocks,proto3" json:"minimum_liquidity_lock_in_blocks,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -1139,9 +1188,9 @@ func (x *Params) GetReserveShare() []byte {
 	return nil
 }
 
-func (x *Params) GetVirtualLiquidityDecay() []byte {
+func (x *Params) GetPriceIncreasingFactor() []byte {
 	if x != nil {
-		return x.VirtualLiquidityDecay
+		return x.PriceIncreasingFactor
 	}
 	return nil
 }
@@ -1189,6 +1238,13 @@ func (x *Params) GetLiquidityChangeDecayFromDeposits() []byte {
 	return nil
 }
 
+func (x *Params) GetMinimumLiquidityLockInBlocks() int64 {
+	if x != nil {
+		return x.MinimumLiquidityLockInBlocks
+	}
+	return 0
+}
+
 var File_kopi_dex_params_proto protoreflect.FileDescriptor
 
 var file_kopi_dex_params_proto_rawDesc = []byte{
@@ -1198,7 +1254,7 @@ var file_kopi_dex_params_proto_rawDesc = []byte{
 	0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f,
 	0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x1d, 0x6b, 0x6f, 0x70, 0x69,
 	0x2f, 0x64, 0x65, 0x78, 0x2f, 0x64, 0x69, 0x73, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x5f, 0x6c, 0x65,
-	0x76, 0x65, 0x6c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xf9, 0x05, 0x0a, 0x06, 0x50, 0x61,
+	0x76, 0x65, 0x6c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xc1, 0x06, 0x0a, 0x06, 0x50, 0x61,
 	0x72, 0x61, 0x6d, 0x73, 0x12, 0x40, 0x0a, 0x09, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x66, 0x65,
 	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f,
 	0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61,
@@ -1212,12 +1268,12 @@ var file_kopi_dex_params_proto_rawDesc = []byte{
 	0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73,
 	0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65, 0x67, 0x61, 0x63,
 	0x79, 0x44, 0x65, 0x63, 0x52, 0x0c, 0x72, 0x65, 0x73, 0x65, 0x72, 0x76, 0x65, 0x53, 0x68, 0x61,
-	0x72, 0x65, 0x12, 0x5b, 0x0a, 0x17, 0x76, 0x69, 0x72, 0x74, 0x75, 0x61, 0x6c, 0x5f, 0x6c, 0x69,
-	0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x64, 0x65, 0x63, 0x61, 0x79, 0x18, 0x04, 0x20,
+	0x72, 0x65, 0x12, 0x5b, 0x0a, 0x17, 0x70, 0x72, 0x69, 0x63, 0x65, 0x5f, 0x69, 0x6e, 0x63, 0x72,
+	0x65, 0x61, 0x73, 0x69, 0x6e, 0x67, 0x5f, 0x66, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x18, 0x04, 0x20,
 	0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f, 0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73,
 	0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c,
-	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x15, 0x76, 0x69, 0x72, 0x74, 0x75, 0x61,
-	0x6c, 0x4c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x44, 0x65, 0x63, 0x61, 0x79, 0x12,
+	0x65, 0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x15, 0x70, 0x72, 0x69, 0x63, 0x65, 0x49,
+	0x6e, 0x63, 0x72, 0x65, 0x61, 0x73, 0x69, 0x6e, 0x67, 0x46, 0x61, 0x63, 0x74, 0x6f, 0x72, 0x12,
 	0x51, 0x0a, 0x12, 0x74, 0x72, 0x61, 0x64, 0x65, 0x5f, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x5f,
 	0x64, 0x65, 0x63, 0x61, 0x79, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0c, 0x42, 0x23, 0xc8, 0xde, 0x1f,
 	0x00, 0xda, 0xde, 0x1f, 0x1b, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69,
@@ -1244,17 +1300,21 @@ var file_kopi_dex_params_proto_rawDesc = []byte{
 	0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x6d, 0x61, 0x74, 0x68, 0x2e, 0x4c, 0x65,
 	0x67, 0x61, 0x63, 0x79, 0x44, 0x65, 0x63, 0x52, 0x20, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69,
 	0x74, 0x79, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x44, 0x65, 0x63, 0x61, 0x79, 0x46, 0x72, 0x6f,
-	0x6d, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x73, 0x3a, 0x1a, 0xe8, 0xa0, 0x1f, 0x01, 0x8a,
-	0xe7, 0xb0, 0x2a, 0x11, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x78, 0x2f, 0x64, 0x65, 0x78, 0x2f, 0x50,
-	0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x77, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70,
-	0x69, 0x2e, 0x64, 0x65, 0x78, 0x42, 0x0b, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f,
-	0x74, 0x6f, 0x50, 0x01, 0x5a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e,
-	0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b, 0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0xa2,
-	0x02, 0x03, 0x4b, 0x44, 0x58, 0xaa, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x44, 0x65, 0x78,
-	0xca, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0xe2, 0x02, 0x14, 0x4b, 0x6f,
-	0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61,
-	0x74, 0x61, 0xea, 0x02, 0x09, 0x4b, 0x6f, 0x70, 0x69, 0x3a, 0x3a, 0x44, 0x65, 0x78, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6d, 0x44, 0x65, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x73, 0x12, 0x46, 0x0a, 0x20, 0x6d, 0x69, 0x6e,
+	0x69, 0x6d, 0x75, 0x6d, 0x5f, 0x6c, 0x69, 0x71, 0x75, 0x69, 0x64, 0x69, 0x74, 0x79, 0x5f, 0x6c,
+	0x6f, 0x63, 0x6b, 0x5f, 0x69, 0x6e, 0x5f, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x73, 0x18, 0x0b, 0x20,
+	0x01, 0x28, 0x03, 0x52, 0x1c, 0x6d, 0x69, 0x6e, 0x69, 0x6d, 0x75, 0x6d, 0x4c, 0x69, 0x71, 0x75,
+	0x69, 0x64, 0x69, 0x74, 0x79, 0x4c, 0x6f, 0x63, 0x6b, 0x49, 0x6e, 0x42, 0x6c, 0x6f, 0x63, 0x6b,
+	0x73, 0x3a, 0x1a, 0xe8, 0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x11, 0x6b, 0x6f, 0x70, 0x69,
+	0x2f, 0x78, 0x2f, 0x64, 0x65, 0x78, 0x2f, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x77, 0x0a,
+	0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x6b, 0x6f, 0x70, 0x69, 0x2e, 0x64, 0x65, 0x78, 0x42, 0x0b, 0x50,
+	0x61, 0x72, 0x61, 0x6d, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x19, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x73, 0x64, 0x6b, 0x2e, 0x69, 0x6f, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6b,
+	0x6f, 0x70, 0x69, 0x2f, 0x64, 0x65, 0x78, 0xa2, 0x02, 0x03, 0x4b, 0x44, 0x58, 0xaa, 0x02, 0x08,
+	0x4b, 0x6f, 0x70, 0x69, 0x2e, 0x44, 0x65, 0x78, 0xca, 0x02, 0x08, 0x4b, 0x6f, 0x70, 0x69, 0x5c,
+	0x44, 0x65, 0x78, 0xe2, 0x02, 0x14, 0x4b, 0x6f, 0x70, 0x69, 0x5c, 0x44, 0x65, 0x78, 0x5c, 0x47,
+	0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x09, 0x4b, 0x6f, 0x70,
+	0x69, 0x3a, 0x3a, 0x44, 0x65, 0x78, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

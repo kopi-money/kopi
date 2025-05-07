@@ -18,30 +18,40 @@ option go_package = "github.com/kopi-money/kopi/x/dex/types";
 service Msg {
   option (cosmos.msg.v1.service) = true;
 
-  rpc AddLiquidity    (MsgAddLiquidity) returns (MsgAddLiquidityResponse);
-  rpc RemoveLiquidity (MsgRemoveLiquidity) returns (MsgRemoveLiquidityResponse);
+  rpc AddLiquidity               (MsgAddLiquidity)               returns (MsgAddLiquidityResponse);
+  rpc RemoveLiquidity            (MsgRemoveLiquidity)            returns (MsgRemoveLiquidityResponse);
   rpc RemoveAllLiquidityForDenom (MsgRemoveAllLiquidityForDenom) returns (MsgRemoveLiquidityResponse);
-  rpc ChangePayout    (MsgChangePayout) returns (Void);
-  rpc Sell            (MsgSell) returns (MsgTradeResponse);
-  rpc Buy             (MsgBuy) returns (MsgTradeResponse);
+  rpc ChangePayout               (MsgChangePayout)               returns (Void);
+  rpc Sell                       (MsgSell)                       returns (MsgTradeResponse);
+  rpc Buy                        (MsgBuy)                        returns (MsgTradeResponse);
 
   // this line is used by starport scaffolding # proto/tx/rpc
-  rpc AddOrder                   (MsgAddOrder) returns (Order);
-  rpc RemoveOrder                (MsgRemoveOrder) returns (Void);
+  rpc AddOrder                   (MsgAddOrder)     returns (Order);
+  rpc RemoveOrder                (MsgRemoveOrder)  returns (Void);
   rpc RemoveOrders               (MsgRemoveOrders) returns (Void);
-  rpc UpdateOrder                (MsgUpdateOrder) returns (Order);
+  rpc UpdateOrder                (MsgUpdateOrder)  returns (Order);
 
-  rpc UpdateTradeFee              (MsgUpdateTradeFee) returns (Void);
-  rpc UpdateOrderFee              (MsgUpdateOrderFee) returns (Void);
-  rpc UpdateReserveShare          (MsgUpdateReserveShare) returns (Void);
-  rpc UpdateVirtualLiquidityDecay (MsgUpdateVirtualLiquidityDecay) returns (Void);
-  rpc UpdateMaxOrderLife          (MsgUpdateMaxOrderLife) returns (Void);
-  rpc UpdateTradeAmountDecay      (MsgUpdateTradeAmountDecay) returns (Void);
-  rpc UpdateDiscountLevels        (MsgUpdateDiscountLevels) returns (Void);
-  rpc UpdateEpochLength           (MsgUpdateEpochLength) returns (Void);
-  rpc UpdateLiquidityChangeDecay  (MsgUpdateLiquidityChangeDecay) returns (Void);
-  rpc RemoveDexDenom              (MsgRemoveDexDenom) returns (Void);
+  rpc UpdateTradeFee              (MsgUpdateTradeFee)              returns (Void);
+  rpc UpdateOrderFee              (MsgUpdateOrderFee)              returns (Void);
+  rpc UpdateReserveShare          (MsgUpdateReserveShare)          returns (Void);
+  rpc UpdatePriceIncreasingFactor (MsgUpdatePriceIncreasingFactor) returns (Void);
+  rpc UpdateMaxOrderLife          (MsgUpdateMaxOrderLife)          returns (Void);
+  rpc UpdateTradeAmountDecay      (MsgUpdateTradeAmountDecay)      returns (Void);
+  rpc UpdateDiscountLevels        (MsgUpdateDiscountLevels)        returns (Void);
+  rpc UpdateEpochLength           (MsgUpdateEpochLength)           returns (Void);
+  rpc UpdateLiquidityChangeDecay  (MsgUpdateLiquidityChangeDecay)  returns (Void);
+  rpc UpdateMinimumLiquidityLock  (MsgUpdateMinimumLiquidityLock)  returns (Void);
+  rpc RemoveDexDenom              (MsgRemoveDexDenom)              returns (Void);
 }
+
+message MsgUpdateMinimumLiquidityLock {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/denominations/MsgUpdateMinimumLiquidityLock";
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  int64 minimum_liquidity_lock_in_blocks = 2;
+}
+
 
 message MsgUpdateEpochLength {
   option (cosmos.msg.v1.signer) = "authority";
@@ -85,12 +95,12 @@ message MsgUpdateMaxOrderLife {
   uint64 max_order_life = 2;
 }
 
-message MsgUpdateVirtualLiquidityDecay {
+message MsgUpdatePriceIncreasingFactor {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/dex/MsgUpdateVirtualLiquidityDecay";
+  option (amino.name) = "kopi/x/dex/MsgUpdatePriceIncreasingFactor";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
-  string virtual_liquidity_decay = 2;
+  string price_increasing_factor = 2;
 }
 
 message MsgUpdateReserveShare {
@@ -160,6 +170,11 @@ message MsgRemoveLiquidity {
 
 message MsgRemoveLiquidityResponse {}
 
+message MaxPrice {
+  string max_price = 1;
+  bool fee_included = 2;
+}
+
 message MsgBuy {
   option (cosmos.msg.v1.signer) = "creator";
 
@@ -167,9 +182,10 @@ message MsgBuy {
   string denom_giving = 2;
   string denom_receiving = 3;
   string amount = 4;
-  string max_price = 5;
-  string minimum_trade_amount = 6;
-
+  string minimum_trade_amount = 5;
+  MaxPrice max_price = 6 [
+    (gogoproto.nullable) = true
+  ];
 }
 
 message MsgSell {
@@ -179,8 +195,10 @@ message MsgSell {
   string denom_giving = 2;
   string denom_receiving = 3;
   string amount = 4;
-  string max_price = 5;
-  string minimum_trade_amount = 6;
+  string minimum_trade_amount = 5;
+  MaxPrice max_price = 6 [
+    (gogoproto.nullable) = true
+  ];
 }
 
 message MsgTradeResponse {

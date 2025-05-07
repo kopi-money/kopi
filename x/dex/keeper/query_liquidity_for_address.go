@@ -156,3 +156,14 @@ func (k Keeper) getAvailableBalance(ctx context.Context, address, denom string) 
 		return math.ZeroInt(), nil
 	}
 }
+
+func (k Keeper) WithdrawableLiquidityForAddressForDenom(ctx context.Context, req *types.QueryWithdrawableLiquidityForAddressRequest) (*types.QueryWithdrawableLiquidityForAddressResponse, error) {
+	amount, err := k.getWithdrawableLiquidityForAddressForDenom(ctx, req.Address, req.Denom)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryWithdrawableLiquidityForAddressResponse{
+		Amount: amount.String(),
+	}, nil
+}

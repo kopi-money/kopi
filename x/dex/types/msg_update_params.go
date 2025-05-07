@@ -13,7 +13,7 @@ var (
 	_ sdk.Msg = &MsgUpdateMaxOrderLife{}
 	_ sdk.Msg = &MsgUpdateReserveShare{}
 	_ sdk.Msg = &MsgUpdateTradeFee{}
-	_ sdk.Msg = &MsgUpdateVirtualLiquidityDecay{}
+	_ sdk.Msg = &MsgUpdatePriceIncreasingFactor{}
 )
 
 func (msg *MsgUpdateMaxOrderLife) ValidateBasic() error {
@@ -48,13 +48,13 @@ func (msg *MsgUpdateTradeFee) ValidateBasic() error {
 	return nil
 }
 
-func (msg *MsgUpdateVirtualLiquidityDecay) ValidateBasic() error {
+func (msg *MsgUpdatePriceIncreasingFactor) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
 		return errorsmod.Wrap(err, "invalid authority address")
 	}
 
-	if err := denomtypes.IsDec(msg.VirtualLiquidityDecay, math.LegacyZeroDec()); err != nil {
-		return fmt.Errorf("virtual_liquidity_decay: %w", err)
+	if err := denomtypes.IsDec(msg.PriceIncreasingFactor, math.LegacyZeroDec()); err != nil {
+		return fmt.Errorf("price_increasing_factor: %w", err)
 	}
 
 	return nil

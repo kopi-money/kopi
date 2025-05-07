@@ -1,9 +1,8 @@
 package types
 
 import (
-	"fmt"
-
 	"cosmossdk.io/math"
+	"fmt"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 )
 
@@ -11,7 +10,7 @@ type TradeMessage interface {
 	GetAmount() string
 	GetDenomGiving() string
 	GetDenomReceiving() string
-	GetMaxPrice() string
+	getMaxPrice() *MaxPrice
 }
 
 func validateTradeData(msg TradeMessage) error {
@@ -19,8 +18,8 @@ func validateTradeData(msg TradeMessage) error {
 		return fmt.Errorf("amount: %w", err)
 	}
 
-	if msg.GetMaxPrice() != "" {
-		if err := denomtypes.IsDec(msg.GetMaxPrice(), math.LegacyZeroDec()); err != nil {
+	if msg.getMaxPrice() != nil {
+		if err := denomtypes.IsDec(msg.getMaxPrice().MaxPrice, math.LegacyZeroDec()); err != nil {
 			return fmt.Errorf("max_price: %w", err)
 		}
 	}

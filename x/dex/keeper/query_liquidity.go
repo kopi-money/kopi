@@ -94,8 +94,8 @@ func (k Keeper) Liquidity(ctx context.Context, req *types.QueryGetLiquidityReque
 	if req.Denom != constants.BaseCurrency {
 		pair, err := k.GetLiquidityPair(ctx, req.Denom)
 		if err == nil {
-			res.VirtualOther = pair.VirtualOther.String()
-			res.VirtualBase = pair.VirtualBase.String()
+			res.VirtualBase = pair.Base.Virtual.String()
+			res.VirtualOther = pair.Other.Virtual.String()
 		}
 	}
 

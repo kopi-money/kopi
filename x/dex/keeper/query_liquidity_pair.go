@@ -29,9 +29,8 @@ func (k Keeper) LiquidityPair(ctx context.Context, req *types.QueryGetLiquidityP
 	fullBase := k.GetPoolLiquidity(ctx, constants.BaseCurrency)
 
 	return &types.QueryGetLiquidityPairResponse{
-		Denom:        liquidityPair.Denom,
-		VirtualBase:  liquidityPair.VirtualBase.String(),
-		VirtualOther: liquidityPair.VirtualOther.String(),
+		VirtualBase:  liquidityPair.Base.Virtual.String(),
+		VirtualOther: liquidityPair.Other.Virtual.String(),
 		FullBase:     fullBase.String(),
 		FullOther:    fullOther.String(),
 	}, nil

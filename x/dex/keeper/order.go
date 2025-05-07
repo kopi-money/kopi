@@ -131,6 +131,15 @@ func (k Keeper) GetAllOrdersByAddress(ctx context.Context, address string) (list
 	return
 }
 
+func (k Keeper) exportOrdersToGenesis(ctx context.Context) (list []types.Order) {
+	orderIterator := k.orders.Iterator(ctx, nil)
+	for orderIterator.Valid() {
+		list = append(list, orderIterator.GetNext())
+	}
+
+	return
+}
+
 func (k Keeper) UpgradeOrdersV2(ctx context.Context) error {
 	iterator, err := k.ordersLegacy.CollectionIterator(ctx, nil)
 	if err != nil {

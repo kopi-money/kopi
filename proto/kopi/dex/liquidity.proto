@@ -6,7 +6,7 @@ import "google/protobuf/wrappers.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/dex/types";
 
-message GenesisLiquidity {
+message GenesisLiquidityEntry {
   uint64 index = 1;
   string address = 2;
   bytes amount = 3 [
@@ -32,10 +32,21 @@ message GenesisLiquidityPositions {
   string address = 1;
   uint64 position_index = 2;
   bool auto_compound = 3;
+  int64 created_at = 4;
 }
 
 message LiquidityPosition {
   bool auto_compound = 1;
+  int64 created_at = 2;
+}
+
+message GenesisLiquidityAddressSum {
+  string address = 1;
+  string denom = 2;
+  bytes sum = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message LiquiditySum {
@@ -45,8 +56,16 @@ message LiquiditySum {
   ];
 }
 
+message GenesisMovingLiquidity {
+  string denom = 1;
+  bytes amount = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
+    (gogoproto.nullable) = false
+  ];
+}
+
 message MovingLiquidity {
-  bytes deposit_amount = 1 [
+  bytes amount = 1 [
     (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable) = false
   ];

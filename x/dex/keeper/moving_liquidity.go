@@ -21,28 +21,60 @@ func (k Keeper) UpdateMovingLiquidities(ctx context.Context) {
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
 		balance := poolBalances.AmountOf(denom)
 		movingLiquidity := k.getMovingLiquidity(ctx, denom)
-		movingLiquidity.DepositAmount = updateLiquidityFromDeposits(movingLiquidity.DepositAmount, balance.ToLegacyDec(), decayDeposits)
+		movingLiquidity.Amount = updateLiquidityFromDeposits(movingLiquidity.Amount, balance.ToLegacyDec(), decayDeposits)
 		k.movingLiquidity.Set(ctx, denom, movingLiquidity)
 	}
+}
+
+func (k Keeper) updateMovingLiquidityFromTrade(ctx context.Context, denom string, amount math.LegacyDec) {
+	movingLiquidity := k.getMovingLiquidity(ctx, denom)
+	movingLiquidity.Amount = movingLiquidity.Amount.Add(amount)
+	movingLiquidity.Amount = math.LegacyMaxDec(movingLiquidity.Amount, math.LegacyZeroDec())
+	k.movingLiquidity.Set(ctx, denom, movingLiquidity)
+}
+
+func (k Keeper) SetMovingLiquidity(ctx context.Context, denom string, amount math.LegacyDec) {
+	k.movingLiquidity.Set(ctx, denom, types.MovingLiquidity{Amount: amount})
 }
 
 func (k Keeper) getMovingLiquidity(ctx context.Context, denom string) types.MovingLiquidity {
 	movingLiquidity, has := k.movingLiquidity.Get(ctx, denom)
 	if !has {
 		return types.MovingLiquidity{
-			DepositAmount: math.LegacyZeroDec(),
+			Amount: math.LegacyZeroDec(),
 		}
 	}
 
 	return movingLiquidity
 }
 
-func updateLiquidityFromDeposits(moving, balance, decay math.LegacyDec) math.LegacyDec {
-	if !moving.IsPositive() || balance.LTE(moving) {
-		return balance
+func (k Keeper) capMovingLiquidity(ctx context.Context, denom string) math.LegacyDec {
+	poolAcc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
+	poolBalance := k.BankKeeper.SpendableCoin(ctx, poolAcc.GetAddress(), denom).Amount.ToLegacyDec()
+
+	movingLiquidity := k.getMovingLiquidity(ctx, denom)
+	movingLiquidity.Amount = math.LegacyMinDec(poolBalance, movingLiquidity.Amount)
+	k.movingLiquidity.Set(ctx, denom, movingLiquidity)
+	return movingLiquidity.Amount
+}
+
+func (k Keeper) exportMovingLiquidity(ctx context.Context) (list []types.GenesisMovingLiquidity) {
+	for _, denom := range k.DenomKeeper.Denoms(ctx) {
+
+		list = append(list, types.GenesisMovingLiquidity{
+			Denom:  denom,
+			Amount: k.getMovingLiquidity(ctx, denom).Amount,
+		})
 	}
 
-	ml1 := moving.Mul(decay)
-	ml2 := balance.Mul(math.LegacyOneDec().Sub(decay))
-	return ml1.Add(ml2)
+	return
+}
+
+func updateLiquidityFromDeposits(moving, balance, factor math.LegacyDec) math.LegacyDec {
+	f1 := factor
+	f2 := math.LegacyOneDec().Sub(factor)
+
+	s1 := f1.Mul(moving)
+	s2 := f2.Mul(balance)
+	return s1.Add(s2)
 }

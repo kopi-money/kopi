@@ -25,14 +25,20 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // GenesisState defines the dex module's genesis state.
 type GenesisState struct {
-	Params                    Params                      `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
-	LiquidityList             []GenesisLiquidity          `protobuf:"bytes,2,rep,name=liquidity_list,json=liquidityList,proto3" json:"liquidity_list"`
-	LiquidityPositionsList    []GenesisLiquidityPositions `protobuf:"bytes,8,rep,name=liquidity_positions_list,json=liquidityPositionsList,proto3" json:"liquidity_positions_list"`
-	OrderList                 []Order                     `protobuf:"bytes,3,rep,name=orderList,proto3" json:"orderList"`
-	WalletTradeAmount         []WalletTradeAmount         `protobuf:"bytes,4,rep,name=wallet_trade_amount,json=walletTradeAmount,proto3" json:"wallet_trade_amount"`
-	LiquidityNextIndex        uint64                      `protobuf:"varint,5,opt,name=liquidity_next_index,json=liquidityNextIndex,proto3" json:"liquidity_next_index,omitempty"`
-	OrderNextIndex            uint64                      `protobuf:"varint,6,opt,name=order_next_index,json=orderNextIndex,proto3" json:"order_next_index,omitempty"`
-	LiquidityDepositNextIndex uint64                      `protobuf:"varint,7,opt,name=liquidity_deposit_next_index,json=liquidityDepositNextIndex,proto3" json:"liquidity_deposit_next_index,omitempty"`
+	Params                      Params                       `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
+	LiquidityEntries            []GenesisLiquidityEntry      `protobuf:"bytes,2,rep,name=liquidity_entries,json=liquidityEntries,proto3" json:"liquidity_entries"`
+	LiquidityPositions          []GenesisLiquidityPositions  `protobuf:"bytes,3,rep,name=liquidity_positions,json=liquidityPositions,proto3" json:"liquidity_positions"`
+	LiquidityAddressSums        []GenesisLiquidityAddressSum `protobuf:"bytes,4,rep,name=liquidity_address_sums,json=liquidityAddressSums,proto3" json:"liquidity_address_sums"`
+	Orders                      []Order                      `protobuf:"bytes,5,rep,name=orders,proto3" json:"orders"`
+	WalletTradeAmounts          []GenesisWalletTradeAmount   `protobuf:"bytes,6,rep,name=wallet_trade_amounts,json=walletTradeAmounts,proto3" json:"wallet_trade_amounts"`
+	EpochShares                 []GenesisEpochShares         `protobuf:"bytes,7,rep,name=epoch_shares,json=epochShares,proto3" json:"epoch_shares"`
+	EpochLeftovers              []GenesisEpochLeftover       `protobuf:"bytes,8,rep,name=epoch_leftovers,json=epochLeftovers,proto3" json:"epoch_leftovers"`
+	EpochSharesSum              EpochShares                  `protobuf:"bytes,9,opt,name=epoch_shares_sum,json=epochSharesSum,proto3" json:"epoch_shares_sum"`
+	EpochStartTime              EpochStartTime               `protobuf:"bytes,10,opt,name=epoch_start_time,json=epochStartTime,proto3" json:"epoch_start_time"`
+	MovingLiquidity             []GenesisMovingLiquidity     `protobuf:"bytes,11,rep,name=moving_liquidity,json=movingLiquidity,proto3" json:"moving_liquidity"`
+	LiquidityNextIndex          uint64                       `protobuf:"varint,12,opt,name=liquidity_next_index,json=liquidityNextIndex,proto3" json:"liquidity_next_index,omitempty"`
+	OrderNextIndex              uint64                       `protobuf:"varint,13,opt,name=order_next_index,json=orderNextIndex,proto3" json:"order_next_index,omitempty"`
+	LiquidityPositionsNextIndex uint64                       `protobuf:"varint,14,opt,name=liquidity_positions_next_index,json=liquidityPositionsNextIndex,proto3" json:"liquidity_positions_next_index,omitempty"`
 }
 
 func (m *GenesisState) Reset()         { *m = GenesisState{} }
@@ -75,30 +81,72 @@ func (m *GenesisState) GetParams() Params {
 	return Params{}
 }
 
-func (m *GenesisState) GetLiquidityList() []GenesisLiquidity {
+func (m *GenesisState) GetLiquidityEntries() []GenesisLiquidityEntry {
 	if m != nil {
-		return m.LiquidityList
+		return m.LiquidityEntries
 	}
 	return nil
 }
 
-func (m *GenesisState) GetLiquidityPositionsList() []GenesisLiquidityPositions {
+func (m *GenesisState) GetLiquidityPositions() []GenesisLiquidityPositions {
 	if m != nil {
-		return m.LiquidityPositionsList
+		return m.LiquidityPositions
 	}
 	return nil
 }
 
-func (m *GenesisState) GetOrderList() []Order {
+func (m *GenesisState) GetLiquidityAddressSums() []GenesisLiquidityAddressSum {
 	if m != nil {
-		return m.OrderList
+		return m.LiquidityAddressSums
 	}
 	return nil
 }
 
-func (m *GenesisState) GetWalletTradeAmount() []WalletTradeAmount {
+func (m *GenesisState) GetOrders() []Order {
 	if m != nil {
-		return m.WalletTradeAmount
+		return m.Orders
+	}
+	return nil
+}
+
+func (m *GenesisState) GetWalletTradeAmounts() []GenesisWalletTradeAmount {
+	if m != nil {
+		return m.WalletTradeAmounts
+	}
+	return nil
+}
+
+func (m *GenesisState) GetEpochShares() []GenesisEpochShares {
+	if m != nil {
+		return m.EpochShares
+	}
+	return nil
+}
+
+func (m *GenesisState) GetEpochLeftovers() []GenesisEpochLeftover {
+	if m != nil {
+		return m.EpochLeftovers
+	}
+	return nil
+}
+
+func (m *GenesisState) GetEpochSharesSum() EpochShares {
+	if m != nil {
+		return m.EpochSharesSum
+	}
+	return EpochShares{}
+}
+
+func (m *GenesisState) GetEpochStartTime() EpochStartTime {
+	if m != nil {
+		return m.EpochStartTime
+	}
+	return EpochStartTime{}
+}
+
+func (m *GenesisState) GetMovingLiquidity() []GenesisMovingLiquidity {
+	if m != nil {
+		return m.MovingLiquidity
 	}
 	return nil
 }
@@ -117,9 +165,9 @@ func (m *GenesisState) GetOrderNextIndex() uint64 {
 	return 0
 }
 
-func (m *GenesisState) GetLiquidityDepositNextIndex() uint64 {
+func (m *GenesisState) GetLiquidityPositionsNextIndex() uint64 {
 	if m != nil {
-		return m.LiquidityDepositNextIndex
+		return m.LiquidityPositionsNextIndex
 	}
 	return 0
 }
@@ -131,33 +179,43 @@ func init() {
 func init() { proto.RegisterFile("kopi/dex/genesis.proto", fileDescriptor_8564f0e5ae5a7c5b) }
 
 var fileDescriptor_8564f0e5ae5a7c5b = []byte{
-	// 413 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x92, 0xdd, 0xce, 0xd2, 0x30,
-	0x18, 0xc7, 0x37, 0x99, 0x88, 0x45, 0x11, 0x2b, 0x92, 0x39, 0xcd, 0x24, 0x98, 0x98, 0x9d, 0xb8,
-	0x19, 0xb8, 0x00, 0x95, 0x98, 0x10, 0x13, 0xa2, 0x88, 0x26, 0x26, 0x9e, 0x2c, 0x83, 0x35, 0xb3,
-	0x71, 0x5b, 0xe7, 0x56, 0xc2, 0xb8, 0x0b, 0xbd, 0x2b, 0x0e, 0x39, 0xf4, 0xc8, 0x18, 0xb8, 0x91,
-	0x37, 0x7b, 0x56, 0x5a, 0xf2, 0x7e, 0x9c, 0x6d, 0xff, 0x8f, 0x5f, 0x9f, 0x3e, 0x29, 0xea, 0xff,
-	0x64, 0x19, 0xf5, 0x42, 0x52, 0x7a, 0x11, 0x49, 0x49, 0x41, 0x0b, 0x37, 0xcb, 0x19, 0x67, 0xb8,
-	0x55, 0xe9, 0x6e, 0x48, 0x4a, 0xab, 0x17, 0xb1, 0x88, 0x81, 0xe8, 0x55, 0x5f, 0xb5, 0x6f, 0x3d,
-	0x96, 0xbd, 0x2c, 0xc8, 0x83, 0x44, 0xd4, 0x2c, 0x53, 0xca, 0x31, 0xfd, 0xb5, 0xa6, 0x21, 0xe5,
-	0x5b, 0xe1, 0xf4, 0xa4, 0xc3, 0xf2, 0x90, 0xe4, 0x42, 0x1d, 0x4a, 0x75, 0x13, 0xc4, 0x31, 0xe1,
-	0x3e, 0xcf, 0x83, 0x90, 0xf8, 0x41, 0xc2, 0xd6, 0x29, 0xaf, 0x33, 0xc3, 0x3f, 0x06, 0xba, 0x37,
-	0xad, 0x87, 0xfb, 0xc2, 0x03, 0x4e, 0xb0, 0x8b, 0x9a, 0xf5, 0xa1, 0xa6, 0x3e, 0xd0, 0x9d, 0xf6,
-	0xa8, 0xeb, 0x9e, 0x86, 0x75, 0xe7, 0xa0, 0x4f, 0x8c, 0xdd, 0xbf, 0xe7, 0xda, 0x42, 0xa4, 0xf0,
-	0x14, 0x75, 0xe4, 0x34, 0x7e, 0x4c, 0x0b, 0x6e, 0xde, 0x1a, 0x34, 0x9c, 0xf6, 0xc8, 0x52, 0x3d,
-	0xc1, 0x9f, 0x9d, 0x62, 0x82, 0x70, 0x5f, 0xf6, 0x66, 0xb4, 0xe0, 0x78, 0x85, 0x4c, 0x05, 0xca,
-	0x58, 0x41, 0x39, 0x65, 0x69, 0x51, 0x23, 0x5b, 0x80, 0x7c, 0x71, 0x33, 0x72, 0x7e, 0xca, 0x0b,
-	0x76, 0x3f, 0xbe, 0xe2, 0xc0, 0x21, 0x63, 0x74, 0x17, 0x36, 0x54, 0xfd, 0x98, 0x0d, 0xa0, 0x3e,
-	0x50, 0xd4, 0x4f, 0x95, 0x25, 0x08, 0x2a, 0x87, 0x3f, 0xa3, 0x47, 0xd7, 0x2c, 0xd0, 0x34, 0xa0,
-	0xfe, 0x54, 0xd5, 0xbf, 0x41, 0xe8, 0x6b, 0x95, 0x79, 0x07, 0x11, 0x81, 0x7a, 0xb8, 0xb9, 0x6c,
-	0xe0, 0xd7, 0xa8, 0xa7, 0x2e, 0x9b, 0x92, 0x92, 0xfb, 0x34, 0x0d, 0x49, 0x69, 0xde, 0x1e, 0xe8,
-	0x8e, 0xb1, 0xc0, 0xd2, 0xfb, 0x48, 0x4a, 0xfe, 0xa1, 0x72, 0xb0, 0x83, 0xba, 0x30, 0xd1, 0x79,
-	0xba, 0x09, 0xe9, 0x0e, 0xe8, 0x2a, 0xf9, 0x06, 0x3d, 0x53, 0xec, 0x90, 0xc0, 0x2a, 0xcf, 0x5b,
-	0x77, 0xa0, 0xf5, 0x44, 0x66, 0xde, 0xd7, 0x11, 0x09, 0x98, 0xbc, 0xdd, 0x1d, 0x6c, 0x7d, 0x7f,
-	0xb0, 0xf5, 0xff, 0x07, 0x5b, 0xff, 0x7d, 0xb4, 0xb5, 0xfd, 0xd1, 0xd6, 0xfe, 0x1e, 0x6d, 0xed,
-	0xfb, 0xcb, 0x88, 0xf2, 0x1f, 0xeb, 0xa5, 0xbb, 0x62, 0x89, 0x57, 0x5d, 0xfb, 0x55, 0xc2, 0x52,
-	0xb2, 0x85, 0x4f, 0xaf, 0x84, 0x97, 0xc6, 0xb7, 0x19, 0x29, 0x96, 0x4d, 0x78, 0x5c, 0xe3, 0x8b,
-	0x00, 0x00, 0x00, 0xff, 0xff, 0x00, 0x2b, 0x98, 0x47, 0x01, 0x03, 0x00, 0x00,
+	// 576 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x94, 0xcf, 0x6e, 0xd3, 0x40,
+	0x10, 0x87, 0x63, 0x5a, 0xd2, 0xb2, 0x09, 0x49, 0x58, 0xd2, 0x6a, 0x55, 0x90, 0x1b, 0x05, 0x84,
+	0x72, 0xa9, 0x83, 0xca, 0x0b, 0xd0, 0xa2, 0x08, 0x90, 0x5a, 0x28, 0x4d, 0x25, 0xa4, 0x5c, 0x8c,
+	0x5b, 0x0f, 0xc9, 0x0a, 0xdb, 0x6b, 0xbc, 0xeb, 0xd6, 0x79, 0x0b, 0x1e, 0xab, 0xc7, 0x1e, 0x39,
+	0x21, 0x94, 0xbc, 0x03, 0x67, 0xe4, 0xf1, 0xdf, 0xd6, 0xe9, 0x2d, 0xfa, 0xcd, 0xb7, 0x9f, 0x67,
+	0xbc, 0x13, 0x93, 0xed, 0x1f, 0xc2, 0xe7, 0x43, 0x1b, 0xa2, 0xe1, 0x14, 0x3c, 0x90, 0x5c, 0x1a,
+	0x7e, 0x20, 0x94, 0xa0, 0x9b, 0x71, 0x6e, 0xd8, 0x10, 0xed, 0x74, 0xa7, 0x62, 0x2a, 0x30, 0x1c,
+	0xc6, 0xbf, 0x92, 0xfa, 0xce, 0x56, 0x7e, 0x0e, 0x7c, 0x71, 0x31, 0x93, 0x95, 0xd8, 0xb7, 0x02,
+	0xcb, 0xcd, 0x62, 0x96, 0xc7, 0x0e, 0xff, 0x19, 0x72, 0x9b, 0xab, 0x79, 0x5a, 0xe9, 0xe6, 0x15,
+	0x11, 0xd8, 0x10, 0xa4, 0x69, 0x3f, 0x4f, 0xaf, 0x2c, 0xc7, 0x01, 0x65, 0xaa, 0xc0, 0xb2, 0xc1,
+	0xb4, 0x5c, 0x11, 0x7a, 0x2a, 0x61, 0xfa, 0xff, 0x36, 0x48, 0xf3, 0x7d, 0xd2, 0xf3, 0x58, 0x59,
+	0x0a, 0xa8, 0x41, 0xea, 0xc9, 0x43, 0x99, 0xd6, 0xd3, 0x06, 0x8d, 0xfd, 0x8e, 0x91, 0xcd, 0x60,
+	0x9c, 0x60, 0x7e, 0xb8, 0x7e, 0xfd, 0x67, 0xb7, 0x76, 0x9a, 0x52, 0xf4, 0x94, 0x3c, 0xc9, 0xbb,
+	0x31, 0xc1, 0x53, 0x01, 0x07, 0xc9, 0x1e, 0xf4, 0xd6, 0x06, 0x8d, 0xfd, 0xdd, 0xe2, 0x68, 0xfa,
+	0x88, 0xa3, 0x8c, 0x1c, 0x79, 0x2a, 0x98, 0xa7, 0xa6, 0x8e, 0x53, 0x4e, 0x39, 0x48, 0x3a, 0x21,
+	0x4f, 0x0b, 0xa7, 0x2f, 0x24, 0x57, 0x5c, 0x78, 0x92, 0xad, 0xa1, 0xf5, 0xc5, 0xfd, 0xd6, 0x93,
+	0x0c, 0x4d, 0xcd, 0xd4, 0xa9, 0x54, 0xe8, 0x37, 0xb2, 0x5d, 0xb8, 0x2d, 0xdb, 0x0e, 0x40, 0x4a,
+	0x53, 0x86, 0xae, 0x64, 0xeb, 0xa8, 0x7f, 0x79, 0xbf, 0xfe, 0x20, 0xa1, 0xc7, 0xa1, 0x9b, 0xfa,
+	0xbb, 0x4e, 0xb5, 0x24, 0xe9, 0x1e, 0xa9, 0xe3, 0x2d, 0x48, 0xf6, 0x10, 0x8d, 0xed, 0xc2, 0xf8,
+	0x39, 0xce, 0xb3, 0x17, 0x98, 0x40, 0x74, 0x42, 0xba, 0x2b, 0xae, 0x47, 0xb2, 0x3a, 0x1e, 0xee,
+	0x57, 0xda, 0xf9, 0x8a, 0xf0, 0x59, 0xcc, 0x1e, 0x20, 0x9a, 0x0d, 0x7b, 0x75, 0xb7, 0x20, 0xe9,
+	0x88, 0x34, 0x71, 0xb1, 0x4c, 0x39, 0xb3, 0x02, 0x90, 0x6c, 0x03, 0x9d, 0xcf, 0x2b, 0xce, 0x51,
+	0x0c, 0x8d, 0x91, 0x49, 0x6d, 0x0d, 0x28, 0x22, 0x7a, 0x4c, 0xda, 0x89, 0xc6, 0x81, 0xef, 0x4a,
+	0x5c, 0xc6, 0xa3, 0x6d, 0xa2, 0x49, 0x5f, 0x6d, 0x3a, 0x4a, 0xb1, 0xd4, 0xd5, 0x82, 0x72, 0x18,
+	0x77, 0xd5, 0x29, 0x77, 0x15, 0xbf, 0x7d, 0xf6, 0x08, 0x97, 0x6d, 0xab, 0xf0, 0x55, 0x5b, 0x6a,
+	0x95, 0x5a, 0x1a, 0x87, 0x2e, 0xfd, 0x90, 0x6b, 0x94, 0x15, 0x28, 0x53, 0x71, 0x17, 0x18, 0x41,
+	0x0d, 0xbb, 0xab, 0x89, 0x81, 0x33, 0xee, 0xc2, 0x6d, 0x53, 0x96, 0xd2, 0x2f, 0xa4, 0xe3, 0x8a,
+	0x4b, 0xee, 0x4d, 0xcd, 0xfc, 0x42, 0x59, 0x03, 0x07, 0xec, 0x55, 0x06, 0x3c, 0x46, 0x30, 0xdf,
+	0x89, 0xd4, 0xd8, 0x76, 0x6f, 0xc7, 0xf4, 0x35, 0x29, 0x96, 0xc3, 0xf4, 0x20, 0x52, 0x26, 0xf7,
+	0x6c, 0x88, 0x58, 0xb3, 0xa7, 0x0d, 0xd6, 0x4b, 0x8b, 0xf9, 0x09, 0x22, 0xf5, 0x31, 0xae, 0xd0,
+	0x01, 0xe9, 0xe0, 0x46, 0x94, 0xe9, 0xc7, 0x48, 0xb7, 0x30, 0x2f, 0xc8, 0x77, 0x44, 0x5f, 0xf1,
+	0xf7, 0x28, 0x9f, 0x6b, 0xe1, 0xb9, 0x67, 0xd5, 0xf5, 0xcf, 0x25, 0x87, 0x6f, 0xaf, 0x17, 0xba,
+	0x76, 0xb3, 0xd0, 0xb5, 0xbf, 0x0b, 0x5d, 0xfb, 0xb5, 0xd4, 0x6b, 0x37, 0x4b, 0xbd, 0xf6, 0x7b,
+	0xa9, 0xd7, 0x26, 0xaf, 0xa6, 0x5c, 0xcd, 0xc2, 0x73, 0xe3, 0x42, 0xb8, 0xc3, 0x78, 0xfa, 0x3d,
+	0x57, 0x78, 0x30, 0xc7, 0x9f, 0xc3, 0x08, 0x3f, 0x27, 0x6a, 0xee, 0x83, 0x3c, 0xaf, 0xe3, 0x17,
+	0xe4, 0xcd, 0xff, 0x00, 0x00, 0x00, 0xff, 0xff, 0x9a, 0xee, 0x46, 0x8e, 0xfd, 0x04, 0x00, 0x00,
 }
 
 func (m *GenesisState) Marshal() (dAtA []byte, err error) {
@@ -180,10 +238,59 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.LiquidityPositionsList) > 0 {
-		for iNdEx := len(m.LiquidityPositionsList) - 1; iNdEx >= 0; iNdEx-- {
+	if m.LiquidityPositionsNextIndex != 0 {
+		i = encodeVarintGenesis(dAtA, i, uint64(m.LiquidityPositionsNextIndex))
+		i--
+		dAtA[i] = 0x70
+	}
+	if m.OrderNextIndex != 0 {
+		i = encodeVarintGenesis(dAtA, i, uint64(m.OrderNextIndex))
+		i--
+		dAtA[i] = 0x68
+	}
+	if m.LiquidityNextIndex != 0 {
+		i = encodeVarintGenesis(dAtA, i, uint64(m.LiquidityNextIndex))
+		i--
+		dAtA[i] = 0x60
+	}
+	if len(m.MovingLiquidity) > 0 {
+		for iNdEx := len(m.MovingLiquidity) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.LiquidityPositionsList[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.MovingLiquidity[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x5a
+		}
+	}
+	{
+		size, err := m.EpochStartTime.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintGenesis(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x52
+	{
+		size, err := m.EpochSharesSum.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintGenesis(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x4a
+	if len(m.EpochLeftovers) > 0 {
+		for iNdEx := len(m.EpochLeftovers) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.EpochLeftovers[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -194,25 +301,52 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0x42
 		}
 	}
-	if m.LiquidityDepositNextIndex != 0 {
-		i = encodeVarintGenesis(dAtA, i, uint64(m.LiquidityDepositNextIndex))
-		i--
-		dAtA[i] = 0x38
-	}
-	if m.OrderNextIndex != 0 {
-		i = encodeVarintGenesis(dAtA, i, uint64(m.OrderNextIndex))
-		i--
-		dAtA[i] = 0x30
-	}
-	if m.LiquidityNextIndex != 0 {
-		i = encodeVarintGenesis(dAtA, i, uint64(m.LiquidityNextIndex))
-		i--
-		dAtA[i] = 0x28
-	}
-	if len(m.WalletTradeAmount) > 0 {
-		for iNdEx := len(m.WalletTradeAmount) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.EpochShares) > 0 {
+		for iNdEx := len(m.EpochShares) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.WalletTradeAmount[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.EpochShares[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x3a
+		}
+	}
+	if len(m.WalletTradeAmounts) > 0 {
+		for iNdEx := len(m.WalletTradeAmounts) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.WalletTradeAmounts[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x32
+		}
+	}
+	if len(m.Orders) > 0 {
+		for iNdEx := len(m.Orders) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Orders[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x2a
+		}
+	}
+	if len(m.LiquidityAddressSums) > 0 {
+		for iNdEx := len(m.LiquidityAddressSums) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.LiquidityAddressSums[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -223,10 +357,10 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0x22
 		}
 	}
-	if len(m.OrderList) > 0 {
-		for iNdEx := len(m.OrderList) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.LiquidityPositions) > 0 {
+		for iNdEx := len(m.LiquidityPositions) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.OrderList[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.LiquidityPositions[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -237,10 +371,10 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0x1a
 		}
 	}
-	if len(m.LiquidityList) > 0 {
-		for iNdEx := len(m.LiquidityList) - 1; iNdEx >= 0; iNdEx-- {
+	if len(m.LiquidityEntries) > 0 {
+		for iNdEx := len(m.LiquidityEntries) - 1; iNdEx >= 0; iNdEx-- {
 			{
-				size, err := m.LiquidityList[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				size, err := m.LiquidityEntries[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -283,20 +417,54 @@ func (m *GenesisState) Size() (n int) {
 	_ = l
 	l = m.Params.Size()
 	n += 1 + l + sovGenesis(uint64(l))
-	if len(m.LiquidityList) > 0 {
-		for _, e := range m.LiquidityList {
+	if len(m.LiquidityEntries) > 0 {
+		for _, e := range m.LiquidityEntries {
 			l = e.Size()
 			n += 1 + l + sovGenesis(uint64(l))
 		}
 	}
-	if len(m.OrderList) > 0 {
-		for _, e := range m.OrderList {
+	if len(m.LiquidityPositions) > 0 {
+		for _, e := range m.LiquidityPositions {
 			l = e.Size()
 			n += 1 + l + sovGenesis(uint64(l))
 		}
 	}
-	if len(m.WalletTradeAmount) > 0 {
-		for _, e := range m.WalletTradeAmount {
+	if len(m.LiquidityAddressSums) > 0 {
+		for _, e := range m.LiquidityAddressSums {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	if len(m.Orders) > 0 {
+		for _, e := range m.Orders {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	if len(m.WalletTradeAmounts) > 0 {
+		for _, e := range m.WalletTradeAmounts {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	if len(m.EpochShares) > 0 {
+		for _, e := range m.EpochShares {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	if len(m.EpochLeftovers) > 0 {
+		for _, e := range m.EpochLeftovers {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	l = m.EpochSharesSum.Size()
+	n += 1 + l + sovGenesis(uint64(l))
+	l = m.EpochStartTime.Size()
+	n += 1 + l + sovGenesis(uint64(l))
+	if len(m.MovingLiquidity) > 0 {
+		for _, e := range m.MovingLiquidity {
 			l = e.Size()
 			n += 1 + l + sovGenesis(uint64(l))
 		}
@@ -307,14 +475,8 @@ func (m *GenesisState) Size() (n int) {
 	if m.OrderNextIndex != 0 {
 		n += 1 + sovGenesis(uint64(m.OrderNextIndex))
 	}
-	if m.LiquidityDepositNextIndex != 0 {
-		n += 1 + sovGenesis(uint64(m.LiquidityDepositNextIndex))
-	}
-	if len(m.LiquidityPositionsList) > 0 {
-		for _, e := range m.LiquidityPositionsList {
-			l = e.Size()
-			n += 1 + l + sovGenesis(uint64(l))
-		}
+	if m.LiquidityPositionsNextIndex != 0 {
+		n += 1 + sovGenesis(uint64(m.LiquidityPositionsNextIndex))
 	}
 	return n
 }
@@ -389,7 +551,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field LiquidityList", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LiquidityEntries", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -416,14 +578,14 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.LiquidityList = append(m.LiquidityList, GenesisLiquidity{})
-			if err := m.LiquidityList[len(m.LiquidityList)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.LiquidityEntries = append(m.LiquidityEntries, GenesisLiquidityEntry{})
+			if err := m.LiquidityEntries[len(m.LiquidityEntries)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OrderList", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LiquidityPositions", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -450,14 +612,14 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.OrderList = append(m.OrderList, Order{})
-			if err := m.OrderList[len(m.OrderList)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.LiquidityPositions = append(m.LiquidityPositions, GenesisLiquidityPositions{})
+			if err := m.LiquidityPositions[len(m.LiquidityPositions)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field WalletTradeAmount", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LiquidityAddressSums", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -484,12 +646,248 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.WalletTradeAmount = append(m.WalletTradeAmount, WalletTradeAmount{})
-			if err := m.WalletTradeAmount[len(m.WalletTradeAmount)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.LiquidityAddressSums = append(m.LiquidityAddressSums, GenesisLiquidityAddressSum{})
+			if err := m.LiquidityAddressSums[len(m.LiquidityAddressSums)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Orders", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Orders = append(m.Orders, Order{})
+			if err := m.Orders[len(m.Orders)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field WalletTradeAmounts", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.WalletTradeAmounts = append(m.WalletTradeAmounts, GenesisWalletTradeAmount{})
+			if err := m.WalletTradeAmounts[len(m.WalletTradeAmounts)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EpochShares", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.EpochShares = append(m.EpochShares, GenesisEpochShares{})
+			if err := m.EpochShares[len(m.EpochShares)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EpochLeftovers", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.EpochLeftovers = append(m.EpochLeftovers, GenesisEpochLeftover{})
+			if err := m.EpochLeftovers[len(m.EpochLeftovers)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EpochSharesSum", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.EpochSharesSum.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 10:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EpochStartTime", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.EpochStartTime.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 11:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MovingLiquidity", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MovingLiquidity = append(m.MovingLiquidity, GenesisMovingLiquidity{})
+			if err := m.MovingLiquidity[len(m.MovingLiquidity)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 12:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field LiquidityNextIndex", wireType)
 			}
@@ -508,7 +906,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 6:
+		case 13:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field OrderNextIndex", wireType)
 			}
@@ -527,11 +925,11 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 7:
+		case 14:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field LiquidityDepositNextIndex", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field LiquidityPositionsNextIndex", wireType)
 			}
-			m.LiquidityDepositNextIndex = 0
+			m.LiquidityPositionsNextIndex = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowGenesis
@@ -541,45 +939,11 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.LiquidityDepositNextIndex |= uint64(b&0x7F) << shift
+				m.LiquidityPositionsNextIndex |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field LiquidityPositionsList", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowGenesis
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.LiquidityPositionsList = append(m.LiquidityPositionsList, GenesisLiquidityPositions{})
-			if err := m.LiquidityPositionsList[len(m.LiquidityPositionsList)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipGenesis(dAtA[iNdEx:])

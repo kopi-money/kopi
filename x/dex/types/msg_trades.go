@@ -15,6 +15,10 @@ var (
 	_ sdk.Msg = &MsgSell{}
 )
 
+func (msg *MsgBuy) getMaxPrice() *MaxPrice {
+	return msg.MaxPrice
+}
+
 func (msg *MsgBuy) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(msg.Creator); err != nil {
 		return errorsmod.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
@@ -25,6 +29,10 @@ func (msg *MsgBuy) ValidateBasic() error {
 	}
 
 	return validateTradeData(msg)
+}
+
+func (msg *MsgSell) getMaxPrice() *MaxPrice {
+	return msg.MaxPrice
 }
 
 func (msg *MsgSell) ValidateBasic() error {

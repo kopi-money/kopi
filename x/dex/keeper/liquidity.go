@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/cache"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"sort"
+	"github.com/kopi-money/kopi/trading"
 	"strconv"
 
 	"cosmossdk.io/math"
@@ -41,35 +41,37 @@ func (k Keeper) LiquidityIterator(ctx context.Context, denom string) cache.Itera
 	return k.liquidityEntries.Iterator(ctx, nil, denom)
 }
 
-// AddLiquidity adds liquidity to the dex for a given amount and address. The address is used to keep track which user
-// has added how much.
-func (k Keeper) AddLiquidity(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int) (math.Int, error) {
+func (k Keeper) AddLiquidity(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int) error {
 	return k.AddLiquidityWithCompound(ctx, address, denom, amount, false)
 }
 
-func (k Keeper) AddLiquidityWithCompound(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int, autoCompound bool) (math.Int, error) {
+// AddLiquidityWithCompound adds liquidity to the dex for a given amount and address. The address is used to keep track which user
+// has added how much.
+func (k Keeper) AddLiquidityWithCompound(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int, autoCompound bool) error {
 	if !k.DenomKeeper.IsValidDenom(ctx, denom) {
-		return math.Int{}, denomtypes.ErrInvalidDexAsset
+		return denomtypes.ErrInvalidDexAsset
 	}
 
 	if k.BankKeeper.SpendableCoin(ctx, address, denom).Amount.LT(amount) {
-		return math.Int{}, types.ErrNotEnoughFunds
+		return types.ErrNotEnoughFunds
 	}
 
 	coins := sdk.NewCoins(sdk.NewCoin(denom, amount))
 	if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, address, types.PoolLiquidity, coins); err != nil {
-		return math.Int{}, fmt.Errorf("could not send coins to module: %w", err)
+		return fmt.Errorf("send coins to module: %w", err)
 	}
 
-	// The dex works by routing all trades via XKP. The chain is initialized with funds for the reserve, which adds
-	// those funds to the dex. When no liquidity for XKP has been added, we refuse new liquidity as long as no
-	// liquidity for XKP is added.
+	// The dex works by giving each denom a price in relation to XKP. When there is no price and no liquidity, the
+	// prices are not meaningful. Thus we force adding liquidity first to XKP before to other denoms. This case is only
+	// relevant for the genesis and is pretty much obsolete in later stages.
 
 	liquidityPool := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
 	liqBase := k.BankKeeper.SpendableCoins(ctx, liquidityPool.GetAddress()).AmountOf(constants.BaseCurrency)
 	if liqBase.IsZero() && denom != constants.BaseCurrency {
-		return math.Int{}, types.ErrBaseLiqEmpty
+		return types.ErrBaseLiqEmpty
 	}
+
+	// Liquidity added by protocol addresses won't get a dedicated liquidity index.
 
 	var positionIndex uint64
 	if !k.addressIsExcluded(ctx, address.String()) {
@@ -102,12 +104,17 @@ func (k Keeper) AddLiquidityWithCompound(ctx context.Context, address sdk.AccAdd
 
 		k.liquidityPositions.Set(ctx, address.String(), positionIndex, types.LiquidityPosition{
 			AutoCompound: autoCompound,
+			CreatedAt:    sdk.UnwrapSDKContext(ctx).BlockHeight(),
 		})
 	}
 
-	return liq.Amount, nil
+	return nil
 }
 
+// addLiquidity adds liquidity to the DEX. The liquidity is defined by address and position index. When being used for
+// trades, liquidity is taken from the beinning of the list. If liquidity would be added to the first found occurrence,
+// liquidity added by whales would be used more often compared to smaller liquidity entries. To make this more fair,
+// liquidity is added to the second entry of an address or in a new entry at the end.
 func (k Keeper) addLiquidity(ctx context.Context, denom, address string, amount math.Int, liquidityEntries []types.Liquidity, positionIndex uint64) ([]types.Liquidity, types.Liquidity) {
 	if liquidityEntries == nil {
 		liquidityEntries = k.liquidityEntries.Iterator(ctx, nil, denom).GetAll()
@@ -118,9 +125,6 @@ func (k Keeper) addLiquidity(ctx context.Context, denom, address string, amount 
 	seen := false
 	for index, liq := range liquidityEntries {
 		if liq.Address == address && liq.PositionIndex == positionIndex {
-			// if liquidity would be added to the first found occurrence, liquidity added by whales would be used more
-			// often compared to smaller liquidity entries. To make this more fair, liquidity is added to the second
-			// entry of an address or in a new entry at the end
 			if !seen {
 				seen = true
 				continue
@@ -184,13 +188,13 @@ func (k Keeper) GetLiquidityEntriesByAddress(ctx context.Context, denom, address
 	return num
 }
 
-func (k Keeper) GetAllLiquidity(ctx context.Context) (list []types.GenesisLiquidity) {
+func (k Keeper) exportLiquidityEntries(ctx context.Context) (list []types.GenesisLiquidityEntry) {
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
 		iterator := k.liquidityEntries.Iterator(ctx, nil, denom)
 
 		for iterator.Valid() {
 			liq := iterator.GetNext()
-			list = append(list, types.GenesisLiquidity{
+			list = append(list, types.GenesisLiquidityEntry{
 				Index:         liq.Index,
 				Address:       liq.Address,
 				Amount:        liq.Amount,
@@ -198,28 +202,20 @@ func (k Keeper) GetAllLiquidity(ctx context.Context) (list []types.GenesisLiquid
 				Denom:         denom,
 			})
 		}
-
 	}
-
-	sort.SliceStable(list, func(i, j int) bool {
-		return list[i].Index < list[j].Index
-	})
 
 	return
 }
 
-// RemoveLiquidity removes a liquidity from the store
 func (k Keeper) RemoveLiquidity(ctx context.Context, denom string, index uint64) {
 	k.liquidityEntries.Remove(ctx, denom, index)
 }
 
-// UpdateVirtualLiquidities updates the virtual liquidity for each pair. This method is called at the end of each block.
-// The virtual liquidty is only updated when there is no actual liquidity for that denom. When the virtual liquidity is
-// 0, it means the pair probably just have been created and will be set to the initial virtual amount. If the amount
-// of actual liquidity is zero and the amount of virtual liquidity is not zero, we slowly decrease the amount of virtual
-// liquidity to increase that denom's price.
-func (k Keeper) UpdateVirtualLiquidities(ctx context.Context) error {
-	decay := k.getVirtualLiquidityDecay(ctx)
+// UpdateRatios updates the ratio of each DEX denom. This method is called at the end of each block. The ratio is only
+// updated when there is no or only little liquidity for that denom. The ratio is slowly changed to increase the price
+// to slowly incentivize users adding liquidity.
+func (k Keeper) UpdateRatios(ctx context.Context) error {
+	factor := k.getPriceIncreasingFactor(ctx)
 	liquidityPool := k.AccountKeeper.GetModuleAccount(ctx, types.PoolLiquidity)
 	poolBalance := k.BankKeeper.SpendableCoins(ctx, liquidityPool.GetAddress())
 
@@ -227,17 +223,13 @@ func (k Keeper) UpdateVirtualLiquidities(ctx context.Context) error {
 		if denom != constants.BaseCurrency {
 			liq := poolBalance.AmountOf(denom)
 			if liq.LT(k.DenomKeeper.MinLiquidity(ctx, denom)) {
-				// If a kCoin is above parity, the protocol mints+sells and thereby adds already liquidity.
+				// If a kCoin is above parity, the protocol mints+sells and thereby already adds liquidity.
 				if k.skipKCoin(ctx, denom) {
 					continue
 				}
 
-				ratio, err := k.DenomKeeper.GetRatio(ctx, denom)
-				if err != nil {
-					return fmt.Errorf("could not get ratio for %v: %w", denom, err)
-				}
-
-				ratio.Ratio = ratio.Ratio.Mul(decay)
+				ratio, _ := k.DenomKeeper.GetRatio(ctx, denom)
+				ratio.Ratio = ratio.Ratio.Mul(factor)
 				k.DenomKeeper.SetRatio(ctx, ratio)
 			}
 		}
@@ -251,7 +243,7 @@ func (k Keeper) skipKCoin(ctx context.Context, denom string) bool {
 		return false
 	}
 
-	aboveParity, err := k.isAboveParity(ctx, denom)
+	aboveParity, err := k.DenomKeeper.IsAboveParity(ctx, denom)
 	if err != nil {
 		k.Logger().Error(fmt.Sprintf("aboveParity: %v", err))
 		return false
@@ -260,140 +252,65 @@ func (k Keeper) skipKCoin(ctx context.Context, denom string) bool {
 	return aboveParity
 }
 
-func (k Keeper) GetDenomValue(ctx context.Context, denom string) (math.LegacyDec, error) {
-	if denom == constants.BaseCurrency {
-		liq := k.GetPoolLiquidity(ctx, constants.BaseCurrency)
-		return liq.ToLegacyDec(), nil
-	}
-
+func (k Keeper) GetDenomLiquidityValueInBase(ctx context.Context, denom string) (math.LegacyDec, error) {
 	liq := k.GetPoolLiquidity(ctx, denom).ToLegacyDec()
-	price, err := k.DenomKeeper.CalculatePrice(ctx, denom, constants.BaseCurrency)
-	if err != nil {
-		return math.LegacyDec{}, err
-	}
-
-	return liq.Mul(price), nil
+	return k.DenomKeeper.GetValueInBase(ctx, denom, liq)
 }
 
-func (k Keeper) PrepareCutLiquidity(ctx *types.TradeContext) {
-	poolLiqFrom := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomGiving).ToLegacyDec()
-	poolLiqTo := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(ctx.TradeDenomReceiving).ToLegacyDec()
-	poolLiqBase := ctx.OrdersCaches.LiquidityPool.Get().AmountOf(constants.BaseCurrency).ToLegacyDec()
-
-	var addressLiqFrom, addressLiqTo, addressLiqBase math.LegacyDec
-	if ctx.ProtocolTrade {
-		addressLiqFrom = math.LegacyZeroDec()
-		addressLiqTo = math.LegacyZeroDec()
-		addressLiqBase = math.LegacyZeroDec()
-	} else {
-		addressLiqFrom = k.getLiquidityAddressSumDec(ctx, ctx.CoinTarget, ctx.TradeDenomGiving)
-		addressLiqTo = k.getLiquidityAddressSumDec(ctx, ctx.CoinTarget, ctx.TradeDenomReceiving)
-		addressLiqBase = k.getLiquidityAddressSumDec(ctx, ctx.CoinTarget, constants.BaseCurrency)
+// CalculateTradeLiquidity calculates the liquidity for the two denoms affected by a trade. It uses the effective
+// liquidity of the two denoms and their value in the base denom, the trade value is the minimum of the two denoms'
+// effective liquidity. That means, if one denom has a lot of liquidity and the other one has only little, the trade
+// will only use little liquidity.
+func (k Keeper) CalculateTradeLiquidity(ctx context.Context, tradeDenomGiving, tradeDenomReceiving string) (trading.Liquidity, trading.Liquidity, error) {
+	liqFrom, liqFromBase, minimumTradeValueBaseFrom := k.getEffectiveLiquidity(ctx, tradeDenomGiving)
+	if !liqFrom.IsPositive() {
+		return trading.Liquidity{}, trading.Liquidity{}, types.ErrNoLiquidityGiving
 	}
 
-	spreadLiqFrom := k.GetSpreadLiquidity(ctx, ctx.TradeDenomGiving)
-	spreadLiqTo := k.GetSpreadLiquidity(ctx, ctx.TradeDenomReceiving)
-	spreadLiqBase := k.GetSpreadLiquidity(ctx, constants.BaseCurrency)
-
-	if ctx.TradeDenomGiving != constants.BaseCurrency {
-		cutLiquidity, _ := k.createCutLiquidity(ctx, spreadLiqBase, spreadLiqFrom, poolLiqBase, poolLiqFrom, addressLiqBase, addressLiqFrom, ctx.TradeDenomGiving)
-		cutLiquidity.DenomGiving = ctx.TradeDenomGiving
-		cutLiquidity.DenomReceiving = constants.BaseCurrency
-
-		switch ctx.TradeType {
-		case types.TradeTypeSell:
-			ctx.CutLiquidities.Step1 = &cutLiquidity
-		case types.TradeTypeBuy:
-			ctx.CutLiquidities.Step2 = &cutLiquidity
-		default:
-			panic("unknown trade type")
-		}
+	liqTo, liqToBase, minimumTradeValueBaseTo := k.getEffectiveLiquidity(ctx, tradeDenomReceiving)
+	if !liqTo.IsPositive() {
+		return trading.Liquidity{}, trading.Liquidity{}, types.ErrNoLiquidityReceiving
 	}
 
-	if ctx.TradeDenomReceiving != constants.BaseCurrency {
-		cutLiquidity, _ := k.createCutLiquidity(ctx, spreadLiqBase, spreadLiqTo, poolLiqBase, poolLiqTo, addressLiqBase, addressLiqTo, ctx.TradeDenomReceiving)
-		cutLiquidity.DenomGiving = constants.BaseCurrency
-		cutLiquidity.DenomReceiving = ctx.TradeDenomReceiving
+	minimumTradeValue := math.LegacyMaxDec(minimumTradeValueBaseFrom, minimumTradeValueBaseTo)
+	tradeValue := math.LegacyMinDec(liqFromBase, liqToBase)
+	tradeValue = math.LegacyMaxDec(tradeValue, minimumTradeValue)
 
-		switch ctx.TradeType {
-		case types.TradeTypeSell:
-			ctx.CutLiquidities.Step2 = &cutLiquidity
-		case types.TradeTypeBuy:
-			ctx.CutLiquidities.Step1 = &cutLiquidity
-		default:
-			panic("unknown trade type")
-		}
-	}
+	liqShareFrom := tradeValue.Quo(liqFromBase)
+	liqShareTo := tradeValue.Quo(liqToBase)
+
+	return trading.Liquidity{
+			Actual: liqFrom.Mul(liqShareFrom),
+		}, trading.Liquidity{
+			Actual: liqTo.Mul(liqShareTo),
+		}, nil
 }
 
-func (k Keeper) createCutLiquidity(ctx context.Context, spreadBase, spreadOther, liqBase, liqOther, addressLiqBase, addressLiqOther math.LegacyDec, denom string) (types.CutLiquidity, error) {
-	ratio, _ := k.DenomKeeper.GetRatio(ctx, denom)
-	spreadLiqValue := spreadOther.Quo(ratio.Ratio) // C
-
-	tradeValue := math.LegacyMinDec(spreadLiqValue, spreadBase)
-	unusedLiqBase := liqBase.Sub(tradeValue)
-	tradeValueOther := tradeValue.Mul(ratio.Ratio)
-	unusedLiqOther := liqOther.Sub(tradeValueOther)
-
-	cutLiquidity := types.CutLiquidity{}
-	cutLiquidity.CutBase = math.LegacyMinDec(liqBase, tradeValue)
-	cutLiquidity.CutOther = tradeValue.Mul(ratio.Ratio)
-
-	if liqBase.LT(tradeValue) {
-		cutLiquidity.VirtualBase = tradeValue.Sub(liqBase)
+// CalculateTradeLiquidityFromCache is the same as CalculateTradeLiquidity except that the liquidity values are read
+// from the cache.
+func (k Keeper) CalculateTradeLiquidityFromCache(ctx types.TradeContext, tradeDenomGiving, tradeDenomReceiving string) (trading.Liquidity, trading.Liquidity, error) {
+	liqFrom := k.getEffectiveLiquidityFromCache(ctx, tradeDenomGiving)
+	if !liqFrom.GetFull().IsPositive() {
+		return trading.Liquidity{}, trading.Liquidity{}, types.ErrNoLiquidityGiving
 	}
 
-	if tradeValue.LT(tradeValueOther) {
-		cutLiquidity.VirtualOther = tradeValueOther.Sub(cutLiquidity.CutOther)
+	liqTo := k.getEffectiveLiquidityFromCache(ctx, tradeDenomReceiving)
+	if !liqTo.GetFull().IsPositive() {
+		return trading.Liquidity{}, trading.Liquidity{}, types.ErrNoLiquidityReceiving
 	}
 
-	extraVirtualLiquidity := k.DenomKeeper.ExtraVirtualLiquidity(ctx, denom)
-	extraVirtualLiquidityBase, err := k.DenomKeeper.GetValueInFromUSD(ctx, constants.BaseCurrency, extraVirtualLiquidity.ToLegacyDec())
-	if err != nil {
-		return cutLiquidity, fmt.Errorf("convert extra liq to base: %w", err)
-	}
+	minimumTradeValue := math.LegacyMaxDec(liqFrom.MinimumTradeValueBase, liqTo.MinimumTradeValueBase)
+	tradeValue := math.LegacyMinDec(liqFrom.TradeValueBase, liqTo.TradeValueBase)
+	tradeValue = math.LegacyMaxDec(tradeValue, minimumTradeValue)
 
-	extraVirtualLiquidityOther, err := k.DenomKeeper.GetValueIn(ctx, constants.BaseCurrency, ratio.Denom, extraVirtualLiquidityBase)
-	if err != nil {
-		return cutLiquidity, fmt.Errorf("convert extra liq to base: %w", err)
-	}
+	liqFromT := liqFrom.AdjustToTradeValue(tradeValue)
+	liqToT := liqTo.AdjustToTradeValue(tradeValue)
 
-	if cutLiquidity.VirtualBase.IsNil() {
-		cutLiquidity.VirtualBase = math.LegacyZeroDec()
-	}
-
-	if cutLiquidity.VirtualOther.IsNil() {
-		cutLiquidity.VirtualOther = math.LegacyZeroDec()
-	}
-
-	cutLiquidity.VirtualBase = cutLiquidity.VirtualBase.Add(extraVirtualLiquidityBase)
-	cutLiquidity.VirtualOther = cutLiquidity.VirtualOther.Add(extraVirtualLiquidityOther)
-
-	if cutLiquidity.VirtualBase.IsPositive() && unusedLiqBase.IsPositive() {
-		usable := math.LegacyMinDec(cutLiquidity.VirtualBase, unusedLiqBase)
-		cutLiquidity.CutBase = cutLiquidity.CutBase.Add(usable)
-		cutLiquidity.VirtualBase = cutLiquidity.VirtualBase.Sub(usable)
-	}
-
-	if cutLiquidity.VirtualOther.IsPositive() && unusedLiqOther.IsPositive() {
-		usable := math.LegacyMinDec(cutLiquidity.VirtualOther, unusedLiqOther)
-		cutLiquidity.CutOther = cutLiquidity.CutOther.Add(usable)
-		cutLiquidity.VirtualOther = cutLiquidity.VirtualOther.Sub(usable)
-	}
-
-	if addressLiqBase.IsPositive() {
-		cutLiquidity.CutBase = cutLiquidity.CutBase.Sub(addressLiqBase)
-		cutLiquidity.VirtualBase = cutLiquidity.VirtualBase.Add(addressLiqBase)
-	}
-
-	if addressLiqOther.IsPositive() {
-		cutLiquidity.CutOther = cutLiquidity.CutOther.Sub(addressLiqOther)
-		cutLiquidity.VirtualOther = cutLiquidity.VirtualOther.Add(addressLiqOther)
-	}
-
-	return cutLiquidity, nil
+	return liqFromT, liqToT, nil
 }
 
+// RemoveAllLiquidityForDenom is called when a denom is removed from the DEX and sends all provided liquidity to the
+// providers' addresses.
 func (k Keeper) RemoveAllLiquidityForDenom(ctx context.Context, denom string) error {
 	iterator := k.liquidityEntries.Iterator(ctx, nil, denom)
 	for iterator.Valid() {
@@ -417,4 +334,42 @@ func (k Keeper) getLiquidityForAddress(ctx context.Context, address string) (coi
 	}
 
 	return
+}
+
+// canUnlock checks if liquidity can be removed from a given liquidity position. The function will return falls if not
+// enough blocks have been created since creating of this position.
+func (k Keeper) canUnlock(ctx context.Context, address string, positionIndex uint64) (bool, error) {
+	position, has := k.liquidityPositions.Get(ctx, address, positionIndex)
+	if !has {
+		return false, fmt.Errorf("unable to find liquidity position: %v / %v", address, positionIndex)
+	}
+
+	height := sdk.UnwrapSDKContext(ctx).BlockHeight()
+	canUnlockAfter := position.CreatedAt + k.GetParams(ctx).MinimumLiquidityLockInBlocks
+	return height >= canUnlockAfter, nil
+}
+
+func (k Keeper) getWithdrawableLiquidityForAddressForDenom(ctx context.Context, address, denom string) (math.Int, error) {
+	sum := math.ZeroInt()
+
+	iterator := k.liquidityEntries.Iterator(ctx, nil, denom)
+	for iterator.Valid() {
+		value := iterator.GetNext()
+		if value.Address != address {
+			continue
+		}
+
+		canUnlock, err := k.canUnlock(ctx, address, value.PositionIndex)
+		if err != nil {
+			return math.Int{}, fmt.Errorf("can unlock: %w", err)
+		}
+
+		if !canUnlock {
+			continue
+		}
+
+		sum = sum.Add(value.Amount)
+	}
+
+	return sum, nil
 }

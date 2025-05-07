@@ -4,13 +4,13 @@ import (
 	"context"
 	"cosmossdk.io/math"
 	"fmt"
-
+	"github.com/kopi-money/kopi/trading"
 	"github.com/kopi-money/kopi/x/dex/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-type simulate func(ctx types.TradeContext) (types.TradeSimulationResult, error)
+type simulate func(context.Context, math.Int, string, string) (types.TradeSimulationResult, error)
 
 func (k Keeper) QuerySimulateSell(ctx context.Context, req *types.QuerySimulateTradeRequest) (*types.QuerySimulateTradeResponse, error) {
 	return k.querySimulateTrade(ctx, req, k.SimulateSell)
@@ -25,7 +25,7 @@ func (k Keeper) querySimulateTrade(ctx context.Context, req *types.QuerySimulate
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	amount, err := ParseAmount(req.Amount)
+	amount, err := trading.ParseAmount(req.Amount)
 	if err != nil {
 		return nil, err
 	}

@@ -12,12 +12,12 @@ import (
 	"github.com/kopi-money/kopi/x/dex/types"
 )
 
-func (k msgServer) UpdateTradeFee(ctx context.Context, req *types.MsgUpdateTradeFee) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+func (k msgServer) UpdateTradeFee(ctx context.Context, msg *types.MsgUpdateTradeFee) (*types.Void, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
-	tradeFee, err := math.LegacyNewDecFromStr(req.TradeFee)
+	tradeFee, err := math.LegacyNewDecFromStr(msg.TradeFee)
 	if err != nil {
 		return nil, err
 	}
@@ -32,12 +32,12 @@ func (k msgServer) UpdateTradeFee(ctx context.Context, req *types.MsgUpdateTrade
 	return &types.Void{}, nil
 }
 
-func (k msgServer) UpdateOrderFee(ctx context.Context, req *types.MsgUpdateOrderFee) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+func (k msgServer) UpdateOrderFee(ctx context.Context, msg *types.MsgUpdateOrderFee) (*types.Void, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
-	orderFee, err := math.LegacyNewDecFromStr(req.OrderFee)
+	orderFee, err := math.LegacyNewDecFromStr(msg.OrderFee)
 	if err != nil {
 		return nil, err
 	}
@@ -72,18 +72,18 @@ func (k msgServer) UpdateReserveShare(ctx context.Context, msg *types.MsgUpdateR
 	return &types.Void{}, nil
 }
 
-func (k msgServer) UpdateVirtualLiquidityDecay(ctx context.Context, req *types.MsgUpdateVirtualLiquidityDecay) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+func (k msgServer) UpdatePriceIncreasingFactor(ctx context.Context, msg *types.MsgUpdatePriceIncreasingFactor) (*types.Void, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
-	virtualLiquidityDecay, err := math.LegacyNewDecFromStr(req.VirtualLiquidityDecay)
+	priceIncreasingFactor, err := math.LegacyNewDecFromStr(msg.PriceIncreasingFactor)
 	if err != nil {
 		return nil, err
 	}
 
 	params := k.GetParams(ctx)
-	params.VirtualLiquidityDecay = virtualLiquidityDecay
+	params.PriceIncreasingFactor = priceIncreasingFactor
 
 	if err = k.SetParams(ctx, params); err != nil {
 		return nil, err

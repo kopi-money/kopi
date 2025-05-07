@@ -12,7 +12,7 @@ type EpochPayouts struct {
 }
 
 func (ep EpochPayouts) ToLeftovers() EpochLeftovers {
-	cm := NewAmountsMap()
+	cm := &AmountsMap{}
 	ep.PreviousEpoch.AddToCoinMap(cm)
 	ep.CurrentEpoch.AddToCoinMap(cm)
 	ep.Usage.SubFromCoinMap(cm)

@@ -19,36 +19,37 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_ValueKCoins_FullMethodName                       = "/kopi.dex.Query/ValueKCoins"
-	Query_LiquidityAll_FullMethodName                      = "/kopi.dex.Query/LiquidityAll"
-	Query_LiquidityForAddress_FullMethodName               = "/kopi.dex.Query/LiquidityForAddress"
-	Query_LiquidityPositions_FullMethodName                = "/kopi.dex.Query/LiquidityPositions"
-	Query_LiquidityPositionsAddresses_FullMethodName       = "/kopi.dex.Query/LiquidityPositionsAddresses"
-	Query_LiquidityPositionForAddress_FullMethodName       = "/kopi.dex.Query/LiquidityPositionForAddress"
-	Query_LiquidityPositionForPositionIndex_FullMethodName = "/kopi.dex.Query/LiquidityPositionForPositionIndex"
-	Query_Liquidity_FullMethodName                         = "/kopi.dex.Query/Liquidity"
-	Query_LiquidityQueue_FullMethodName                    = "/kopi.dex.Query/LiquidityQueue"
-	Query_LiquidityGrouped_FullMethodName                  = "/kopi.dex.Query/LiquidityGrouped"
-	Query_LiquiditySum_FullMethodName                      = "/kopi.dex.Query/LiquiditySum"
-	Query_LiquidityPair_FullMethodName                     = "/kopi.dex.Query/LiquidityPair"
-	Query_Orders_FullMethodName                            = "/kopi.dex.Query/Orders"
-	Query_OrdersAddress_FullMethodName                     = "/kopi.dex.Query/OrdersAddress"
-	Query_Order_FullMethodName                             = "/kopi.dex.Query/Order"
-	Query_OrdersByPair_FullMethodName                      = "/kopi.dex.Query/OrdersByPair"
-	Query_OrdersNum_FullMethodName                         = "/kopi.dex.Query/OrdersNum"
-	Query_OrdersSum_FullMethodName                         = "/kopi.dex.Query/OrdersSum"
-	Query_OrdersDenomSum_FullMethodName                    = "/kopi.dex.Query/OrdersDenomSum"
-	Query_Params_FullMethodName                            = "/kopi.dex.Query/Params"
-	Query_LiquidityPool_FullMethodName                     = "/kopi.dex.Query/LiquidityPool"
-	Query_OrderPool_FullMethodName                         = "/kopi.dex.Query/OrderPool"
-	Query_Price_FullMethodName                             = "/kopi.dex.Query/Price"
-	Query_PriceUsd_FullMethodName                          = "/kopi.dex.Query/PriceUsd"
-	Query_ReserveFunds_FullMethodName                      = "/kopi.dex.Query/ReserveFunds"
-	Query_ReserveFundsPerDenom_FullMethodName              = "/kopi.dex.Query/ReserveFundsPerDenom"
-	Query_QuerySimulateSell_FullMethodName                 = "/kopi.dex.Query/QuerySimulateSell"
-	Query_QuerySimulateBuy_FullMethodName                  = "/kopi.dex.Query/QuerySimulateBuy"
-	Query_QueryEpochCountdown_FullMethodName               = "/kopi.dex.Query/QueryEpochCountdown"
-	Query_QueryEpochPositions_FullMethodName               = "/kopi.dex.Query/QueryEpochPositions"
+	Query_ValueKCoins_FullMethodName                             = "/kopi.dex.Query/ValueKCoins"
+	Query_LiquidityAll_FullMethodName                            = "/kopi.dex.Query/LiquidityAll"
+	Query_LiquidityForAddress_FullMethodName                     = "/kopi.dex.Query/LiquidityForAddress"
+	Query_WithdrawableLiquidityForAddressForDenom_FullMethodName = "/kopi.dex.Query/WithdrawableLiquidityForAddressForDenom"
+	Query_LiquidityPositions_FullMethodName                      = "/kopi.dex.Query/LiquidityPositions"
+	Query_LiquidityPositionsAddresses_FullMethodName             = "/kopi.dex.Query/LiquidityPositionsAddresses"
+	Query_LiquidityPositionForAddress_FullMethodName             = "/kopi.dex.Query/LiquidityPositionForAddress"
+	Query_LiquidityPositionForPositionIndex_FullMethodName       = "/kopi.dex.Query/LiquidityPositionForPositionIndex"
+	Query_Liquidity_FullMethodName                               = "/kopi.dex.Query/Liquidity"
+	Query_LiquidityQueue_FullMethodName                          = "/kopi.dex.Query/LiquidityQueue"
+	Query_LiquidityGrouped_FullMethodName                        = "/kopi.dex.Query/LiquidityGrouped"
+	Query_LiquiditySum_FullMethodName                            = "/kopi.dex.Query/LiquiditySum"
+	Query_LiquidityPair_FullMethodName                           = "/kopi.dex.Query/LiquidityPair"
+	Query_Orders_FullMethodName                                  = "/kopi.dex.Query/Orders"
+	Query_OrdersAddress_FullMethodName                           = "/kopi.dex.Query/OrdersAddress"
+	Query_Order_FullMethodName                                   = "/kopi.dex.Query/Order"
+	Query_OrdersByPair_FullMethodName                            = "/kopi.dex.Query/OrdersByPair"
+	Query_OrdersNum_FullMethodName                               = "/kopi.dex.Query/OrdersNum"
+	Query_OrdersSum_FullMethodName                               = "/kopi.dex.Query/OrdersSum"
+	Query_OrdersDenomSum_FullMethodName                          = "/kopi.dex.Query/OrdersDenomSum"
+	Query_Params_FullMethodName                                  = "/kopi.dex.Query/Params"
+	Query_LiquidityPool_FullMethodName                           = "/kopi.dex.Query/LiquidityPool"
+	Query_OrderPool_FullMethodName                               = "/kopi.dex.Query/OrderPool"
+	Query_Price_FullMethodName                                   = "/kopi.dex.Query/Price"
+	Query_PriceUsd_FullMethodName                                = "/kopi.dex.Query/PriceUsd"
+	Query_ReserveFunds_FullMethodName                            = "/kopi.dex.Query/ReserveFunds"
+	Query_ReserveFundsPerDenom_FullMethodName                    = "/kopi.dex.Query/ReserveFundsPerDenom"
+	Query_QuerySimulateSell_FullMethodName                       = "/kopi.dex.Query/QuerySimulateSell"
+	Query_QuerySimulateBuy_FullMethodName                        = "/kopi.dex.Query/QuerySimulateBuy"
+	Query_QueryEpochCountdown_FullMethodName                     = "/kopi.dex.Query/QueryEpochCountdown"
+	Query_QueryEpochPositions_FullMethodName                     = "/kopi.dex.Query/QueryEpochPositions"
 )
 
 // QueryClient is the client API for Query service.
@@ -58,6 +59,7 @@ type QueryClient interface {
 	ValueKCoins(ctx context.Context, in *QueryValueKCoinsRequest, opts ...grpc.CallOption) (*QueryValueKCoinsResponse, error)
 	LiquidityAll(ctx context.Context, in *QueryGetLiquidityAllRequest, opts ...grpc.CallOption) (*QueryGetLiquidityAllResponse, error)
 	LiquidityForAddress(ctx context.Context, in *QueryLiquidityForAddressRequest, opts ...grpc.CallOption) (*QueryLiquidityForAddressResponse, error)
+	WithdrawableLiquidityForAddressForDenom(ctx context.Context, in *QueryWithdrawableLiquidityForAddressRequest, opts ...grpc.CallOption) (*QueryWithdrawableLiquidityForAddressResponse, error)
 	LiquidityPositions(ctx context.Context, in *QueryLiquidityPositionsRequest, opts ...grpc.CallOption) (*QueryLiquidityPositionsResponse, error)
 	LiquidityPositionsAddresses(ctx context.Context, in *QueryLiquidityPositionsAddressesRequest, opts ...grpc.CallOption) (*QueryLiquidityPositionsAddressesResponse, error)
 	LiquidityPositionForAddress(ctx context.Context, in *QueryLiquidityPositionForAddressRequest, opts ...grpc.CallOption) (*QueryLiquidityPositionForAddressResponse, error)
@@ -116,6 +118,15 @@ func (c *queryClient) LiquidityAll(ctx context.Context, in *QueryGetLiquidityAll
 func (c *queryClient) LiquidityForAddress(ctx context.Context, in *QueryLiquidityForAddressRequest, opts ...grpc.CallOption) (*QueryLiquidityForAddressResponse, error) {
 	out := new(QueryLiquidityForAddressResponse)
 	err := c.cc.Invoke(ctx, Query_LiquidityForAddress_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) WithdrawableLiquidityForAddressForDenom(ctx context.Context, in *QueryWithdrawableLiquidityForAddressRequest, opts ...grpc.CallOption) (*QueryWithdrawableLiquidityForAddressResponse, error) {
+	out := new(QueryWithdrawableLiquidityForAddressResponse)
+	err := c.cc.Invoke(ctx, Query_WithdrawableLiquidityForAddressForDenom_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -372,6 +383,7 @@ type QueryServer interface {
 	ValueKCoins(context.Context, *QueryValueKCoinsRequest) (*QueryValueKCoinsResponse, error)
 	LiquidityAll(context.Context, *QueryGetLiquidityAllRequest) (*QueryGetLiquidityAllResponse, error)
 	LiquidityForAddress(context.Context, *QueryLiquidityForAddressRequest) (*QueryLiquidityForAddressResponse, error)
+	WithdrawableLiquidityForAddressForDenom(context.Context, *QueryWithdrawableLiquidityForAddressRequest) (*QueryWithdrawableLiquidityForAddressResponse, error)
 	LiquidityPositions(context.Context, *QueryLiquidityPositionsRequest) (*QueryLiquidityPositionsResponse, error)
 	LiquidityPositionsAddresses(context.Context, *QueryLiquidityPositionsAddressesRequest) (*QueryLiquidityPositionsAddressesResponse, error)
 	LiquidityPositionForAddress(context.Context, *QueryLiquidityPositionForAddressRequest) (*QueryLiquidityPositionForAddressResponse, error)
@@ -414,6 +426,9 @@ func (UnimplementedQueryServer) LiquidityAll(context.Context, *QueryGetLiquidity
 }
 func (UnimplementedQueryServer) LiquidityForAddress(context.Context, *QueryLiquidityForAddressRequest) (*QueryLiquidityForAddressResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LiquidityForAddress not implemented")
+}
+func (UnimplementedQueryServer) WithdrawableLiquidityForAddressForDenom(context.Context, *QueryWithdrawableLiquidityForAddressRequest) (*QueryWithdrawableLiquidityForAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithdrawableLiquidityForAddressForDenom not implemented")
 }
 func (UnimplementedQueryServer) LiquidityPositions(context.Context, *QueryLiquidityPositionsRequest) (*QueryLiquidityPositionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LiquidityPositions not implemented")
@@ -559,6 +574,24 @@ func _Query_LiquidityForAddress_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).LiquidityForAddress(ctx, req.(*QueryLiquidityForAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_WithdrawableLiquidityForAddressForDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryWithdrawableLiquidityForAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).WithdrawableLiquidityForAddressForDenom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_WithdrawableLiquidityForAddressForDenom_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).WithdrawableLiquidityForAddressForDenom(ctx, req.(*QueryWithdrawableLiquidityForAddressRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1067,6 +1100,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "LiquidityForAddress",
 			Handler:    _Query_LiquidityForAddress_Handler,
+		},
+		{
+			MethodName: "WithdrawableLiquidityForAddressForDenom",
+			Handler:    _Query_WithdrawableLiquidityForAddressForDenom_Handler,
 		},
 		{
 			MethodName: "LiquidityPositions",

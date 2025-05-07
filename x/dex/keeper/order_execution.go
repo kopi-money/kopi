@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/kopi-money/kopi/trading"
 	"strconv"
 
 	"github.com/kopi-money/kopi/constants"
-	"github.com/kopi-money/kopi/x/dex/constant_product"
 	"github.com/kopi-money/kopi/x/dex/types"
 
 	"cosmossdk.io/math"
@@ -15,16 +15,24 @@ import (
 )
 
 var skipErrors = []error{
-	types.ErrTradeAmountTooSmall,
-	types.ErrNotEnoughLiquidity,
-	types.ErrPriceTooLow,
+	types.ErrNotEnoughUsableLiquidity,
+	types.ErrNoLiquidityGiving,
+	types.ErrNoLiquidityReceiving,
 	types.ErrZeroTrade,
 	types.ErrNegativeTradeAmount,
 
-	constant_product.ErrRequestedAmountTooLarge,
+	trading.ErrRequestedAmountTooLarge,
+	trading.ErrEmptyTrade,
+	trading.ErrMarketPriceTooHigh,
+	trading.ErrPriceTooLow,
+	trading.ErrTradeAmountTooSmall,
+	trading.ErrInvalidMaxPriceFormat,
+	trading.ErrMaxPriceNotPositive,
+	trading.ErrTradeAmountNotPositive,
 }
 
-func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManagerI, blockHeight int64) error {
+func (k Keeper) ExecuteOrders(ctx context.Context) error {
+	blockHeight := sdk.UnwrapSDKContext(ctx).BlockHeight()
 	ordersCaches := k.NewOrdersCaches(ctx)
 	fee := k.GetJoinedFee(ctx)
 	maxOrderLife := int64(k.GetParams(ctx).MaxOrderLife)
@@ -37,14 +45,8 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 	// At this point we know that there are no changes in the ongoing transaction. To avoid the costly iteration over
 	// two lists (of which the second is empty but needs to be checked at every step), we just get all the items from
 	// cache directly
-	orders := iterator.GetAllFromCache()
-
-	for index, keyValue := range orders {
+	for index, keyValue := range iterator.GetAllFromCache() {
 		order := keyValue.Value().Value()
-		if order == nil {
-			k.Logger().Info("order is nil, should not happen")
-			continue
-		}
 
 		// First we check whether the order is expired. If yes, it is removed.
 		blockEnd := order.AddedAt + min(maxOrderLife, int64(order.NumBlocks))
@@ -53,7 +55,7 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 				tradeBalances.AddTransfer(ordersCaches.AccPoolOrders.Get().String(), order.Creator, order.DenomGiving, order.AmountLocked)
 			}
 
-			eventManager.EmitEvent(
+			sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 				sdk.NewEvent("order_expired",
 					sdk.Attribute{Key: "index", Value: strconv.Itoa(int(order.Index))},
 					sdk.Attribute{Key: "address", Value: order.Creator},
@@ -122,22 +124,22 @@ func (k Keeper) ExecuteOrders(ctx context.Context, eventManager sdk.EventManager
 	return nil
 }
 
-func (k Keeper) ExecuteOrder(ctx context.Context, ordersCaches *types.OrdersCaches, fee math.LegacyDec, order *types.Order) (types.TradeResult, bool, error) {
+func (k Keeper) ExecuteOrder(ctx context.Context, ordersCaches *types.OrdersCaches, fee math.LegacyDec, order *types.Order) (trading.TradeResult, math.Int, bool, error) {
 	// When the price of this order is "worse" than the ones of previously checked, we can skip all other checks. If the
 	// order with the "better" price could not be executed, the one with the "worse" price cannot be executed as well.
 	denomPair := types.Pair{DenomFrom: order.DenomGiving, DenomTo: order.DenomReceiving}
 	if !ordersCaches.BetterThanPreviousPrice(denomPair, order.MaxPrice, order.IsBuyOrder) {
-		return types.TradeResult{}, false, nil
+		return trading.TradeResult{}, math.Int{}, false, nil
 	}
 
 	if order.MaxPrice.IsNil() {
 		k.Logger().Error(fmt.Sprintf("max_price for order %v is null", order.Index))
-		return types.TradeResult{}, false, nil
+		return trading.TradeResult{}, math.Int{}, false, nil
 	}
 
 	if !order.MaxPrice.IsPositive() {
 		k.Logger().Error(fmt.Sprintf("max_price for order %v is not positive", order.Index))
-		return types.TradeResult{}, false, nil
+		return trading.TradeResult{}, math.Int{}, false, nil
 	}
 
 	maxPrice := order.MaxPrice
@@ -148,32 +150,35 @@ func (k Keeper) ExecuteOrder(ctx context.Context, ordersCaches *types.OrdersCach
 	address := sdk.MustAccAddressFromBech32(order.Creator)
 	orderTradeBalances := NewTradeBalances()
 	tradeCtx := types.TradeContext{
+		MaxPrice: &trading.MaxPriceData{
+			MaxPrice:    maxPrice,
+			FeeIncluded: false,
+		},
+		TradeAmount:            order.AmountLeft,
+		Fee:                    &fee,
 		Context:                ctx,
 		CoinSource:             ordersCaches.AccPoolOrders.Get().String(),
 		CoinTarget:             address.String(),
-		TradeAmount:            order.AmountLeft,
 		MaximumAvailableAmount: order.AmountLocked,
 		TradeDenomGiving:       order.DenomGiving,
 		TradeDenomReceiving:    order.DenomReceiving,
-		MaxPrice:               &maxPrice,
 		TradeBalances:          orderTradeBalances,
 		OrdersCaches:           ordersCaches,
 		IsOrder:                true,
-		Fee:                    fee,
 	}
 
 	if order.TradeAmount.IsPositive() {
 		tradeCtx.TradeAmount = math.MinInt(tradeCtx.TradeAmount, order.TradeAmount)
 	}
 
-	tradeResult, err := k.getTradeFunction(order.IsBuyOrder)(tradeCtx)
+	tradeResult, amountIntermediate, err := k.getTradeFunction(order.IsBuyOrder)(tradeCtx)
 	if err != nil {
 		if errors.Is(err, types.ErrNegativeTradeAmount) {
 			ordersCaches.SetPreviousPrice(denomPair, maxPrice, order.IsBuyOrder)
 		}
 
 		if isSkipError(err) {
-			return types.TradeResult{}, false, nil
+			return trading.TradeResult{}, math.Int{}, false, nil
 		}
 
 		var msg string
@@ -184,25 +189,25 @@ func (k Keeper) ExecuteOrder(ctx context.Context, ordersCaches *types.OrdersCach
 		}
 
 		k.Logger().Error(fmt.Errorf("%v: %w", msg, err).Error())
-		return types.TradeResult{}, false, nil
+		return trading.TradeResult{}, math.Int{}, false, nil
 	}
 
 	if err = orderTradeBalances.Settle(ctx, k.BankKeeper); err != nil {
-		return types.TradeResult{}, false, fmt.Errorf("settling balances: %w", err)
+		return trading.TradeResult{}, math.Int{}, false, fmt.Errorf("settling balances: %w", err)
 	}
 
-	if tradeResult.AmountGiven.IsZero() {
-		return types.TradeResult{}, false, nil
+	if tradeResult.AmountGiven().IsZero() {
+		return trading.TradeResult{}, math.Int{}, false, nil
 	}
 
-	order.AmountLocked = order.AmountLocked.Sub(tradeResult.AmountGiven)
-	order.AmountGiven = order.AmountGiven.Add(tradeResult.AmountGiven)
-	order.AmountReceived = order.AmountReceived.Add(tradeResult.AmountReceived)
+	order.AmountLocked = order.AmountLocked.Sub(tradeResult.AmountGiven())
+	order.AmountGiven = order.AmountGiven.Add(tradeResult.AmountGiven())
+	order.AmountReceived = order.AmountReceived.Add(tradeResult.AmountReceived())
 
 	if order.IsBuyOrder {
-		order.AmountLeft = order.AmountLeft.Sub(tradeResult.AmountReceived)
+		order.AmountLeft = order.AmountLeft.Sub(tradeResult.AmountReceived())
 	} else {
-		order.AmountLeft = order.AmountLeft.Sub(tradeResult.AmountGiven)
+		order.AmountLeft = order.AmountLeft.Sub(tradeResult.AmountGiven())
 	}
 
 	// AmountLeft and AmountLocked should never be negative zero. The comparison is still considering lower
@@ -210,14 +215,14 @@ func (k Keeper) ExecuteOrder(ctx context.Context, ordersCaches *types.OrdersCach
 	fullyExecuted := !order.AmountLeft.GTE(math.NewInt(constants.MinimumTradeSize)) || !order.AmountLocked.IsPositive()
 
 	if order.AmountLeft.IsNegative() {
-		return types.TradeResult{}, false, fmt.Errorf("order has negative amount left (%v, %v)", tradeResult.AmountGiven.String(), order.AmountLeft.String())
+		return trading.TradeResult{}, math.Int{}, false, fmt.Errorf("order has negative amount left (%v, %v)", tradeResult.AmountGiven().String(), order.AmountLeft.String())
 	}
 
 	if !fullyExecuted {
 		k.SetOrder(ctx, *order)
 	}
 
-	return tradeResult, fullyExecuted, nil
+	return tradeResult, amountIntermediate, fullyExecuted, nil
 }
 
 // calculateBlockEnd calculates the maximum block height that an order can be alive. If the requested block height is
@@ -233,11 +238,11 @@ func (k Keeper) calculateBlockEnd(maxOrderLife, addedAt, numBlocks int64) int64 
 	return addedAt + life
 }
 
-func (k Keeper) getTradeFunction(isBuyOrder bool) func(ctx types.TradeContext) (types.TradeResult, error) {
+func (k Keeper) getTradeFunction(isBuyOrder bool) func(ctx types.TradeContext) (trading.TradeResult, math.Int, error) {
 	if isBuyOrder {
-		return k.ExecuteBuy
+		return k.executeBuy
 	} else {
-		return k.ExecuteSell
+		return k.executeSell
 	}
 }
 
