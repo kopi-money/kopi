@@ -148,7 +148,7 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 // The begin block implementation is optional.
 func (am AppModule) BeginBlock(ctx context.Context) error {
 	if err := am.keeper.Initialize(ctx); err != nil {
-		return fmt.Errorf("could not initialize dex module: %w", err)
+		return fmt.Errorf("initialize dex module: %w", err)
 	}
 
 	return nil
@@ -156,9 +156,9 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 
 // EndBlock contains the logic that is automatically triggered at the end of each block.
 // The end block implementation is optional.
-func (am AppModule) EndBlock(goCtx context.Context) error {
-	return cache.Transact(goCtx, func(ctx context.Context) error {
-		am.keeper.AdjustBlockspeed(ctx)
+func (am AppModule) EndBlock(ctx context.Context) error {
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		am.keeper.AdjustBlockspeed(innerCtx)
 		return nil
 	})
 }

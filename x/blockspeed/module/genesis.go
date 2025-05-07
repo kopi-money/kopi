@@ -15,7 +15,7 @@ import (
 func InitGenesis(ctx context.Context, k keeper.Keeper, genState types.GenesisState) {
 	if err := cache.Transact(ctx, func(innerCtx context.Context) error {
 		if err := k.SetParams(innerCtx, genState.Params); err != nil {
-			return fmt.Errorf("could not set params: %w", err)
+			return fmt.Errorf("set params: %w", err)
 		}
 
 		if genState.Blockspeed == nil {

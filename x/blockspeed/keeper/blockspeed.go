@@ -10,6 +10,14 @@ import (
 	"github.com/kopi-money/kopi/x/blockspeed/types"
 )
 
+// AdjustBlockspeed is called at the end of each block and calculates the average time between blocks and updates the
+// blockspeed. The average time is calculated using a moving average. The moving average factor is configurable.
+//
+// The moving average factor is calculated as follows:
+//
+//	movingAverageFactor = 1 - (1 - movingAverageFactor) * (1 - timeDiff / averageTime)
+//
+// The moving average factor is updated as follows:
 func (k Keeper) AdjustBlockspeed(ctx context.Context) {
 	height := sdk.UnwrapSDKContext(ctx).BlockHeight()
 	now := sdk.UnwrapSDKContext(ctx).BlockTime()
@@ -23,7 +31,7 @@ func (k Keeper) AdjustBlockspeed(ctx context.Context) {
 		blockspeed.AverageTime = math.LegacyNewDec(1000) // 1000ms = 1s
 	} else {
 		diff := timestamp - blockspeed.PreviousTimestamp
-		blockspeed.AverageTime = k.calcAverageTime(ctx, blockspeed.AverageTime, diff)
+		blockspeed.AverageTime = k.calcNewAverageTime(ctx, blockspeed.AverageTime, diff)
 	}
 
 	blockspeed.PreviousTimestamp = timestamp
@@ -39,7 +47,11 @@ func (k Keeper) SetBlockspeed(ctx context.Context, blockspeed types.Blockspeed) 
 	k.blockspeed.Set(ctx, blockspeed)
 }
 
-func (k Keeper) calcAverageTime(ctx context.Context, averageTime math.LegacyDec, timeDiff int64) math.LegacyDec {
+// calcNewAverageTime calculates the new average time. It receives the previously stored average time as well as the
+// time between the previous and the current block in milliseconds. The previous average time and the new time are
+// added using a weight. For example, the previous time is added with a factor of 0.9999 while the new time is added
+// with a factor of 0.0001.
+func (k Keeper) calcNewAverageTime(ctx context.Context, averageTime math.LegacyDec, timeDiff int64) math.LegacyDec {
 	movingAverageFactor := k.movingAverageFactor(ctx)
 	averageTime = averageTime.Mul(movingAverageFactor)
 	toAdd := math.LegacyOneDec().Sub(movingAverageFactor).Mul(math.LegacyNewDec(timeDiff))
