@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"sort"
 	"time"
-
-	"cosmossdk.io/log"
 )
 
 type Measurement struct {
@@ -23,11 +21,11 @@ func NewMeasurements() *Measurement {
 	}
 }
 
-func (m *Measurement) Print(logger log.Logger) {
-	m.PrintSkip(logger, nil)
+func (m *Measurement) Print(printer func(string)) {
+	m.PrintSkip(printer, nil)
 }
 
-func (m *Measurement) PrintSkip(logger log.Logger, skip []string) {
+func (m *Measurement) PrintSkip(printer func(string), skip []string) {
 	keys := m.GetKeys()
 	for _, key := range keys {
 		if contains(skip, key) {
@@ -35,7 +33,7 @@ func (m *Measurement) PrintSkip(logger log.Logger, skip []string) {
 		}
 
 		millis, avg := m.millis(key)
-		logger.Info(fmt.Sprintf("%v: %.4fms (%v, %v)", key, millis, avg, m.count[key]))
+		printer(fmt.Sprintf("%v: %.4fms (%v, %v)", key, millis, avg, m.count[key]))
 	}
 }
 
