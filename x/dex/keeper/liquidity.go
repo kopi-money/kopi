@@ -288,15 +288,15 @@ func (k Keeper) CalculateTradeLiquidity(ctx context.Context, tradeDenomGiving, t
 
 // CalculateTradeLiquidityFromCache is the same as CalculateTradeLiquidity except that the liquidity values are read
 // from the cache.
-func (k Keeper) CalculateTradeLiquidityFromCache(ctx types.TradeContext, tradeDenomGiving, tradeDenomReceiving string) (trading.Liquidity, trading.Liquidity, error) {
+func (k Keeper) CalculateTradeLiquidityFromCache(ctx types.TradeContext, tradeDenomGiving, tradeDenomReceiving string) (trading.Liquidity, trading.Liquidity, math.LegacyDec, error) {
 	liqFrom := k.getEffectiveLiquidityFromCache(ctx, tradeDenomGiving)
 	if !liqFrom.GetFull().IsPositive() {
-		return trading.Liquidity{}, trading.Liquidity{}, types.ErrNoLiquidityGiving
+		return trading.Liquidity{}, trading.Liquidity{}, math.LegacyDec{}, types.ErrNoLiquidityGiving
 	}
 
 	liqTo := k.getEffectiveLiquidityFromCache(ctx, tradeDenomReceiving)
 	if !liqTo.GetFull().IsPositive() {
-		return trading.Liquidity{}, trading.Liquidity{}, types.ErrNoLiquidityReceiving
+		return trading.Liquidity{}, trading.Liquidity{}, math.LegacyDec{}, types.ErrNoLiquidityReceiving
 	}
 
 	minimumTradeValue := math.LegacyMaxDec(liqFrom.MinimumTradeValueBase, liqTo.MinimumTradeValueBase)
@@ -306,7 +306,7 @@ func (k Keeper) CalculateTradeLiquidityFromCache(ctx types.TradeContext, tradeDe
 	liqFromT := liqFrom.AdjustToTradeValue(tradeValue)
 	liqToT := liqTo.AdjustToTradeValue(tradeValue)
 
-	return liqFromT, liqToT, nil
+	return liqFromT, liqToT, tradeValue, nil
 }
 
 // RemoveAllLiquidityForDenom is called when a denom is removed from the DEX and sends all provided liquidity to the

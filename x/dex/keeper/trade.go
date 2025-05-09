@@ -134,7 +134,7 @@ func (k Keeper) executeTrade(ctx types.TradeContext, callbacks trading.Callbacks
 	// The liquidity amounts used for this trade. When there just has been new liquidity added to one of the denoms,
 	// not of all of it will be used right away. For example, when there are 10k kUSD and 10k USDC but of the 10k USDC
 	// 9k have just been added, then the two liquidity amounts will be around 1k, thereby resulting in a higher spread.
-	liqFrom, liqTo, err := k.CalculateTradeLiquidityFromCache(ctx, ctx.TradeDenomGiving, ctx.TradeDenomReceiving)
+	liqFrom, liqTo, tradeValue, err := k.CalculateTradeLiquidityFromCache(ctx, ctx.TradeDenomGiving, ctx.TradeDenomReceiving)
 	if err != nil {
 		return trading.TradeResult{}, math.Int{}, fmt.Errorf("trade liquidity: %w", err)
 	}
@@ -231,7 +231,7 @@ func (k Keeper) executeTrade(ctx types.TradeContext, callbacks trading.Callbacks
 	}
 
 	// Update prices
-	if err = k.updateRatiosToBase(ctx, ctx.TradeDenomGiving, ctx.TradeDenomReceiving, changeFrom, changeTo); err != nil {
+	if err = k.UpdateRatiosToBase(ctx, ctx.TradeDenomGiving, ctx.TradeDenomReceiving, tradeValue, changeFrom, changeTo); err != nil {
 		return trading.TradeResult{}, math.Int{}, fmt.Errorf("update ratios to base: %w", err)
 	}
 
@@ -306,7 +306,7 @@ func (k Keeper) HandleLiquidity(ctx types.TradeContext, tradeResult trading.Trad
 	return changeFrom, changeTo, nil
 }
 
-func (k Keeper) updateRatiosToBase(ctx context.Context, tradeDenomGiving, tradeDenomReceiving string, changeFrom, changeTo math.Int) error {
+func (k Keeper) UpdateRatiosToBase(ctx context.Context, tradeDenomGiving, tradeDenomReceiving string, tradeValue math.LegacyDec, changeFrom, changeTo math.Int) error {
 	liqBase := k.GetEffectiveLiquidity(ctx, constants.BaseCurrency)
 
 	changes := types.AmountsMap{}
@@ -314,9 +314,11 @@ func (k Keeper) updateRatiosToBase(ctx context.Context, tradeDenomGiving, tradeD
 	changes.Add(tradeDenomReceiving, changeTo.ToLegacyDec())
 	changeBase := changes.AmountOf(constants.BaseCurrency)
 
+	changeRatio := changeBase.Abs().Quo(tradeValue)
+
 	for _, ratio := range k.DenomKeeper.GetAllRatios(ctx) {
 		changeOther := changes.AmountOf(ratio.Denom)
-		if err := k.UpdateRatioToBase(ctx, ratio, liqBase, changeBase, changeOther); err != nil {
+		if err := k.UpdateRatioToBase(ctx, ratio, liqBase, changeRatio, changeBase, changeOther); err != nil {
 			return fmt.Errorf("update ratio to base (%v): %w", ratio.Denom, err)
 		}
 	}
@@ -326,14 +328,23 @@ func (k Keeper) updateRatiosToBase(ctx context.Context, tradeDenomGiving, tradeD
 	return nil
 }
 
-func (k Keeper) UpdateRatioToBase(ctx context.Context, ratio denomtypes.Ratio, liqBase, changeBase, changeOther math.LegacyDec) error {
+func (k Keeper) UpdateRatioToBase(ctx context.Context, ratio denomtypes.Ratio, liqBase, changeRatio, changeBase, changeOther math.LegacyDec) error {
 	if changeOther.IsZero() && changeBase.IsZero() {
 		return nil
 	}
 
-	pair, err := k.createRatioUpdatePair(ctx, ratio, liqBase)
+	pair, err := k.CreateRatioUpdatePair(ctx, ratio, liqBase)
 	if err != nil {
 		return err
+	}
+
+	if changeRatio.IsPositive() {
+		changeRatioThis := changeBase.Abs().Quo(pair.Base.GetFull())
+		if changeRatioThis.GT(changeRatio) {
+			tradeValueScaling := changeRatio.Quo(changeRatioThis)
+			changeBase = changeBase.Mul(tradeValueScaling)
+			changeOther = changeOther.Mul(tradeValueScaling)
+		}
 	}
 
 	fullBase := pair.Base.GetFull().Add(changeBase)
@@ -353,13 +364,12 @@ func (k Keeper) UpdateRatioToBase(ctx context.Context, ratio denomtypes.Ratio, l
 	return nil
 }
 
-func (k Keeper) createRatioUpdatePair(ctx context.Context, ratio denomtypes.Ratio, liqBase math.LegacyDec) (types.LiquidityPair, error) {
+func (k Keeper) CreateRatioUpdatePair(ctx context.Context, ratio denomtypes.Ratio, liqBase math.LegacyDec) (types.LiquidityPair, error) {
 	liqOther := k.GetEffectiveLiquidity(ctx, ratio.Denom)
-	extraVirtualLiquidity := k.DenomKeeper.ExtraVirtualLiquidity(ctx, ratio.Denom)
 	minLiqBase := k.DenomKeeper.MinLiquidity(ctx, constants.BaseCurrency)
 	minLiqOther := k.DenomKeeper.MinLiquidity(ctx, ratio.Denom)
 
-	pair, err := k.CreateLiquidityPairWithLiquidity(ctx, ratio, liqBase, liqOther, minLiqBase, minLiqOther, extraVirtualLiquidity)
+	pair, err := k.CreateLiquidityPairWithLiquidity(ctx, ratio, liqBase, liqOther, minLiqBase, minLiqOther)
 	if err != nil {
 		return types.LiquidityPair{}, fmt.Errorf("liquidity pair %v: %w", ratio.Denom, err)
 	}

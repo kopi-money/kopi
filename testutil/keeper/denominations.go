@@ -132,6 +132,18 @@ func DenomKeeper(t *testing.T) (denomkeeper.Keeper, context.Context, *Keys) {
 			Exponent:     6,
 		},
 		denomtypes.DexDenom{
+			Name:         "ubig2",
+			MinLiquidity: math.NewInt(10000),
+			MinOrderSize: math.NewInt(10000),
+			Exponent:     6,
+		},
+		denomtypes.DexDenom{
+			Name:         "usmall2",
+			MinLiquidity: math.NewInt(100),
+			MinOrderSize: math.NewInt(100),
+			Exponent:     6,
+		},
+		denomtypes.DexDenom{
 			Name:                  "uusdc",
 			MinLiquidity:          math.NewInt(1000),
 			MinOrderSize:          math.NewInt(1000),

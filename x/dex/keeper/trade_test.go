@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/kopi-money/kopi/trading"
+	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 	"strconv"
 	"testing"
 
@@ -5358,7 +5359,7 @@ func TestTrade100(t *testing.T) {
 	require.True(t, res.AmountReceived().LT(tradeAmount))
 }
 
-func TestUpdateRatioToBaseOneStep1(t *testing.T) {
+func TestUpdateRatioToBaseOneStep1a(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
 	const (
@@ -5366,80 +5367,340 @@ func TestUpdateRatioToBaseOneStep1(t *testing.T) {
 		usmall = "usmall"
 	)
 
-	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 100_000)
-	keepertest.AddFunds(ctx, t, k.BankKeeper, ubig, keepertest.Alice, 100_000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 1000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, ubig, keepertest.Alice, 1000)
 	keepertest.AddFunds(ctx, t, k.BankKeeper, usmall, keepertest.Alice, 100)
 
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 100_000))
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, ubig, 100_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, ubig, 1000))
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, usmall, 100))
 
-	keepertest.SetRatio(ctx, k.DenomKeeper, constants.KUSD, math.LegacyOneDec())
 	keepertest.SetRatio(ctx, k.DenomKeeper, ubig, math.LegacyOneDec())
 	keepertest.SetRatio(ctx, k.DenomKeeper, usmall, math.LegacyOneDec())
 
 	liqBase := k.GetEffectiveLiquidity(ctx, constants.BaseCurrency)
-	changeBase := math.LegacyNewDec(50).Neg()
-	changeOther := math.LegacyNewDec(10_000)
 
-	rBig, err := k.DenomKeeper.GetRatio(ctx, ubig)
-	require.NoError(t, err)
+	changeBase := math.LegacyOneDec().Neg()
+	changeOther := math.LegacyOneDec()
+	tradeValue := math.LegacyOneDec()
+
+	changes := types.AmountsMap{}
+	changes.Add(constants.BaseCurrency, changeBase)
+	changes.Add(ubig, changeOther)
+
+	changeRatio := tradeValue.Quo(liqBase)
+
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		return k.UpdateRatioToBase(innerCtx, rBig, liqBase, changeBase, changeOther)
+		for _, ratio := range k.DenomKeeper.GetAllRatios(innerCtx) {
+			if ratio.Denom != ubig && ratio.Denom != usmall {
+				continue
+			}
+
+			changeOther = changes.AmountOf(ratio.Denom)
+			if err := k.UpdateRatioToBase(innerCtx, ratio, liqBase, changeRatio, changeBase, changeOther); err != nil {
+				return err
+			}
+		}
+
+		return nil
 	}))
 
-	rSmall, err := k.DenomKeeper.GetRatio(ctx, usmall)
-	require.NoError(t, err)
+	rBig, _ := k.DenomKeeper.GetRatio(ctx, ubig)
+	rSmall, _ := k.DenomKeeper.GetRatio(ctx, usmall)
+
+	require.True(t, rBig.Ratio.GT(rSmall.Ratio))
+}
+
+func TestUpdateRatioToBaseOneStep1b(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	const (
+		ubig   = "ubig"
+		usmall = "usmall"
+	)
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 1000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, ubig, keepertest.Alice, 1000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, usmall, keepertest.Alice, 100)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, ubig, 1000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, usmall, 100))
+
+	keepertest.SetRatio(ctx, k.DenomKeeper, ubig, math.LegacyOneDec())
+	keepertest.SetRatio(ctx, k.DenomKeeper, usmall, math.LegacyOneDec())
+
+	liqBase := k.GetEffectiveLiquidity(ctx, constants.BaseCurrency)
+
+	changeBase := math.LegacyOneDec()
+	changeOther := math.LegacyOneDec().Neg()
+	tradeValue := math.LegacyOneDec()
+
+	changes := types.AmountsMap{}
+	changes.Add(constants.BaseCurrency, changeBase)
+	changes.Add(ubig, changeOther)
+
+	changeRatio := tradeValue.Quo(liqBase)
+
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		return k.UpdateRatioToBase(innerCtx, rSmall, liqBase, changeBase, changeOther)
+		for _, ratio := range k.DenomKeeper.GetAllRatios(innerCtx) {
+			if ratio.Denom != ubig && ratio.Denom != usmall {
+				continue
+			}
+
+			changeOther = changes.AmountOf(ratio.Denom)
+			if err := k.UpdateRatioToBase(innerCtx, ratio, liqBase, changeRatio, changeBase, changeOther); err != nil {
+				return err
+			}
+		}
+
+		return nil
 	}))
 
-	rBig, _ = k.DenomKeeper.GetRatio(ctx, ubig)
-	rSmall, _ = k.DenomKeeper.GetRatio(ctx, usmall)
+	rBig, _ := k.DenomKeeper.GetRatio(ctx, ubig)
+	rSmall, _ := k.DenomKeeper.GetRatio(ctx, usmall)
 
 	require.True(t, rBig.Ratio.LT(rSmall.Ratio))
 }
 
-func TestUpdateRatioToBaseOneStep2(t *testing.T) {
+func TestUpdateRatioToBaseOneStep2a(t *testing.T) {
 	k, msg, ctx := keepertest.SetupDexMsgServer(t)
 
 	const (
-		ubig   = "ubig"
-		usmall = "usmall"
+		ubig   = "ubig2"
+		usmall = "usmall2"
 	)
 
-	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 100_000)
-	keepertest.AddFunds(ctx, t, k.BankKeeper, ubig, keepertest.Alice, 100_000)
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		denomK := k.DenomKeeper.(denomkeeper.Keeper)
+		_ = denomK.DexUpdateMinimumLiquidity(innerCtx, constants.BaseCurrency, "1000")
+		return nil
+	}))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 1000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, ubig, keepertest.Alice, 1000)
 	keepertest.AddFunds(ctx, t, k.BankKeeper, usmall, keepertest.Alice, 100)
 
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 100_000))
-	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, ubig, 100_000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, ubig, 1000))
 	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, usmall, 100))
 
-	keepertest.SetRatio(ctx, k.DenomKeeper, constants.KUSD, math.LegacyOneDec())
 	keepertest.SetRatio(ctx, k.DenomKeeper, ubig, math.LegacyOneDec())
 	keepertest.SetRatio(ctx, k.DenomKeeper, usmall, math.LegacyOneDec())
 
-	changeBase := math.LegacyNewDec(10)
-	changeBig := math.LegacyNewDec(10).Neg()
-	changeSmall := math.LegacyNewDec(10).Neg()
+	changeBase := math.OneInt()
+	changeOther := math.OneInt().Neg()
+	tradeValue := math.LegacyNewDec(10_000)
 
-	liqBase := k.GetEffectiveLiquidity(ctx, constants.BaseCurrency)
-
-	rBig, err := k.DenomKeeper.GetRatio(ctx, ubig)
-	require.NoError(t, err)
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		return k.UpdateRatioToBase(innerCtx, rBig, liqBase, changeBase, changeBig)
+		return k.UpdateRatiosToBase(innerCtx, constants.BaseCurrency, ubig, tradeValue, changeBase, changeOther)
 	}))
 
-	rSmall, err := k.DenomKeeper.GetRatio(ctx, usmall)
-	require.NoError(t, err)
+	rBig, _ := k.DenomKeeper.GetRatio(ctx, ubig)
+	rSmall, _ := k.DenomKeeper.GetRatio(ctx, usmall)
+
+	require.True(t, rBig.Ratio.LT(rSmall.Ratio))
+}
+
+func TestUpdateRatioToBaseOneStep2b(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	const (
+		ubig   = "ubig2"
+		usmall = "usmall2"
+	)
+
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		return k.UpdateRatioToBase(innerCtx, rSmall, liqBase, changeBase, changeSmall)
+		denomK := k.DenomKeeper.(denomkeeper.Keeper)
+		_ = denomK.DexUpdateMinimumLiquidity(innerCtx, constants.BaseCurrency, "1000")
+		return nil
 	}))
 
-	rBig, _ = k.DenomKeeper.GetRatio(ctx, ubig)
-	rSmall, _ = k.DenomKeeper.GetRatio(ctx, usmall)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 1000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, ubig, keepertest.Alice, 1000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, usmall, keepertest.Alice, 100)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, ubig, 1000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, usmall, 100))
+
+	keepertest.SetRatio(ctx, k.DenomKeeper, ubig, math.LegacyOneDec())
+	keepertest.SetRatio(ctx, k.DenomKeeper, usmall, math.LegacyOneDec())
+
+	changeBase := math.OneInt().Neg()
+	changeOther := math.OneInt()
+	tradeValue := math.LegacyNewDec(10_000)
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.UpdateRatiosToBase(innerCtx, ubig, constants.BaseCurrency, tradeValue, changeOther, changeBase)
+	}))
+
+	rBig, _ := k.DenomKeeper.GetRatio(ctx, ubig)
+	rSmall, _ := k.DenomKeeper.GetRatio(ctx, usmall)
+
+	require.True(t, rBig.Ratio.GT(rSmall.Ratio))
+}
+
+func TestUpdateRatioToBaseOneStep2c(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	const (
+		ubig   = "ubig2"
+		usmall = "usmall2"
+	)
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		denomK := k.DenomKeeper.(denomkeeper.Keeper)
+		_ = denomK.DexUpdateMinimumLiquidity(innerCtx, constants.BaseCurrency, "1000")
+		return nil
+	}))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 1000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, ubig, keepertest.Alice, 1000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, usmall, keepertest.Alice, 100)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, ubig, 1000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, usmall, 100))
+
+	keepertest.SetRatio(ctx, k.DenomKeeper, ubig, math.LegacyOneDec())
+	keepertest.SetRatio(ctx, k.DenomKeeper, usmall, math.LegacyOneDec())
+
+	changeBase := math.OneInt().Neg()
+	changeOther := math.OneInt()
+	tradeValue := math.LegacyNewDec(1000)
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.UpdateRatiosToBase(innerCtx, usmall, constants.BaseCurrency, tradeValue, changeOther, changeBase)
+	}))
+
+	rBig, _ := k.DenomKeeper.GetRatio(ctx, ubig)
+	rSmall, _ := k.DenomKeeper.GetRatio(ctx, usmall)
+
+	fmt.Println(rBig.Ratio.String())
+	fmt.Println(rSmall.Ratio.String())
+
+	require.True(t, rBig.Ratio.LT(rSmall.Ratio))
+}
+
+func TestUpdateRatioToBaseOneStep2d(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	const (
+		ubig   = "ubig2"
+		usmall = "usmall2"
+	)
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		denomK := k.DenomKeeper.(denomkeeper.Keeper)
+		_ = denomK.DexUpdateMinimumLiquidity(innerCtx, constants.BaseCurrency, "1000")
+		return nil
+	}))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 1000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, ubig, keepertest.Alice, 1000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, usmall, keepertest.Alice, 100)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, ubig, 1000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, usmall, 100))
+
+	keepertest.SetRatio(ctx, k.DenomKeeper, ubig, math.LegacyOneDec())
+	keepertest.SetRatio(ctx, k.DenomKeeper, usmall, math.LegacyOneDec())
+
+	changeBase := math.OneInt()
+	changeOther := math.OneInt().Neg()
+	tradeValue := math.LegacyNewDec(1000)
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.UpdateRatiosToBase(innerCtx, constants.BaseCurrency, usmall, tradeValue, changeBase, changeOther)
+	}))
+
+	rBig, _ := k.DenomKeeper.GetRatio(ctx, ubig)
+	rSmall, _ := k.DenomKeeper.GetRatio(ctx, usmall)
+
+	fmt.Println(rBig.Ratio.String())
+	fmt.Println(rSmall.Ratio.String())
+
+	require.True(t, rBig.Ratio.GT(rSmall.Ratio))
+}
+
+func TestUpdateRatioToBaseOneStep3a(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	const (
+		ubig   = "ubig2"
+		usmall = "usmall2"
+	)
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		denomK := k.DenomKeeper.(denomkeeper.Keeper)
+		_ = denomK.DexUpdateMinimumLiquidity(innerCtx, constants.BaseCurrency, "1000")
+		return nil
+	}))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 1000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, ubig, keepertest.Alice, 1000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, usmall, keepertest.Alice, 100)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, ubig, 1000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, usmall, 100))
+
+	keepertest.SetRatio(ctx, k.DenomKeeper, ubig, math.LegacyOneDec())
+	keepertest.SetRatio(ctx, k.DenomKeeper, usmall, math.LegacyOneDec())
+
+	changeBig := math.OneInt()
+	changeSmall := math.OneInt().Neg()
+	tradeValue := math.LegacyNewDec(1000)
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.UpdateRatiosToBase(innerCtx, ubig, usmall, tradeValue, changeBig, changeSmall)
+	}))
+
+	rBig, _ := k.DenomKeeper.GetRatio(ctx, ubig)
+	rSmall, _ := k.DenomKeeper.GetRatio(ctx, usmall)
+
+	rSmall.Ratio = math.LegacyOneDec().Quo(rSmall.Ratio)
+	require.True(t, rBig.Ratio.LT(rSmall.Ratio))
+}
+
+func TestUpdateRatioToBaseOneStep3b(t *testing.T) {
+	k, msg, ctx := keepertest.SetupDexMsgServer(t)
+
+	const (
+		ubig   = "ubig2"
+		usmall = "usmall2"
+	)
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		denomK := k.DenomKeeper.(denomkeeper.Keeper)
+		_ = denomK.DexUpdateMinimumLiquidity(innerCtx, constants.BaseCurrency, "1000")
+		return nil
+	}))
+
+	keepertest.AddFunds(ctx, t, k.BankKeeper, constants.BaseCurrency, keepertest.Alice, 1000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, ubig, keepertest.Alice, 1000)
+	keepertest.AddFunds(ctx, t, k.BankKeeper, usmall, keepertest.Alice, 100)
+
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, constants.BaseCurrency, 1000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, ubig, 1000))
+	require.NoError(t, keepertest.AddLiquidity(ctx, msg, keepertest.Alice, usmall, 100))
+
+	keepertest.SetRatio(ctx, k.DenomKeeper, ubig, math.LegacyOneDec())
+	keepertest.SetRatio(ctx, k.DenomKeeper, usmall, math.LegacyOneDec())
+
+	changeSmall := math.OneInt()
+	changeBig := math.OneInt().Neg()
+	tradeValue := math.LegacyNewDec(1000)
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.UpdateRatiosToBase(innerCtx, usmall, ubig, tradeValue, changeSmall, changeBig)
+	}))
+
+	rBig, _ := k.DenomKeeper.GetRatio(ctx, ubig)
+	rSmall, _ := k.DenomKeeper.GetRatio(ctx, usmall)
+	rSmall.Ratio = math.LegacyOneDec().Quo(rSmall.Ratio)
 
 	require.True(t, rBig.Ratio.GT(rSmall.Ratio))
 }
