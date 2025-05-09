@@ -188,6 +188,12 @@ func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
 			},
 		},
 		{
+			UpgradeName: v20.UpgradeNameRC2,
+			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
+				return v20.CreateUpgradeHandler(manager, configurator, app.DenominationsKeeper)
+			},
+		},
+		{
 			UpgradeName: v20.UpgradeName,
 			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
 				return v20.CreateUpgradeHandler(manager, configurator, app.DenominationsKeeper)
