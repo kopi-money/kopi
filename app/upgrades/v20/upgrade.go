@@ -24,9 +24,9 @@ func CreateUpgradeHandler(_ *module.Manager, _ module.Configurator, denomK denom
 // even though their denoms are not listed anymore.
 func filterRatios(ctx context.Context, denomK denomkeeper.Keeper) error {
 	return cache.Transact(ctx, func(innerCtx context.Context) error {
-		for _, ratio := range denomK.GetAllRatios(ctx) {
-			if !denomK.IsValidDenom(ctx, ratio.Denom) {
-				denomK.RemoveRatio(ctx, ratio.Denom)
+		for _, ratio := range denomK.GetAllRatios(innerCtx) {
+			if !denomK.IsValidDenom(innerCtx, ratio.Denom) {
+				denomK.RemoveRatio(innerCtx, ratio.Denom)
 			}
 		}
 
