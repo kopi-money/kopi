@@ -77,12 +77,6 @@ func (k Keeper) handleRedemptionsForCAsset(ctx context.Context, cAsset denomtype
 		return nil
 	}
 
-	moduleAccount := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault)
-	found, coin := k.BankKeeper.SpendableCoins(ctx, moduleAccount.GetAddress()).Find(cAsset.BaseDexDenom)
-	if !found || coin.Amount.IsZero() {
-		return nil
-	}
-
 	sort.SliceStable(redemptions, func(i, j int) bool {
 		if redemptions[i].Fee.Equal(redemptions[j].Fee) {
 			return redemptions[i].AddedAt < redemptions[j].AddedAt
@@ -91,8 +85,7 @@ func (k Keeper) handleRedemptionsForCAsset(ctx context.Context, cAsset denomtype
 		return redemptions[i].Fee.GT(redemptions[j].Fee)
 	})
 
-	available := math.LegacyNewDecFromInt(coin.Amount)
-	for available.IsPositive() && len(redemptions) > 0 {
+	for len(redemptions) > 0 {
 		redemption := redemptions[0]
 		redemptions = redemptions[1:]
 
@@ -100,58 +93,59 @@ func (k Keeper) handleRedemptionsForCAsset(ctx context.Context, cAsset denomtype
 			continue
 		}
 
-		sentAmount, err := k.handleSingleRedemption(ctx, cAsset, redemption, available)
-		if err != nil {
+		if err := k.handleSingleRedemption(ctx, cAsset, redemption); err != nil {
 			return err
 		}
-
-		available = available.Sub(sentAmount)
 	}
 
 	return nil
 }
 
-func (k Keeper) handleSingleRedemption(ctx context.Context, cAsset denomtypes.CAsset, entry types.Redemption, available math.LegacyDec) (math.LegacyDec, error) {
-	grossRedemptionAmountBase, redemptionAmountCAsset, payoutshare := k.CalculateAvailableRedemptionAmount(ctx, cAsset, entry.Amount.ToLegacyDec(), available)
+func (k Keeper) handleSingleRedemption(ctx context.Context, cAsset denomtypes.CAsset, entry types.Redemption) error {
+	moduleAccount := k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault)
+	available := k.BankKeeper.SpendableCoin(ctx, moduleAccount.GetAddress(), cAsset.BaseDexDenom).Amount
+	if available.IsZero() {
+		return nil
+	}
+
+	grossRedemptionAmountBase, redemptionAmountCAsset, payoutShare := k.CalculateAvailableRedemptionAmount(ctx, cAsset, entry.Amount.ToLegacyDec(), available.ToLegacyDec())
 	if grossRedemptionAmountBase.IsZero() {
-		return math.LegacyZeroDec(), nil
+		return nil
 	}
 
 	// Update the entry and process the payout
 	entry.Amount = entry.Amount.Sub(redemptionAmountCAsset.RoundInt())
 	if err := k.updateRedemption(ctx, cAsset.BaseDexDenom, entry); err != nil {
-		return math.LegacyDec{}, fmt.Errorf("update redemption request: %w", err)
+		return fmt.Errorf("update redemption request: %w", err)
 	}
 
 	// subtract the priority cost set by the user to be handled with higher priority
 	feeCost := grossRedemptionAmountBase.Mul(entry.Fee)
-	redemptionAmount := grossRedemptionAmountBase.Sub(feeCost)
 	if err := k.handleRedemptionFee(ctx, cAsset, feeCost); err != nil {
-		return math.LegacyDec{}, err
+		return err
 	}
-
-	payoutAmount := redemptionAmount.TruncateInt()
+	payoutAmount := grossRedemptionAmountBase.Sub(feeCost).TruncateInt()
 	// If the payout amount is not for the full requested amount, only proceed if the payout amount is above the minimum
 	// payout. This is to prevent sending dust.
-	if payoutshare.LT(math.LegacyOneDec()) && payoutAmount.LT(math.NewInt(minimumPayoutAmount)) {
-		return math.LegacyZeroDec(), nil
+	if payoutShare.LT(math.LegacyOneDec()) && payoutAmount.LT(math.NewInt(minimumPayoutAmount)) {
+		return nil
 	}
 
 	// send redeemed coins (sub fee) to user
 	acc, _ := sdk.AccAddressFromBech32(entry.Address)
-	coins := sdk.NewCoins(sdk.NewCoin(cAsset.BaseDexDenom, redemptionAmount.TruncateInt()))
+	coins := sdk.NewCoins(sdk.NewCoin(cAsset.BaseDexDenom, payoutAmount))
 	if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolVault, acc, coins); err != nil {
-		return math.LegacyDec{}, err
+		return err
 	}
 
 	// Burn the CAsset tokens that have been redeemed
 	coins = sdk.NewCoins(sdk.NewCoin(cAsset.DexDenom, redemptionAmountCAsset.TruncateInt()))
 	if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolRedemption, types.ModuleName, coins); err != nil {
-		return math.LegacyDec{}, err
+		return err
 	}
 
 	if err := k.BankKeeper.BurnCoins(ctx, types.ModuleName, coins); err != nil {
-		return math.LegacyDec{}, err
+		return err
 	}
 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
@@ -159,11 +153,11 @@ func (k Keeper) handleSingleRedemption(ctx context.Context, cAsset denomtypes.CA
 			sdk.Attribute{Key: "address", Value: entry.Address},
 			sdk.Attribute{Key: "denom", Value: cAsset.BaseDexDenom},
 			sdk.Attribute{Key: "redeemed", Value: redemptionAmountCAsset.String()},
-			sdk.Attribute{Key: "received", Value: redemptionAmount.String()},
+			sdk.Attribute{Key: "received", Value: payoutAmount.String()},
 		),
 	)
 
-	return grossRedemptionAmountBase, nil
+	return nil
 }
 
 func (k Keeper) CalculateRedemptionAmount(ctx context.Context, cAsset denomtypes.CAsset, requestedCAssetAmount math.LegacyDec) math.LegacyDec {
