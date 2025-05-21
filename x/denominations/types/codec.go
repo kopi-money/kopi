@@ -12,7 +12,8 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgDexAddDenom{},
-		&MsgDexUpdateMinimumLiquidity{},
+		&MsgDexUpdateMinimumTradeLiquidity{},
+		&MsgDexUpdateMinimumDexLiquidity{},
 		&MsgDexUpdateMinimumOrderSize{},
 
 		&MsgKCoinAddDenom{},

@@ -366,8 +366,8 @@ func (k Keeper) UpdateRatioToBase(ctx context.Context, ratio denomtypes.Ratio, l
 
 func (k Keeper) CreateRatioUpdatePair(ctx context.Context, ratio denomtypes.Ratio, liqBase math.LegacyDec) (types.LiquidityPair, error) {
 	liqOther := k.GetEffectiveLiquidity(ctx, ratio.Denom)
-	minLiqBase := k.DenomKeeper.MinLiquidity(ctx, constants.BaseCurrency)
-	minLiqOther := k.DenomKeeper.MinLiquidity(ctx, ratio.Denom)
+	minLiqBase := k.DenomKeeper.MinTradeLiquidity(ctx, constants.BaseCurrency)
+	minLiqOther := k.DenomKeeper.MinTradeLiquidity(ctx, ratio.Denom)
 
 	pair, err := k.CreateLiquidityPairWithLiquidity(ctx, ratio, liqBase, liqOther, minLiqBase, minLiqOther)
 	if err != nil {

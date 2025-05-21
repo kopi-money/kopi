@@ -82,14 +82,18 @@ func (k msgServer) UpdatePriceIncreasingFactor(ctx context.Context, msg *types.M
 		return nil, err
 	}
 
-	params := k.GetParams(ctx)
-	params.PriceIncreasingFactor = priceIncreasingFactor
-
-	if err = k.SetParams(ctx, params); err != nil {
+	if err = k.SetPriceIncreasingFactor(ctx, priceIncreasingFactor); err != nil {
 		return nil, err
 	}
 
 	return &types.Void{}, nil
+}
+
+func (k Keeper) SetPriceIncreasingFactor(ctx context.Context, priceIncreasingFactor math.LegacyDec) error {
+	params := k.GetParams(ctx)
+	params.PriceIncreasingFactor = priceIncreasingFactor
+
+	return k.SetParams(ctx, params)
 }
 
 func (k msgServer) UpdateMaxOrderLife(ctx context.Context, msg *types.MsgUpdateMaxOrderLife) (*types.Void, error) {

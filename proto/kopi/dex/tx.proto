@@ -46,7 +46,7 @@ service Msg {
 
 message MsgUpdateMinimumLiquidityLock {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgUpdateMinimumLiquidityLock";
+  option (amino.name) = "kopi/x/dex/MsgUpdateMinimumLiquidityLock";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   int64 minimum_liquidity_lock_in_blocks = 2;
@@ -55,7 +55,7 @@ message MsgUpdateMinimumLiquidityLock {
 
 message MsgUpdateEpochLength {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgUpdateEpochLength";
+  option (amino.name) = "kopi/x/dex/MsgUpdateEpochLength";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string epoch_length = 2;
@@ -63,7 +63,7 @@ message MsgUpdateEpochLength {
 
 message MsgRemoveDexDenom {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/denominations/MsgRemoveDexDenom";
+  option (amino.name) = "kopi/x/dex/MsgRemoveDexDenom";
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   string name = 2;

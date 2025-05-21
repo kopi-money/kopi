@@ -22,6 +22,7 @@ const (
 	Msg_UpdateBurnThreshold_FullMethodName = "/kopi.swap.Msg/UpdateBurnThreshold"
 	Msg_UpdateMintThreshold_FullMethodName = "/kopi.swap.Msg/UpdateMintThreshold"
 	Msg_UpdateStakingShare_FullMethodName  = "/kopi.swap.Msg/UpdateStakingShare"
+	Msg_UpdateParityFactor_FullMethodName  = "/kopi.swap.Msg/UpdateParityFactor"
 )
 
 // MsgClient is the client API for Msg service.
@@ -31,6 +32,7 @@ type MsgClient interface {
 	UpdateBurnThreshold(ctx context.Context, in *MsgUpdateBurnThreshold, opts ...grpc.CallOption) (*Void, error)
 	UpdateMintThreshold(ctx context.Context, in *MsgUpdateMintThreshold, opts ...grpc.CallOption) (*Void, error)
 	UpdateStakingShare(ctx context.Context, in *MsgUpdateStakingShare, opts ...grpc.CallOption) (*Void, error)
+	UpdateParityFactor(ctx context.Context, in *MsgUpdateParityFactor, opts ...grpc.CallOption) (*Void, error)
 }
 
 type msgClient struct {
@@ -68,6 +70,15 @@ func (c *msgClient) UpdateStakingShare(ctx context.Context, in *MsgUpdateStaking
 	return out, nil
 }
 
+func (c *msgClient) UpdateParityFactor(ctx context.Context, in *MsgUpdateParityFactor, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_UpdateParityFactor_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -75,6 +86,7 @@ type MsgServer interface {
 	UpdateBurnThreshold(context.Context, *MsgUpdateBurnThreshold) (*Void, error)
 	UpdateMintThreshold(context.Context, *MsgUpdateMintThreshold) (*Void, error)
 	UpdateStakingShare(context.Context, *MsgUpdateStakingShare) (*Void, error)
+	UpdateParityFactor(context.Context, *MsgUpdateParityFactor) (*Void, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -90,6 +102,9 @@ func (UnimplementedMsgServer) UpdateMintThreshold(context.Context, *MsgUpdateMin
 }
 func (UnimplementedMsgServer) UpdateStakingShare(context.Context, *MsgUpdateStakingShare) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateStakingShare not implemented")
+}
+func (UnimplementedMsgServer) UpdateParityFactor(context.Context, *MsgUpdateParityFactor) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateParityFactor not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -158,6 +173,24 @@ func _Msg_UpdateStakingShare_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_UpdateParityFactor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateParityFactor)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateParityFactor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UpdateParityFactor_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateParityFactor(ctx, req.(*MsgUpdateParityFactor))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -176,6 +209,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateStakingShare",
 			Handler:    _Msg_UpdateStakingShare_Handler,
+		},
+		{
+			MethodName: "UpdateParityFactor",
+			Handler:    _Msg_UpdateParityFactor_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

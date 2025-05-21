@@ -30,8 +30,8 @@ func (k Keeper) GetAllLiquidityPair(ctx context.Context) (list []types.Liquidity
 func (k Keeper) CreateLiquidityPair(ctx context.Context, ratio denomtypes.Ratio) (types.LiquidityPair, error) {
 	liqBase := k.GetEffectiveLiquidity(ctx, constants.BaseCurrency)
 	liqOther := k.GetEffectiveLiquidity(ctx, ratio.Denom)
-	minLiqBase := k.DenomKeeper.MinLiquidity(ctx, constants.BaseCurrency)
-	minLiqOther := k.DenomKeeper.MinLiquidity(ctx, ratio.Denom)
+	minLiqBase := k.DenomKeeper.MinTradeLiquidity(ctx, constants.BaseCurrency)
+	minLiqOther := k.DenomKeeper.MinTradeLiquidity(ctx, ratio.Denom)
 
 	return k.CreateLiquidityPairWithLiquidity(ctx, ratio, liqBase, liqOther, minLiqBase, minLiqOther)
 }

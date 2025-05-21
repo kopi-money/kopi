@@ -220,18 +220,25 @@ func (k Keeper) UpdateRatios(ctx context.Context) error {
 	poolBalance := k.BankKeeper.SpendableCoins(ctx, liquidityPool.GetAddress())
 
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
-		if denom != constants.BaseCurrency {
-			liq := poolBalance.AmountOf(denom)
-			if liq.LT(k.DenomKeeper.MinLiquidity(ctx, denom)) {
-				// If a kCoin is above parity, the protocol mints+sells and thereby already adds liquidity.
-				if k.skipKCoin(ctx, denom) {
-					continue
-				}
+		if denom == constants.BaseCurrency {
+			continue
+		}
 
-				ratio, _ := k.DenomKeeper.GetRatio(ctx, denom)
-				ratio.Ratio = ratio.Ratio.Mul(factor)
-				k.DenomKeeper.SetRatio(ctx, ratio)
+		liq := poolBalance.AmountOf(denom)
+		if liq.LT(*k.DenomKeeper.MinDexLiquidity(ctx, denom)) {
+			// If a kCoin is above parity, the protocol mints+sells and thereby already adds liquidity.
+			if k.skipKCoin(ctx, denom) {
+				continue
 			}
+
+			ratio, err := k.DenomKeeper.GetRatio(ctx, denom)
+			if err != nil {
+				k.Logger().Error("Failed to get ratio", "denom", denom, "err", err)
+				continue
+			}
+
+			ratio.Ratio = ratio.Ratio.Mul(factor)
+			k.DenomKeeper.SetRatio(ctx, ratio)
 		}
 	}
 

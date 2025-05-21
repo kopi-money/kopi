@@ -55,7 +55,7 @@ func (k Keeper) NewOrdersCaches(ctx context.Context) *types.OrdersCaches {
 			return k.GetParams(ctx).DiscountLevels
 		},
 		func(denom string, _ ...any) math.LegacyDec {
-			return k.DenomKeeper.MinLiquidity(ctx, denom).ToLegacyDec()
+			return k.DenomKeeper.MinTradeLiquidity(ctx, denom).ToLegacyDec()
 		},
 	)
 }

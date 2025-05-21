@@ -25,10 +25,10 @@ func createDefaultCAssets() []CAsset {
 func createDefaultDexDenoms() []DexDenom {
 	return []DexDenom{
 		{
-			Name:         constants.BaseCurrency,
-			MinLiquidity: math.NewInt(1_000_000_000_000),
-			MinOrderSize: math.NewInt(1_000_000),
-			Exponent:     6,
+			Name:              constants.BaseCurrency,
+			MinTradeLiquidity: math.NewInt(1_000_000_000_000),
+			MinOrderSize:      math.NewInt(1_000_000),
+			Exponent:          6,
 		},
 	}
 }
@@ -376,26 +376,26 @@ func validateDexDenom(dexDenom DexDenom) error {
 		return fmt.Errorf("min order size is nil")
 	}
 
-	if dexDenom.MinOrderSize.LTE(math.ZeroInt()) {
+	if !dexDenom.MinOrderSize.IsPositive() {
 		return fmt.Errorf("minimum order size has to be bigger than zero")
 	}
 
 	if dexDenom.Name != constants.BaseCurrency {
-		if dexDenom.MinLiquidity.IsNil() {
-			return fmt.Errorf("min liquidity is nil")
+		if dexDenom.MinTradeLiquidity.IsNil() {
+			return fmt.Errorf("min trade liquidity is nil")
 		}
 
-		if dexDenom.MinLiquidity.LTE(math.ZeroInt()) {
-			return fmt.Errorf("minimum liquidty must not be smaller than zero")
+		if dexDenom.MinTradeLiquidity.LT(math.ZeroInt()) {
+			return fmt.Errorf("minimum trade liquidty must not be smaller than zero: %v", dexDenom.MinTradeLiquidity)
 		}
 
-		if dexDenom.ExtraVirtualLiquidity != nil {
-			if dexDenom.ExtraVirtualLiquidity.IsNil() {
-				return fmt.Errorf("min virtual liquidity is nil")
+		if dexDenom.MinDexLiquidity != nil {
+			if dexDenom.MinDexLiquidity.IsNil() {
+				return fmt.Errorf("min dex liquidity is nil")
 			}
 
-			if dexDenom.ExtraVirtualLiquidity.LTE(math.ZeroInt()) {
-				return fmt.Errorf("minimum virtual liquidty must not be smaller than zero")
+			if dexDenom.MinDexLiquidity.LT(math.ZeroInt()) {
+				return fmt.Errorf("minimum dex liquidty must not be smaller than zero: %v", dexDenom.MinDexLiquidity)
 			}
 		}
 	}

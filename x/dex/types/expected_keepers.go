@@ -44,7 +44,6 @@ type DenomKeeper interface {
 	CalculatePrice(ctx context.Context, denomGiving, denomReceiving string) (math.LegacyDec, error)
 	ConvertToExponent(ctx context.Context, denom string, amount math.LegacyDec, targetExponent uint64) (math.LegacyDec, error)
 	Denoms(ctx context.Context) []string
-	ExtraVirtualLiquidity(ctx context.Context, denom string) math.Int
 	GetAllRatios(ctx context.Context) []denomtypes.Ratio
 	GetAuthority() string
 	GetCAssetByBaseName(ctx context.Context, baseDenom string) (denomtypes.CAsset, error)
@@ -64,7 +63,8 @@ type DenomKeeper interface {
 	KCoins(ctx context.Context) (kCoins []string)
 	MaxBurnAmount(ctx context.Context, denom string) math.Int
 	MaxMintAmount(ctx context.Context, denom string) math.Int
-	MinLiquidity(ctx context.Context, denom string) math.Int
+	MinTradeLiquidity(ctx context.Context, denom string) math.Int
+	MinDexLiquidity(ctx context.Context, denom string) *math.Int
 	MinOrderSize(ctx context.Context, denom string) math.Int
 	ReferenceDenoms(ctx context.Context, kCoin string) []string
 	RemoveDenom(ctx context.Context, denom string) error

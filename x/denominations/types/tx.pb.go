@@ -68,13 +68,14 @@ func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
 type MsgDexAddDenom struct {
-	Authority           string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
-	Name                string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Factor              string `protobuf:"bytes,3,opt,name=factor,proto3" json:"factor,omitempty"`
-	MinLiquidity        string `protobuf:"bytes,4,opt,name=min_liquidity,json=minLiquidity,proto3" json:"min_liquidity,omitempty"`
-	MinOrderSize        string `protobuf:"bytes,5,opt,name=min_order_size,json=minOrderSize,proto3" json:"min_order_size,omitempty"`
-	MinVirtualLiquidity string `protobuf:"bytes,6,opt,name=min_virtual_liquidity,json=minVirtualLiquidity,proto3" json:"min_virtual_liquidity,omitempty"`
-	Exponent            uint64 `protobuf:"varint,7,opt,name=exponent,proto3" json:"exponent,omitempty"`
+	Authority         string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	Name              string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Factor            string `protobuf:"bytes,3,opt,name=factor,proto3" json:"factor,omitempty"`
+	MinLiquidity      string `protobuf:"bytes,4,opt,name=min_liquidity,json=minLiquidity,proto3" json:"min_liquidity,omitempty"`
+	MinOrderSize      string `protobuf:"bytes,5,opt,name=min_order_size,json=minOrderSize,proto3" json:"min_order_size,omitempty"`
+	MinTradeLiquidity string `protobuf:"bytes,6,opt,name=min_trade_liquidity,json=minTradeLiquidity,proto3" json:"min_trade_liquidity,omitempty"`
+	MinDexLiquidity   string `protobuf:"bytes,7,opt,name=min_dex_liquidity,json=minDexLiquidity,proto3" json:"min_dex_liquidity,omitempty"`
+	Exponent          uint64 `protobuf:"varint,8,opt,name=exponent,proto3" json:"exponent,omitempty"`
 }
 
 func (m *MsgDexAddDenom) Reset()         { *m = MsgDexAddDenom{} }
@@ -145,9 +146,16 @@ func (m *MsgDexAddDenom) GetMinOrderSize() string {
 	return ""
 }
 
-func (m *MsgDexAddDenom) GetMinVirtualLiquidity() string {
+func (m *MsgDexAddDenom) GetMinTradeLiquidity() string {
 	if m != nil {
-		return m.MinVirtualLiquidity
+		return m.MinTradeLiquidity
+	}
+	return ""
+}
+
+func (m *MsgDexAddDenom) GetMinDexLiquidity() string {
+	if m != nil {
+		return m.MinDexLiquidity
 	}
 	return ""
 }
@@ -159,24 +167,24 @@ func (m *MsgDexAddDenom) GetExponent() uint64 {
 	return 0
 }
 
-type MsgDexUpdateMinimumLiquidity struct {
-	Authority    string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
-	Name         string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	MinLiquidity string `protobuf:"bytes,3,opt,name=min_liquidity,json=minLiquidity,proto3" json:"min_liquidity,omitempty"`
+type MsgDexUpdateMinimumDexLiquidity struct {
+	Authority           string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	Name                string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	MinimumDexLiquidity string `protobuf:"bytes,3,opt,name=minimum_dex_liquidity,json=minimumDexLiquidity,proto3" json:"minimum_dex_liquidity,omitempty"`
 }
 
-func (m *MsgDexUpdateMinimumLiquidity) Reset()         { *m = MsgDexUpdateMinimumLiquidity{} }
-func (m *MsgDexUpdateMinimumLiquidity) String() string { return proto.CompactTextString(m) }
-func (*MsgDexUpdateMinimumLiquidity) ProtoMessage()    {}
-func (*MsgDexUpdateMinimumLiquidity) Descriptor() ([]byte, []int) {
+func (m *MsgDexUpdateMinimumDexLiquidity) Reset()         { *m = MsgDexUpdateMinimumDexLiquidity{} }
+func (m *MsgDexUpdateMinimumDexLiquidity) String() string { return proto.CompactTextString(m) }
+func (*MsgDexUpdateMinimumDexLiquidity) ProtoMessage()    {}
+func (*MsgDexUpdateMinimumDexLiquidity) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{2}
 }
-func (m *MsgDexUpdateMinimumLiquidity) XXX_Unmarshal(b []byte) error {
+func (m *MsgDexUpdateMinimumDexLiquidity) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgDexUpdateMinimumLiquidity) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgDexUpdateMinimumDexLiquidity) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgDexUpdateMinimumLiquidity.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgDexUpdateMinimumDexLiquidity.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -186,57 +194,57 @@ func (m *MsgDexUpdateMinimumLiquidity) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-func (m *MsgDexUpdateMinimumLiquidity) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgDexUpdateMinimumLiquidity.Merge(m, src)
+func (m *MsgDexUpdateMinimumDexLiquidity) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDexUpdateMinimumDexLiquidity.Merge(m, src)
 }
-func (m *MsgDexUpdateMinimumLiquidity) XXX_Size() int {
+func (m *MsgDexUpdateMinimumDexLiquidity) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgDexUpdateMinimumLiquidity) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgDexUpdateMinimumLiquidity.DiscardUnknown(m)
+func (m *MsgDexUpdateMinimumDexLiquidity) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDexUpdateMinimumDexLiquidity.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgDexUpdateMinimumLiquidity proto.InternalMessageInfo
+var xxx_messageInfo_MsgDexUpdateMinimumDexLiquidity proto.InternalMessageInfo
 
-func (m *MsgDexUpdateMinimumLiquidity) GetAuthority() string {
+func (m *MsgDexUpdateMinimumDexLiquidity) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgDexUpdateMinimumLiquidity) GetName() string {
+func (m *MsgDexUpdateMinimumDexLiquidity) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *MsgDexUpdateMinimumLiquidity) GetMinLiquidity() string {
+func (m *MsgDexUpdateMinimumDexLiquidity) GetMinimumDexLiquidity() string {
 	if m != nil {
-		return m.MinLiquidity
+		return m.MinimumDexLiquidity
 	}
 	return ""
 }
 
-type MsgDexUpdateExtraVirtualLiquidity struct {
+type MsgDexUpdateMinimumTradeLiquidity struct {
 	Authority             string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Name                  string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	ExtraVirtualLiquidity string `protobuf:"bytes,3,opt,name=extra_virtual_liquidity,json=extraVirtualLiquidity,proto3" json:"extra_virtual_liquidity,omitempty"`
+	MinimumTradeLiquidity string `protobuf:"bytes,3,opt,name=minimum_trade_liquidity,json=minimumTradeLiquidity,proto3" json:"minimum_trade_liquidity,omitempty"`
 }
 
-func (m *MsgDexUpdateExtraVirtualLiquidity) Reset()         { *m = MsgDexUpdateExtraVirtualLiquidity{} }
-func (m *MsgDexUpdateExtraVirtualLiquidity) String() string { return proto.CompactTextString(m) }
-func (*MsgDexUpdateExtraVirtualLiquidity) ProtoMessage()    {}
-func (*MsgDexUpdateExtraVirtualLiquidity) Descriptor() ([]byte, []int) {
+func (m *MsgDexUpdateMinimumTradeLiquidity) Reset()         { *m = MsgDexUpdateMinimumTradeLiquidity{} }
+func (m *MsgDexUpdateMinimumTradeLiquidity) String() string { return proto.CompactTextString(m) }
+func (*MsgDexUpdateMinimumTradeLiquidity) ProtoMessage()    {}
+func (*MsgDexUpdateMinimumTradeLiquidity) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6ba97ecacef12ed2, []int{3}
 }
-func (m *MsgDexUpdateExtraVirtualLiquidity) XXX_Unmarshal(b []byte) error {
+func (m *MsgDexUpdateMinimumTradeLiquidity) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgDexUpdateExtraVirtualLiquidity) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgDexUpdateMinimumTradeLiquidity) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgDexUpdateExtraVirtualLiquidity.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgDexUpdateMinimumTradeLiquidity.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -246,35 +254,35 @@ func (m *MsgDexUpdateExtraVirtualLiquidity) XXX_Marshal(b []byte, deterministic 
 		return b[:n], nil
 	}
 }
-func (m *MsgDexUpdateExtraVirtualLiquidity) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgDexUpdateExtraVirtualLiquidity.Merge(m, src)
+func (m *MsgDexUpdateMinimumTradeLiquidity) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDexUpdateMinimumTradeLiquidity.Merge(m, src)
 }
-func (m *MsgDexUpdateExtraVirtualLiquidity) XXX_Size() int {
+func (m *MsgDexUpdateMinimumTradeLiquidity) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgDexUpdateExtraVirtualLiquidity) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgDexUpdateExtraVirtualLiquidity.DiscardUnknown(m)
+func (m *MsgDexUpdateMinimumTradeLiquidity) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDexUpdateMinimumTradeLiquidity.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgDexUpdateExtraVirtualLiquidity proto.InternalMessageInfo
+var xxx_messageInfo_MsgDexUpdateMinimumTradeLiquidity proto.InternalMessageInfo
 
-func (m *MsgDexUpdateExtraVirtualLiquidity) GetAuthority() string {
+func (m *MsgDexUpdateMinimumTradeLiquidity) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgDexUpdateExtraVirtualLiquidity) GetName() string {
+func (m *MsgDexUpdateMinimumTradeLiquidity) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *MsgDexUpdateExtraVirtualLiquidity) GetExtraVirtualLiquidity() string {
+func (m *MsgDexUpdateMinimumTradeLiquidity) GetMinimumTradeLiquidity() string {
 	if m != nil {
-		return m.ExtraVirtualLiquidity
+		return m.MinimumTradeLiquidity
 	}
 	return ""
 }
@@ -463,6 +471,58 @@ func (m *MsgKCoinAddDenom) GetExponent() uint64 {
 	return 0
 }
 
+type MsgKCoinRemoveKCoin struct {
+	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	Denom     string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+}
+
+func (m *MsgKCoinRemoveKCoin) Reset()         { *m = MsgKCoinRemoveKCoin{} }
+func (m *MsgKCoinRemoveKCoin) String() string { return proto.CompactTextString(m) }
+func (*MsgKCoinRemoveKCoin) ProtoMessage()    {}
+func (*MsgKCoinRemoveKCoin) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6ba97ecacef12ed2, []int{6}
+}
+func (m *MsgKCoinRemoveKCoin) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgKCoinRemoveKCoin) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgKCoinRemoveKCoin.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgKCoinRemoveKCoin) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgKCoinRemoveKCoin.Merge(m, src)
+}
+func (m *MsgKCoinRemoveKCoin) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgKCoinRemoveKCoin) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgKCoinRemoveKCoin.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgKCoinRemoveKCoin proto.InternalMessageInfo
+
+func (m *MsgKCoinRemoveKCoin) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgKCoinRemoveKCoin) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
 type MsgKCoinUpdateSupplyLimit struct {
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	Denom     string `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
@@ -473,7 +533,7 @@ func (m *MsgKCoinUpdateSupplyLimit) Reset()         { *m = MsgKCoinUpdateSupplyL
 func (m *MsgKCoinUpdateSupplyLimit) String() string { return proto.CompactTextString(m) }
 func (*MsgKCoinUpdateSupplyLimit) ProtoMessage()    {}
 func (*MsgKCoinUpdateSupplyLimit) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{6}
+	return fileDescriptor_6ba97ecacef12ed2, []int{7}
 }
 func (m *MsgKCoinUpdateSupplyLimit) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -533,7 +593,7 @@ func (m *MsgKCoinUpdateBurnAmount) Reset()         { *m = MsgKCoinUpdateBurnAmou
 func (m *MsgKCoinUpdateBurnAmount) String() string { return proto.CompactTextString(m) }
 func (*MsgKCoinUpdateBurnAmount) ProtoMessage()    {}
 func (*MsgKCoinUpdateBurnAmount) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{7}
+	return fileDescriptor_6ba97ecacef12ed2, []int{8}
 }
 func (m *MsgKCoinUpdateBurnAmount) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -593,7 +653,7 @@ func (m *MsgKCoinUpdateMintAmount) Reset()         { *m = MsgKCoinUpdateMintAmou
 func (m *MsgKCoinUpdateMintAmount) String() string { return proto.CompactTextString(m) }
 func (*MsgKCoinUpdateMintAmount) ProtoMessage()    {}
 func (*MsgKCoinUpdateMintAmount) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{8}
+	return fileDescriptor_6ba97ecacef12ed2, []int{9}
 }
 func (m *MsgKCoinUpdateMintAmount) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -653,7 +713,7 @@ func (m *MsgKCoinAddReferences) Reset()         { *m = MsgKCoinAddReferences{} }
 func (m *MsgKCoinAddReferences) String() string { return proto.CompactTextString(m) }
 func (*MsgKCoinAddReferences) ProtoMessage()    {}
 func (*MsgKCoinAddReferences) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{9}
+	return fileDescriptor_6ba97ecacef12ed2, []int{10}
 }
 func (m *MsgKCoinAddReferences) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -713,7 +773,7 @@ func (m *MsgKCoinRemoveReferences) Reset()         { *m = MsgKCoinRemoveReferenc
 func (m *MsgKCoinRemoveReferences) String() string { return proto.CompactTextString(m) }
 func (*MsgKCoinRemoveReferences) ProtoMessage()    {}
 func (*MsgKCoinRemoveReferences) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{10}
+	return fileDescriptor_6ba97ecacef12ed2, []int{11}
 }
 func (m *MsgKCoinRemoveReferences) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -774,7 +834,7 @@ func (m *MsgCollateralAddDenom) Reset()         { *m = MsgCollateralAddDenom{} }
 func (m *MsgCollateralAddDenom) String() string { return proto.CompactTextString(m) }
 func (*MsgCollateralAddDenom) ProtoMessage()    {}
 func (*MsgCollateralAddDenom) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{11}
+	return fileDescriptor_6ba97ecacef12ed2, []int{12}
 }
 func (m *MsgCollateralAddDenom) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -841,7 +901,7 @@ func (m *MsgCollateralUpdateLTV) Reset()         { *m = MsgCollateralUpdateLTV{}
 func (m *MsgCollateralUpdateLTV) String() string { return proto.CompactTextString(m) }
 func (*MsgCollateralUpdateLTV) ProtoMessage()    {}
 func (*MsgCollateralUpdateLTV) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{12}
+	return fileDescriptor_6ba97ecacef12ed2, []int{13}
 }
 func (m *MsgCollateralUpdateLTV) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -901,7 +961,7 @@ func (m *MsgCollateralUpdateDepositLimit) Reset()         { *m = MsgCollateralUp
 func (m *MsgCollateralUpdateDepositLimit) String() string { return proto.CompactTextString(m) }
 func (*MsgCollateralUpdateDepositLimit) ProtoMessage()    {}
 func (*MsgCollateralUpdateDepositLimit) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{13}
+	return fileDescriptor_6ba97ecacef12ed2, []int{14}
 }
 func (m *MsgCollateralUpdateDepositLimit) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -968,7 +1028,7 @@ func (m *MsgCAssetAddDenom) Reset()         { *m = MsgCAssetAddDenom{} }
 func (m *MsgCAssetAddDenom) String() string { return proto.CompactTextString(m) }
 func (*MsgCAssetAddDenom) ProtoMessage()    {}
 func (*MsgCAssetAddDenom) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{14}
+	return fileDescriptor_6ba97ecacef12ed2, []int{15}
 }
 func (m *MsgCAssetAddDenom) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1077,7 +1137,7 @@ func (m *MsgCAssetUpdateReference) Reset()         { *m = MsgCAssetUpdateReferen
 func (m *MsgCAssetUpdateReference) String() string { return proto.CompactTextString(m) }
 func (*MsgCAssetUpdateReference) ProtoMessage()    {}
 func (*MsgCAssetUpdateReference) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{15}
+	return fileDescriptor_6ba97ecacef12ed2, []int{16}
 }
 func (m *MsgCAssetUpdateReference) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1137,7 +1197,7 @@ func (m *MsgCAssetUpdateDexFeeShare) Reset()         { *m = MsgCAssetUpdateDexFe
 func (m *MsgCAssetUpdateDexFeeShare) String() string { return proto.CompactTextString(m) }
 func (*MsgCAssetUpdateDexFeeShare) ProtoMessage()    {}
 func (*MsgCAssetUpdateDexFeeShare) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{16}
+	return fileDescriptor_6ba97ecacef12ed2, []int{17}
 }
 func (m *MsgCAssetUpdateDexFeeShare) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1197,7 +1257,7 @@ func (m *MsgCAssetUpdateBorrowLimit) Reset()         { *m = MsgCAssetUpdateBorro
 func (m *MsgCAssetUpdateBorrowLimit) String() string { return proto.CompactTextString(m) }
 func (*MsgCAssetUpdateBorrowLimit) ProtoMessage()    {}
 func (*MsgCAssetUpdateBorrowLimit) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{17}
+	return fileDescriptor_6ba97ecacef12ed2, []int{18}
 }
 func (m *MsgCAssetUpdateBorrowLimit) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1257,7 +1317,7 @@ func (m *MsgCAssetUpdateMinimumLoanSize) Reset()         { *m = MsgCAssetUpdateM
 func (m *MsgCAssetUpdateMinimumLoanSize) String() string { return proto.CompactTextString(m) }
 func (*MsgCAssetUpdateMinimumLoanSize) ProtoMessage()    {}
 func (*MsgCAssetUpdateMinimumLoanSize) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{18}
+	return fileDescriptor_6ba97ecacef12ed2, []int{19}
 }
 func (m *MsgCAssetUpdateMinimumLoanSize) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1328,7 +1388,7 @@ func (m *MsgAddArbitrageDenom) Reset()         { *m = MsgAddArbitrageDenom{} }
 func (m *MsgAddArbitrageDenom) String() string { return proto.CompactTextString(m) }
 func (*MsgAddArbitrageDenom) ProtoMessage()    {}
 func (*MsgAddArbitrageDenom) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{19}
+	return fileDescriptor_6ba97ecacef12ed2, []int{20}
 }
 func (m *MsgAddArbitrageDenom) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1465,7 +1525,7 @@ func (m *MsgArbitrageUpdateBuyThreshold) Reset()         { *m = MsgArbitrageUpda
 func (m *MsgArbitrageUpdateBuyThreshold) String() string { return proto.CompactTextString(m) }
 func (*MsgArbitrageUpdateBuyThreshold) ProtoMessage()    {}
 func (*MsgArbitrageUpdateBuyThreshold) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{20}
+	return fileDescriptor_6ba97ecacef12ed2, []int{21}
 }
 func (m *MsgArbitrageUpdateBuyThreshold) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1525,7 +1585,7 @@ func (m *MsgArbitrageUpdateSellThreshold) Reset()         { *m = MsgArbitrageUpd
 func (m *MsgArbitrageUpdateSellThreshold) String() string { return proto.CompactTextString(m) }
 func (*MsgArbitrageUpdateSellThreshold) ProtoMessage()    {}
 func (*MsgArbitrageUpdateSellThreshold) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{21}
+	return fileDescriptor_6ba97ecacef12ed2, []int{22}
 }
 func (m *MsgArbitrageUpdateSellThreshold) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1585,7 +1645,7 @@ func (m *MsgArbitrageUpdateBuyAmount) Reset()         { *m = MsgArbitrageUpdateB
 func (m *MsgArbitrageUpdateBuyAmount) String() string { return proto.CompactTextString(m) }
 func (*MsgArbitrageUpdateBuyAmount) ProtoMessage()    {}
 func (*MsgArbitrageUpdateBuyAmount) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{22}
+	return fileDescriptor_6ba97ecacef12ed2, []int{23}
 }
 func (m *MsgArbitrageUpdateBuyAmount) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1645,7 +1705,7 @@ func (m *MsgArbitrageUpdateSellAmount) Reset()         { *m = MsgArbitrageUpdate
 func (m *MsgArbitrageUpdateSellAmount) String() string { return proto.CompactTextString(m) }
 func (*MsgArbitrageUpdateSellAmount) ProtoMessage()    {}
 func (*MsgArbitrageUpdateSellAmount) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{23}
+	return fileDescriptor_6ba97ecacef12ed2, []int{24}
 }
 func (m *MsgArbitrageUpdateSellAmount) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1705,7 +1765,7 @@ func (m *MsgArbitrageUpdateRedemptionFee) Reset()         { *m = MsgArbitrageUpd
 func (m *MsgArbitrageUpdateRedemptionFee) String() string { return proto.CompactTextString(m) }
 func (*MsgArbitrageUpdateRedemptionFee) ProtoMessage()    {}
 func (*MsgArbitrageUpdateRedemptionFee) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{24}
+	return fileDescriptor_6ba97ecacef12ed2, []int{25}
 }
 func (m *MsgArbitrageUpdateRedemptionFee) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1769,7 +1829,7 @@ func (m *MsgArbitrageUpdateRedemptionFeeReserveShare) String() string {
 }
 func (*MsgArbitrageUpdateRedemptionFeeReserveShare) ProtoMessage() {}
 func (*MsgArbitrageUpdateRedemptionFeeReserveShare) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6ba97ecacef12ed2, []int{25}
+	return fileDescriptor_6ba97ecacef12ed2, []int{26}
 }
 func (m *MsgArbitrageUpdateRedemptionFeeReserveShare) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1822,10 +1882,11 @@ func (m *MsgArbitrageUpdateRedemptionFeeReserveShare) GetRedemptionFeeReserveSha
 func init() {
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "kopi.denominations.MsgUpdateParamsResponse")
 	proto.RegisterType((*MsgDexAddDenom)(nil), "kopi.denominations.MsgDexAddDenom")
-	proto.RegisterType((*MsgDexUpdateMinimumLiquidity)(nil), "kopi.denominations.MsgDexUpdateMinimumLiquidity")
-	proto.RegisterType((*MsgDexUpdateExtraVirtualLiquidity)(nil), "kopi.denominations.MsgDexUpdateExtraVirtualLiquidity")
+	proto.RegisterType((*MsgDexUpdateMinimumDexLiquidity)(nil), "kopi.denominations.MsgDexUpdateMinimumDexLiquidity")
+	proto.RegisterType((*MsgDexUpdateMinimumTradeLiquidity)(nil), "kopi.denominations.MsgDexUpdateMinimumTradeLiquidity")
 	proto.RegisterType((*MsgDexUpdateMinimumOrderSize)(nil), "kopi.denominations.MsgDexUpdateMinimumOrderSize")
 	proto.RegisterType((*MsgKCoinAddDenom)(nil), "kopi.denominations.MsgKCoinAddDenom")
+	proto.RegisterType((*MsgKCoinRemoveKCoin)(nil), "kopi.denominations.MsgKCoinRemoveKCoin")
 	proto.RegisterType((*MsgKCoinUpdateSupplyLimit)(nil), "kopi.denominations.MsgKCoinUpdateSupplyLimit")
 	proto.RegisterType((*MsgKCoinUpdateBurnAmount)(nil), "kopi.denominations.MsgKCoinUpdateBurnAmount")
 	proto.RegisterType((*MsgKCoinUpdateMintAmount)(nil), "kopi.denominations.MsgKCoinUpdateMintAmount")
@@ -1851,117 +1912,123 @@ func init() {
 func init() { proto.RegisterFile("kopi/denominations/tx.proto", fileDescriptor_6ba97ecacef12ed2) }
 
 var fileDescriptor_6ba97ecacef12ed2 = []byte{
-	// 1757 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe4, 0x5a, 0xcd, 0x6f, 0x1b, 0x45,
-	0x14, 0xef, 0x76, 0xf3, 0xd1, 0x3c, 0x27, 0x69, 0xb3, 0x4d, 0x1a, 0x27, 0x6d, 0x9d, 0x76, 0xfb,
-	0xa1, 0xd4, 0x6d, 0xec, 0xb4, 0x81, 0xaa, 0x58, 0x40, 0xeb, 0x34, 0x14, 0x89, 0xd6, 0x02, 0x39,
-	0xa5, 0x07, 0x0e, 0x58, 0x6b, 0xef, 0xd4, 0x59, 0xea, 0xdd, 0x31, 0xbb, 0xeb, 0xd4, 0xc9, 0x01,
-	0x55, 0x88, 0x13, 0x17, 0x38, 0xf2, 0x67, 0xf4, 0xc0, 0x01, 0x09, 0x71, 0x43, 0x02, 0x81, 0x80,
-	0x52, 0x89, 0x4f, 0x09, 0xa9, 0x6a, 0x0f, 0xbd, 0x72, 0xe0, 0x0f, 0x40, 0xb3, 0xb3, 0xf6, 0x7e,
-	0xcc, 0xee, 0x7a, 0xd7, 0x76, 0xc4, 0x81, 0x4b, 0xeb, 0x7d, 0xf3, 0x66, 0x7e, 0xef, 0xf7, 0xde,
-	0x9b, 0xb7, 0x33, 0x6f, 0x03, 0x47, 0xef, 0xe1, 0xa6, 0x92, 0x97, 0x91, 0x86, 0x55, 0x45, 0x93,
-	0x4c, 0x05, 0x6b, 0x46, 0xde, 0x6c, 0xe7, 0x9a, 0x3a, 0x36, 0xb1, 0x20, 0x90, 0xc1, 0x9c, 0x67,
-	0x70, 0x71, 0x46, 0x52, 0x15, 0x0d, 0xe7, 0xad, 0x7f, 0xa9, 0xda, 0xe2, 0x7c, 0x0d, 0x1b, 0x2a,
-	0x36, 0xf2, 0xaa, 0x51, 0xcf, 0x6f, 0x5f, 0x24, 0xff, 0xd9, 0x03, 0x0b, 0x74, 0xa0, 0x62, 0x3d,
-	0xe5, 0xe9, 0x83, 0x3d, 0x34, 0x5b, 0xc7, 0x75, 0x4c, 0xe5, 0xe4, 0x97, 0x2d, 0x5d, 0x0a, 0xb0,
-	0xa6, 0x29, 0xe9, 0x92, 0x6a, 0x4f, 0x13, 0x17, 0x60, 0xbe, 0x64, 0xd4, 0xdf, 0x6e, 0xca, 0x92,
-	0x89, 0xde, 0xb2, 0x06, 0xca, 0xc8, 0x68, 0x62, 0xcd, 0x40, 0xe2, 0x37, 0xfb, 0x61, 0xba, 0x64,
-	0xd4, 0x37, 0x50, 0xbb, 0x28, 0xcb, 0x1b, 0x64, 0x09, 0xe1, 0x32, 0x4c, 0x48, 0x2d, 0x73, 0x0b,
-	0xeb, 0x8a, 0xb9, 0x93, 0xe6, 0x4e, 0x70, 0xcb, 0x13, 0xeb, 0xe9, 0xc7, 0x9f, 0xaf, 0xcc, 0xda,
-	0x96, 0x14, 0x65, 0x59, 0x47, 0x86, 0xb1, 0x69, 0xea, 0x8a, 0x56, 0x2f, 0x3b, 0xaa, 0x82, 0x00,
-	0x23, 0x9a, 0xa4, 0xa2, 0xf4, 0x7e, 0x32, 0xa5, 0x6c, 0xfd, 0x16, 0x8e, 0xc0, 0xd8, 0x5d, 0xa9,
-	0x66, 0x62, 0x3d, 0xcd, 0x5b, 0x52, 0xfb, 0x49, 0x38, 0x05, 0x53, 0xaa, 0xa2, 0x55, 0x1a, 0xca,
-	0xfb, 0x2d, 0x45, 0x26, 0x38, 0x23, 0xd6, 0xf0, 0xa4, 0xaa, 0x68, 0xb7, 0x3a, 0x32, 0xe1, 0x34,
-	0x4c, 0x13, 0x25, 0xac, 0xcb, 0x48, 0xaf, 0x18, 0xca, 0x2e, 0x4a, 0x8f, 0x76, 0xb5, 0xde, 0x24,
-	0xc2, 0x4d, 0x65, 0x17, 0x09, 0x97, 0x60, 0x8e, 0x68, 0x6d, 0x2b, 0xba, 0xd9, 0x92, 0x1a, 0xae,
-	0x25, 0xc7, 0x2c, 0xe5, 0xc3, 0xaa, 0xa2, 0xdd, 0xa1, 0x63, 0xce, 0xca, 0x8b, 0x70, 0x00, 0xb5,
-	0x9b, 0x58, 0x43, 0x9a, 0x99, 0x1e, 0x3f, 0xc1, 0x2d, 0x8f, 0x94, 0xbb, 0xcf, 0x85, 0xcb, 0x1f,
-	0x3e, 0x7f, 0x98, 0x75, 0x68, 0x7d, 0xfc, 0xfc, 0x61, 0xf6, 0x94, 0xe5, 0xe0, 0xb6, 0xcf, 0xc5,
-	0x5e, 0xb7, 0x89, 0xbf, 0x70, 0x70, 0x8c, 0x8a, 0xa8, 0xa3, 0x4b, 0x8a, 0xa6, 0xa8, 0x2d, 0xd5,
-	0x01, 0x1d, 0xa6, 0x5f, 0x19, 0xff, 0xf1, 0xac, 0xff, 0x0a, 0x1b, 0x2c, 0x93, 0x8b, 0x11, 0x4c,
-	0x82, 0xcd, 0x16, 0xff, 0xe1, 0xe0, 0xa4, 0x5b, 0xe1, 0xb5, 0xb6, 0xa9, 0x4b, 0x8c, 0x47, 0x87,
-	0x49, 0xee, 0x32, 0xcc, 0x23, 0x02, 0x12, 0x10, 0x53, 0x4a, 0x73, 0x0e, 0x05, 0xd9, 0x50, 0xb8,
-	0xc9, 0xf2, 0xbd, 0x12, 0x97, 0xaf, 0x7f, 0x31, 0xf1, 0xd7, 0xe0, 0x70, 0x3a, 0x79, 0x37, 0x4c,
-	0xc6, 0x6c, 0xa6, 0xf3, 0x6c, 0xa6, 0x0f, 0x14, 0xcf, 0xee, 0x2a, 0xe2, 0x9f, 0x3c, 0x1c, 0x2a,
-	0x19, 0xf5, 0x9b, 0xd7, 0xb1, 0xa2, 0xed, 0xc9, 0x9e, 0xcf, 0x00, 0xe8, 0xe8, 0x2e, 0xd2, 0x91,
-	0x56, 0x43, 0x46, 0x9a, 0x3f, 0xc1, 0x2f, 0x4f, 0x94, 0x5d, 0x12, 0xe1, 0x38, 0x80, 0x2a, 0xb5,
-	0x2b, 0x46, 0xab, 0xd9, 0x6c, 0x74, 0x36, 0xfe, 0x84, 0x2a, 0xb5, 0x37, 0x2d, 0x81, 0x70, 0x16,
-	0x0e, 0x92, 0x61, 0x55, 0xd1, 0xcc, 0x8a, 0xa4, 0xe2, 0x96, 0x66, 0xda, 0xdb, 0x7e, 0x4a, 0x95,
-	0xda, 0x25, 0x45, 0x33, 0x8b, 0x96, 0xb0, 0xa3, 0x57, 0x6d, 0xe9, 0x5a, 0x47, 0x6f, 0xac, 0xab,
-	0xb7, 0xde, 0xd2, 0x35, 0x5b, 0xcf, 0x29, 0x41, 0xe3, 0xd1, 0x25, 0xe8, 0x40, 0xac, 0x12, 0x34,
-	0x91, 0xa4, 0x04, 0x41, 0xbc, 0x12, 0x94, 0xf2, 0x95, 0xa0, 0x2b, 0x6c, 0xa0, 0xcf, 0x84, 0x05,
-	0xda, 0x13, 0x47, 0xf1, 0x7b, 0x0e, 0x16, 0x3a, 0x42, 0x1a, 0x7f, 0xea, 0xd5, 0x5b, 0x8a, 0xaa,
-	0x98, 0x7d, 0x47, 0x79, 0x16, 0x46, 0x2d, 0x5c, 0x3b, 0xcc, 0xf4, 0xc1, 0x17, 0x47, 0xde, 0x17,
-	0xc7, 0x42, 0x91, 0x25, 0x91, 0x8b, 0x24, 0xc1, 0xd8, 0x2b, 0x3e, 0xe6, 0x20, 0xed, 0x1d, 0x75,
-	0xc5, 0x75, 0xb8, 0x64, 0x02, 0xb2, 0x89, 0x0f, 0xc8, 0xa6, 0xc2, 0x35, 0x96, 0xd5, 0x4a, 0x0c,
-	0x56, 0xce, 0x0a, 0x01, 0xa4, 0x5c, 0x49, 0xbd, 0x27, 0xa4, 0xdc, 0x5b, 0x89, 0x0f, 0xd8, 0x4a,
-	0xfd, 0x92, 0x72, 0x56, 0x10, 0xbf, 0xe6, 0x60, 0xce, 0x95, 0x8c, 0x65, 0x67, 0xb7, 0x0f, 0x97,
-	0x51, 0x8f, 0xda, 0x52, 0x78, 0x85, 0x65, 0x92, 0xed, 0xb5, 0x73, 0x1c, 0x63, 0xc5, 0xef, 0x5c,
-	0xb1, 0x29, 0x23, 0x15, 0x6f, 0xa3, 0xff, 0x8c, 0x49, 0xe2, 0x98, 0xf8, 0xed, 0x15, 0x7f, 0xa3,
-	0x31, 0xb9, 0x8e, 0x1b, 0x0d, 0xc9, 0x44, 0xba, 0xd4, 0x18, 0xb8, 0xda, 0x07, 0x33, 0x39, 0x04,
-	0x7c, 0xc3, 0xdc, 0xb6, 0x33, 0x8b, 0xfc, 0x14, 0x96, 0x20, 0x45, 0xf2, 0x4e, 0x46, 0x4d, 0x6c,
-	0x28, 0xa6, 0x5d, 0xe2, 0x49, 0xb1, 0xd8, 0xa0, 0x92, 0x44, 0x61, 0x62, 0xed, 0x17, 0xbf, 0xe0,
-	0xe0, 0x88, 0x67, 0x84, 0xe6, 0xe3, 0xad, 0xdb, 0x77, 0xf6, 0x9a, 0x5a, 0xe1, 0x55, 0xd6, 0xf2,
-	0xf3, 0xbd, 0x2d, 0xef, 0xda, 0x27, 0xfe, 0xc1, 0xc1, 0x52, 0xc0, 0x90, 0xed, 0x98, 0xbd, 0x28,
-	0xd3, 0xbe, 0x60, 0xf0, 0x4c, 0x30, 0x5e, 0x67, 0x29, 0xbd, 0x10, 0x97, 0x92, 0xdb, 0x6e, 0xf1,
-	0x4b, 0x1e, 0x66, 0x88, 0x4e, 0xd1, 0x30, 0x90, 0xb9, 0x27, 0x47, 0x8b, 0xe3, 0x00, 0x55, 0xc9,
-	0x40, 0x15, 0x4a, 0xd3, 0x7e, 0xe5, 0x10, 0x09, 0x85, 0x12, 0x61, 0x4a, 0x46, 0xed, 0xca, 0x5d,
-	0x84, 0x2a, 0xc6, 0x96, 0xa4, 0x23, 0x3b, 0xf3, 0x52, 0x32, 0x6a, 0xdf, 0x40, 0x68, 0x93, 0x88,
-	0x5c, 0xc7, 0x81, 0xd1, 0xe8, 0xe3, 0xc0, 0x58, 0xac, 0xe3, 0xc0, 0x78, 0x92, 0xe3, 0xc0, 0x81,
-	0xf0, 0xe3, 0xc0, 0x49, 0x98, 0xac, 0x62, 0x5d, 0xc7, 0xf7, 0x2b, 0x0d, 0xe2, 0x4b, 0xfb, 0x98,
-	0x91, 0xa2, 0x32, 0x9a, 0x16, 0xa2, 0x6d, 0x21, 0x96, 0x34, 0x8a, 0x4d, 0x4f, 0x17, 0x29, 0x62,
-	0x21, 0x96, 0x34, 0xeb, 0x88, 0xf8, 0x12, 0x1b, 0xcb, 0xb3, 0xa1, 0xb1, 0xf4, 0xc4, 0x49, 0xfc,
-	0x91, 0xd6, 0x3e, 0x2a, 0xa5, 0xd1, 0xed, 0x16, 0x93, 0x61, 0x1f, 0x76, 0x35, 0x74, 0xbf, 0xc2,
-	0x04, 0x72, 0x52, 0x43, 0xf7, 0xd7, 0x3b, 0xb1, 0x4c, 0x54, 0xff, 0x02, 0x6d, 0x16, 0x1f, 0x71,
-	0xb0, 0xe8, 0x1b, 0xdc, 0x70, 0x25, 0xc2, 0x30, 0x29, 0x31, 0x89, 0xc7, 0x33, 0x89, 0x57, 0x58,
-	0x67, 0x09, 0xe5, 0xe3, 0x10, 0x72, 0xd9, 0x2c, 0xfe, 0xc4, 0x52, 0x5a, 0x77, 0x65, 0xc8, 0x30,
-	0x29, 0xf9, 0x13, 0x92, 0x67, 0x12, 0xb2, 0x6f, 0x46, 0x2e, 0x93, 0xc5, 0x27, 0x1c, 0x64, 0x7c,
-	0xc3, 0x9d, 0x1b, 0xa8, 0x9d, 0xd3, 0x43, 0x65, 0x95, 0x85, 0x19, 0x95, 0x2e, 0xef, 0xda, 0x47,
-	0x94, 0xda, 0x41, 0xd5, 0x8b, 0x5b, 0xb8, 0xc1, 0xd2, 0x5b, 0x8b, 0x43, 0xcf, 0x67, 0xbf, 0xf8,
-	0xf7, 0x08, 0xcc, 0x96, 0x8c, 0x7a, 0x51, 0x96, 0x8b, 0x7a, 0x55, 0x31, 0x75, 0xa9, 0x8e, 0xfe,
-	0x37, 0x8d, 0x96, 0x59, 0x18, 0xbd, 0x57, 0xc3, 0x8a, 0x66, 0xd7, 0x49, 0xfa, 0x20, 0xcc, 0xc3,
-	0x78, 0xad, 0x22, 0x11, 0x8f, 0xd9, 0x25, 0x71, 0xac, 0x66, 0xf9, 0x8f, 0x58, 0x5b, 0x6d, 0xed,
-	0x54, 0xcc, 0x2d, 0x1d, 0x19, 0x5b, 0xb8, 0x21, 0x77, 0x6e, 0x5b, 0xd5, 0xd6, 0xce, 0xed, 0x8e,
-	0x4c, 0x58, 0x86, 0x43, 0x96, 0x92, 0x2e, 0xc9, 0xa8, 0x73, 0xac, 0xa5, 0xa5, 0x70, 0x9a, 0xe8,
-	0x11, 0xb1, 0x7d, 0x9a, 0x3e, 0x03, 0xd3, 0x06, 0x6a, 0x34, 0x5c, 0xeb, 0xa5, 0xe8, 0xf1, 0x97,
-	0x48, 0x9d, 0x05, 0xb3, 0x30, 0x43, 0xd5, 0xdc, 0x2b, 0x4e, 0xd2, 0xa4, 0xb0, 0x34, 0xbd, 0x4b,
-	0xea, 0x48, 0x46, 0x6a, 0x93, 0x84, 0x9e, 0x6c, 0xf8, 0xf4, 0x14, 0x5d, 0xd2, 0x91, 0xde, 0x40,
-	0x48, 0xb8, 0x0a, 0xc7, 0xbc, 0x6a, 0x15, 0x1d, 0x19, 0x48, 0xdf, 0xee, 0xd4, 0x87, 0x69, 0x6b,
-	0xd2, 0x82, 0x67, 0x52, 0x99, 0x6a, 0xd0, 0x6a, 0xf1, 0x32, 0x9b, 0x7c, 0xe7, 0xc2, 0x92, 0x8f,
-	0xc9, 0x2c, 0x72, 0xca, 0x20, 0xbb, 0xaa, 0x2b, 0xed, 0x5c, 0x42, 0x5c, 0x5e, 0x1c, 0x72, 0x37,
-	0xca, 0x1b, 0x36, 0x9e, 0x0d, 0x5b, 0xa2, 0xed, 0x14, 0x61, 0xb8, 0xf8, 0x17, 0x3d, 0x41, 0xf9,
-	0x54, 0x36, 0x3d, 0x11, 0x1d, 0x26, 0x39, 0x36, 0x89, 0xf8, 0x80, 0x24, 0x4a, 0x74, 0x8a, 0x8a,
-	0xb2, 0x5d, 0xfc, 0x81, 0x83, 0xa3, 0x81, 0x2e, 0x18, 0xf0, 0x8a, 0x18, 0x76, 0x9e, 0x6a, 0xed,
-	0x78, 0xef, 0x86, 0x13, 0xd5, 0x0e, 0x54, 0xe1, 0x3a, 0xcb, 0x69, 0x35, 0x7e, 0xc8, 0xec, 0xab,
-	0xe1, 0xcf, 0xb4, 0x91, 0x16, 0xc0, 0x79, 0x0f, 0x08, 0x2d, 0x41, 0xca, 0x0a, 0x96, 0x87, 0x11,
-	0x18, 0x5d, 0xb0, 0x44, 0x3d, 0xb4, 0x50, 0x93, 0x43, 0x72, 0xb0, 0xec, 0x29, 0x01, 0x43, 0xce,
-	0x41, 0x5f, 0xd5, 0xe1, 0x03, 0xaa, 0xce, 0x20, 0x39, 0xe8, 0xb1, 0x5d, 0xfc, 0x64, 0x3f, 0x9c,
-	0xef, 0xa1, 0xe3, 0xae, 0x56, 0x43, 0xe5, 0xda, 0xab, 0x74, 0xf2, 0xbd, 0x4a, 0xe7, 0x26, 0xeb,
-	0x85, 0x6b, 0xfd, 0x78, 0xc1, 0xbd, 0xe8, 0xa5, 0xaf, 0xe6, 0x81, 0x2f, 0x19, 0x75, 0xe1, 0x5d,
-	0x48, 0xb9, 0xbf, 0x95, 0x88, 0x39, 0xf6, 0x63, 0x4f, 0xce, 0xfb, 0x61, 0x60, 0xf1, 0x7c, 0x88,
-	0x4e, 0xd0, 0xf7, 0x18, 0x61, 0x17, 0x16, 0xc2, 0xbf, 0x20, 0xac, 0x86, 0xa3, 0x05, 0xcf, 0x18,
-	0x18, 0xdb, 0x79, 0xfb, 0xc7, 0xc5, 0xee, 0xce, 0x48, 0x86, 0xfd, 0x11, 0x07, 0x99, 0x1e, 0x9f,
-	0x18, 0x5e, 0xec, 0x65, 0x41, 0xe0, 0xb4, 0x64, 0x66, 0x54, 0x61, 0xca, 0xdb, 0x18, 0x3f, 0x1d,
-	0x32, 0xdb, 0xa3, 0x95, 0x0c, 0xc3, 0x84, 0x23, 0x21, 0xfd, 0xd9, 0x95, 0x28, 0x30, 0x46, 0x3d,
-	0x19, 0xaa, 0x0e, 0x73, 0xc1, 0x2d, 0xc7, 0x0b, 0xbd, 0x41, 0x1d, 0xed, 0x41, 0x30, 0x5d, 0xbd,
-	0xdb, 0x18, 0x98, 0x8e, 0x76, 0x32, 0xcc, 0x06, 0x08, 0x01, 0x5d, 0xc8, 0x73, 0x3d, 0xc2, 0xe8,
-	0xa8, 0xf6, 0xc7, 0x90, 0x69, 0x16, 0x46, 0x32, 0xf4, 0x6b, 0x27, 0x66, 0x18, 0xd0, 0xd3, 0x0b,
-	0x63, 0xc8, 0xaa, 0x26, 0x43, 0xd3, 0xe0, 0x70, 0x50, 0x9f, 0x2d, 0xdb, 0x13, 0xae, 0xab, 0x9b,
-	0x0c, 0xef, 0x01, 0x07, 0xc7, 0x22, 0xbb, 0x63, 0x6b, 0x31, 0x91, 0xdd, 0x93, 0x92, 0x99, 0x20,
-	0xc3, 0xb4, 0xaf, 0x87, 0x75, 0x26, 0x0c, 0xd3, 0xa3, 0x96, 0x38, 0x75, 0x82, 0x7b, 0x2d, 0x17,
-	0x22, 0xc1, 0x7c, 0xda, 0xc9, 0x30, 0xb7, 0x61, 0x3e, 0xac, 0x1d, 0x92, 0x8b, 0x81, 0xea, 0xd2,
-	0x1f, 0x08, 0xd7, 0xdd, 0xb3, 0x88, 0x83, 0xeb, 0xd2, 0x4f, 0x86, 0xfb, 0x01, 0x1c, 0x8d, 0xea,
-	0x2c, 0x5c, 0x8a, 0x81, 0xed, 0x9b, 0x93, 0x0c, 0xff, 0x3d, 0x98, 0xe9, 0x9e, 0x30, 0xba, 0xc9,
-	0xb4, 0x1c, 0xb2, 0x02, 0x73, 0x8d, 0x4b, 0xcc, 0x35, 0xea, 0xbe, 0x17, 0xc6, 0x35, 0x62, 0x4e,
-	0xf2, 0x8d, 0x1b, 0x79, 0x29, 0x5b, 0x8b, 0x67, 0x81, 0x67, 0x52, 0x32, 0x13, 0xda, 0x90, 0x0e,
-	0xbd, 0x36, 0xe5, 0x63, 0xf3, 0xef, 0xe7, 0xad, 0xb3, 0x0b, 0x0b, 0xe1, 0x17, 0x9c, 0xd5, 0xf8,
-	0xc4, 0xfb, 0xc1, 0x0e, 0x70, 0xbc, 0xf7, 0x26, 0x12, 0xd3, 0xf1, 0x9e, 0x49, 0xc9, 0x4c, 0xf8,
-	0x8c, 0x83, 0xe5, 0xd8, 0x97, 0x85, 0xab, 0x7d, 0x98, 0xe3, 0x5e, 0x20, 0x91, 0x69, 0x8b, 0xa3,
-	0x0f, 0x9e, 0x3f, 0xcc, 0x72, 0xeb, 0x6f, 0x7c, 0xfb, 0x34, 0xc3, 0x3d, 0x7a, 0x9a, 0xe1, 0x9e,
-	0x3c, 0xcd, 0x70, 0x9f, 0x3e, 0xcb, 0xec, 0x7b, 0xf4, 0x2c, 0xb3, 0xef, 0xf7, 0x67, 0x99, 0x7d,
-	0xef, 0xac, 0xd6, 0x15, 0x73, 0xab, 0x55, 0xcd, 0xd5, 0xb0, 0x6a, 0x75, 0x2f, 0x57, 0x54, 0xac,
-	0xa1, 0x9d, 0xe0, 0x46, 0xa6, 0xb9, 0xd3, 0x44, 0x46, 0x75, 0xcc, 0xfa, 0xab, 0xaa, 0xb5, 0x7f,
-	0x03, 0x00, 0x00, 0xff, 0xff, 0x8c, 0xf9, 0x6c, 0x7c, 0x06, 0x26, 0x00, 0x00,
+	// 1842 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x5a, 0xcd, 0x6f, 0xdc, 0xd4,
+	0x16, 0xaf, 0xeb, 0x7c, 0x9e, 0x49, 0xd2, 0xc4, 0x49, 0x9b, 0x49, 0xda, 0x4e, 0x5a, 0xf7, 0xe3,
+	0xa5, 0x69, 0x33, 0x93, 0x36, 0xef, 0x45, 0xef, 0xcd, 0x03, 0xda, 0xa4, 0x51, 0x11, 0xd0, 0x08,
+	0x34, 0x29, 0x5d, 0xb0, 0x60, 0xe4, 0x89, 0x6f, 0x27, 0xa6, 0x63, 0x7b, 0xb0, 0x3d, 0xe9, 0x24,
+	0x0b, 0x54, 0x21, 0x56, 0x6c, 0x60, 0xc9, 0x92, 0xbf, 0x00, 0x75, 0xc1, 0x02, 0x89, 0x2d, 0x0b,
+	0x04, 0x02, 0x4a, 0x17, 0x7c, 0x49, 0x48, 0x55, 0xbb, 0xa8, 0xc4, 0x06, 0xc4, 0x5f, 0x80, 0xae,
+	0xaf, 0x3d, 0xbe, 0xf6, 0xb5, 0x3d, 0xf6, 0xc4, 0x11, 0x62, 0xd3, 0xda, 0xe7, 0xfe, 0xee, 0x3d,
+	0xe7, 0x77, 0xcf, 0xb9, 0x67, 0xce, 0x3d, 0x0e, 0x1c, 0xbf, 0xab, 0x37, 0x95, 0x92, 0x8c, 0x34,
+	0x5d, 0x55, 0x34, 0xc9, 0x52, 0x74, 0xcd, 0x2c, 0x59, 0xed, 0x62, 0xd3, 0xd0, 0x2d, 0x5d, 0x10,
+	0xf0, 0x60, 0xd1, 0x37, 0x38, 0x3b, 0x21, 0xa9, 0x8a, 0xa6, 0x97, 0xec, 0x7f, 0x09, 0x6c, 0x76,
+	0x7a, 0x4b, 0x37, 0x55, 0xdd, 0x2c, 0xa9, 0x66, 0xbd, 0xb4, 0x73, 0x19, 0xff, 0xe7, 0x0c, 0xcc,
+	0x90, 0x81, 0xaa, 0xfd, 0x56, 0x22, 0x2f, 0xce, 0xd0, 0x54, 0x5d, 0xaf, 0xeb, 0x44, 0x8e, 0x9f,
+	0x1c, 0xe9, 0x5c, 0x88, 0x35, 0x4d, 0xc9, 0x90, 0x54, 0x67, 0x9a, 0x38, 0x03, 0xd3, 0x1b, 0x66,
+	0xfd, 0xf5, 0xa6, 0x2c, 0x59, 0xe8, 0x35, 0x7b, 0xa0, 0x82, 0xcc, 0xa6, 0xae, 0x99, 0x48, 0xfc,
+	0xfd, 0x30, 0x8c, 0x6d, 0x98, 0xf5, 0x75, 0xd4, 0x5e, 0x95, 0xe5, 0x75, 0xbc, 0x84, 0xb0, 0x02,
+	0xc3, 0x52, 0xcb, 0xda, 0xd6, 0x0d, 0xc5, 0xda, 0xcd, 0x73, 0xa7, 0xb8, 0xf9, 0xe1, 0xb5, 0xfc,
+	0xa3, 0x4f, 0x17, 0xa7, 0x1c, 0x4b, 0x56, 0x65, 0xd9, 0x40, 0xa6, 0xb9, 0x69, 0x19, 0x8a, 0x56,
+	0xaf, 0x78, 0x50, 0x41, 0x80, 0x3e, 0x4d, 0x52, 0x51, 0xfe, 0x30, 0x9e, 0x52, 0xb1, 0x9f, 0x85,
+	0x63, 0x30, 0x70, 0x47, 0xda, 0xb2, 0x74, 0x23, 0xcf, 0xdb, 0x52, 0xe7, 0x4d, 0x38, 0x03, 0xa3,
+	0xaa, 0xa2, 0x55, 0x1b, 0xca, 0xdb, 0x2d, 0x45, 0xc6, 0x7a, 0xfa, 0xec, 0xe1, 0x11, 0x55, 0xd1,
+	0x6e, 0xba, 0x32, 0xe1, 0x2c, 0x8c, 0x61, 0x90, 0x6e, 0xc8, 0xc8, 0xa8, 0x9a, 0xca, 0x1e, 0xca,
+	0xf7, 0x77, 0x50, 0xaf, 0x62, 0xe1, 0xa6, 0xb2, 0x87, 0x84, 0x22, 0x4c, 0x62, 0x94, 0x65, 0x48,
+	0x32, 0xa2, 0x16, 0x1c, 0xb0, 0xa1, 0x13, 0xaa, 0xa2, 0xdd, 0xc2, 0x23, 0xde, 0xaa, 0x0b, 0x80,
+	0x85, 0x55, 0x19, 0xb5, 0x29, 0xf4, 0xa0, 0x8d, 0x3e, 0xa2, 0x2a, 0xda, 0x3a, 0x6a, 0x7b, 0xd8,
+	0x59, 0x18, 0x42, 0xed, 0xa6, 0xae, 0x21, 0xcd, 0xca, 0x0f, 0x9d, 0xe2, 0xe6, 0xfb, 0x2a, 0x9d,
+	0xf7, 0xf2, 0xca, 0xbb, 0xcf, 0x1e, 0x2c, 0x78, 0xf4, 0xdf, 0x7f, 0xf6, 0x60, 0xe1, 0x8c, 0xed,
+	0x88, 0x76, 0xc0, 0x15, 0xfe, 0xed, 0x15, 0x7f, 0xe3, 0x60, 0x8e, 0x88, 0x88, 0x43, 0x36, 0x14,
+	0x4d, 0x51, 0x5b, 0xaa, 0x4f, 0x6f, 0x96, 0x2e, 0xb8, 0x02, 0x47, 0x55, 0xa2, 0x22, 0xc0, 0x99,
+	0x78, 0x64, 0x52, 0x65, 0xf5, 0x97, 0x5f, 0x64, 0xb9, 0xfd, 0x3b, 0x86, 0x5b, 0x24, 0x11, 0xf1,
+	0x4f, 0x0e, 0x4e, 0x87, 0x60, 0x02, 0x2e, 0xc9, 0x92, 0xee, 0x0a, 0x4c, 0xbb, 0x74, 0x83, 0x21,
+	0x41, 0x08, 0xbb, 0xbb, 0xe1, 0xb7, 0xa1, 0xfc, 0x12, 0x4b, 0x79, 0x25, 0x29, 0x65, 0xff, 0x52,
+	0xe2, 0x0f, 0x1c, 0x9c, 0x08, 0x41, 0x79, 0x21, 0x9b, 0x25, 0x5f, 0xf6, 0x90, 0xf0, 0xec, 0x21,
+	0x29, 0xaf, 0xb3, 0xec, 0x2e, 0x27, 0x65, 0xd7, 0x59, 0x45, 0xfc, 0x85, 0x87, 0xf1, 0x0d, 0xb3,
+	0xfe, 0xca, 0x75, 0x5d, 0xd1, 0x0e, 0x24, 0x5d, 0x14, 0x00, 0x0c, 0x74, 0x07, 0x19, 0x48, 0xdb,
+	0x42, 0x66, 0x9e, 0x3f, 0xc5, 0xcf, 0x0f, 0x57, 0x28, 0x89, 0x70, 0x12, 0x40, 0x95, 0xda, 0x55,
+	0xb3, 0xd5, 0x6c, 0x36, 0xdc, 0x9c, 0x31, 0xac, 0x4a, 0xed, 0x4d, 0x5b, 0x20, 0x9c, 0x87, 0x23,
+	0x78, 0x58, 0x55, 0x34, 0xab, 0x2a, 0xa9, 0x7a, 0x4b, 0xb3, 0x9c, 0x8c, 0x31, 0xaa, 0x4a, 0xed,
+	0x0d, 0x45, 0xb3, 0x56, 0x6d, 0xa1, 0x8b, 0xab, 0xb5, 0x0c, 0xcd, 0xc5, 0x0d, 0x74, 0x70, 0x6b,
+	0x2d, 0x43, 0x73, 0x70, 0x5e, 0xf6, 0x1a, 0x8c, 0xcf, 0x5e, 0x43, 0x89, 0xb2, 0xd7, 0x70, 0x48,
+	0xf6, 0x22, 0xa7, 0xb3, 0xba, 0xa3, 0x18, 0x56, 0x4b, 0x6a, 0x50, 0x4b, 0x42, 0xe7, 0x74, 0xde,
+	0x26, 0x63, 0xe1, 0x59, 0x29, 0x17, 0xc8, 0x4a, 0xff, 0x65, 0x1d, 0x7d, 0x2e, 0xca, 0xd1, 0x3e,
+	0x3f, 0x8a, 0x1f, 0x73, 0x30, 0xe9, 0x0a, 0x2b, 0x48, 0xd5, 0x77, 0x90, 0xfd, 0xd8, 0xb3, 0x7f,
+	0xa7, 0xa0, 0xdf, 0xd6, 0xe8, 0x38, 0x98, 0xbc, 0x94, 0xff, 0xcf, 0xda, 0x37, 0x1f, 0x6b, 0x1f,
+	0x65, 0x8a, 0xf8, 0x35, 0x07, 0x33, 0xae, 0x9c, 0x84, 0x28, 0x71, 0xfc, 0x4d, 0x45, 0x55, 0xac,
+	0x6c, 0x0d, 0x0d, 0x84, 0x1a, 0x1f, 0x08, 0xb5, 0xf2, 0x2a, 0xcb, 0xa3, 0x18, 0xcb, 0x83, 0xb1,
+	0x57, 0x7c, 0xc4, 0x41, 0xde, 0x3f, 0x4a, 0x85, 0x5e, 0xb6, 0x64, 0x42, 0x02, 0x9e, 0x0f, 0x09,
+	0xf8, 0xf2, 0x35, 0x96, 0xd5, 0x62, 0x02, 0x56, 0xde, 0x0a, 0x21, 0xa4, 0xa8, 0x73, 0x77, 0x20,
+	0xa4, 0xe8, 0xd3, 0xce, 0x87, 0x9c, 0xf6, 0x5e, 0x49, 0x79, 0x2b, 0x88, 0x5f, 0x70, 0x70, 0x94,
+	0x3a, 0x2f, 0x15, 0x2f, 0x21, 0x65, 0xcb, 0xa8, 0x4b, 0xfa, 0x2b, 0x3f, 0xcf, 0x32, 0x59, 0xe8,
+	0x76, 0xb8, 0x3d, 0x63, 0xc5, 0xaf, 0x28, 0xdf, 0x90, 0x63, 0xf5, 0xb7, 0x31, 0x49, 0xed, 0x93,
+	0xa0, 0xbd, 0xe2, 0x8f, 0xc4, 0x27, 0xd7, 0xf5, 0x46, 0x43, 0xb2, 0x90, 0x21, 0x35, 0xf6, 0xfd,
+	0x83, 0x14, 0xce, 0x64, 0x1c, 0xf8, 0x86, 0xb5, 0xe3, 0x44, 0x16, 0x7e, 0x14, 0xe6, 0x20, 0x87,
+	0xe3, 0x4e, 0x46, 0x4d, 0xdd, 0x54, 0x2c, 0xe7, 0x57, 0x08, 0x27, 0x8b, 0x75, 0x22, 0x49, 0xe5,
+	0x26, 0xd6, 0x7e, 0xf1, 0x33, 0x0e, 0x8e, 0xf9, 0x46, 0x48, 0x3c, 0xde, 0xbc, 0x75, 0xfb, 0xa0,
+	0xa9, 0x95, 0x5f, 0x60, 0x2d, 0xbf, 0xd8, 0xdd, 0xf2, 0x8e, 0x7d, 0xe2, 0xcf, 0xa4, 0xb6, 0x0d,
+	0x0e, 0x39, 0x1b, 0x73, 0x10, 0x69, 0x3a, 0xe0, 0x0c, 0x9e, 0x71, 0x46, 0x9a, 0x52, 0x36, 0xce,
+	0x6e, 0xf1, 0x73, 0x1e, 0x26, 0x30, 0x66, 0xd5, 0x34, 0x91, 0x75, 0x20, 0xd5, 0xcf, 0x49, 0x80,
+	0x9a, 0x64, 0xa2, 0x2a, 0xa1, 0xe9, 0xfc, 0xe4, 0x60, 0x09, 0x51, 0x25, 0xc2, 0x28, 0x2e, 0xe0,
+	0xef, 0x20, 0x54, 0x35, 0xb7, 0x25, 0x03, 0x39, 0x91, 0x97, 0x93, 0x51, 0xfb, 0x06, 0x42, 0x9b,
+	0x58, 0x44, 0x55, 0x2c, 0xfd, 0xf1, 0x15, 0xcb, 0x40, 0xa2, 0x8a, 0x65, 0x30, 0x4d, 0xc5, 0x32,
+	0x14, 0x5d, 0xb1, 0x9c, 0x86, 0x91, 0x9a, 0x6e, 0x18, 0xfa, 0xbd, 0x6a, 0x03, 0xef, 0xa5, 0x53,
+	0x09, 0xe5, 0x88, 0x8c, 0x84, 0x85, 0xe8, 0x58, 0xa8, 0x4b, 0x1a, 0xd1, 0x4d, 0x0a, 0xa0, 0x1c,
+	0xb6, 0x50, 0x97, 0x34, 0xbb, 0x8a, 0xfd, 0x1f, 0xeb, 0xcb, 0xf3, 0x91, 0xbe, 0xf4, 0xf9, 0x49,
+	0xfc, 0x96, 0xe4, 0x3e, 0x22, 0x25, 0xde, 0xed, 0x24, 0x93, 0xac, 0xeb, 0x71, 0x0d, 0xdd, 0xab,
+	0x32, 0x8e, 0x1c, 0xd1, 0xd0, 0xbd, 0x35, 0xd7, 0x97, 0xa9, 0xf2, 0x5f, 0xa8, 0xcd, 0xe2, 0x43,
+	0x0e, 0x66, 0x03, 0x83, 0xeb, 0x54, 0x20, 0x64, 0x49, 0x89, 0x09, 0x3c, 0x9e, 0x09, 0xbc, 0xf2,
+	0x1a, 0x4b, 0xa8, 0x94, 0x84, 0x10, 0x65, 0xb3, 0xf8, 0x1d, 0x4b, 0x69, 0x8d, 0x8a, 0x90, 0x2c,
+	0x29, 0x05, 0x03, 0x92, 0x67, 0x02, 0xb2, 0x67, 0x46, 0x94, 0xc9, 0xe2, 0x63, 0x0e, 0x0a, 0x81,
+	0x61, 0xe7, 0x52, 0xe5, 0xc6, 0x74, 0xa6, 0xac, 0x48, 0x6b, 0xc3, 0xbe, 0xfb, 0x7a, 0xe7, 0x88,
+	0xef, 0xb4, 0x36, 0x68, 0xbd, 0xe5, 0x1b, 0x2c, 0xbd, 0xe5, 0x24, 0xf4, 0x02, 0xf6, 0x8b, 0x7f,
+	0xf4, 0xc1, 0xd4, 0x86, 0x59, 0x5f, 0x95, 0xe5, 0x55, 0xa3, 0xa6, 0x58, 0x86, 0x54, 0x47, 0xff,
+	0xc8, 0x36, 0x52, 0x64, 0x5a, 0x1b, 0x88, 0x4e, 0x6b, 0x53, 0xd0, 0x7f, 0x77, 0x4b, 0x57, 0x34,
+	0x27, 0x4f, 0x92, 0x17, 0x61, 0x1a, 0x06, 0xb7, 0xaa, 0x12, 0xde, 0x31, 0x27, 0x25, 0x0e, 0x6c,
+	0xd9, 0xfb, 0x87, 0xad, 0xad, 0xb5, 0x76, 0xab, 0xd6, 0xb6, 0x81, 0xcc, 0x6d, 0xbd, 0x21, 0xbb,
+	0x17, 0xc2, 0x5a, 0x6b, 0xf7, 0x96, 0x2b, 0x13, 0xe6, 0x61, 0xdc, 0x06, 0xd9, 0xbd, 0x0b, 0xa7,
+	0xac, 0x25, 0xa9, 0x70, 0x0c, 0xe3, 0xb0, 0xd8, 0xa9, 0xa6, 0xcf, 0xc1, 0x98, 0x89, 0x1a, 0x0d,
+	0x6a, 0xbd, 0x1c, 0x29, 0x7f, 0xb1, 0xd4, 0x5b, 0x70, 0x01, 0x26, 0x08, 0x8c, 0x5e, 0x71, 0x84,
+	0x04, 0x85, 0x8d, 0xf4, 0x2f, 0x69, 0x20, 0x19, 0xa9, 0x4d, 0xec, 0x7a, 0x7c, 0xe0, 0xf3, 0xa3,
+	0x64, 0x49, 0x4f, 0x7a, 0x03, 0x21, 0xe1, 0x2a, 0x9c, 0xf0, 0xc3, 0xaa, 0x06, 0x32, 0x91, 0xb1,
+	0xe3, 0xe6, 0x87, 0x31, 0x7b, 0xd2, 0x8c, 0x6f, 0x52, 0x85, 0x20, 0x48, 0xb6, 0x78, 0x8e, 0x0d,
+	0xbe, 0x0b, 0x51, 0xc1, 0xc7, 0x44, 0x16, 0xae, 0x32, 0xf0, 0xa9, 0xea, 0x48, 0xdd, 0x4b, 0x08,
+	0xb5, 0x8b, 0x59, 0x06, 0x1f, 0xe3, 0x36, 0x9e, 0x75, 0x5b, 0xaa, 0xe3, 0x14, 0x63, 0xb8, 0xf8,
+	0x2b, 0xa9, 0xa0, 0x02, 0x90, 0x4d, 0x9f, 0x47, 0xb3, 0x24, 0xc7, 0x06, 0x11, 0x1f, 0x12, 0x44,
+	0xa9, 0xaa, 0xa8, 0x38, 0xdb, 0xc5, 0x6f, 0x38, 0x38, 0x1e, 0xba, 0x05, 0xfb, 0xbc, 0x22, 0x46,
+	0xd5, 0x53, 0xad, 0x5d, 0xff, 0xdd, 0x70, 0xb8, 0xe6, 0xaa, 0x2a, 0x5f, 0x67, 0x39, 0x2d, 0x25,
+	0x77, 0x99, 0x73, 0x35, 0xfc, 0x9e, 0xf4, 0xfa, 0x42, 0x38, 0x1f, 0x00, 0xa1, 0x39, 0xc8, 0xd9,
+	0xce, 0xf2, 0x31, 0x02, 0xb3, 0xa3, 0x2c, 0x55, 0x9b, 0x2f, 0xd2, 0xe4, 0x88, 0x18, 0xac, 0xf8,
+	0x52, 0x40, 0xc6, 0x31, 0x18, 0xc8, 0x3a, 0x7c, 0x48, 0xd6, 0xd9, 0x4f, 0x0c, 0xfa, 0x6c, 0x17,
+	0x3f, 0x38, 0x0c, 0x17, 0xbb, 0x60, 0xe8, 0x6c, 0x95, 0x29, 0xd7, 0x6e, 0xa9, 0x93, 0xef, 0x96,
+	0x3a, 0x37, 0xd9, 0x5d, 0xb8, 0xd6, 0xcb, 0x2e, 0xd0, 0x8b, 0x5e, 0xf9, 0x24, 0x0f, 0xfc, 0x86,
+	0x59, 0x17, 0xde, 0x84, 0x1c, 0xfd, 0x25, 0x48, 0x2c, 0xb2, 0x9f, 0xb2, 0x8a, 0xfe, 0xcf, 0x19,
+	0xb3, 0x17, 0x23, 0x30, 0x61, 0x5f, 0x9b, 0x84, 0x3d, 0x98, 0x89, 0xee, 0x8a, 0x2f, 0x45, 0x6b,
+	0x0b, 0x9f, 0x91, 0x4e, 0xf7, 0x7b, 0x1c, 0x14, 0xba, 0x7c, 0x87, 0xf8, 0x4f, 0x42, 0x0b, 0xfc,
+	0xd3, 0xd2, 0x99, 0x71, 0x9f, 0x83, 0x13, 0xb1, 0xdf, 0x7e, 0x96, 0x13, 0x1a, 0x41, 0x4f, 0x4a,
+	0x67, 0x42, 0x0d, 0x46, 0xfd, 0x2d, 0xfc, 0xb3, 0x11, 0xb3, 0x7d, 0xa8, 0x74, 0x3a, 0x2c, 0x38,
+	0x16, 0xd1, 0xa6, 0x5d, 0x8c, 0x53, 0xc6, 0xc0, 0xd3, 0x69, 0x35, 0xe0, 0x68, 0x78, 0xe7, 0xf1,
+	0x52, 0x77, 0xa5, 0x1e, 0x7a, 0x3f, 0x3a, 0xa9, 0x16, 0x6e, 0x02, 0x9d, 0x1e, 0x3a, 0x9d, 0xce,
+	0x06, 0x08, 0x21, 0xcd, 0xc8, 0x0b, 0x5d, 0xdc, 0xe8, 0x41, 0x7b, 0x63, 0xc8, 0xf4, 0x0c, 0x63,
+	0x19, 0x06, 0xd1, 0xe9, 0x74, 0x6e, 0xc3, 0x38, 0xf3, 0x25, 0xe2, 0x5f, 0xdd, 0xd5, 0xd9, 0x8f,
+	0xa9, 0xf7, 0x32, 0xa4, 0x89, 0x18, 0xb5, 0x97, 0x2c, 0x34, 0x9d, 0x36, 0x0d, 0x26, 0xc3, 0x1a,
+	0x7b, 0x0b, 0x5d, 0xd5, 0x75, 0xb0, 0xe9, 0xd3, 0x4d, 0x6c, 0x3b, 0x6e, 0x39, 0xa1, 0x66, 0x7a,
+	0x52, 0x3a, 0x13, 0x64, 0x18, 0x0b, 0x34, 0xcd, 0xce, 0x45, 0xe9, 0xf4, 0xc1, 0x52, 0x07, 0x69,
+	0x78, 0x73, 0xe7, 0x52, 0xac, 0xb2, 0x00, 0x3a, 0x9d, 0xce, 0x1d, 0x98, 0x8e, 0xea, 0xbf, 0x14,
+	0x13, 0x68, 0xa5, 0xf0, 0xfb, 0xd2, 0x4b, 0x37, 0x49, 0x92, 0xe8, 0xa5, 0xf0, 0xe9, 0xf4, 0xbe,
+	0x03, 0xc7, 0xe3, 0x5a, 0x19, 0x57, 0x12, 0xe8, 0x0e, 0xcc, 0x49, 0xa7, 0xff, 0x2d, 0x98, 0xe8,
+	0x94, 0x34, 0x9d, 0x60, 0x9a, 0x8f, 0x58, 0x81, 0xb9, 0x37, 0xa6, 0xe6, 0x1a, 0x77, 0xc1, 0x8c,
+	0xe2, 0x1a, 0x33, 0x27, 0xfd, 0xc1, 0x8d, 0xbd, 0x05, 0x2e, 0x27, 0xb3, 0xc0, 0x37, 0x29, 0x9d,
+	0x09, 0x6d, 0xc8, 0x47, 0xde, 0xd3, 0x4a, 0x89, 0xf9, 0xf7, 0xf2, 0xfb, 0xb6, 0x07, 0x33, 0xd1,
+	0x37, 0xaa, 0xa5, 0xe4, 0xc4, 0x7b, 0xd1, 0x1d, 0xb2, 0xf1, 0xfe, 0xab, 0x4f, 0xc2, 0x8d, 0xf7,
+	0x4d, 0x4a, 0x67, 0xc2, 0x47, 0x1c, 0xcc, 0x27, 0xbe, 0x9d, 0x5c, 0xed, 0xc1, 0x1c, 0x7a, 0x81,
+	0x54, 0xa6, 0xcd, 0xf6, 0xdf, 0x7f, 0xf6, 0x60, 0x81, 0x5b, 0x7b, 0xf9, 0xcb, 0x27, 0x05, 0xee,
+	0xe1, 0x93, 0x02, 0xf7, 0xf8, 0x49, 0x81, 0xfb, 0xf0, 0x69, 0xe1, 0xd0, 0xc3, 0xa7, 0x85, 0x43,
+	0x3f, 0x3d, 0x2d, 0x1c, 0x7a, 0x63, 0xa9, 0xae, 0x58, 0xdb, 0xad, 0x5a, 0x71, 0x4b, 0x57, 0xed,
+	0x76, 0xe9, 0xa2, 0xaa, 0x6b, 0x68, 0x37, 0xbc, 0x73, 0x6a, 0xed, 0x36, 0x91, 0x59, 0x1b, 0xb0,
+	0xff, 0x48, 0x6d, 0xf9, 0xaf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x97, 0xb8, 0xc1, 0x70, 0x55, 0x27,
+	0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1977,15 +2044,16 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
 	DexAddDenom(ctx context.Context, in *MsgDexAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	DexUpdateMinimumLiquidity(ctx context.Context, in *MsgDexUpdateMinimumLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	DexUpdateMinimumOrderSize(ctx context.Context, in *MsgDexUpdateMinimumOrderSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	DexUpdateExtraVirtualLiquidity(ctx context.Context, in *MsgDexUpdateExtraVirtualLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	DexUpdateMinimumTradeLiquidity(ctx context.Context, in *MsgDexUpdateMinimumTradeLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	DexUpdateMinimumDexLiquidity(ctx context.Context, in *MsgDexUpdateMinimumDexLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	KCoinAddDenom(ctx context.Context, in *MsgKCoinAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	KCoinUpdateSupplyLimit(ctx context.Context, in *MsgKCoinUpdateSupplyLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	KCoinUpdateMintAmount(ctx context.Context, in *MsgKCoinUpdateMintAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	KCoinUpdateBurnAmount(ctx context.Context, in *MsgKCoinUpdateBurnAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	KCoinAddReferences(ctx context.Context, in *MsgKCoinAddReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	KCoinRemoveReferences(ctx context.Context, in *MsgKCoinRemoveReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	KCoinRemoveKCoin(ctx context.Context, in *MsgKCoinRemoveKCoin, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	CollateralAddDenom(ctx context.Context, in *MsgCollateralAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	CollateralUpdateLTV(ctx context.Context, in *MsgCollateralUpdateLTV, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	CollateralUpdateDepositLimit(ctx context.Context, in *MsgCollateralUpdateDepositLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
@@ -2020,15 +2088,6 @@ func (c *msgClient) DexAddDenom(ctx context.Context, in *MsgDexAddDenom, opts ..
 	return out, nil
 }
 
-func (c *msgClient) DexUpdateMinimumLiquidity(ctx context.Context, in *MsgDexUpdateMinimumLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
-	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/DexUpdateMinimumLiquidity", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *msgClient) DexUpdateMinimumOrderSize(ctx context.Context, in *MsgDexUpdateMinimumOrderSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
 	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/DexUpdateMinimumOrderSize", in, out, opts...)
@@ -2038,9 +2097,18 @@ func (c *msgClient) DexUpdateMinimumOrderSize(ctx context.Context, in *MsgDexUpd
 	return out, nil
 }
 
-func (c *msgClient) DexUpdateExtraVirtualLiquidity(ctx context.Context, in *MsgDexUpdateExtraVirtualLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+func (c *msgClient) DexUpdateMinimumTradeLiquidity(ctx context.Context, in *MsgDexUpdateMinimumTradeLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
-	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/DexUpdateExtraVirtualLiquidity", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/DexUpdateMinimumTradeLiquidity", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) DexUpdateMinimumDexLiquidity(ctx context.Context, in *MsgDexUpdateMinimumDexLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/DexUpdateMinimumDexLiquidity", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2095,6 +2163,15 @@ func (c *msgClient) KCoinAddReferences(ctx context.Context, in *MsgKCoinAddRefer
 func (c *msgClient) KCoinRemoveReferences(ctx context.Context, in *MsgKCoinRemoveReferences, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
 	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/KCoinRemoveReferences", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) KCoinRemoveKCoin(ctx context.Context, in *MsgKCoinRemoveKCoin, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, "/kopi.denominations.Msg/KCoinRemoveKCoin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2239,15 +2316,16 @@ func (c *msgClient) ArbitrageUpdateRedemptionFeeReserveShare(ctx context.Context
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	DexAddDenom(context.Context, *MsgDexAddDenom) (*MsgUpdateParamsResponse, error)
-	DexUpdateMinimumLiquidity(context.Context, *MsgDexUpdateMinimumLiquidity) (*MsgUpdateParamsResponse, error)
 	DexUpdateMinimumOrderSize(context.Context, *MsgDexUpdateMinimumOrderSize) (*MsgUpdateParamsResponse, error)
-	DexUpdateExtraVirtualLiquidity(context.Context, *MsgDexUpdateExtraVirtualLiquidity) (*MsgUpdateParamsResponse, error)
+	DexUpdateMinimumTradeLiquidity(context.Context, *MsgDexUpdateMinimumTradeLiquidity) (*MsgUpdateParamsResponse, error)
+	DexUpdateMinimumDexLiquidity(context.Context, *MsgDexUpdateMinimumDexLiquidity) (*MsgUpdateParamsResponse, error)
 	KCoinAddDenom(context.Context, *MsgKCoinAddDenom) (*MsgUpdateParamsResponse, error)
 	KCoinUpdateSupplyLimit(context.Context, *MsgKCoinUpdateSupplyLimit) (*MsgUpdateParamsResponse, error)
 	KCoinUpdateMintAmount(context.Context, *MsgKCoinUpdateMintAmount) (*MsgUpdateParamsResponse, error)
 	KCoinUpdateBurnAmount(context.Context, *MsgKCoinUpdateBurnAmount) (*MsgUpdateParamsResponse, error)
 	KCoinAddReferences(context.Context, *MsgKCoinAddReferences) (*MsgUpdateParamsResponse, error)
 	KCoinRemoveReferences(context.Context, *MsgKCoinRemoveReferences) (*MsgUpdateParamsResponse, error)
+	KCoinRemoveKCoin(context.Context, *MsgKCoinRemoveKCoin) (*MsgUpdateParamsResponse, error)
 	CollateralAddDenom(context.Context, *MsgCollateralAddDenom) (*MsgUpdateParamsResponse, error)
 	CollateralUpdateLTV(context.Context, *MsgCollateralUpdateLTV) (*MsgUpdateParamsResponse, error)
 	CollateralUpdateDepositLimit(context.Context, *MsgCollateralUpdateDepositLimit) (*MsgUpdateParamsResponse, error)
@@ -2272,14 +2350,14 @@ type UnimplementedMsgServer struct {
 func (*UnimplementedMsgServer) DexAddDenom(ctx context.Context, req *MsgDexAddDenom) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DexAddDenom not implemented")
 }
-func (*UnimplementedMsgServer) DexUpdateMinimumLiquidity(ctx context.Context, req *MsgDexUpdateMinimumLiquidity) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DexUpdateMinimumLiquidity not implemented")
-}
 func (*UnimplementedMsgServer) DexUpdateMinimumOrderSize(ctx context.Context, req *MsgDexUpdateMinimumOrderSize) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DexUpdateMinimumOrderSize not implemented")
 }
-func (*UnimplementedMsgServer) DexUpdateExtraVirtualLiquidity(ctx context.Context, req *MsgDexUpdateExtraVirtualLiquidity) (*MsgUpdateParamsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DexUpdateExtraVirtualLiquidity not implemented")
+func (*UnimplementedMsgServer) DexUpdateMinimumTradeLiquidity(ctx context.Context, req *MsgDexUpdateMinimumTradeLiquidity) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DexUpdateMinimumTradeLiquidity not implemented")
+}
+func (*UnimplementedMsgServer) DexUpdateMinimumDexLiquidity(ctx context.Context, req *MsgDexUpdateMinimumDexLiquidity) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DexUpdateMinimumDexLiquidity not implemented")
 }
 func (*UnimplementedMsgServer) KCoinAddDenom(ctx context.Context, req *MsgKCoinAddDenom) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method KCoinAddDenom not implemented")
@@ -2298,6 +2376,9 @@ func (*UnimplementedMsgServer) KCoinAddReferences(ctx context.Context, req *MsgK
 }
 func (*UnimplementedMsgServer) KCoinRemoveReferences(ctx context.Context, req *MsgKCoinRemoveReferences) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method KCoinRemoveReferences not implemented")
+}
+func (*UnimplementedMsgServer) KCoinRemoveKCoin(ctx context.Context, req *MsgKCoinRemoveKCoin) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method KCoinRemoveKCoin not implemented")
 }
 func (*UnimplementedMsgServer) CollateralAddDenom(ctx context.Context, req *MsgCollateralAddDenom) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CollateralAddDenom not implemented")
@@ -2367,24 +2448,6 @@ func _Msg_DexAddDenom_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_DexUpdateMinimumLiquidity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgDexUpdateMinimumLiquidity)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).DexUpdateMinimumLiquidity(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/DexUpdateMinimumLiquidity",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).DexUpdateMinimumLiquidity(ctx, req.(*MsgDexUpdateMinimumLiquidity))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Msg_DexUpdateMinimumOrderSize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgDexUpdateMinimumOrderSize)
 	if err := dec(in); err != nil {
@@ -2403,20 +2466,38 @@ func _Msg_DexUpdateMinimumOrderSize_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_DexUpdateExtraVirtualLiquidity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgDexUpdateExtraVirtualLiquidity)
+func _Msg_DexUpdateMinimumTradeLiquidity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDexUpdateMinimumTradeLiquidity)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).DexUpdateExtraVirtualLiquidity(ctx, in)
+		return srv.(MsgServer).DexUpdateMinimumTradeLiquidity(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kopi.denominations.Msg/DexUpdateExtraVirtualLiquidity",
+		FullMethod: "/kopi.denominations.Msg/DexUpdateMinimumTradeLiquidity",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).DexUpdateExtraVirtualLiquidity(ctx, req.(*MsgDexUpdateExtraVirtualLiquidity))
+		return srv.(MsgServer).DexUpdateMinimumTradeLiquidity(ctx, req.(*MsgDexUpdateMinimumTradeLiquidity))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_DexUpdateMinimumDexLiquidity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDexUpdateMinimumDexLiquidity)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DexUpdateMinimumDexLiquidity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kopi.denominations.Msg/DexUpdateMinimumDexLiquidity",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DexUpdateMinimumDexLiquidity(ctx, req.(*MsgDexUpdateMinimumDexLiquidity))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2525,6 +2606,24 @@ func _Msg_KCoinRemoveReferences_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).KCoinRemoveReferences(ctx, req.(*MsgKCoinRemoveReferences))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_KCoinRemoveKCoin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgKCoinRemoveKCoin)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).KCoinRemoveKCoin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kopi.denominations.Msg/KCoinRemoveKCoin",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).KCoinRemoveKCoin(ctx, req.(*MsgKCoinRemoveKCoin))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2808,16 +2907,16 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_DexAddDenom_Handler,
 		},
 		{
-			MethodName: "DexUpdateMinimumLiquidity",
-			Handler:    _Msg_DexUpdateMinimumLiquidity_Handler,
-		},
-		{
 			MethodName: "DexUpdateMinimumOrderSize",
 			Handler:    _Msg_DexUpdateMinimumOrderSize_Handler,
 		},
 		{
-			MethodName: "DexUpdateExtraVirtualLiquidity",
-			Handler:    _Msg_DexUpdateExtraVirtualLiquidity_Handler,
+			MethodName: "DexUpdateMinimumTradeLiquidity",
+			Handler:    _Msg_DexUpdateMinimumTradeLiquidity_Handler,
+		},
+		{
+			MethodName: "DexUpdateMinimumDexLiquidity",
+			Handler:    _Msg_DexUpdateMinimumDexLiquidity_Handler,
 		},
 		{
 			MethodName: "KCoinAddDenom",
@@ -2842,6 +2941,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "KCoinRemoveReferences",
 			Handler:    _Msg_KCoinRemoveReferences_Handler,
+		},
+		{
+			MethodName: "KCoinRemoveKCoin",
+			Handler:    _Msg_KCoinRemoveKCoin_Handler,
 		},
 		{
 			MethodName: "CollateralAddDenom",
@@ -2954,12 +3057,19 @@ func (m *MsgDexAddDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.Exponent != 0 {
 		i = encodeVarintTx(dAtA, i, uint64(m.Exponent))
 		i--
-		dAtA[i] = 0x38
+		dAtA[i] = 0x40
 	}
-	if len(m.MinVirtualLiquidity) > 0 {
-		i -= len(m.MinVirtualLiquidity)
-		copy(dAtA[i:], m.MinVirtualLiquidity)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.MinVirtualLiquidity)))
+	if len(m.MinDexLiquidity) > 0 {
+		i -= len(m.MinDexLiquidity)
+		copy(dAtA[i:], m.MinDexLiquidity)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MinDexLiquidity)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.MinTradeLiquidity) > 0 {
+		i -= len(m.MinTradeLiquidity)
+		copy(dAtA[i:], m.MinTradeLiquidity)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MinTradeLiquidity)))
 		i--
 		dAtA[i] = 0x32
 	}
@@ -3001,7 +3111,7 @@ func (m *MsgDexAddDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgDexUpdateMinimumLiquidity) Marshal() (dAtA []byte, err error) {
+func (m *MsgDexUpdateMinimumDexLiquidity) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -3011,20 +3121,20 @@ func (m *MsgDexUpdateMinimumLiquidity) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgDexUpdateMinimumLiquidity) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgDexUpdateMinimumDexLiquidity) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgDexUpdateMinimumLiquidity) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgDexUpdateMinimumDexLiquidity) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.MinLiquidity) > 0 {
-		i -= len(m.MinLiquidity)
-		copy(dAtA[i:], m.MinLiquidity)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.MinLiquidity)))
+	if len(m.MinimumDexLiquidity) > 0 {
+		i -= len(m.MinimumDexLiquidity)
+		copy(dAtA[i:], m.MinimumDexLiquidity)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MinimumDexLiquidity)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -3045,7 +3155,7 @@ func (m *MsgDexUpdateMinimumLiquidity) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgDexUpdateExtraVirtualLiquidity) Marshal() (dAtA []byte, err error) {
+func (m *MsgDexUpdateMinimumTradeLiquidity) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -3055,20 +3165,20 @@ func (m *MsgDexUpdateExtraVirtualLiquidity) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgDexUpdateExtraVirtualLiquidity) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgDexUpdateMinimumTradeLiquidity) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgDexUpdateExtraVirtualLiquidity) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgDexUpdateMinimumTradeLiquidity) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.ExtraVirtualLiquidity) > 0 {
-		i -= len(m.ExtraVirtualLiquidity)
-		copy(dAtA[i:], m.ExtraVirtualLiquidity)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.ExtraVirtualLiquidity)))
+	if len(m.MinimumTradeLiquidity) > 0 {
+		i -= len(m.MinimumTradeLiquidity)
+		copy(dAtA[i:], m.MinimumTradeLiquidity)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MinimumTradeLiquidity)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -3220,6 +3330,43 @@ func (m *MsgKCoinAddDenom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.Name)
 		copy(dAtA[i:], m.Name)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgKCoinRemoveKCoin) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgKCoinRemoveKCoin) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgKCoinRemoveKCoin) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Denom)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -4296,7 +4443,11 @@ func (m *MsgDexAddDenom) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.MinVirtualLiquidity)
+	l = len(m.MinTradeLiquidity)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MinDexLiquidity)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -4306,7 +4457,7 @@ func (m *MsgDexAddDenom) Size() (n int) {
 	return n
 }
 
-func (m *MsgDexUpdateMinimumLiquidity) Size() (n int) {
+func (m *MsgDexUpdateMinimumDexLiquidity) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -4320,14 +4471,14 @@ func (m *MsgDexUpdateMinimumLiquidity) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.MinLiquidity)
+	l = len(m.MinimumDexLiquidity)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	return n
 }
 
-func (m *MsgDexUpdateExtraVirtualLiquidity) Size() (n int) {
+func (m *MsgDexUpdateMinimumTradeLiquidity) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -4341,7 +4492,7 @@ func (m *MsgDexUpdateExtraVirtualLiquidity) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.ExtraVirtualLiquidity)
+	l = len(m.MinimumTradeLiquidity)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -4419,6 +4570,23 @@ func (m *MsgKCoinAddDenom) Size() (n int) {
 	}
 	if m.Exponent != 0 {
 		n += 1 + sovTx(uint64(m.Exponent))
+	}
+	return n
+}
+
+func (m *MsgKCoinRemoveKCoin) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
 	}
 	return n
 }
@@ -5170,7 +5338,7 @@ func (m *MsgDexAddDenom) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 6:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MinVirtualLiquidity", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field MinTradeLiquidity", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -5198,9 +5366,41 @@ func (m *MsgDexAddDenom) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.MinVirtualLiquidity = string(dAtA[iNdEx:postIndex])
+			m.MinTradeLiquidity = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinDexLiquidity", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MinDexLiquidity = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Exponent", wireType)
 			}
@@ -5240,7 +5440,7 @@ func (m *MsgDexAddDenom) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgDexUpdateMinimumLiquidity) Unmarshal(dAtA []byte) error {
+func (m *MsgDexUpdateMinimumDexLiquidity) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -5263,10 +5463,10 @@ func (m *MsgDexUpdateMinimumLiquidity) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgDexUpdateMinimumLiquidity: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgDexUpdateMinimumDexLiquidity: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgDexUpdateMinimumLiquidity: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgDexUpdateMinimumDexLiquidity: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -5335,7 +5535,7 @@ func (m *MsgDexUpdateMinimumLiquidity) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MinLiquidity", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field MinimumDexLiquidity", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -5363,7 +5563,7 @@ func (m *MsgDexUpdateMinimumLiquidity) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.MinLiquidity = string(dAtA[iNdEx:postIndex])
+			m.MinimumDexLiquidity = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -5386,7 +5586,7 @@ func (m *MsgDexUpdateMinimumLiquidity) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgDexUpdateExtraVirtualLiquidity) Unmarshal(dAtA []byte) error {
+func (m *MsgDexUpdateMinimumTradeLiquidity) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -5409,10 +5609,10 @@ func (m *MsgDexUpdateExtraVirtualLiquidity) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgDexUpdateExtraVirtualLiquidity: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgDexUpdateMinimumTradeLiquidity: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgDexUpdateExtraVirtualLiquidity: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgDexUpdateMinimumTradeLiquidity: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -5481,7 +5681,7 @@ func (m *MsgDexUpdateExtraVirtualLiquidity) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ExtraVirtualLiquidity", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field MinimumTradeLiquidity", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -5509,7 +5709,7 @@ func (m *MsgDexUpdateExtraVirtualLiquidity) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ExtraVirtualLiquidity = string(dAtA[iNdEx:postIndex])
+			m.MinimumTradeLiquidity = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -6046,6 +6246,120 @@ func (m *MsgKCoinAddDenom) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgKCoinRemoveKCoin) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgKCoinRemoveKCoin: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgKCoinRemoveKCoin: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])

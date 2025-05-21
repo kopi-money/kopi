@@ -181,14 +181,25 @@ func (k Keeper) MaxMintAmount(ctx context.Context, kCoinName string) math.Int {
 	panic(fmt.Sprintf("no max mint amount found for %v", kCoinName))
 }
 
-func (k Keeper) MinLiquidity(ctx context.Context, denom string) math.Int {
+func (k Keeper) MinTradeLiquidity(ctx context.Context, denom string) math.Int {
 	for _, dexDenom := range k.GetParams(ctx).DexDenoms {
 		if dexDenom.Name == denom {
-			return dexDenom.MinLiquidity
+			return dexDenom.MinTradeLiquidity
 		}
 	}
 
-	panic(fmt.Sprintf("no minimum liquidity found for %v", denom))
+	panic(fmt.Sprintf("no minimum trade liquidity found for %v", denom))
+}
+
+func (k Keeper) MinDexLiquidity(ctx context.Context, denom string) *math.Int {
+	for _, dexDenom := range k.GetParams(ctx).DexDenoms {
+		if dexDenom.Name == denom && dexDenom.MinDexLiquidity != nil {
+			return dexDenom.MinDexLiquidity
+		}
+	}
+
+	minOrderSize := k.MinOrderSize(ctx, denom)
+	return &minOrderSize
 }
 
 func (k Keeper) getMinOrderSize(ctx context.Context, denom string) (math.Int, bool) {
@@ -208,25 +219,6 @@ func (k Keeper) MinOrderSize(ctx context.Context, denom string) math.Int {
 	}
 
 	return minOrderOrderSize
-}
-
-func (k Keeper) ExtraVirtualLiquidity(ctx context.Context, denom string) math.Int {
-	for _, dexDenom := range k.GetParams(ctx).DexDenoms {
-		if dexDenom.Name == denom {
-			if dexDenom.ExtraVirtualLiquidity != nil && dexDenom.ExtraVirtualLiquidity.IsPositive() {
-				return *dexDenom.ExtraVirtualLiquidity
-			} else {
-				break
-			}
-		}
-	}
-
-	minOrderSize, has := k.getMinOrderSize(ctx, denom)
-	if !has {
-		return math.ZeroInt()
-	}
-
-	return minOrderSize
 }
 
 func (k Keeper) GetArbitrageDenomByCAsset(ctx context.Context, cAsset string) (types.ArbitrageDenom, error) {

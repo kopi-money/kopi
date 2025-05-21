@@ -11,8 +11,8 @@ func (k Keeper) ValueKCoins(ctx context.Context, _ *types.QueryValueKCoinsReques
 	sum := math.LegacyZeroDec()
 	for _, denom := range k.DenomKeeper.KCoins(ctx) {
 		coin := k.BankKeeper.GetSupply(ctx, denom)
-		price, _ := k.DenomKeeper.GetPriceInUSD(ctx, denom)
-		sum = sum.Add(price.Mul(math.LegacyNewDecFromInt(coin.Amount)))
+		value, _ := k.DenomKeeper.GetValueInUSD(ctx, denom, coin.Amount.ToLegacyDec())
+		sum = sum.Add(value)
 	}
 
 	return &types.QueryValueKCoinsResponse{

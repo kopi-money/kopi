@@ -216,6 +216,39 @@ func (k msgServer) KCoinRemoveReferences(ctx context.Context, req *types.MsgKCoi
 	return &types.MsgUpdateParamsResponse{}, nil
 }
 
+func (k msgServer) KCoinRemoveKCoin(ctx context.Context, req *types.MsgKCoinRemoveKCoin) (*types.MsgUpdateParamsResponse, error) {
+	if k.GetAuthority() != req.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	}
+
+	var (
+		kCoins []types.KCoin
+		params = k.GetParams(ctx)
+		found  = false
+	)
+
+	for _, kCoin := range params.KCoins {
+		if kCoin.DexDenom == req.Denom {
+			found = true
+			continue
+		}
+
+		kCoins = append(kCoins, kCoin)
+	}
+
+	if !found {
+		return nil, types.ErrInvalidKCoin
+	}
+
+	params.KCoins = kCoins
+
+	if err := k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
+
+	return &types.MsgUpdateParamsResponse{}, nil
+}
+
 func filterReferences(existingReferences, toRemove []string) (filtered []string) {
 	for _, existingReference := range existingReferences {
 		if !contains(toRemove, existingReference) {

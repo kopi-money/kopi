@@ -11,7 +11,7 @@ message DexDenom {
   string name = 1;
   uint64 exponent = 2;
 
-  bytes min_liquidity = 3 [
+  bytes min_trade_liquidity = 3 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
   ];
@@ -21,7 +21,7 @@ message DexDenom {
     (gogoproto.nullable) = false
   ];
 
-  bytes extra_virtual_liquidity = 5 [
+  bytes min_dex_liquidity = 5 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = true
   ];

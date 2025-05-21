@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/x/dex/types"
@@ -69,7 +70,7 @@ func (k Keeper) ReserveFundsPerDenom(ctx context.Context, req *types.QueryReserv
 	}
 
 	priceUSD, err := k.DenomKeeper.GetPriceInUSD(ctx, req.Denom)
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "no ratio found") {
 		return nil, err
 	}
 

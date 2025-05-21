@@ -51,7 +51,7 @@ func (k Keeper) GetEffectiveLiquidityFromCache(ctx types.TradeContext, denom str
 // getEffectiveLiquidity return the effictive trade usable liquidity for a given pair (ie XKP and a second denom).
 func (k Keeper) getEffectiveLiquidity(ctx context.Context, denom string) (math.LegacyDec, math.LegacyDec, math.LegacyDec) {
 	tradeValue := k.getMovingLiquidity(ctx, denom).Amount
-	minimumLiquidity := k.DenomKeeper.MinLiquidity(ctx, denom).ToLegacyDec()
+	minimumLiquidity := k.DenomKeeper.MinTradeLiquidity(ctx, denom).ToLegacyDec()
 
 	if minimumLiquidity.GT(tradeValue) {
 		tradeValue = minimumLiquidity
