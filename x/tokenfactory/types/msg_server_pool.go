@@ -21,12 +21,8 @@ func (msg *MsgCreatePool) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid creator address")
 	}
 
-	if err := denomtypes.ValidateDenomName(msg.FullFactoryDenomName); err != nil {
-		return err
-	}
-
-	if err := denomtypes.ValidateDenomName(msg.KCoin); err != nil {
-		return err
+	if err := ValidateDenomName(msg.FullFactoryDenomName); err != nil {
+		return fmt.Errorf("full_factory_denom_name: %w", err)
 	}
 
 	if err := denomtypes.IsInt(msg.FactoryDenomAmount, math.ZeroInt()); err != nil {
@@ -49,8 +45,8 @@ func (msg *MsgAddLiquidity) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid creator address")
 	}
 
-	if err := denomtypes.ValidateDenomName(msg.FullFactoryDenomName); err != nil {
-		return err
+	if err := ValidateDenomName(msg.FullFactoryDenomName); err != nil {
+		return fmt.Errorf("full_factory_denom_name: %w", err)
 	}
 
 	if err := denomtypes.IsInt(msg.FactoryDenomAmount, math.ZeroInt()); err != nil {
@@ -65,8 +61,8 @@ func (msg *MsgUnlockLiquidity) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid creator address")
 	}
 
-	if err := denomtypes.ValidateDenomName(msg.FullFactoryDenomName); err != nil {
-		return err
+	if err := ValidateDenomName(msg.FullFactoryDenomName); err != nil {
+		return fmt.Errorf("full_factory_denom_name: %w", err)
 	}
 
 	if err := denomtypes.IsInt(msg.FactoryDenomAmount, math.ZeroInt()); err != nil {
@@ -81,8 +77,8 @@ func (msg *MsgUpdateLiquidityPoolSettings) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid creator address")
 	}
 
-	if err := denomtypes.ValidateDenomName(msg.FullFactoryDenomName); err != nil {
-		return err
+	if err := ValidateDenomName(msg.FullFactoryDenomName); err != nil {
+		return fmt.Errorf("full_factory_denom_name: %w", err)
 	}
 
 	if err := denomtypes.IsDec(msg.PoolFee, math.LegacyZeroDec()); err != nil {

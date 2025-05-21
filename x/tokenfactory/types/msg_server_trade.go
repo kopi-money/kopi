@@ -28,8 +28,8 @@ func (msg *MsgBuyback) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid creator address")
 	}
 
-	if err := denomtypes.ValidateDenomName(msg.FullFactoryDenomName); err != nil {
-		return err
+	if err := ValidateDenomName(msg.FullFactoryDenomName); err != nil {
+		return fmt.Errorf("full_factory_denom_name: %w", err)
 	}
 
 	if err := denomtypes.IsInt(msg.BuybackAmount, math.ZeroInt()); err != nil {
@@ -44,16 +44,8 @@ func validateTradeMessage(msg MsgTrade) error {
 		return errorsmod.Wrap(err, "invalid creator address")
 	}
 
-	if err := denomtypes.ValidateDenomName(msg.GetFullFactoryDenomName()); err != nil {
-		return err
-	}
-
-	if err := denomtypes.ValidateDenomName(msg.GetDenomGiving()); err != nil {
-		return err
-	}
-
-	if err := denomtypes.ValidateDenomName(msg.GetDenomReceiving()); err != nil {
-		return err
+	if err := ValidateDenomName(msg.GetFullFactoryDenomName()); err != nil {
+		return fmt.Errorf("full_factory_denom_name: %w", err)
 	}
 
 	if err := denomtypes.IsInt(msg.GetAmount(), math.ZeroInt()); err != nil {

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 	"google.golang.org/grpc/codes"
@@ -62,23 +63,36 @@ func (k Keeper) QueryPoolLiquidityDistribution(ctx context.Context, req *types.Q
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	if _, has := k.liquidityPools.Get(ctx, req.FullName); !has {
+	pool, has := k.liquidityPools.Get(ctx, req.FullName)
+	if !has {
 		return nil, types.ErrPoolDoesNotExist
 	}
 
-	var liquidityProviders []types.LiquidityProvider
+	var (
+		liquidityProviders []types.LiquidityProvider
+		sumAmountKCoin     = math.ZeroInt()
+		sumAmountFactory   = math.ZeroInt()
+	)
 
 	iterator := k.liquidityProviderShares.Iterator(ctx, nil, req.FullName)
 	for iterator.Valid() {
 		keyValue := iterator.GetNextKeyValue()
 
+		amountFactory, amountKCoin := pool.GetAmounts(keyValue.Value().Value().Share)
+
 		liquidityProviders = append(liquidityProviders, types.LiquidityProvider{
-			Address: keyValue.Key(),
-			Amount:  keyValue.Value().Value().Share.String(),
+			Address:       keyValue.Key(),
+			AmountKcoin:   amountKCoin.String(),
+			AmountFactory: amountFactory.String(),
 		})
+
+		sumAmountKCoin = sumAmountKCoin.Add(amountKCoin)
+		sumAmountFactory = sumAmountFactory.Add(amountFactory)
 	}
 
 	return &types.QueryPoolLiquidityDistributionResponse{
-		Providers: liquidityProviders,
+		Providers:     liquidityProviders,
+		AmountKcoin:   sumAmountKCoin.String(),
+		AmountFactory: sumAmountFactory.String(),
 	}, nil
 }

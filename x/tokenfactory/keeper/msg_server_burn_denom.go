@@ -12,7 +12,7 @@ import (
 func (k msgServer) BurnDenom(ctx context.Context, msg *types.MsgBurnDenom) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, fmt.Errorf("token factory denom not found: %v", msg.FullFactoryDenomName)
 	}
 
 	if factoryDenom.LocalName != "" {

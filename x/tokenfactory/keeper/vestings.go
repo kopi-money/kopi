@@ -119,3 +119,15 @@ func (k Keeper) handleVesting(ctx context.Context, vesting types.Vesting) error 
 
 	return nil
 }
+
+func (k Keeper) getVestedAmount(ctx context.Context, denom, address string) math.Int {
+	iterator := k.vestings.Iterator(ctx, nil)
+	for iterator.Valid() {
+		vesting := iterator.GetNext()
+		if vesting.FactoryDenom == denom && vesting.Address == address {
+			return vesting.AmountLeft
+		}
+	}
+
+	return math.ZeroInt()
+}

@@ -46,12 +46,24 @@ func (k Keeper) QuerySimulateSell(ctx context.Context, req *types.QuerySimulateT
 	priceKCoin := getPriceKCoin(price, req.DenomReceiving == pool.KCoin)
 	feeAmount := trading.GetSellFee(tradeResult)
 
+	amountGivenUSD, err := k.toUSD(ctx, pool, tradeResult.AmountGiven().ToLegacyDec(), req.DenomGiving)
+	if err != nil {
+		return nil, fmt.Errorf("given to usd: %w", err)
+	}
+
+	amountReceivedUSD, err := k.toUSD(ctx, pool, tradeResult.AmountReceived().ToLegacyDec(), req.DenomGiving)
+	if err != nil {
+		return nil, fmt.Errorf("given to usd: %w", err)
+	}
+
 	return &types.QuerySimulateTradeResponse{
-		AmountGiven:    tradeResult.AmountGiven().String(),
-		AmountReceived: tradeResult.AmountReceived().String(),
-		Fee:            feeAmount.String(),
-		Price:          price.String(),
-		PriceKcoin:     priceKCoin.String(),
+		AmountGiven:       tradeResult.AmountGiven().String(),
+		AmountGivenUsd:    amountGivenUSD.String(),
+		AmountReceived:    tradeResult.AmountReceived().String(),
+		AmountReceivedUsd: amountReceivedUSD.String(),
+		Fee:               feeAmount.String(),
+		Price:             price.String(),
+		PriceKcoin:        priceKCoin.String(),
 	}, nil
 }
 
@@ -93,13 +105,38 @@ func (k Keeper) QuerySimulateBuy(ctx context.Context, req *types.QuerySimulateTr
 	priceKCoin := getPriceKCoin(price, req.DenomReceiving == pool.KCoin)
 	feeAmount := trading.GetSellFee(tradeResult)
 
+	amountGivenUSD, err := k.toUSD(ctx, pool, tradeResult.AmountGiven().ToLegacyDec(), req.DenomGiving)
+	if err != nil {
+		return nil, fmt.Errorf("given to usd: %w", err)
+	}
+
+	amountReceivedUSD, err := k.toUSD(ctx, pool, tradeResult.AmountReceived().ToLegacyDec(), req.DenomGiving)
+	if err != nil {
+		return nil, fmt.Errorf("given to usd: %w", err)
+	}
+
 	return &types.QuerySimulateTradeResponse{
-		AmountGiven:    tradeResult.AmountGiven().String(),
-		AmountReceived: tradeResult.AmountReceived().String(),
-		Fee:            feeAmount.String(),
-		Price:          price.String(),
-		PriceKcoin:     priceKCoin.String(),
+		AmountGiven:       tradeResult.AmountGiven().String(),
+		AmountGivenUsd:    amountGivenUSD.String(),
+		AmountReceived:    tradeResult.AmountReceived().String(),
+		AmountReceivedUsd: amountReceivedUSD.String(),
+		Fee:               feeAmount.String(),
+		Price:             price.String(),
+		PriceKcoin:        priceKCoin.String(),
 	}, nil
+}
+
+func (k Keeper) toUSD(ctx context.Context, pool types.LiquidityPool, amount math.LegacyDec, denom string) (math.LegacyDec, error) {
+	if denom != pool.KCoin {
+		poolPrice, err := pool.Price()
+		if err != nil {
+			return math.LegacyZeroDec(), fmt.Errorf("pool price: %w", err)
+		}
+
+		amount = amount.Quo(poolPrice)
+	}
+
+	return k.DenomKeeper.GetValueInUSD(ctx, pool.KCoin, amount)
 }
 
 func (k Keeper) getFactoryDenom(ctx context.Context, denomGiving, denomReceiving string) (types.FactoryDenom, error) {

@@ -23,7 +23,7 @@ func (msg *MsgMintDenom) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid target address")
 	}
 
-	if err := denomtypes.ValidateDenomName(msg.FullFactoryDenomName); err != nil {
+	if err := ValidateDenomName(msg.FullFactoryDenomName); err != nil {
 		return err
 	}
 
@@ -39,7 +39,7 @@ func (msg *MsgBurnDenom) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid creator address")
 	}
 
-	if err := denomtypes.ValidateDenomName(msg.FullFactoryDenomName); err != nil {
+	if err := ValidateDenomName(msg.FullFactoryDenomName); err != nil {
 		return err
 	}
 

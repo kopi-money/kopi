@@ -45,11 +45,14 @@ func (k Keeper) MoveDenom(ctx context.Context, factoryDenom types.FactoryDenom) 
 		return fmt.Errorf("create ratio from reference: %w", err)
 	}
 
+	oneUnit := oneBaseUnit(factoryDenom.Exponent)
+
 	dexDenom := denomtypes.DexDenom{
-		Name:         factoryDenom.LocalName,
-		Exponent:     factoryDenom.Exponent,
-		MinLiquidity: oneBaseUnit(factoryDenom.Exponent),
-		MinOrderSize: oneBaseUnit(factoryDenom.Exponent),
+		Name:              factoryDenom.LocalName,
+		Exponent:          factoryDenom.Exponent,
+		MinDexLiquidity:   &oneUnit,
+		MinTradeLiquidity: oneUnit,
+		MinOrderSize:      oneUnit,
 	}
 
 	ratio := denomtypes.Ratio{

@@ -12,6 +12,9 @@ import (
 )
 
 func ToFullName(creator, symbol string) string {
+	if strings.HasPrefix(symbol, "factory/") {
+	}
+
 	return strings.ToLower(fmt.Sprintf("factory/%v/%v", creator, symbol))
 }
 
@@ -30,7 +33,6 @@ func (k Keeper) GetDenom(ctx context.Context, address, symbol string) (types.Fac
 }
 
 func (k Keeper) GetDenomByFullName(ctx context.Context, fullName string) (types.FactoryDenom, bool) {
-	fmt.Println("< ", fullName)
 	return k.factoryDenoms.Get(ctx, fullName)
 }
 

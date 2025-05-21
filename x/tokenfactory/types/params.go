@@ -35,11 +35,11 @@ func (p Params) Validate() error {
 		p.MinimumPoolSize = MinimumPoolSize
 	}
 
-	if p.MinimumPoolFee.IsNil() {
+	if p.MinimumPoolFee.IsNil() || p.MinimumPoolFee.IsZero() {
 		p.MinimumPoolFee = MinimumPoolFee
 	}
 
-	if p.MaximumPoolFee.IsNil() {
+	if p.MaximumPoolFee.IsNil() || p.MaximumPoolFee.IsZero() {
 		p.MaximumPoolFee = MaximumPoolFee
 	}
 
@@ -47,7 +47,7 @@ func (p Params) Validate() error {
 		p.MaximumVestingUnlockSteps = MaximumVestingUnlockSteps
 	}
 
-	if p.MinimumPoolMovingValue.IsNil() {
+	if p.MinimumPoolMovingValue.IsNil() || p.MinimumPoolMovingValue.IsZero() {
 		p.MinimumPoolMovingValue = MinimumPoolMovingValue
 	}
 

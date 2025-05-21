@@ -7,7 +7,6 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/constants"
-	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 )
 
 var (
@@ -22,8 +21,8 @@ func (msg *MsgUpdateDescription) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid creator address")
 	}
 
-	if err := denomtypes.ValidateDenomName(msg.FullFactoryDenomName); err != nil {
-		return err
+	if err := ValidateDenomName(msg.FullFactoryDenomName); err != nil {
+		return fmt.Errorf("full_factory_denom_name: %w", err)
 	}
 
 	if len(msg.Description) > constants.MaxDescriptionLength {
@@ -38,7 +37,7 @@ func (msg *MsgUpdateWebsite) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid creator address")
 	}
 
-	if err := denomtypes.ValidateDenomName(msg.FullFactoryDenomName); err != nil {
+	if err := ValidateDenomName(msg.FullFactoryDenomName); err != nil {
 		return err
 	}
 
@@ -58,7 +57,7 @@ func (msg *MsgUpdateIconHash) ValidateBasic() error {
 		return errorsmod.Wrap(err, "invalid creator address")
 	}
 
-	if err := denomtypes.ValidateDenomName(msg.FullFactoryDenomName); err != nil {
+	if err := ValidateDenomName(msg.FullFactoryDenomName); err != nil {
 		return err
 	}
 
@@ -82,7 +81,7 @@ func (msg *MsgChangeAdmin) ValidateBasic() error {
 		return fmt.Errorf("old and new address must be different")
 	}
 
-	if err := denomtypes.ValidateDenomName(msg.FullFactoryDenomName); err != nil {
+	if err := ValidateDenomName(msg.FullFactoryDenomName); err != nil {
 		return err
 	}
 

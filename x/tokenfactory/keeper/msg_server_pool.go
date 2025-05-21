@@ -46,10 +46,6 @@ func (k msgServer) CreatePool(ctx context.Context, msg *types.MsgCreatePool) (*t
 		return nil, fmt.Errorf("invalid other kcoin amount: %v", msg.KCoinAmount)
 	}
 
-	if kCoinAmount.LT(k.getMinimumPoolSize(ctx)) {
-		return nil, types.ErrAmountBelowMinimum
-	}
-
 	poolFee, err := math.LegacyNewDecFromStr(msg.PoolFee)
 	if err != nil {
 		return nil, types.ErrInvalidFeeFormat

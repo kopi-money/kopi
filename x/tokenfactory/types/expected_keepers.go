@@ -49,6 +49,7 @@ type DenomKeeper interface {
 	GetHighestUSDReference(context.Context) (string, error)
 	GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.LegacyDec) (math.LegacyDec, error)
 	GetValueInUSD(ctx context.Context, denomFrom string, amount math.LegacyDec) (math.LegacyDec, error)
+	KCoins(ctx context.Context) []string
 }
 
 type DexKeeper interface {
