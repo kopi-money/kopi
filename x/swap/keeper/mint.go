@@ -47,6 +47,7 @@ func (k Keeper) CheckMint(ctx context.Context, kCoin string, maxMintAmount math.
 		return nil
 	}
 
+	maxMintAmount = k.adjustToParity(ctx, *parity, maxMintAmount.ToLegacyDec()).TruncateInt()
 	mintAmount := k.adjustForSupplyCap(ctx, kCoin, maxMintAmount)
 	if mintAmount.LTE(math.OneInt()) {
 		return nil
@@ -120,4 +121,19 @@ func isError(err error, targets []error) bool {
 	}
 
 	return false
+}
+
+// adjustToParity adjusts the mint/burn amount according to the deviation from parity. For example, if the parity is
+// 110%, the mint amount will be 10% higher than the set value. The parity factor additionally increases that value.
+func (k Keeper) adjustToParity(ctx context.Context, parity math.LegacyDec, mintBurnAmount math.LegacyDec) math.LegacyDec {
+	if parity.LT(math.LegacyOneDec()) {
+		parity = math.LegacyOneDec().Quo(parity)
+	}
+
+	parity = parity.Sub(math.LegacyOneDec())
+	parity = parity.Mul(k.parityFactor(ctx))
+	parity = math.LegacyMinDec(parity, math.LegacyOneDec())
+	parity = parity.Add(math.LegacyOneDec())
+
+	return mintBurnAmount.Mul(parity)
 }

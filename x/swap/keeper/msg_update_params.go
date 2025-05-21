@@ -68,3 +68,23 @@ func (k msgServer) UpdateStakingShare(ctx context.Context, req *types.MsgUpdateS
 
 	return &types.Void{}, err
 }
+
+func (k msgServer) UpdateParityFactor(ctx context.Context, req *types.MsgUpdateParityFactor) (*types.Void, error) {
+	if k.GetAuthority() != req.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+	}
+
+	parityFactor, err := math.LegacyNewDecFromStr(req.ParityFactor)
+	if err != nil {
+		return nil, err
+	}
+
+	params := k.GetParams(ctx)
+	params.ParityFactor = parityFactor
+
+	if err = k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
+
+	return &types.Void{}, err
+}

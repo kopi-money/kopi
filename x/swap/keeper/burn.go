@@ -50,6 +50,8 @@ func (k Keeper) CheckBurn(ctx context.Context, kCoin string, maxBurnAmount math.
 		return fmt.Errorf("convert to mintAmountBase: %w", err)
 	}
 
+	mintAmountBase = k.adjustToParity(ctx, *parity, mintAmountBase)
+
 	// New coins of the base currency are minted, used to buy the kCoin and burn
 	if err = k.mintTradeBurn(ctx, kCoin, mintAmountBase.TruncateInt()); err != nil {
 		return fmt.Errorf("mintTradeBurn: %w", err)

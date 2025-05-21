@@ -10,6 +10,7 @@ var (
 	BurnThreshold = math.LegacyNewDecWithPrec(9999, 4) // 0.9999
 	MintThreshold = math.LegacyOneDec()
 	StakingShare  = math.LegacyNewDecWithPrec(1, 1) // 0.1
+	ParityFactor  = math.LegacyNewDec(2)
 )
 
 // DefaultParams returns a default set of parameters
@@ -18,6 +19,7 @@ func DefaultParams() Params {
 		BurnThreshold: BurnThreshold,
 		MintThreshold: MintThreshold,
 		StakingShare:  StakingShare,
+		ParityFactor:  ParityFactor,
 	}
 }
 
@@ -33,6 +35,14 @@ func (p Params) Validate() error {
 
 	if err := validateZeroOne(p.StakingShare); err != nil {
 		return fmt.Errorf("invalid staking share: %w", err)
+	}
+
+	if p.ParityFactor.IsNil() {
+		p.ParityFactor = ParityFactor
+	}
+
+	if !p.ParityFactor.IsPositive() {
+		return fmt.Errorf("invalid parity factor (%v): parity factor must be positive", p.ParityFactor)
 	}
 
 	return nil

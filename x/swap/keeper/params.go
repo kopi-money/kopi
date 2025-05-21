@@ -35,3 +35,12 @@ func (k Keeper) mintThreshold(ctx context.Context) math.LegacyDec {
 func (k Keeper) burnThreshold(ctx context.Context) math.LegacyDec {
 	return k.GetParams(ctx).BurnThreshold
 }
+
+func (k Keeper) parityFactor(ctx context.Context) math.LegacyDec {
+	factor := k.GetParams(ctx).ParityFactor
+	if factor.IsNil() || factor.IsZero() {
+		return types.ParityFactor
+	}
+
+	return factor
+}
