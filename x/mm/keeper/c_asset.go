@@ -35,7 +35,7 @@ func (k Keeper) CalculateNewCAssetAmount(ctx context.Context, cAsset denomtypes.
 	valueShare := addedAmount.ToLegacyDec().Quo(newTotalValue) // C
 
 	var newTokens math.Int
-	if valueShare.Equal(math.LegacyOneDec()) {
+	if valueShare.Equal(math.LegacyOneDec()) || cAssetSupply.IsZero() {
 		newTokens = addedAmount
 	} else {
 		newTokens = cAssetSupply.ToLegacyDec().Quo(math.LegacyOneDec().Sub(valueShare)).TruncateInt().Sub(cAssetSupply) // C
