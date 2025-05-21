@@ -90,13 +90,17 @@ service Query {
 
 message LiquidityProvider {
   string address = 1;
-  string amount = 2;
+  string amount_kcoin = 2;
+  string amount_factory = 3;
 }
 
 message QueryPoolLiquidityDistributionResponse {
   repeated LiquidityProvider providers = 1 [
     (gogoproto.nullable) = false
   ];
+
+  string amount_kcoin = 2;
+  string amount_factory = 3;
 }
 
 message QueryPoolLiquidityDistributionRequest {
@@ -190,16 +194,28 @@ message QuerySimulateAddingLiquidityResponse {
 
 message FactoryTokenBalance {
   string factory_denom_hash = 1;
-  string amount_wallet = 2;
-  string amount_wallet_usd = 3;
-  string pool_liquidity_kcoin = 4;
-  string pool_liquidity_kcoin_usd = 5;
-  string pool_liquidity_factory_token = 6;
-  string pool_liquidity_factory_token_usd = 7;
+  string kcoin = 2;
+  string amount_wallet = 3;
+  string amount_wallet_usd = 4;
+  string pool_liquidity_kcoin = 5;
+  string pool_liquidity_kcoin_usd = 6;
+  string pool_liquidity_factory_token = 7;
+  string pool_liquidity_factory_token_usd = 8;
+  string amount_vested = 9;
+  string amount_vested_usd = 10;
+}
+
+message DEXTokenBalance {
+  string denom = 1;
+  string amount = 2;
+  string amount_usd = 3;
 }
 
 message GetFactoryTokenBalanceResponse {
-  repeated FactoryTokenBalance balances = 1 [
+  repeated FactoryTokenBalance factory = 1 [
+    (gogoproto.nullable) = false
+  ];
+  repeated DEXTokenBalance dex = 2 [
     (gogoproto.nullable) = false
   ];
 }
@@ -234,10 +250,12 @@ message QuerySimulateTradeRequest {
 
 message QuerySimulateTradeResponse {
   string amount_given = 1;
-  string amount_received = 2;
-  string fee = 3;
-  string price = 4;
-  string price_kcoin = 5;
+  string amount_given_usd = 2;
+  string amount_received = 3;
+  string amount_received_usd = 4;
+  string fee = 5;
+  string price = 6;
+  string price_kcoin = 7;
 }
 
 message QueryPoolRequest {
