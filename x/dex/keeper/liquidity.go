@@ -339,6 +339,10 @@ func (k Keeper) getLiquidityForAddress(ctx context.Context, address string) (coi
 // canUnlock checks if liquidity can be removed from a given liquidity position. The function will return falls if not
 // enough blocks have been created since creating of this position.
 func (k Keeper) canUnlock(ctx context.Context, address string, positionIndex uint64) (bool, error) {
+	if positionIndex == 0 {
+		return true, nil
+	}
+
 	position, has := k.liquidityPositions.Get(ctx, address, positionIndex)
 	if !has {
 		return false, fmt.Errorf("unable to find liquidity position: %v / %v", address, positionIndex)
