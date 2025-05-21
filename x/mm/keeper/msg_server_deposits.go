@@ -54,7 +54,7 @@ func (k Keeper) Deposit(ctx context.Context, address sdk.AccAddress, cAsset deno
 		return math.Int{}, err
 	}
 
-	if newCAssetTokens.LTE(math.ZeroInt()) {
+	if !newCAssetTokens.IsPositive() {
 		return math.Int{}, types.ErrZeroCAssets
 	}
 

@@ -282,7 +282,6 @@ func (k Keeper) getUtilityRate(ctx context.Context, cAsset denomtypes.CAsset) ma
 	totalBorrowed := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom).LoanSum
 
 	utilityRate := math.LegacyZeroDec()
-
 	if available.ToLegacyDec().Add(totalBorrowed).IsPositive() {
 		utilityRate = totalBorrowed.Quo(available.ToLegacyDec().Add(totalBorrowed)) // C
 	}
