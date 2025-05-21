@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	v18 "github.com/kopi-money/kopi/app/upgrades/v18"
 	v19 "github.com/kopi-money/kopi/app/upgrades/v19"
+	v21 "github.com/kopi-money/kopi/app/upgrades/v21"
 
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
@@ -197,6 +198,30 @@ func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
 			UpgradeName: v20.UpgradeName,
 			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
 				return v20.CreateUpgradeHandler(manager, configurator, app.DenominationsKeeper)
+			},
+		},
+		{
+			UpgradeName: v21.UpgradeName,
+			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
+				return v21.CreateUpgradeHandler(manager, configurator, app.DenominationsKeeper, app.DexKeeper)
+			},
+		},
+		{
+			UpgradeName: v21.UpgradeNameRC1,
+			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
+				return v21.CreateUpgradeHandler(manager, configurator, app.DenominationsKeeper, app.DexKeeper)
+			},
+		},
+		{
+			UpgradeName: v21.UpgradeNameRC2,
+			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
+				return v21.CreateUpgradeHandler(manager, configurator, app.DenominationsKeeper, app.DexKeeper)
+			},
+		},
+		{
+			UpgradeName: v21.UpgradeNameRC3,
+			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
+				return v21.CreateUpgradeHandler(manager, configurator, app.DenominationsKeeper, app.DexKeeper)
 			},
 		},
 	}
