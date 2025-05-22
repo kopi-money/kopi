@@ -52,7 +52,7 @@ func (k Keeper) GetMarketStats(ctx context.Context, _ *types.GetMarketStatsQuery
 			return nil, err
 		}
 
-		utilityRate := k.getUtilityRate(ctx, cAsset)
+		utilityRate, _ := k.getUtilityRate(ctx, cAsset)
 		interestRate := k.calculateInterestRate(ctx, utilityRate)
 
 		totalBorrowed = totalBorrowed.Add(borrowedUSD)

@@ -26,10 +26,10 @@ func (k Keeper) GetLoansByDenom(ctx context.Context, req *types.GetLoansByDenomQ
 	}
 
 	var (
-		loanSum      = k.GetLoanSumWithDefault(ctx, req.Denom)
-		utilityRate  = k.getUtilityRate(ctx, cAsset)
-		interestRate = k.calculateInterestRate(ctx, utilityRate)
-		loans        = []*types.DenomLoan{}
+		loanSum        = k.GetLoanSumWithDefault(ctx, req.Denom)
+		utilityRate, _ = k.getUtilityRate(ctx, cAsset)
+		interestRate   = k.calculateInterestRate(ctx, utilityRate)
+		loans          = []*types.DenomLoan{}
 
 		amountBorrowedUSD math.LegacyDec
 	)
@@ -72,16 +72,20 @@ func (k Keeper) GetLoansStats(ctx context.Context, _ *types.GetLoanStatsQuery) (
 		totalLoanSumUSD           = math.LegacyZeroDec()
 		loanStats                 = []*types.DenomLoanStat{}
 
-		amountAvailable    math.Int
-		amountAvailableUSD math.LegacyDec
-		loanSumUSD         math.LegacyDec
+		amountAvailable               math.Int
+		availableToBorrowByDenomLimit math.Int
+		amountAvailableUSD            math.LegacyDec
+		loanSumUSD                    math.LegacyDec
+		utilityRate                   math.LegacyDec
 	)
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
-		utilityRate := k.getUtilityRate(ctx, cAsset)
+		utilityRate, availableToBorrowByDenomLimit = k.getUtilityRate(ctx, cAsset)
 		interestRate := k.calculateInterestRate(ctx, utilityRate)
 
 		amountAvailable = vault.AmountOf(cAsset.BaseDexDenom)
+		amountAvailable = math.MinInt(amountAvailable, availableToBorrowByDenomLimit)
+
 		amountAvailableUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, amountAvailable.ToLegacyDec())
 		if err != nil {
 			return nil, err
@@ -130,13 +134,15 @@ func (k Keeper) GetUserLoans(ctx context.Context, req *types.GetUserLoansQuery) 
 		vault     = k.BankKeeper.SpendableCoins(ctx, addr.GetAddress())
 		userLoans = []*types.UserLoanStat{}
 
-		amountAvailable    math.LegacyDec
-		amountAvailableUSD math.LegacyDec
-		amountBorrowedUSD  math.LegacyDec
+		availableToBorrowByDenomLimit math.Int
+		amountAvailable               math.LegacyDec
+		amountAvailableUSD            math.LegacyDec
+		amountBorrowedUSD             math.LegacyDec
+		utilityRate                   math.LegacyDec
 	)
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
-		utilityRate := k.getUtilityRate(ctx, cAsset)
+		utilityRate, availableToBorrowByDenomLimit = k.getUtilityRate(ctx, cAsset)
 		interestRate := k.calculateInterestRate(ctx, utilityRate)
 
 		loanSum := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom)
@@ -154,6 +160,7 @@ func (k Keeper) GetUserLoans(ctx context.Context, req *types.GetUserLoansQuery) 
 		}
 
 		amountAvailable = math.LegacyMinDec(vaultAmount.ToLegacyDec(), amountAvailable)
+		amountAvailable = math.LegacyMinDec(amountAvailable, availableToBorrowByDenomLimit.ToLegacyDec())
 
 		amountAvailableUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, amountAvailable)
 		if err != nil {

@@ -77,7 +77,7 @@ func (k Keeper) GetDepositStats(ctx context.Context, _ *types.GetDepositStatsQue
 		totalBorrowedUSD = totalBorrowedUSD.Add(borrowedUSD)
 		totalRedeemingUSD = totalRedeemingUSD.Add(redeemingUSD)
 
-		utilityRate := k.getUtilityRate(ctx, cAsset)
+		utilityRate, _ := k.getUtilityRate(ctx, cAsset)
 		interestRate := k.calculateInterestRate(ctx, utilityRate)
 
 		priceBaseUSD, err = k.DenomKeeper.CalculatePrice(ctx, cAsset.BaseDexDenom, referenceDenom)
@@ -149,7 +149,7 @@ func (k Keeper) GetDepositUserStats(ctx context.Context, req *types.GetDepositUs
 	)
 
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
-		utilityRate := k.getUtilityRate(ctx, cAsset)
+		utilityRate, _ := k.getUtilityRate(ctx, cAsset)
 		interestRate := k.calculateInterestRate(ctx, utilityRate)
 		cAssetSupply := k.getCAssetSupply(ctx, cAsset)
 		cAssetValue := k.CalculateCAssetValue(ctx, cAsset)
@@ -232,7 +232,7 @@ func (k Keeper) GetDepositUserDenomStats(ctx context.Context, req *types.GetDepo
 		return nil, err
 	}
 
-	utilityRate := k.getUtilityRate(ctx, cAsset)
+	utilityRate, _ := k.getUtilityRate(ctx, cAsset)
 	interestRate := k.calculateInterestRate(ctx, utilityRate)
 
 	redeeming, found := k.redemptions.Get(ctx, cAsset.BaseDexDenom, req.Address)
@@ -277,14 +277,21 @@ func (k Keeper) GetDepositUserDenomStats(ctx context.Context, req *types.GetDepo
 	return &depositStats, nil
 }
 
-func (k Keeper) getUtilityRate(ctx context.Context, cAsset denomtypes.CAsset) math.LegacyDec {
+func (k Keeper) getUtilityRate(ctx context.Context, cAsset denomtypes.CAsset) (math.LegacyDec, math.Int) {
 	available := k.GetVaultAmount(ctx, cAsset)
 	totalBorrowed := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom).LoanSum
+	cAssetValue := available.ToLegacyDec().Add(totalBorrowed)
 
 	utilityRate := math.LegacyZeroDec()
-	if available.ToLegacyDec().Add(totalBorrowed).IsPositive() {
+	if cAssetValue.IsPositive() {
 		utilityRate = totalBorrowed.Quo(available.ToLegacyDec().Add(totalBorrowed)) // C
 	}
 
-	return utilityRate
+	availableToBorrow := math.LegacyZeroDec()
+	if utilityRate.LT(cAsset.BorrowLimit) {
+		totalBorrowable := cAssetValue.Mul(cAsset.BorrowLimit)
+		availableToBorrow = totalBorrowable.Sub(totalBorrowed)
+	}
+
+	return utilityRate, availableToBorrow.TruncateInt()
 }
