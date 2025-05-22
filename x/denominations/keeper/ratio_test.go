@@ -16,12 +16,13 @@ func TestRatios1(t *testing.T) {
 
 	// Add BTC with a price 1 BTC = 1000 kUSD
 	require.NoError(t, keepertest.AddDexDenom(ctx, denomMsg, &denomtypes.MsgDexAddDenom{
-		Authority:    k.GetAuthority(),
-		Name:         "bitcoin",
-		Factor:       "1000ukusd",
-		MinLiquidity: "1000000",
-		MinOrderSize: "1000000",
-		Exponent:     8,
+		Authority:         k.GetAuthority(),
+		Name:              "bitcoin",
+		Factor:            "1000ukusd",
+		MinTradeLiquidity: "1000000",
+		MinDexLiquidity:   "1000000",
+		MinOrderSize:      "1000000",
+		Exponent:          8,
 	}))
 
 	ratio, err := k.GetRatio(ctx, "bitcoin")
@@ -38,11 +39,12 @@ func TestRatios2(t *testing.T) {
 
 	// Add BTC with a price 1 BTC = 1000 kUSD
 	require.NoError(t, keepertest.AddDexDenom(ctx, denomMsg, &denomtypes.MsgDexAddDenom{
-		Authority:    k.GetAuthority(),
-		Name:         "inj2",
-		Factor:       "22ukusd",
-		MinLiquidity: "1000000",
-		MinOrderSize: "1000000",
-		Exponent:     18,
+		Authority:         k.GetAuthority(),
+		Name:              "inj2",
+		Factor:            "22ukusd",
+		MinTradeLiquidity: "1000000",
+		MinDexLiquidity:   "1000000",
+		MinOrderSize:      "1000000",
+		Exponent:          18,
 	}))
 }

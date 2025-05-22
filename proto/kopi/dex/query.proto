@@ -16,6 +16,12 @@ import "kopi/dex/order.proto";
 option go_package = "github.com/kopi-money/kopi/x/dex/types";
 
 service Query {
+  rpc QueryEpochCountdown (QueryEpochCountdownRequest) returns (QueryEpochCountdownResponse) {
+    option (google.api.http).get = "/kopi/dex/epoch/countdown";
+  }
+  rpc QueryEpochPositions (QueryEpochPositionsRequest) returns (QueryEpochPositionsResponse) {
+    option (google.api.http).get = "/kopi/dex/epoch/positions";
+  }
   rpc ValueKCoins (QueryValueKCoinsRequest) returns (QueryValueKCoinsResponse) {
     option (google.api.http).get = "/kopi/dex/kcoins/value";
   }
@@ -27,6 +33,15 @@ service Query {
   }
   rpc WithdrawableLiquidityForAddressForDenom (QueryWithdrawableLiquidityForAddressRequest) returns (QueryWithdrawableLiquidityForAddressResponse) {
     option (google.api.http).get = "/kopi/dex/liquidity/address/{address}/withdrawable";
+  }
+  rpc Liquidity (QueryGetLiquidityRequest) returns (QueryGetLiquidityResponse) {
+    option (google.api.http).get = "/kopi/dex/liquidity/by_denom";
+  }
+  rpc LiquidityGrouped (QueryGetLiquidityQueueRequest) returns (QueryLiquidityGroupedResponse) {
+    option (google.api.http).get = "/kopi/dex/liquidity/grouped/by_denom";
+  }
+  rpc LiquiditySum (QueryGetLiquiditySumRequest) returns (QueryGetLiquiditySumResponse) {
+    option (google.api.http).get = "/kopi/dex/liquidity/sum";
   }
   rpc LiquidityPositions (QueryLiquidityPositionsRequest) returns (QueryLiquidityPositionsResponse) {
     option (google.api.http).get = "/kopi/dex/liquidity/positions";
@@ -40,17 +55,8 @@ service Query {
   rpc LiquidityPositionForPositionIndex (QueryLiquidityPositionForPositionIndexRequest) returns (QueryLiquidityPositionForPositionIndexResponse) {
     option (google.api.http).get = "/kopi/dex/liquidity/positions/index/{position_index}";
   }
-  rpc Liquidity (QueryGetLiquidityRequest) returns (QueryGetLiquidityResponse) {
-    option (google.api.http).get = "/kopi/dex/liquidity/by_denom";
-  }
   rpc LiquidityQueue (QueryGetLiquidityQueueRequest) returns (QueryGetLiquidityQueueResponse) {
     option (google.api.http).get = "/kopi/dex/liquidity/queue/by_denom";
-  }
-  rpc LiquidityGrouped (QueryGetLiquidityQueueRequest) returns (QueryLiquidityGroupedResponse) {
-    option (google.api.http).get = "/kopi/dex/liquidity/grouped/by_denom";
-  }
-  rpc LiquiditySum (QueryGetLiquiditySumRequest) returns (QueryGetLiquiditySumResponse) {
-    option (google.api.http).get = "/kopi/dex/liquidity/sum";
   }
   rpc LiquidityPair (QueryGetLiquidityPairRequest) returns (QueryGetLiquidityPairResponse) {
     option (google.api.http).get = "/kopi/dex/liquidity_pair/by_denom";
@@ -103,12 +109,6 @@ service Query {
   rpc QuerySimulateBuy (QuerySimulateTradeRequest) returns (QuerySimulateTradeResponse) {
     option (google.api.http).get = "/kopi/dex/simulate/buy";
   }
-  rpc QueryEpochCountdown (QueryEpochCountdownRequest) returns (QueryEpochCountdownResponse) {
-    option (google.api.http).get = "/kopi/dex/epoch/countdown";
-  }
-  rpc QueryEpochPositions (QueryEpochPositionsRequest) returns (QueryEpochPositionsResponse) {
-    option (google.api.http).get = "/kopi/dex/epoch/positions";
-  }
 
   // this line is used by starport scaffolding # 2
 }
@@ -139,6 +139,13 @@ message AddressEpochPositions {
 
 message QueryEpochPositionsResponse {
   repeated AddressEpochPositions address_epoch_shares = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryEpochValueRequest {
+}
+
+message QueryEpochValueResponse {
+  string value_usd = 1;
 }
 
 message QueryEpochPositionsRequest {

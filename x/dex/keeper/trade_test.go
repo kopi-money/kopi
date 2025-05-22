@@ -5473,7 +5473,7 @@ func TestUpdateRatioToBaseOneStep2a(t *testing.T) {
 
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		denomK := k.DenomKeeper.(denomkeeper.Keeper)
-		_ = denomK.DexUpdateMinimumLiquidity(innerCtx, constants.BaseCurrency, "1000")
+		_ = denomK.DexUpdateMinimumTradeLiquidity(innerCtx, constants.BaseCurrency, "1000")
 		return nil
 	}))
 
@@ -5512,7 +5512,7 @@ func TestUpdateRatioToBaseOneStep2b(t *testing.T) {
 
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		denomK := k.DenomKeeper.(denomkeeper.Keeper)
-		_ = denomK.DexUpdateMinimumLiquidity(innerCtx, constants.BaseCurrency, "1000")
+		_ = denomK.DexUpdateMinimumTradeLiquidity(innerCtx, constants.BaseCurrency, "1000")
 		return nil
 	}))
 
@@ -5551,7 +5551,7 @@ func TestUpdateRatioToBaseOneStep2c(t *testing.T) {
 
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		denomK := k.DenomKeeper.(denomkeeper.Keeper)
-		_ = denomK.DexUpdateMinimumLiquidity(innerCtx, constants.BaseCurrency, "1000")
+		_ = denomK.DexUpdateMinimumTradeLiquidity(innerCtx, constants.BaseCurrency, "1000")
 		return nil
 	}))
 
@@ -5593,7 +5593,7 @@ func TestUpdateRatioToBaseOneStep2d(t *testing.T) {
 
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		denomK := k.DenomKeeper.(denomkeeper.Keeper)
-		_ = denomK.DexUpdateMinimumLiquidity(innerCtx, constants.BaseCurrency, "1000")
+		_ = denomK.DexUpdateMinimumTradeLiquidity(innerCtx, constants.BaseCurrency, "1000")
 		return nil
 	}))
 
@@ -5635,7 +5635,7 @@ func TestUpdateRatioToBaseOneStep3a(t *testing.T) {
 
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		denomK := k.DenomKeeper.(denomkeeper.Keeper)
-		_ = denomK.DexUpdateMinimumLiquidity(innerCtx, constants.BaseCurrency, "1000")
+		_ = denomK.DexUpdateMinimumTradeLiquidity(innerCtx, constants.BaseCurrency, "1000")
 		return nil
 	}))
 
@@ -5675,7 +5675,7 @@ func TestUpdateRatioToBaseOneStep3b(t *testing.T) {
 
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		denomK := k.DenomKeeper.(denomkeeper.Keeper)
-		_ = denomK.DexUpdateMinimumLiquidity(innerCtx, constants.BaseCurrency, "1000")
+		_ = denomK.DexUpdateMinimumTradeLiquidity(innerCtx, constants.BaseCurrency, "1000")
 		return nil
 	}))
 

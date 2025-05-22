@@ -19,18 +19,20 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
+	Query_QueryEpochCountdown_FullMethodName                     = "/kopi.dex.Query/QueryEpochCountdown"
+	Query_QueryEpochPositions_FullMethodName                     = "/kopi.dex.Query/QueryEpochPositions"
 	Query_ValueKCoins_FullMethodName                             = "/kopi.dex.Query/ValueKCoins"
 	Query_LiquidityAll_FullMethodName                            = "/kopi.dex.Query/LiquidityAll"
 	Query_LiquidityForAddress_FullMethodName                     = "/kopi.dex.Query/LiquidityForAddress"
 	Query_WithdrawableLiquidityForAddressForDenom_FullMethodName = "/kopi.dex.Query/WithdrawableLiquidityForAddressForDenom"
+	Query_Liquidity_FullMethodName                               = "/kopi.dex.Query/Liquidity"
+	Query_LiquidityGrouped_FullMethodName                        = "/kopi.dex.Query/LiquidityGrouped"
+	Query_LiquiditySum_FullMethodName                            = "/kopi.dex.Query/LiquiditySum"
 	Query_LiquidityPositions_FullMethodName                      = "/kopi.dex.Query/LiquidityPositions"
 	Query_LiquidityPositionsAddresses_FullMethodName             = "/kopi.dex.Query/LiquidityPositionsAddresses"
 	Query_LiquidityPositionForAddress_FullMethodName             = "/kopi.dex.Query/LiquidityPositionForAddress"
 	Query_LiquidityPositionForPositionIndex_FullMethodName       = "/kopi.dex.Query/LiquidityPositionForPositionIndex"
-	Query_Liquidity_FullMethodName                               = "/kopi.dex.Query/Liquidity"
 	Query_LiquidityQueue_FullMethodName                          = "/kopi.dex.Query/LiquidityQueue"
-	Query_LiquidityGrouped_FullMethodName                        = "/kopi.dex.Query/LiquidityGrouped"
-	Query_LiquiditySum_FullMethodName                            = "/kopi.dex.Query/LiquiditySum"
 	Query_LiquidityPair_FullMethodName                           = "/kopi.dex.Query/LiquidityPair"
 	Query_Orders_FullMethodName                                  = "/kopi.dex.Query/Orders"
 	Query_OrdersAddress_FullMethodName                           = "/kopi.dex.Query/OrdersAddress"
@@ -48,26 +50,26 @@ const (
 	Query_ReserveFundsPerDenom_FullMethodName                    = "/kopi.dex.Query/ReserveFundsPerDenom"
 	Query_QuerySimulateSell_FullMethodName                       = "/kopi.dex.Query/QuerySimulateSell"
 	Query_QuerySimulateBuy_FullMethodName                        = "/kopi.dex.Query/QuerySimulateBuy"
-	Query_QueryEpochCountdown_FullMethodName                     = "/kopi.dex.Query/QueryEpochCountdown"
-	Query_QueryEpochPositions_FullMethodName                     = "/kopi.dex.Query/QueryEpochPositions"
 )
 
 // QueryClient is the client API for Query service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type QueryClient interface {
+	QueryEpochCountdown(ctx context.Context, in *QueryEpochCountdownRequest, opts ...grpc.CallOption) (*QueryEpochCountdownResponse, error)
+	QueryEpochPositions(ctx context.Context, in *QueryEpochPositionsRequest, opts ...grpc.CallOption) (*QueryEpochPositionsResponse, error)
 	ValueKCoins(ctx context.Context, in *QueryValueKCoinsRequest, opts ...grpc.CallOption) (*QueryValueKCoinsResponse, error)
 	LiquidityAll(ctx context.Context, in *QueryGetLiquidityAllRequest, opts ...grpc.CallOption) (*QueryGetLiquidityAllResponse, error)
 	LiquidityForAddress(ctx context.Context, in *QueryLiquidityForAddressRequest, opts ...grpc.CallOption) (*QueryLiquidityForAddressResponse, error)
 	WithdrawableLiquidityForAddressForDenom(ctx context.Context, in *QueryWithdrawableLiquidityForAddressRequest, opts ...grpc.CallOption) (*QueryWithdrawableLiquidityForAddressResponse, error)
+	Liquidity(ctx context.Context, in *QueryGetLiquidityRequest, opts ...grpc.CallOption) (*QueryGetLiquidityResponse, error)
+	LiquidityGrouped(ctx context.Context, in *QueryGetLiquidityQueueRequest, opts ...grpc.CallOption) (*QueryLiquidityGroupedResponse, error)
+	LiquiditySum(ctx context.Context, in *QueryGetLiquiditySumRequest, opts ...grpc.CallOption) (*QueryGetLiquiditySumResponse, error)
 	LiquidityPositions(ctx context.Context, in *QueryLiquidityPositionsRequest, opts ...grpc.CallOption) (*QueryLiquidityPositionsResponse, error)
 	LiquidityPositionsAddresses(ctx context.Context, in *QueryLiquidityPositionsAddressesRequest, opts ...grpc.CallOption) (*QueryLiquidityPositionsAddressesResponse, error)
 	LiquidityPositionForAddress(ctx context.Context, in *QueryLiquidityPositionForAddressRequest, opts ...grpc.CallOption) (*QueryLiquidityPositionForAddressResponse, error)
 	LiquidityPositionForPositionIndex(ctx context.Context, in *QueryLiquidityPositionForPositionIndexRequest, opts ...grpc.CallOption) (*QueryLiquidityPositionForPositionIndexResponse, error)
-	Liquidity(ctx context.Context, in *QueryGetLiquidityRequest, opts ...grpc.CallOption) (*QueryGetLiquidityResponse, error)
 	LiquidityQueue(ctx context.Context, in *QueryGetLiquidityQueueRequest, opts ...grpc.CallOption) (*QueryGetLiquidityQueueResponse, error)
-	LiquidityGrouped(ctx context.Context, in *QueryGetLiquidityQueueRequest, opts ...grpc.CallOption) (*QueryLiquidityGroupedResponse, error)
-	LiquiditySum(ctx context.Context, in *QueryGetLiquiditySumRequest, opts ...grpc.CallOption) (*QueryGetLiquiditySumResponse, error)
 	LiquidityPair(ctx context.Context, in *QueryGetLiquidityPairRequest, opts ...grpc.CallOption) (*QueryGetLiquidityPairResponse, error)
 	Orders(ctx context.Context, in *QueryOrdersRequest, opts ...grpc.CallOption) (*QueryOrdersResponse, error)
 	OrdersAddress(ctx context.Context, in *QueryOrdersAddressRequest, opts ...grpc.CallOption) (*QueryOrdersAddressResponse, error)
@@ -85,8 +87,6 @@ type QueryClient interface {
 	ReserveFundsPerDenom(ctx context.Context, in *QueryReserveFundsPerDenomRequest, opts ...grpc.CallOption) (*Denom, error)
 	QuerySimulateSell(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error)
 	QuerySimulateBuy(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error)
-	QueryEpochCountdown(ctx context.Context, in *QueryEpochCountdownRequest, opts ...grpc.CallOption) (*QueryEpochCountdownResponse, error)
-	QueryEpochPositions(ctx context.Context, in *QueryEpochPositionsRequest, opts ...grpc.CallOption) (*QueryEpochPositionsResponse, error)
 }
 
 type queryClient struct {
@@ -95,6 +95,24 @@ type queryClient struct {
 
 func NewQueryClient(cc grpc.ClientConnInterface) QueryClient {
 	return &queryClient{cc}
+}
+
+func (c *queryClient) QueryEpochCountdown(ctx context.Context, in *QueryEpochCountdownRequest, opts ...grpc.CallOption) (*QueryEpochCountdownResponse, error) {
+	out := new(QueryEpochCountdownResponse)
+	err := c.cc.Invoke(ctx, Query_QueryEpochCountdown_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) QueryEpochPositions(ctx context.Context, in *QueryEpochPositionsRequest, opts ...grpc.CallOption) (*QueryEpochPositionsResponse, error) {
+	out := new(QueryEpochPositionsResponse)
+	err := c.cc.Invoke(ctx, Query_QueryEpochPositions_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *queryClient) ValueKCoins(ctx context.Context, in *QueryValueKCoinsRequest, opts ...grpc.CallOption) (*QueryValueKCoinsResponse, error) {
@@ -127,6 +145,33 @@ func (c *queryClient) LiquidityForAddress(ctx context.Context, in *QueryLiquidit
 func (c *queryClient) WithdrawableLiquidityForAddressForDenom(ctx context.Context, in *QueryWithdrawableLiquidityForAddressRequest, opts ...grpc.CallOption) (*QueryWithdrawableLiquidityForAddressResponse, error) {
 	out := new(QueryWithdrawableLiquidityForAddressResponse)
 	err := c.cc.Invoke(ctx, Query_WithdrawableLiquidityForAddressForDenom_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Liquidity(ctx context.Context, in *QueryGetLiquidityRequest, opts ...grpc.CallOption) (*QueryGetLiquidityResponse, error) {
+	out := new(QueryGetLiquidityResponse)
+	err := c.cc.Invoke(ctx, Query_Liquidity_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) LiquidityGrouped(ctx context.Context, in *QueryGetLiquidityQueueRequest, opts ...grpc.CallOption) (*QueryLiquidityGroupedResponse, error) {
+	out := new(QueryLiquidityGroupedResponse)
+	err := c.cc.Invoke(ctx, Query_LiquidityGrouped_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) LiquiditySum(ctx context.Context, in *QueryGetLiquiditySumRequest, opts ...grpc.CallOption) (*QueryGetLiquiditySumResponse, error) {
+	out := new(QueryGetLiquiditySumResponse)
+	err := c.cc.Invoke(ctx, Query_LiquiditySum_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -169,36 +214,9 @@ func (c *queryClient) LiquidityPositionForPositionIndex(ctx context.Context, in 
 	return out, nil
 }
 
-func (c *queryClient) Liquidity(ctx context.Context, in *QueryGetLiquidityRequest, opts ...grpc.CallOption) (*QueryGetLiquidityResponse, error) {
-	out := new(QueryGetLiquidityResponse)
-	err := c.cc.Invoke(ctx, Query_Liquidity_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *queryClient) LiquidityQueue(ctx context.Context, in *QueryGetLiquidityQueueRequest, opts ...grpc.CallOption) (*QueryGetLiquidityQueueResponse, error) {
 	out := new(QueryGetLiquidityQueueResponse)
 	err := c.cc.Invoke(ctx, Query_LiquidityQueue_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) LiquidityGrouped(ctx context.Context, in *QueryGetLiquidityQueueRequest, opts ...grpc.CallOption) (*QueryLiquidityGroupedResponse, error) {
-	out := new(QueryLiquidityGroupedResponse)
-	err := c.cc.Invoke(ctx, Query_LiquidityGrouped_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) LiquiditySum(ctx context.Context, in *QueryGetLiquiditySumRequest, opts ...grpc.CallOption) (*QueryGetLiquiditySumResponse, error) {
-	out := new(QueryGetLiquiditySumResponse)
-	err := c.cc.Invoke(ctx, Query_LiquiditySum_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -358,40 +376,24 @@ func (c *queryClient) QuerySimulateBuy(ctx context.Context, in *QuerySimulateTra
 	return out, nil
 }
 
-func (c *queryClient) QueryEpochCountdown(ctx context.Context, in *QueryEpochCountdownRequest, opts ...grpc.CallOption) (*QueryEpochCountdownResponse, error) {
-	out := new(QueryEpochCountdownResponse)
-	err := c.cc.Invoke(ctx, Query_QueryEpochCountdown_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) QueryEpochPositions(ctx context.Context, in *QueryEpochPositionsRequest, opts ...grpc.CallOption) (*QueryEpochPositionsResponse, error) {
-	out := new(QueryEpochPositionsResponse)
-	err := c.cc.Invoke(ctx, Query_QueryEpochPositions_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
 type QueryServer interface {
+	QueryEpochCountdown(context.Context, *QueryEpochCountdownRequest) (*QueryEpochCountdownResponse, error)
+	QueryEpochPositions(context.Context, *QueryEpochPositionsRequest) (*QueryEpochPositionsResponse, error)
 	ValueKCoins(context.Context, *QueryValueKCoinsRequest) (*QueryValueKCoinsResponse, error)
 	LiquidityAll(context.Context, *QueryGetLiquidityAllRequest) (*QueryGetLiquidityAllResponse, error)
 	LiquidityForAddress(context.Context, *QueryLiquidityForAddressRequest) (*QueryLiquidityForAddressResponse, error)
 	WithdrawableLiquidityForAddressForDenom(context.Context, *QueryWithdrawableLiquidityForAddressRequest) (*QueryWithdrawableLiquidityForAddressResponse, error)
+	Liquidity(context.Context, *QueryGetLiquidityRequest) (*QueryGetLiquidityResponse, error)
+	LiquidityGrouped(context.Context, *QueryGetLiquidityQueueRequest) (*QueryLiquidityGroupedResponse, error)
+	LiquiditySum(context.Context, *QueryGetLiquiditySumRequest) (*QueryGetLiquiditySumResponse, error)
 	LiquidityPositions(context.Context, *QueryLiquidityPositionsRequest) (*QueryLiquidityPositionsResponse, error)
 	LiquidityPositionsAddresses(context.Context, *QueryLiquidityPositionsAddressesRequest) (*QueryLiquidityPositionsAddressesResponse, error)
 	LiquidityPositionForAddress(context.Context, *QueryLiquidityPositionForAddressRequest) (*QueryLiquidityPositionForAddressResponse, error)
 	LiquidityPositionForPositionIndex(context.Context, *QueryLiquidityPositionForPositionIndexRequest) (*QueryLiquidityPositionForPositionIndexResponse, error)
-	Liquidity(context.Context, *QueryGetLiquidityRequest) (*QueryGetLiquidityResponse, error)
 	LiquidityQueue(context.Context, *QueryGetLiquidityQueueRequest) (*QueryGetLiquidityQueueResponse, error)
-	LiquidityGrouped(context.Context, *QueryGetLiquidityQueueRequest) (*QueryLiquidityGroupedResponse, error)
-	LiquiditySum(context.Context, *QueryGetLiquiditySumRequest) (*QueryGetLiquiditySumResponse, error)
 	LiquidityPair(context.Context, *QueryGetLiquidityPairRequest) (*QueryGetLiquidityPairResponse, error)
 	Orders(context.Context, *QueryOrdersRequest) (*QueryOrdersResponse, error)
 	OrdersAddress(context.Context, *QueryOrdersAddressRequest) (*QueryOrdersAddressResponse, error)
@@ -409,8 +411,6 @@ type QueryServer interface {
 	ReserveFundsPerDenom(context.Context, *QueryReserveFundsPerDenomRequest) (*Denom, error)
 	QuerySimulateSell(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error)
 	QuerySimulateBuy(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error)
-	QueryEpochCountdown(context.Context, *QueryEpochCountdownRequest) (*QueryEpochCountdownResponse, error)
-	QueryEpochPositions(context.Context, *QueryEpochPositionsRequest) (*QueryEpochPositionsResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -418,6 +418,12 @@ type QueryServer interface {
 type UnimplementedQueryServer struct {
 }
 
+func (UnimplementedQueryServer) QueryEpochCountdown(context.Context, *QueryEpochCountdownRequest) (*QueryEpochCountdownResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryEpochCountdown not implemented")
+}
+func (UnimplementedQueryServer) QueryEpochPositions(context.Context, *QueryEpochPositionsRequest) (*QueryEpochPositionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryEpochPositions not implemented")
+}
 func (UnimplementedQueryServer) ValueKCoins(context.Context, *QueryValueKCoinsRequest) (*QueryValueKCoinsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ValueKCoins not implemented")
 }
@@ -429,6 +435,15 @@ func (UnimplementedQueryServer) LiquidityForAddress(context.Context, *QueryLiqui
 }
 func (UnimplementedQueryServer) WithdrawableLiquidityForAddressForDenom(context.Context, *QueryWithdrawableLiquidityForAddressRequest) (*QueryWithdrawableLiquidityForAddressResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WithdrawableLiquidityForAddressForDenom not implemented")
+}
+func (UnimplementedQueryServer) Liquidity(context.Context, *QueryGetLiquidityRequest) (*QueryGetLiquidityResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Liquidity not implemented")
+}
+func (UnimplementedQueryServer) LiquidityGrouped(context.Context, *QueryGetLiquidityQueueRequest) (*QueryLiquidityGroupedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LiquidityGrouped not implemented")
+}
+func (UnimplementedQueryServer) LiquiditySum(context.Context, *QueryGetLiquiditySumRequest) (*QueryGetLiquiditySumResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LiquiditySum not implemented")
 }
 func (UnimplementedQueryServer) LiquidityPositions(context.Context, *QueryLiquidityPositionsRequest) (*QueryLiquidityPositionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LiquidityPositions not implemented")
@@ -442,17 +457,8 @@ func (UnimplementedQueryServer) LiquidityPositionForAddress(context.Context, *Qu
 func (UnimplementedQueryServer) LiquidityPositionForPositionIndex(context.Context, *QueryLiquidityPositionForPositionIndexRequest) (*QueryLiquidityPositionForPositionIndexResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LiquidityPositionForPositionIndex not implemented")
 }
-func (UnimplementedQueryServer) Liquidity(context.Context, *QueryGetLiquidityRequest) (*QueryGetLiquidityResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Liquidity not implemented")
-}
 func (UnimplementedQueryServer) LiquidityQueue(context.Context, *QueryGetLiquidityQueueRequest) (*QueryGetLiquidityQueueResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LiquidityQueue not implemented")
-}
-func (UnimplementedQueryServer) LiquidityGrouped(context.Context, *QueryGetLiquidityQueueRequest) (*QueryLiquidityGroupedResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LiquidityGrouped not implemented")
-}
-func (UnimplementedQueryServer) LiquiditySum(context.Context, *QueryGetLiquiditySumRequest) (*QueryGetLiquiditySumResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LiquiditySum not implemented")
 }
 func (UnimplementedQueryServer) LiquidityPair(context.Context, *QueryGetLiquidityPairRequest) (*QueryGetLiquidityPairResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LiquidityPair not implemented")
@@ -505,12 +511,6 @@ func (UnimplementedQueryServer) QuerySimulateSell(context.Context, *QuerySimulat
 func (UnimplementedQueryServer) QuerySimulateBuy(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QuerySimulateBuy not implemented")
 }
-func (UnimplementedQueryServer) QueryEpochCountdown(context.Context, *QueryEpochCountdownRequest) (*QueryEpochCountdownResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryEpochCountdown not implemented")
-}
-func (UnimplementedQueryServer) QueryEpochPositions(context.Context, *QueryEpochPositionsRequest) (*QueryEpochPositionsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryEpochPositions not implemented")
-}
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
 // UnsafeQueryServer may be embedded to opt out of forward compatibility for this service.
@@ -522,6 +522,42 @@ type UnsafeQueryServer interface {
 
 func RegisterQueryServer(s grpc.ServiceRegistrar, srv QueryServer) {
 	s.RegisterService(&Query_ServiceDesc, srv)
+}
+
+func _Query_QueryEpochCountdown_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryEpochCountdownRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).QueryEpochCountdown(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_QueryEpochCountdown_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).QueryEpochCountdown(ctx, req.(*QueryEpochCountdownRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_QueryEpochPositions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryEpochPositionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).QueryEpochPositions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_QueryEpochPositions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).QueryEpochPositions(ctx, req.(*QueryEpochPositionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Query_ValueKCoins_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -592,6 +628,60 @@ func _Query_WithdrawableLiquidityForAddressForDenom_Handler(srv interface{}, ctx
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).WithdrawableLiquidityForAddressForDenom(ctx, req.(*QueryWithdrawableLiquidityForAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Liquidity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetLiquidityRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Liquidity(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Liquidity_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Liquidity(ctx, req.(*QueryGetLiquidityRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_LiquidityGrouped_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetLiquidityQueueRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).LiquidityGrouped(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_LiquidityGrouped_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).LiquidityGrouped(ctx, req.(*QueryGetLiquidityQueueRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_LiquiditySum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetLiquiditySumRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).LiquiditySum(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_LiquiditySum_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).LiquiditySum(ctx, req.(*QueryGetLiquiditySumRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -668,24 +758,6 @@ func _Query_LiquidityPositionForPositionIndex_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Liquidity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGetLiquidityRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Liquidity(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_Liquidity_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Liquidity(ctx, req.(*QueryGetLiquidityRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Query_LiquidityQueue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryGetLiquidityQueueRequest)
 	if err := dec(in); err != nil {
@@ -700,42 +772,6 @@ func _Query_LiquidityQueue_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).LiquidityQueue(ctx, req.(*QueryGetLiquidityQueueRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_LiquidityGrouped_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGetLiquidityQueueRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).LiquidityGrouped(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_LiquidityGrouped_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).LiquidityGrouped(ctx, req.(*QueryGetLiquidityQueueRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_LiquiditySum_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGetLiquiditySumRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).LiquiditySum(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_LiquiditySum_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).LiquiditySum(ctx, req.(*QueryGetLiquiditySumRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1046,42 +1082,6 @@ func _Query_QuerySimulateBuy_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_QueryEpochCountdown_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryEpochCountdownRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).QueryEpochCountdown(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_QueryEpochCountdown_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryEpochCountdown(ctx, req.(*QueryEpochCountdownRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_QueryEpochPositions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryEpochPositionsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).QueryEpochPositions(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_QueryEpochPositions_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).QueryEpochPositions(ctx, req.(*QueryEpochPositionsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1089,6 +1089,14 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "kopi.dex.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "QueryEpochCountdown",
+			Handler:    _Query_QueryEpochCountdown_Handler,
+		},
+		{
+			MethodName: "QueryEpochPositions",
+			Handler:    _Query_QueryEpochPositions_Handler,
+		},
 		{
 			MethodName: "ValueKCoins",
 			Handler:    _Query_ValueKCoins_Handler,
@@ -1104,6 +1112,18 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "WithdrawableLiquidityForAddressForDenom",
 			Handler:    _Query_WithdrawableLiquidityForAddressForDenom_Handler,
+		},
+		{
+			MethodName: "Liquidity",
+			Handler:    _Query_Liquidity_Handler,
+		},
+		{
+			MethodName: "LiquidityGrouped",
+			Handler:    _Query_LiquidityGrouped_Handler,
+		},
+		{
+			MethodName: "LiquiditySum",
+			Handler:    _Query_LiquiditySum_Handler,
 		},
 		{
 			MethodName: "LiquidityPositions",
@@ -1122,20 +1142,8 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_LiquidityPositionForPositionIndex_Handler,
 		},
 		{
-			MethodName: "Liquidity",
-			Handler:    _Query_Liquidity_Handler,
-		},
-		{
 			MethodName: "LiquidityQueue",
 			Handler:    _Query_LiquidityQueue_Handler,
-		},
-		{
-			MethodName: "LiquidityGrouped",
-			Handler:    _Query_LiquidityGrouped_Handler,
-		},
-		{
-			MethodName: "LiquiditySum",
-			Handler:    _Query_LiquiditySum_Handler,
 		},
 		{
 			MethodName: "LiquidityPair",
@@ -1204,14 +1212,6 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "QuerySimulateBuy",
 			Handler:    _Query_QuerySimulateBuy_Handler,
-		},
-		{
-			MethodName: "QueryEpochCountdown",
-			Handler:    _Query_QueryEpochCountdown_Handler,
-		},
-		{
-			MethodName: "QueryEpochPositions",
-			Handler:    _Query_QueryEpochPositions_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

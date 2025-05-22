@@ -46,12 +46,13 @@ func TestSetParams(t *testing.T) {
 
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		_, err := msg.DexAddDenom(innerCtx, &types.MsgDexAddDenom{
-			Authority:    k.GetAuthority(),
-			Name:         "ukusd2",
-			Factor:       "10",
-			MinLiquidity: "1000",
-			MinOrderSize: "1000",
-			Exponent:     6,
+			Authority:         k.GetAuthority(),
+			Name:              "ukusd2",
+			Factor:            "10",
+			MinTradeLiquidity: "1000",
+			MinDexLiquidity:   "1000",
+			MinOrderSize:      "1000",
+			Exponent:          6,
 		})
 		return err
 	}))
