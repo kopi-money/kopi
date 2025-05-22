@@ -46,8 +46,8 @@ func (k Keeper) GetMarketStats(ctx context.Context, _ *types.GetMarketStatsQuery
 			return nil, err
 		}
 
-		redeeming := k.GetRedemptionSum(ctx, cAsset.BaseDexDenom)
-		redeemingUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.BaseDexDenom, referenceDenom, redeeming.ToLegacyDec())
+		redeeming := k.GetRedemptionSum(ctx, cAsset.DexDenom)
+		redeemingUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.DexDenom, referenceDenom, redeeming.ToLegacyDec())
 		if err != nil {
 			return nil, err
 		}
