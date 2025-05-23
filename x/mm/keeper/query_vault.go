@@ -13,10 +13,11 @@ func (k Keeper) GetVaultValues(ctx context.Context, _ *types.GetVaultValuesQuery
 	var vaults []types.Vault
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		vaults = append(vaults, types.Vault{
-			Denom:   cAsset.BaseDexDenom,
-			Balance: balance.AmountOf(cAsset.BaseDexDenom).String(),
-			LoanSum: k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom).LoanSum.String(),
-			Supply:  k.BankKeeper.GetSupply(ctx, cAsset.DexDenom).Amount.String(),
+			Denom:        cAsset.BaseDexDenom,
+			Balance:      balance.AmountOf(cAsset.BaseDexDenom).String(),
+			LoanSum:      k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom).LoanSum.String(),
+			Supply:       k.BankKeeper.GetSupply(ctx, cAsset.DexDenom).Amount.String(),
+			InterestRate: k.calculateInterestRate(ctx, k.calculateUtilityRate(ctx, cAsset)).String(),
 		})
 	}
 

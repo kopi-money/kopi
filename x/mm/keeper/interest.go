@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 )
 
@@ -70,6 +71,16 @@ func (k Keeper) applyInterestForCAssetLoans(ctx context.Context, cAsset denomtyp
 	interestRate = interestRate.Add(math.LegacyOneDec())
 
 	loanSum := k.GetLoanSumWithDefault(ctx, cAsset.BaseDexDenom)
-	loanSum.LoanSum = loanSum.LoanSum.Mul(interestRate)
+	loanSumNew := loanSum.LoanSum.Mul(interestRate)
+	interest := loanSumNew.Sub(loanSum.LoanSum)
+	loanSum.LoanSum = loanSumNew
 	k.loansSum.Set(ctx, cAsset.BaseDexDenom, loanSum)
+
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
+		sdk.NewEvent("interest_applied",
+			sdk.Attribute{Key: "denom", Value: cAsset.DexDenom},
+			sdk.Attribute{Key: "interest_rate", Value: interestRate.String()},
+			sdk.Attribute{Key: "interest", Value: interest.String()},
+		),
+	)
 }
