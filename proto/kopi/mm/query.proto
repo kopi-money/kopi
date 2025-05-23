@@ -167,7 +167,7 @@ message RedemptionRequest {
 }
 
 message GetRedemptionsResponse {
-  repeated RedemptionRequest requests = 1;
+  repeated RedemptionRequest requests = 1 [(gogoproto.nullable) = false];
 }
 
 message GetRedemptionStatsRequestQuery {
@@ -215,7 +215,7 @@ message UserCollateral {
 }
 
 message GetCollateralDenomStatsResponse {
-  repeated UserCollateral user_collateral = 1;
+  repeated UserCollateral user_collateral = 1 [(gogoproto.nullable) = false];
   string sum = 2;
   string sum_usd = 3;
 }
@@ -259,7 +259,7 @@ message DenomLoanStat {
 }
 
 message GetLoanStatsResponse {
-  repeated DenomLoanStat loan_stats = 1;
+  repeated DenomLoanStat loan_stats = 1 [(gogoproto.nullable) = false];
   string total_available_to_borrow_usd = 2;
   string total_loan_sum_usd = 3;
 }
@@ -296,7 +296,7 @@ message Vault {
 }
 
 message GetVaultValuesResponse {
-  repeated Vault vaults = 1;
+  repeated Vault vaults = 1 [(gogoproto.nullable) = false];
 }
 
 message GetVaultValuesQuery {
@@ -415,7 +415,7 @@ message CollateralDenomStats {
 }
 
 message GetCollateralStatsResponse {
-  repeated CollateralDenomStats stats = 1;
+  repeated CollateralDenomStats stats = 1 [(gogoproto.nullable) = false];
   string               total_usd = 2;
 }
 
@@ -440,7 +440,7 @@ message DepositDenomStats {
 }
 
 message GetDepositStatsResponse {
-  repeated DepositDenomStats stats = 1;
+  repeated DepositDenomStats stats = 1 [(gogoproto.nullable) = false];
   string total_deposited_usd = 2;
   string total_available_usd = 3;
   string total_borrowed_usd = 4;
@@ -470,7 +470,7 @@ message DepositUserStats {
 }
 
 message GetDepositUserStatsResponse {
-  repeated DepositUserStats stats = 1;
+  repeated DepositUserStats stats = 1 [(gogoproto.nullable) = false];
   string total_deposited_usd = 2;
   string total_redeeming_usd = 3;
 }
@@ -513,7 +513,7 @@ message UserLoanStat {
 }
 
 message GetUserLoansResponse {
-  repeated UserLoanStat user_loans = 1;
+  repeated UserLoanStat user_loans = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryFullBalanceRequest {
@@ -535,5 +535,5 @@ message FullDenomBalance {
 }
 
 message QueryFullBalanceResponse {
-  repeated FullDenomBalance denoms = 6;
+  repeated FullDenomBalance denoms = 1 [(gogoproto.nullable) = false];
 }

@@ -70,7 +70,7 @@ func (k Keeper) GetLoansStats(ctx context.Context, _ *types.GetLoanStatsQuery) (
 		vault                     = k.BankKeeper.SpendableCoins(ctx, acc.GetAddress())
 		totalAvailableToBorrowUSD = math.LegacyZeroDec()
 		totalLoanSumUSD           = math.LegacyZeroDec()
-		loanStats                 = []*types.DenomLoanStat{}
+		loanStats                 = []types.DenomLoanStat{}
 
 		amountAvailable               math.Int
 		availableToBorrowByDenomLimit math.Int
@@ -100,7 +100,7 @@ func (k Keeper) GetLoansStats(ctx context.Context, _ *types.GetLoanStatsQuery) (
 		totalAvailableToBorrowUSD = totalAvailableToBorrowUSD.Add(amountAvailableUSD)
 		totalLoanSumUSD = totalAvailableToBorrowUSD.Add(loanSumUSD)
 
-		loanStats = append(loanStats, &types.DenomLoanStat{
+		loanStats = append(loanStats, types.DenomLoanStat{
 			Denom:                cAsset.BaseDexDenom,
 			UtilityRate:          utilityRate.String(),
 			BorrowLimitRate:      cAsset.BorrowLimit.String(),
@@ -132,7 +132,7 @@ func (k Keeper) GetUserLoans(ctx context.Context, req *types.GetUserLoansQuery) 
 	var (
 		addr      = k.AccountKeeper.GetModuleAccount(ctx, types.PoolVault)
 		vault     = k.BankKeeper.SpendableCoins(ctx, addr.GetAddress())
-		userLoans = []*types.UserLoanStat{}
+		userLoans = []types.UserLoanStat{}
 
 		availableToBorrowByDenomLimit math.Int
 		amountAvailable               math.LegacyDec
@@ -172,7 +172,7 @@ func (k Keeper) GetUserLoans(ctx context.Context, req *types.GetUserLoansQuery) 
 			return nil, err
 		}
 
-		userLoans = append(userLoans, &types.UserLoanStat{
+		userLoans = append(userLoans, types.UserLoanStat{
 			Denom:              cAsset.BaseDexDenom,
 			AmountBorrowed:     loanValue.String(),
 			AmountBorrowedUsd:  amountBorrowedUSD.String(),

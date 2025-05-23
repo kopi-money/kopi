@@ -101,7 +101,7 @@ func (k Keeper) GetRedemptionsRequest(ctx context.Context, req *types.GetRedempt
 	iterator := k.RedemptionIterator(ctx, req.Denom)
 	for iterator.Valid() {
 		request := iterator.GetNext()
-		response.Requests = append(response.Requests, &types.RedemptionRequest{
+		response.Requests = append(response.Requests, types.RedemptionRequest{
 			Address: request.Address,
 			Amount:  request.Amount.String(),
 			Fee:     request.Fee.String(),

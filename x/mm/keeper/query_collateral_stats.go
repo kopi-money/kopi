@@ -19,7 +19,7 @@ func (k Keeper) GetCollateralStats(ctx context.Context, _ *types.GetCollateralSt
 	}
 
 	var (
-		stats      []*types.CollateralDenomStats
+		stats      []types.CollateralDenomStats
 		totalUSD   = math.LegacyZeroDec()
 		sumUSD     math.LegacyDec
 		priceUSD   math.LegacyDec
@@ -49,7 +49,7 @@ func (k Keeper) GetCollateralStats(ctx context.Context, _ *types.GetCollateralSt
 			return nil, fmt.Errorf("get price in usd (%v): %w", denom.DexDenom, err)
 		}
 
-		stats = append(stats, &types.CollateralDenomStats{
+		stats = append(stats, types.CollateralDenomStats{
 			Denom:              denom.DexDenom,
 			DepositedMarket:    sum.String(),
 			DepositedMarketUsd: sumUSD.String(),
@@ -78,14 +78,14 @@ func (k Keeper) GetCollateralDenomStats(ctx context.Context, req *types.GetColla
 	}
 
 	sum := math.ZeroInt()
-	collaterals := []*types.UserCollateral{}
+	collaterals := []types.UserCollateral{}
 
 	iterator := k.CollateralIterator(ctx, denom.DexDenom)
 	for iterator.Valid() {
 		collateral := iterator.GetNext()
 		sum = sum.Add(collateral.Amount)
 
-		collaterals = append(collaterals, &types.UserCollateral{
+		collaterals = append(collaterals, types.UserCollateral{
 			Address: collateral.Address,
 			Amount:  collateral.Amount.String(),
 		})
@@ -115,7 +115,7 @@ func (k Keeper) GetCollateralUserStats(ctx context.Context, req *types.GetCollat
 
 	var (
 		totalUSD         = math.LegacyZeroDec()
-		stats            = []*types.CollateralDenomStats{}
+		stats            = []types.CollateralDenomStats{}
 		depositCap       math.Int
 		collateralSumUSD math.LegacyDec
 		priceUSD         math.LegacyDec
@@ -150,7 +150,7 @@ func (k Keeper) GetCollateralUserStats(ctx context.Context, req *types.GetCollat
 
 		totalUSD = totalUSD.Add(collateralSumUSD)
 
-		stats = append(stats, &types.CollateralDenomStats{
+		stats = append(stats, types.CollateralDenomStats{
 			Denom:              denom.DexDenom,
 			DepositedMarket:    collateralSum.String(),
 			DepositedMarketUsd: collateralSumUSD.String(),

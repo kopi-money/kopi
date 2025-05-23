@@ -30,7 +30,7 @@ func (k Keeper) FullBalance(ctx context.Context, req *types.QueryFullBalanceRequ
 	var (
 		orders  = k.DexKeeper.GetAllOrdersByAddress(ctx, req.Address)
 		coins   = k.BankKeeper.SpendableCoins(ctx, address)
-		entries = []*types.FullDenomBalance{}
+		entries = []types.FullDenomBalance{}
 	)
 
 	for _, denom := range k.DenomKeeper.Denoms(ctx) {
@@ -46,7 +46,7 @@ func (k Keeper) FullBalance(ctx context.Context, req *types.QueryFullBalanceRequ
 		colUSD, _ := k.DenomKeeper.GetValueIn(ctx, denom, referenceDenom, col.ToLegacyDec())
 		sumUSD, _ := k.DenomKeeper.GetValueIn(ctx, denom, referenceDenom, sum.ToLegacyDec())
 
-		entries = append(entries, &types.FullDenomBalance{
+		entries = append(entries, types.FullDenomBalance{
 			Denom:         denom,
 			Sum:           sum.String(),
 			SumUsd:        sumUSD.String(),

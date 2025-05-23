@@ -35,7 +35,7 @@ func (k Keeper) GetDepositStats(ctx context.Context, _ *types.GetDepositStatsQue
 		priceCAssetUSD math.LegacyDec
 	)
 
-	var stats []*types.DepositDenomStats
+	var stats []types.DepositDenomStats
 	for _, cAsset := range k.DenomKeeper.GetCAssets(ctx) {
 		supply := k.BankKeeper.GetSupply(ctx, cAsset.DexDenom).Amount
 		supplyUSD, err = k.DenomKeeper.GetValueIn(ctx, cAsset.DexDenom, referenceDenom, supply.ToLegacyDec())
@@ -109,7 +109,7 @@ func (k Keeper) GetDepositStats(ctx context.Context, _ *types.GetDepositStatsQue
 		depositStats.Redeeming = redeeming.String()
 		depositStats.RedeemingUsd = redeemingUSD.String()
 
-		stats = append(stats, &depositStats)
+		stats = append(stats, depositStats)
 	}
 
 	return &types.GetDepositStatsResponse{
@@ -137,7 +137,7 @@ func (k Keeper) GetDepositUserStats(ctx context.Context, req *types.GetDepositUs
 	}
 
 	var (
-		stats             = []*types.DepositUserStats{}
+		stats             = []types.DepositUserStats{}
 		coins             = k.BankKeeper.SpendableCoins(ctx, acc)
 		totalDepositedUSD = math.LegacyZeroDec()
 		totalRedeemingUSD = math.LegacyZeroDec()
@@ -200,7 +200,7 @@ func (k Keeper) GetDepositUserStats(ctx context.Context, req *types.GetDepositUs
 		depositStats.RedeemingUsd = redeemingUSD.String()
 		depositStats.HasRedemptionRequest = isRedeeming
 
-		stats = append(stats, &depositStats)
+		stats = append(stats, depositStats)
 	}
 
 	return &types.GetDepositUserStatsResponse{
