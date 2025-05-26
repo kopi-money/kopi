@@ -293,6 +293,7 @@ message Vault {
   string balance = 2;
   string loan_sum = 3;
   string supply = 4;
+  string interest_rate = 5;
 }
 
 message GetVaultValuesResponse {
