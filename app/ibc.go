@@ -2,7 +2,7 @@ package app
 
 import (
 	"fmt"
-	
+
 	"cosmossdk.io/core/appmodule"
 	storetypes "cosmossdk.io/store/types"
 	"github.com/CosmWasm/wasmd/x/wasm"

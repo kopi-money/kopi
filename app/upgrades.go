@@ -6,9 +6,6 @@ import (
 	"fmt"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	v18 "github.com/kopi-money/kopi/app/upgrades/v18"
-	v19 "github.com/kopi-money/kopi/app/upgrades/v19"
-	v21 "github.com/kopi-money/kopi/app/upgrades/v21"
 
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
@@ -27,7 +24,11 @@ import (
 	"github.com/kopi-money/kopi/app/upgrades/v15"
 	"github.com/kopi-money/kopi/app/upgrades/v16"
 	"github.com/kopi-money/kopi/app/upgrades/v17"
+	"github.com/kopi-money/kopi/app/upgrades/v18"
+	"github.com/kopi-money/kopi/app/upgrades/v19"
 	"github.com/kopi-money/kopi/app/upgrades/v20"
+	"github.com/kopi-money/kopi/app/upgrades/v21"
+	"github.com/kopi-money/kopi/app/upgrades/v22"
 	"github.com/kopi-money/kopi/app/upgrades/v7"
 	"github.com/kopi-money/kopi/app/upgrades/v8"
 	"github.com/kopi-money/kopi/app/upgrades/v9"
@@ -220,6 +221,12 @@ func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
 		},
 		{
 			UpgradeName: v21.UpgradeNameRC3,
+			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
+				return v21.CreateUpgradeHandler(manager, configurator, app.DenominationsKeeper, app.DexKeeper)
+			},
+		},
+		{
+			UpgradeName: v22.UpgradeNameRC1,
 			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
 				return v21.CreateUpgradeHandler(manager, configurator, app.DenominationsKeeper, app.DexKeeper)
 			},

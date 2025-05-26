@@ -71,25 +71,25 @@ func CreateUpgradeHandler(_ *module.Manager, _ module.Configurator, denomK denom
 				Ratio: usdRatio,
 			})
 
-			osmoRatio, _ := denomK.CreateRatio(ctx, "0.35ukusd", 6)
+			osmoRatio, _ := denomK.CreateRatio(ctx, "ibc/646315E3B0461F5FA4C5C8968A88FC45D4D5D04A45B98F1B8294DD82F386DD85", "0.35ukusd", 6)
 			denomK.SetRatio(innerCtx, denomtypes.Ratio{
 				Denom: "ibc/646315E3B0461F5FA4C5C8968A88FC45D4D5D04A45B98F1B8294DD82F386DD85", // OSMO
 				Ratio: osmoRatio,
 			})
 
-			atomRatio, _ := denomK.CreateRatio(ctx, "5.5ukusd", 6)
+			atomRatio, _ := denomK.CreateRatio(ctx, "ibc/25418646C017D377ADF3202FF1E43590D0DAE3346E594E8D78176A139A928F88", "5.5ukusd", 6)
 			denomK.SetRatio(innerCtx, denomtypes.Ratio{
 				Denom: "ibc/25418646C017D377ADF3202FF1E43590D0DAE3346E594E8D78176A139A928F88", // ATOM
 				Ratio: atomRatio,
 			})
 
-			injRatio, _ := denomK.CreateRatio(ctx, "16ukusd", 18)
+			injRatio, _ := denomK.CreateRatio(ctx, "ibc/DE63D8AC34B752FB7D4CAA7594145EDE1C9FC256AC6D4043D0F12310EB8FC255", "16ukusd", 18)
 			denomK.SetRatio(innerCtx, denomtypes.Ratio{
 				Denom: "ibc/DE63D8AC34B752FB7D4CAA7594145EDE1C9FC256AC6D4043D0F12310EB8FC255", // INJ
 				Ratio: injRatio,
 			})
 
-			lunaRatio, _ := denomK.CreateRatio(ctx, "0.29ukusd", 6)
+			lunaRatio, _ := denomK.CreateRatio(ctx, "ibc/DA59C009A0B3B95E0549E6BF7B075C8239285989FF457A8EDDBB56F10B2A6986", "0.29ukusd", 6)
 			denomK.SetRatio(innerCtx, denomtypes.Ratio{
 				Denom: "ibc/DA59C009A0B3B95E0549E6BF7B075C8239285989FF457A8EDDBB56F10B2A6986", // LUNA
 				Ratio: lunaRatio,
