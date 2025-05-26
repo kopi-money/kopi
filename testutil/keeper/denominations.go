@@ -102,60 +102,60 @@ func DenomKeeper(t *testing.T) (denomkeeper.Keeper, context.Context, *Keys) {
 	params := createDenomTestParams()
 	params.DexDenoms = append(params.DexDenoms,
 		denomtypes.DexDenom{
-			Name:         "ibc/8E27BA2D5493AF5636760E354E46004562C46AB7EC0CC4C1CA14E9E20E2545B5",
-			MinLiquidity: math.NewInt(100_000),
-			MinOrderSize: math.NewInt(1_000_000),
-			Exponent:     6,
+			Name:              "ibc/8E27BA2D5493AF5636760E354E46004562C46AB7EC0CC4C1CA14E9E20E2545B5",
+			MinTradeLiquidity: math.NewInt(100_000),
+			MinOrderSize:      math.NewInt(1_000_000),
+			Exponent:          6,
 		},
 		denomtypes.DexDenom{
-			Name:         "uawusdc",
-			MinLiquidity: math.NewInt(1000),
-			MinOrderSize: math.NewInt(1000),
-			Exponent:     6,
+			Name:              "uawusdc",
+			MinTradeLiquidity: math.NewInt(1000),
+			MinOrderSize:      math.NewInt(1000),
+			Exponent:          6,
 		},
 		denomtypes.DexDenom{
-			Name:         "inj",
-			MinLiquidity: math.NewInt(1000),
-			MinOrderSize: math.NewInt(1000),
-			Exponent:     18,
+			Name:              "inj",
+			MinTradeLiquidity: math.NewInt(1000),
+			MinOrderSize:      math.NewInt(1000),
+			Exponent:          18,
 		},
 		denomtypes.DexDenom{
-			Name:         "ubig",
-			MinLiquidity: math.NewInt(1000),
-			MinOrderSize: math.NewInt(1000),
-			Exponent:     6,
+			Name:              "ubig",
+			MinTradeLiquidity: math.NewInt(1000),
+			MinOrderSize:      math.NewInt(1000),
+			Exponent:          6,
 		},
 		denomtypes.DexDenom{
-			Name:         "usmall",
-			MinLiquidity: math.NewInt(1000),
-			MinOrderSize: math.NewInt(1000),
-			Exponent:     6,
+			Name:              "usmall",
+			MinTradeLiquidity: math.NewInt(1000),
+			MinOrderSize:      math.NewInt(1000),
+			Exponent:          6,
 		},
 		denomtypes.DexDenom{
-			Name:         "ubig2",
-			MinLiquidity: math.NewInt(10000),
-			MinOrderSize: math.NewInt(10000),
-			Exponent:     6,
+			Name:              "ubig2",
+			MinTradeLiquidity: math.NewInt(10000),
+			MinOrderSize:      math.NewInt(10000),
+			Exponent:          6,
 		},
 		denomtypes.DexDenom{
-			Name:         "usmall2",
-			MinLiquidity: math.NewInt(100),
-			MinOrderSize: math.NewInt(100),
-			Exponent:     6,
+			Name:              "usmall2",
+			MinTradeLiquidity: math.NewInt(100),
+			MinOrderSize:      math.NewInt(100),
+			Exponent:          6,
 		},
 		denomtypes.DexDenom{
-			Name:                  "uusdc",
-			MinLiquidity:          math.NewInt(1000),
-			MinOrderSize:          math.NewInt(1000),
-			ExtraVirtualLiquidity: mathIntPtr(100000000000),
-			Exponent:              6,
+			Name:              "uusdc",
+			MinTradeLiquidity: math.NewInt(1000),
+			MinOrderSize:      math.NewInt(1000),
+			MinDexLiquidity:   mathIntPtr(100000000000),
+			Exponent:          6,
 		},
 		denomtypes.DexDenom{
-			Name:                  "uosmo",
-			MinLiquidity:          math.NewInt(1000),
-			MinOrderSize:          math.NewInt(1000),
-			ExtraVirtualLiquidity: mathIntPtr(1000000),
-			Exponent:              6,
+			Name:              "uosmo",
+			MinTradeLiquidity: math.NewInt(1000),
+			MinOrderSize:      math.NewInt(1000),
+			MinDexLiquidity:   mathIntPtr(1000000),
+			Exponent:          6,
 		},
 	)
 
@@ -241,10 +241,21 @@ func DenomKeeper(t *testing.T) (denomkeeper.Keeper, context.Context, *Keys) {
 
 func createDenomTestParams() denomtypes.Params {
 	return denomtypes.Params{
-		CAssets:          createDefaultCAssets(),
-		CollateralDenoms: createDefaultCollateralDenoms(),
-		DexDenoms:        createDefaultDexDenoms(),
-		KCoins:           createDefaultKCoins(),
+		CAssets:           createDefaultCAssets(),
+		CollateralDenoms:  createDefaultCollateralDenoms(),
+		DexDenoms:         createDefaultDexDenoms(),
+		KCoins:            createDefaultKCoins(),
+		FactoryPoolDenoms: createDefaultFactoryPoolDenoms(),
+	}
+}
+
+func createDefaultFactoryPoolDenoms() []denomtypes.FactoryPoolDenom {
+	return []denomtypes.FactoryPoolDenom{
+		{
+			Denom:           constants.KUSD,
+			MinimumPoolSize: math.NewInt(100),
+			MoveThreshold:   math.NewInt(100),
+		},
 	}
 }
 
@@ -317,61 +328,61 @@ func createDefaultCAssets() []denomtypes.CAsset {
 func createDefaultDexDenoms() []denomtypes.DexDenom {
 	return []denomtypes.DexDenom{
 		{
-			Name:         constants.BaseCurrency,
-			MinLiquidity: math.NewInt(10_000_000),
-			MinOrderSize: math.NewInt(1),
-			Exponent:     6,
+			Name:              constants.BaseCurrency,
+			MinTradeLiquidity: math.NewInt(10_000_000),
+			MinOrderSize:      math.NewInt(1),
+			Exponent:          6,
 		},
 		{
-			Name:                  "uwusdc",
-			MinLiquidity:          math.NewInt(10_000_000),
-			ExtraVirtualLiquidity: mathIntToPtr(math.NewInt(10_000_000)),
-			MinOrderSize:          math.NewInt(1),
-			Exponent:              6,
+			Name:              "uwusdc",
+			MinTradeLiquidity: math.NewInt(10_000_000),
+			MinDexLiquidity:   mathIntToPtr(math.NewInt(10_000_000)),
+			MinOrderSize:      math.NewInt(1),
+			Exponent:          6,
 		},
 		{
-			Name:                  "uwusdt",
-			MinLiquidity:          math.NewInt(10_000_000),
-			ExtraVirtualLiquidity: mathIntToPtr(math.NewInt(10_000_000)),
-			MinOrderSize:          math.NewInt(1_000_000),
-			Exponent:              6,
+			Name:              "uwusdt",
+			MinTradeLiquidity: math.NewInt(10_000_000),
+			MinDexLiquidity:   mathIntToPtr(math.NewInt(10_000_000)),
+			MinOrderSize:      math.NewInt(1_000_000),
+			Exponent:          6,
 		},
 		{
-			Name:                  constants.KUSD,
-			MinLiquidity:          math.NewInt(10_000_000),
-			ExtraVirtualLiquidity: mathIntToPtr(math.NewInt(10_000_000)),
-			MinOrderSize:          math.NewInt(1),
-			Exponent:              6,
+			Name:              constants.KUSD,
+			MinTradeLiquidity: math.NewInt(10_000_000),
+			MinDexLiquidity:   mathIntToPtr(math.NewInt(10_000_000)),
+			MinOrderSize:      math.NewInt(1),
+			Exponent:          6,
 		},
 		{
-			Name:         "uckusd",
-			MinLiquidity: math.NewInt(10_000_000),
-			MinOrderSize: math.NewInt(1_000_000),
-			Exponent:     6,
+			Name:              "uckusd",
+			MinTradeLiquidity: math.NewInt(10_000_000),
+			MinOrderSize:      math.NewInt(1_000_000),
+			Exponent:          6,
 		},
 		{
-			Name:         "ucwusdc",
-			MinLiquidity: math.NewInt(10_000_000),
-			MinOrderSize: math.NewInt(1_000_000),
-			Exponent:     6,
+			Name:              "ucwusdc",
+			MinTradeLiquidity: math.NewInt(10_000_000),
+			MinOrderSize:      math.NewInt(1_000_000),
+			Exponent:          6,
 		},
 		{
-			Name:         "swbtc",
-			MinLiquidity: math.NewInt(1_000),
-			MinOrderSize: math.NewInt(1_000_000),
-			Exponent:     8,
+			Name:              "swbtc",
+			MinTradeLiquidity: math.NewInt(1_000),
+			MinOrderSize:      math.NewInt(1_000_000),
+			Exponent:          8,
 		},
 		{
-			Name:         "skbtc",
-			MinLiquidity: math.NewInt(1_000),
-			MinOrderSize: math.NewInt(1_000_000),
-			Exponent:     8,
+			Name:              "skbtc",
+			MinTradeLiquidity: math.NewInt(1_000),
+			MinOrderSize:      math.NewInt(1_000_000),
+			Exponent:          8,
 		},
 		{
-			Name:         "sckbtc",
-			MinLiquidity: math.NewInt(1_000),
-			MinOrderSize: math.NewInt(1_000_000),
-			Exponent:     8,
+			Name:              "sckbtc",
+			MinTradeLiquidity: math.NewInt(1_000),
+			MinOrderSize:      math.NewInt(1_000_000),
+			Exponent:          8,
 		},
 	}
 }
@@ -422,12 +433,12 @@ func SetRatio(ctx context.Context, k SetRatioKeeper, denom string, ratio math.Le
 }
 
 type SetMinimumLiquidityKeeper interface {
-	DexUpdateMinimumLiquidity(ctx context.Context, denom, minLiquidityStr string) error
+	DexUpdateMinimumTradeLiquidity(ctx context.Context, denom, minLiquidityStr string) error
 }
 
 func SetMinimumLiquidity(ctx context.Context, k SetMinimumLiquidityKeeper, denom, minLiquidity string) error {
 	return cache.Transact(ctx, func(innerCtx context.Context) error {
-		return k.DexUpdateMinimumLiquidity(innerCtx, denom, minLiquidity)
+		return k.DexUpdateMinimumTradeLiquidity(innerCtx, denom, minLiquidity)
 	})
 }
 

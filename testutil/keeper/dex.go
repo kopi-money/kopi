@@ -55,6 +55,7 @@ func DexKeeper(t *testing.T) (dexkeeper.Keeper, context.Context, *Keys) {
 		mmtypes.PoolRedemption:                    nil,
 		mmtypes.ModuleName:                        {authtypes.Minter},
 		reservetypes.ModuleName:                   {authtypes.Minter, authtypes.Burner},
+		reservetypes.BuyingKCoins:                 nil,
 		swaptypes.ModuleName:                      {authtypes.Minter, authtypes.Burner},
 		strategiestypes.PoolArbitrage:             {authtypes.Minter, authtypes.Burner},
 		strategiestypes.PoolAutomationFunds:       nil,
