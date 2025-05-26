@@ -32,15 +32,11 @@ func (k msgServer) Burn(ctx context.Context, msg *types.MsgBurn) (*types.Void, e
 	return &types.Void{}, nil
 }
 
-func (k Keeper) Burn(ctx context.Context) error {
+func (k Keeper) Burn(ctx context.Context) {
 	address := k.AccountKeeper.GetModuleAccount(ctx, types.Burner).GetAddress()
 	spendableCoins := k.BankKeeper.SpendableCoins(ctx, address)
 
 	if !spendableCoins.IsZero() {
-		if err := k.BankKeeper.BurnCoins(ctx, types.Burner, spendableCoins); err != nil {
-			return fmt.Errorf("burn coins: %v", err)
-		}
+		_ = k.BankKeeper.BurnCoins(ctx, types.Burner, spendableCoins)
 	}
-
-	return nil
 }

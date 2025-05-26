@@ -235,6 +235,7 @@ var (
 		// Reserve
 		{Account: reservemoduletypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},
 		{Account: reservemoduletypes.Burner, Permissions: []string{authtypes.Burner}},
+		{Account: reservemoduletypes.BuyingKCoins},
 
 		// Swap
 		{Account: swapmoduletypes.ModuleName, Permissions: []string{authtypes.Minter, authtypes.Burner}},

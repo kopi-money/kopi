@@ -160,13 +160,12 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 // EndBlock contains the logic that is automatically triggered at the end of each block.
 // The end block implementation is optional.
 func (am AppModule) EndBlock(ctx context.Context) error {
+	am.keeper.HandleKCoinBuyback(ctx)
+	am.keeper.Burn(ctx)
+
 	return cache.Transact(ctx, func(innerCtx context.Context) error {
 		if err := am.keeper.BeginBlockCheckReserve(innerCtx); err != nil {
 			return fmt.Errorf("error checking reserve at beginning of block: %w", err)
-		}
-
-		if err := am.keeper.Burn(innerCtx); err != nil {
-			return fmt.Errorf("error burning coins: %w", err)
 		}
 
 		return nil

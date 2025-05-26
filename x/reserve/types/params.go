@@ -73,6 +73,10 @@ func (p Params) Validate() error {
 		return fmt.Errorf("invalid trade fee other income share to stakers: %w", err)
 	}
 
+	if err := validateSellAmounts(p.ReserveSellAmounts); err != nil {
+		return fmt.Errorf("invalid reserve sell amounts: %w", err)
+	}
+
 	return nil
 }
 
@@ -92,6 +96,16 @@ func validateBetweenZeroAndOne(d any) error {
 
 	if !v.LT(math.LegacyOneDec()) {
 		return fmt.Errorf("value has to be less than 1")
+	}
+
+	return nil
+}
+
+func validateSellAmounts(rsas []ReserveSellAmount) error {
+	for _, rsa := range rsas {
+		if rsa.SellAmount.LT(math.NewInt(100_000)) {
+			return fmt.Errorf("amount for %s is too small", rsa.Denom)
+		}
 	}
 
 	return nil

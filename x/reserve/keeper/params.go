@@ -79,3 +79,13 @@ func (k Keeper) getTradeFeeShareOther(ctx context.Context) math.LegacyDec {
 
 	return share
 }
+
+func (k Keeper) getSellAmount(ctx context.Context, denom string) (math.Int, bool) {
+	for _, rsa := range k.GetParams(ctx).ReserveSellAmounts {
+		if rsa.Denom == denom {
+			return rsa.SellAmount, true
+		}
+	}
+
+	return math.Int{}, false
+}

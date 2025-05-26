@@ -41,6 +41,7 @@ type ParamSubspace interface {
 type DenomKeeper interface {
 	CalculateParity(ctx context.Context, kCoin string) (*math.LegacyDec, string, error)
 	GetCAssetByBaseName(ctx context.Context, baseDenom string) (denomtypes.CAsset, error)
+	GetValueInUSD(ctx context.Context, denom string, amount math.LegacyDec) (math.LegacyDec, error)
 	IsKCoin(ctx context.Context, denom string) bool
 	IsValidDenom(ctx context.Context, denom string) bool
 	KCoins(ctx context.Context) []string
@@ -50,9 +51,11 @@ type DenomKeeper interface {
 
 type DexKeeper interface {
 	AddLiquidity(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int) error
+	ExecuteBuy(ctx dextypes.TradeContext) (trading.TradeResult, error)
 	ExecuteSell(ctx dextypes.TradeContext) (trading.TradeResult, error)
 	GetLiquidityByAddress(ctx context.Context, denom, address string) math.Int
 	RemoveLiquidityForAddress(ctx context.Context, accAddr sdk.AccAddress, denom string, amount math.Int, positionIndex *uint64) (math.Int, error)
+	SimulateBuy(ctx context.Context, tradeAmount math.Int, tradeDenomGiving, tradeDenomReceiving string) (dextypes.TradeSimulationResult, error)
 }
 
 type MMKeeper interface {

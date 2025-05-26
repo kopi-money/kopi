@@ -2,19 +2,19 @@ package keeper
 
 import (
 	"context"
-
 	"cosmossdk.io/math"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
 	"github.com/kopi-money/kopi/x/reserve/types"
 )
 
-func (k msgServer) UpdateKCoinBurnShare(ctx context.Context, req *types.MsgUpdateKCoinBurnShare) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+func (k msgServer) UpdateKCoinBurnShare(ctx context.Context, msg *types.MsgUpdateKCoinBurnShare) (*types.Void, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
-	kCoinBurnShare, err := math.LegacyNewDecFromStr(req.KcoinBurnShare)
+	kCoinBurnShare, err := math.LegacyNewDecFromStr(msg.KcoinBurnShare)
 	if err != nil {
 		return nil, err
 	}
@@ -26,15 +26,15 @@ func (k msgServer) UpdateKCoinBurnShare(ctx context.Context, req *types.MsgUpdat
 		return nil, err
 	}
 
-	return &types.Void{}, err
+	return &types.Void{}, nil
 }
 
-func (k msgServer) UpdateBuyThreshold(ctx context.Context, req *types.MsgUpdateBuyThreshold) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+func (k msgServer) UpdateBuyThreshold(ctx context.Context, msg *types.MsgUpdateBuyThreshold) (*types.Void, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
-	buyThreshold, err := math.LegacyNewDecFromStr(req.BuyThreshold)
+	buyThreshold, err := math.LegacyNewDecFromStr(msg.BuyThreshold)
 	if err != nil {
 		return nil, err
 	}
@@ -46,15 +46,15 @@ func (k msgServer) UpdateBuyThreshold(ctx context.Context, req *types.MsgUpdateB
 		return nil, err
 	}
 
-	return &types.Void{}, err
+	return &types.Void{}, nil
 }
 
-func (k msgServer) UpdateSellThreshold(ctx context.Context, req *types.MsgUpdateSellThreshold) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+func (k msgServer) UpdateSellThreshold(ctx context.Context, msg *types.MsgUpdateSellThreshold) (*types.Void, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
-	sellThreshold, err := math.LegacyNewDecFromStr(req.SellThreshold)
+	sellThreshold, err := math.LegacyNewDecFromStr(msg.SellThreshold)
 	if err != nil {
 		return nil, err
 	}
@@ -66,20 +66,20 @@ func (k msgServer) UpdateSellThreshold(ctx context.Context, req *types.MsgUpdate
 		return nil, err
 	}
 
-	return &types.Void{}, err
+	return &types.Void{}, nil
 }
 
-func (k msgServer) UpdateTradeFeeStakers(ctx context.Context, req *types.MsgUpdateTradeFeeStakers) (*types.Void, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+func (k msgServer) UpdateTradeFeeStakers(ctx context.Context, msg *types.MsgUpdateTradeFeeStakers) (*types.Void, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
-	fromBase, err := math.LegacyNewDecFromStr(req.TradeFeeBaseIncomeShareToStakers)
+	fromBase, err := math.LegacyNewDecFromStr(msg.TradeFeeBaseIncomeShareToStakers)
 	if err != nil {
 		return nil, err
 	}
 
-	fromOthers, err := math.LegacyNewDecFromStr(req.TradeFeeOtherIncomeShareToStakers)
+	fromOthers, err := math.LegacyNewDecFromStr(msg.TradeFeeOtherIncomeShareToStakers)
 	if err != nil {
 		return nil, err
 	}
@@ -92,5 +92,33 @@ func (k msgServer) UpdateTradeFeeStakers(ctx context.Context, req *types.MsgUpda
 		return nil, err
 	}
 
-	return &types.Void{}, err
+	return &types.Void{}, nil
+}
+
+func (k msgServer) UpdateReserveSellAmounts(ctx context.Context, msg *types.MsgUpdateReserveSellAmounts) (*types.Void, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
+	}
+
+	var reserveSellAmounts []types.ReserveSellAmount
+	for _, rsa := range msg.ReserveSellAmount {
+		amount, ok := math.NewIntFromString(rsa.Amount)
+		if !ok {
+			return nil, fmt.Errorf("invalid amount (%v): %s", rsa.Denom, rsa.Amount)
+		}
+
+		reserveSellAmounts = append(reserveSellAmounts, types.ReserveSellAmount{
+			Denom:      rsa.Denom,
+			SellAmount: amount,
+		})
+	}
+
+	params := k.GetParams(ctx)
+	params.ReserveSellAmounts = reserveSellAmounts
+
+	if err := k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
+
+	return &types.Void{}, nil
 }
