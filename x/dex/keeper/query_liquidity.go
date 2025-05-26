@@ -32,7 +32,8 @@ func (k Keeper) LiquidityAll(ctx context.Context, _ *types.QueryGetLiquidityAllR
 
 		amountUSD, err = k.DenomKeeper.GetValueIn(ctx, denom, referenceDenom, val.ToLegacyDec())
 		if err != nil {
-			return nil, fmt.Errorf("convert value %s > %s: %w", denom, referenceDenom, err)
+			amountUSD = math.LegacyZeroDec()
+			k.Logger().Error(fmt.Sprintf("convert value %s > %s: %v", denom, referenceDenom, err))
 		}
 
 		feeAmount := k.GetLiquidityByAddress(ctx, denom, feeAcc.String())

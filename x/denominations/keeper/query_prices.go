@@ -22,12 +22,17 @@ func (k Keeper) PricesUSD(ctx context.Context, _ *types.QueryGetPricesUSDRequest
 	for _, denom := range k.Denoms(ctx) {
 		priceUSD, err = k.CalculatePrice(ctx, denom, reference)
 		if err != nil {
-			return nil, fmt.Errorf("unable to calculate price (%v): %w", denom, err)
+			priceUSD = math.LegacyZeroDec()
+			k.Logger().Error(fmt.Sprintf("unable to calculate price (%v): %v", denom, err))
+		}
+
+		if priceUSD.IsPositive() {
+			priceUSD = math.LegacyOneDec().Quo(priceUSD)
 		}
 
 		prices = append(prices, types.Price{
 			Denom: denom,
-			Price: math.LegacyOneDec().Quo(priceUSD).String(),
+			Price: priceUSD.String(),
 		})
 	}
 
