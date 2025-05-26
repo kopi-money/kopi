@@ -5,6 +5,7 @@ import (
 	"cosmossdk.io/math"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/kopi-money/kopi/constants"
 	"github.com/kopi-money/kopi/x/dex/types"
 	"strconv"
 )
@@ -138,12 +139,22 @@ func (k Keeper) DistributeCollectedFees(ctx context.Context) error {
 		return fmt.Errorf("get epoch share sum: %w", err)
 	}
 
+	epochSharesUSD, err := k.DenomKeeper.GetValueInUSD(ctx, constants.BaseCurrency, epochShareSum)
+	if err != nil {
+		return fmt.Errorf("get epoch shares USD: %w", err)
+	}
+
 	accFees := k.AccountKeeper.GetModuleAccount(ctx, types.PoolFeeIncome)
 	accLeftovers := k.AccountKeeper.GetModuleAccount(ctx, types.PoolFeeLeftovers)
 	payoutFunds := k.BankKeeper.SpendableCoins(ctx, accFees.GetAddress())
 	fundsLeftover := k.BankKeeper.SpendableCoins(ctx, accLeftovers.GetAddress())
 
-	if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolFeeLeftovers, types.PoolFeeIncome, fundsLeftover); err != nil {
+	payoutUSD, err := k.calculatePaoyutUSD(ctx, payoutFunds)
+	if err != nil {
+		return fmt.Errorf("calc payout USD: %w", err)
+	}
+
+	if err = k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolFeeLeftovers, types.PoolFeeIncome, fundsLeftover); err != nil {
 		return fmt.Errorf("get leftover funds: %w", err)
 	}
 
@@ -156,17 +167,38 @@ func (k Keeper) DistributeCollectedFees(ctx context.Context) error {
 	}
 
 	if !sendToDex.IsZero() {
-		if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolFeeIncome, types.PoolLiquidity, sendToDex); err != nil {
+		if err = k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolFeeIncome, types.PoolLiquidity, sendToDex); err != nil {
 			return fmt.Errorf("return leftover funds: %w", err)
 		}
 	}
 
 	leftOvers := k.BankKeeper.SpendableCoins(ctx, accFees.GetAddress())
-	if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolFeeIncome, types.PoolFeeLeftovers, leftOvers); err != nil {
+	if err = k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolFeeIncome, types.PoolFeeLeftovers, leftOvers); err != nil {
 		return fmt.Errorf("return leftover funds: %w", err)
 	}
 
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
+		sdk.NewEvent("epoch_payout",
+			sdk.Attribute{Key: "liquidity_usd", Value: epochSharesUSD.String()},
+			sdk.Attribute{Key: "payout_usd", Value: payoutUSD.String()},
+		),
+	)
+
 	return nil
+}
+
+func (k Keeper) calculatePaoyutUSD(ctx context.Context, payout sdk.Coins) (math.LegacyDec, error) {
+	sumUSD := math.LegacyZeroDec()
+	for _, amount := range payout {
+		amountUSD, err := k.DenomKeeper.GetValueInUSD(ctx, amount.Denom, amount.Amount.ToLegacyDec())
+		if err != nil {
+			return math.LegacyZeroDec(), fmt.Errorf("get amount USD (%v): %w", amount.Denom, err)
+		}
+
+		sumUSD = sumUSD.Add(amountUSD)
+	}
+
+	return sumUSD, nil
 }
 
 func (k Keeper) HandleEpochAddress(ctx context.Context, address string, epochShareSum math.LegacyDec, payoutFunds, sendToDex sdk.Coins) (sdk.Coins, error) {
