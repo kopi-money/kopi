@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 	"errors"
-	"fmt"
 	"strings"
 
 	"cosmossdk.io/math"
@@ -33,17 +32,20 @@ func (k Keeper) ReserveFunds(ctx context.Context, _ *types.QueryReserveFundsRequ
 			}
 		}
 
-		if !priceUSD.IsPositive() {
-			return nil, fmt.Errorf("priceUSD must be positive")
+		var amountUSD math.LegacyDec
+		if priceUSD.IsPositive() {
+			amountUSD = amount.ToLegacyDec().Quo(priceUSD) // C
+		} else {
+			amountUSD = math.LegacyZeroDec()
 		}
 
 		funds = append(funds, &types.Denom{
 			Denom:     denom,
 			Amount:    amount.String(),
-			AmountUsd: amount.ToLegacyDec().Quo(priceUSD).String(), // C
+			AmountUsd: amountUSD.String(),
 		})
 
-		total = total.Add(amount.ToLegacyDec().Quo(priceUSD)) // C
+		total = total.Add(amountUSD)
 	}
 
 	funds = append(funds, &types.Denom{
