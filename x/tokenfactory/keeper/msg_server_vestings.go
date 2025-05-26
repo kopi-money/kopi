@@ -2,10 +2,10 @@ package keeper
 
 import (
 	"context"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"time"
-
 	"cosmossdk.io/math"
+	"fmt"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 
@@ -24,16 +24,19 @@ func (k msgServer) CreateVestings(ctx context.Context, msg *types.MsgCreateVesti
 		return nil, types.ErrInvalidAmountFormat
 	}
 
+	if len(msg.Receivers) == 0 {
+		return nil, fmt.Errorf("list of receivers is empty")
+	}
+
 	startTime := sdk.UnwrapSDKContext(ctx).BlockTime()
-	vestedUntil := time.UnixMilli(msg.VestedUntil)
 
 	for _, receiver := range msg.Receivers {
 		if _, err := sdk.AccAddressFromBech32(receiver); err != nil {
 			return nil, types.ErrInvalidAddress
 		}
 
-		if err := k.createVesting(ctx, factoryDenom.Admin, receiver, factoryDenom.FullName, vestingAmount, startTime, vestedUntil, msg.NumUnlockSteps); err != nil {
-			return nil, err
+		if err := k.createVesting(ctx, factoryDenom.Admin, receiver, factoryDenom.FullName, vestingAmount, startTime, msg.VestedUntil, msg.NumUnlockSteps); err != nil {
+			return nil, fmt.Errorf("create vesting: %w", err)
 		}
 	}
 

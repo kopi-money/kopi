@@ -27,7 +27,8 @@ message Params {
 
   bytes minimum_pool_size = 4 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
-    (gogoproto.nullable)   = false
+    (gogoproto.nullable)   = false,
+    deprecated             = true
   ];
 
   bytes minimum_pool_fee = 6 [
@@ -42,14 +43,21 @@ message Params {
 
   bytes minimum_pool_moving_value = 12 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable)   = false,
+    deprecated = true
+  ];
+
+  bytes offer_fee = 14 [
+    (gogoproto.customtype) = "cosmossdk.io/math.LegacyDec",
     (gogoproto.nullable)   = false
   ];
 
   Categories categories = 5 [
-    (gogoproto.nullable)   = false
+    (gogoproto.nullable) = false
   ];
 
   int64 change_seconds_description = 8;
   int64 change_seconds_website = 9;
   int64 change_seconds_image = 10;
+  int64 pool_treshold_seconds = 13;
 }

@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"cosmossdk.io/collections"
 	"cosmossdk.io/math"
@@ -149,4 +150,36 @@ func (k Keeper) getLiquidity(ctx context.Context, factoryDenom, address string) 
 	amountKCoin := pool.KCoinAmount.ToLegacyDec().Mul(share.Share).TruncateInt()
 	amountFactory := pool.FactoryDenomAmount.ToLegacyDec().Mul(share.Share).TruncateInt()
 	return amountKCoin, amountFactory, nil
+}
+
+func (k Keeper) CheckPoolSizes(ctx context.Context) error {
+	if sdk.UnwrapSDKContext(ctx).BlockHeight()%1000 != 0 {
+		return nil
+	}
+
+	blocktime := sdk.UnwrapSDKContext(ctx).BlockTime()
+	minimumSizes := k.DenomKeeper.MinimumFactoryPoolSizes(ctx)
+
+	iterator := k.liquidityPools.Iterator(ctx, nil)
+	for iterator.Valid() {
+		keyValue := iterator.GetNextKeyValue()
+		pool := keyValue.Value().Value()
+
+		poolValue, err := pool.GetPoolValue()
+		if err != nil {
+			return fmt.Errorf("get pool value: %w", err)
+		}
+
+		if minimumSize, has := minimumSizes[pool.KCoin]; has {
+			if poolValue.LT(minimumSize.ToLegacyDec()) {
+				pool.ThresholdCrossed = nil
+			} else if pool.ThresholdCrossed == nil {
+				pool.ThresholdCrossed = &blocktime
+			}
+		}
+
+		k.SetLiquidityPool(ctx, keyValue.Key(), *pool)
+	}
+
+	return nil
 }

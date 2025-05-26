@@ -2,9 +2,8 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-
 	"cosmossdk.io/math"
+	"fmt"
 
 	errorsmod "cosmossdk.io/errors"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
@@ -249,32 +248,42 @@ func (k msgServer) MoveLiquidityPool(ctx context.Context, msg *types.MsgMoveLiqu
 		return nil, types.ErrDenomDoesNotExists
 	}
 
-	pool, has := k.GetLiquidityPool(ctx, factoryDenom.FullName)
-	if !has {
-		return nil, types.ErrPoolDoesNotExist
-	}
-
-	if err := k.moveLiquidity(ctx, factoryDenom, pool); err != nil {
+	if err := k.MoveDenom(ctx, factoryDenom); err != nil {
 		return nil, fmt.Errorf("move liquidity: %w", err)
 	}
 
 	return &types.Void{}, nil
 }
 
-func (k msgServer) UpdateMinimumPoolMovingValue(ctx context.Context, msg *types.MsgUpdateMinimumPoolMovingValue) (*types.Void, error) {
+func (k msgServer) UpdatePoolThresholdSeconds(ctx context.Context, msg *types.MsgUpdatePoolThresholdSeconds) (*types.Void, error) {
 	if k.GetAuthority() != msg.Authority {
 		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
-	minimumPoolMovingValue, ok := math.NewIntFromString(msg.MinimumPoolMovingValue)
-	if !ok {
-		return nil, fmt.Errorf("invalid minimum pool moving value: %v", msg.MinimumPoolMovingValue)
+	params := k.GetParams(ctx)
+
+	params.PoolTresholdSeconds = msg.PoolThresholdSeconds
+	if err := k.SetParams(ctx, params); err != nil {
+		return nil, err
+	}
+
+	return &types.Void{}, nil
+}
+
+func (k msgServer) UpdateOfferFee(ctx context.Context, msg *types.MsgUpdateOfferFee) (*types.Void, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
+	}
+
+	offerFee, err := math.LegacyNewDecFromStr(msg.OfferFee)
+	if err != nil {
+		return nil, fmt.Errorf("invalid offer fee: %w", err)
 	}
 
 	params := k.GetParams(ctx)
+	params.OfferFee = offerFee
 
-	params.MinimumPoolMovingValue = minimumPoolMovingValue
-	if err := k.SetParams(ctx, params); err != nil {
+	if err = k.SetParams(ctx, params); err != nil {
 		return nil, err
 	}
 

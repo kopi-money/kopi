@@ -6,6 +6,7 @@ import (
 	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	"testing"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/cache"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -42,7 +43,20 @@ func TestMove1(t *testing.T) {
 	require.NoError(t, keepertest.AddOneSidedFactoryLiquidity(ctx, msgServer, keepertest.Alice, factoryDenomHash, "5000_000000"))
 	require.NoError(t, keepertest.AddOneSidedKCoinLiquidity(ctx, msgServer, keepertest.Alice, factoryDenomHash, "5000_000000"))
 
+	require.ErrorContains(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return k.MoveDenom(innerCtx, factoryDenom)
+	}), "pool value too small")
+
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		now := time.Now()
+		pool, _ := k.GetLiquidityPool(innerCtx, factoryDenomHash)
+		pool.ThresholdCrossed = &now
+		k.SetLiquidityPool(innerCtx, factoryDenomHash, pool)
+
+		return k.MoveDenom(innerCtx, factoryDenom)
+	}))
+
+	require.Error(t, cache.Transact(ctx, func(innerCtx context.Context) error {
 		return k.MoveDenom(innerCtx, factoryDenom)
 	}))
 

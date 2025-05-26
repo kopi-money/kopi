@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	gomath "math"
+	"time"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -21,26 +22,23 @@ func (k Keeper) MoveDenom(ctx context.Context, factoryDenom types.FactoryDenom) 
 		return types.ErrPoolDoesNotExist
 	}
 
+	if pool.ThresholdCrossed == nil {
+		return types.ErrPoolTresholdNotCrossed
+	}
+
+	blocktime := sdk.UnwrapSDKContext(ctx).BlockTime()
+	blocktime = blocktime.Add(time.Duration(k.poolThresholdSeconds(ctx)) * time.Second)
+
+	if blocktime.After(*pool.ThresholdCrossed) {
+		return types.ErrPoolTresholdCrossedTooRecently
+	}
+
 	poolRatio, err := pool.GetPoolRatio()
 	if err != nil {
 		return fmt.Errorf("pool ratio: %w", err)
 	}
 
-	poolValue, err := pool.GetPoolValue()
-	if err != nil {
-		return fmt.Errorf("pool value: %w", err)
-	}
-
-	poolValueUSD, err := k.DenomKeeper.GetValueInUSD(ctx, pool.KCoin, poolValue)
-	if err != nil {
-		return fmt.Errorf("value in USD: %w", err)
-	}
-
-	if k.getMinimumPoolMovingValue(ctx).ToLegacyDec().GT(poolValueUSD) {
-		return types.ErrPoolValueTooSmall
-	}
-
-	ratioFactor, err := k.DenomKeeper.CreateRatioFromReference(ctx, poolRatio, pool.KCoin, factoryDenom.Exponent)
+	ratioFactor, err := k.DenomKeeper.CreateRatioFromReference(ctx, poolRatio, factoryDenom.LocalName, pool.KCoin, factoryDenom.Exponent)
 	if err != nil {
 		return fmt.Errorf("create ratio from reference: %w", err)
 	}

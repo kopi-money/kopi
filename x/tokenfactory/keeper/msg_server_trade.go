@@ -3,11 +3,11 @@ package keeper
 import (
 	"context"
 	"fmt"
+	reservetypes "github.com/kopi-money/kopi/x/reserve/types"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/trading"
-	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 
@@ -50,17 +50,22 @@ func (k msgServer) handleTrade(ctx context.Context, msg types.MsgTrade, callback
 		}
 	}
 
+	minimumTradeAmount, err := trading.ParseMinimumTradeAmount(msg.GetMinimumTradeAmount())
+	if err != nil {
+		return nil, fmt.Errorf("invalid minimum trade amount(%v): %w", msg.GetMinimumTradeAmount(), err)
+	}
+
 	tradeContext := types.TradeContext{
 		Context: ctx,
 
-		MaxPrice:    maxPrice,
-		TradeAmount: tradeAmount,
-		Callbacks:   callbacks,
-
-		Pool:           pool,
-		DenomGiving:    factoryDenom.ReplaceWithFactoryTradeDenom(msg.GetDenomGiving()),
-		DenomReceiving: factoryDenom.ReplaceWithFactoryTradeDenom(msg.GetDenomReceiving()),
-		Creator:        msg.GetCreator(),
+		MaxPrice:           maxPrice,
+		TradeAmount:        tradeAmount,
+		Callbacks:          callbacks,
+		MinimumTradeAmount: minimumTradeAmount,
+		Pool:               pool,
+		DenomGiving:        factoryDenom.ReplaceWithFactoryTradeDenom(msg.GetDenomGiving()),
+		DenomReceiving:     factoryDenom.ReplaceWithFactoryTradeDenom(msg.GetDenomReceiving()),
+		Creator:            msg.GetCreator(),
 	}
 
 	return k.Trade(tradeContext, factoryDenom)
@@ -152,7 +157,7 @@ func (k Keeper) handleReserveFee(ctx context.Context, pool *types.LiquidityPool,
 
 	if feeAmountReserve.IsPositive() {
 		coins := sdk.NewCoins(sdk.NewCoin(pool.KCoin, feeAmountReserve))
-		if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolFactoryLiquidity, dextypes.PoolReserve, coins); err != nil {
+		if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolFactoryLiquidity, reservetypes.BuyingKCoins, coins); err != nil {
 			return math.Int{}, math.Int{}, fmt.Errorf("send reserve fee to module: %w", err)
 		}
 

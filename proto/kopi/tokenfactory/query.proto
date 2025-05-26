@@ -67,6 +67,10 @@ service Query {
     option (google.api.http).get = "/kopi/tokenfactory/denoms/pool/distribution";
   }
 
+  rpc QueryUSDValue (QueryUSDValueRequest) returns (QueryUSDValueResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/denoms/pool/usd";
+  }
+
   rpc QuerySimulateSell (QuerySimulateTradeRequest) returns (QuerySimulateTradeResponse) {
     option (google.api.http).get = "/kopi/tokenfactory/simulate/sell";
   }
@@ -82,10 +86,15 @@ service Query {
   rpc QueryOffers (QueryOffersRequest) returns (QueryOffersResponse) {
     option (google.api.http).get = "/kopi/tokenfactory/offers";
   }
+}
 
-  //  rpc QueryOffers (QueryOffersRequest) returns (QueryOffersResponse) {
-  //    option (google.api.http).get = "/kopi/tokenfactory/offers";
-  //  }
+message QueryUSDValueRequest {
+  string full_name = 1;
+  string amount = 2;
+}
+
+message QueryUSDValueResponse {
+  string value_usd = 1;
 }
 
 message LiquidityProvider {
@@ -271,7 +280,8 @@ message QueryPoolResponse {
   string user_factory_amount = 5;
   string price = 6;
   string marketcap = 7;
-  int64 created_at = 8;
+  string marketcap_usd = 8;
+  int64 created_at = 9;
 }
 
 message QueryDenomsRequest {

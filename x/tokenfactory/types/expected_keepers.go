@@ -42,14 +42,17 @@ type ParamSubspace interface {
 }
 
 type DenomKeeper interface {
-	CreateRatioFromReference(ctx context.Context, referenceFactor math.LegacyDec, referenceDenom string, exponent uint64) (math.LegacyDec, error)
+	CreateRatioFromReference(ctx context.Context, referenceFactor math.LegacyDec, newDenom, referenceDenom string, exponent uint64) (math.LegacyDec, error)
 	DexAddDenom(ctx context.Context, denom denomtypes.DexDenom, ratio denomtypes.Ratio) error
+	IsFactoryPoolDenom(ctx context.Context, denom string) bool
 	IsKCoin(ctx context.Context, denom string) bool
 	IsValidDenom(ctx context.Context, denom string) bool
 	GetHighestUSDReference(context.Context) (string, error)
 	GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.LegacyDec) (math.LegacyDec, error)
 	GetValueInUSD(ctx context.Context, denomFrom string, amount math.LegacyDec) (math.LegacyDec, error)
 	KCoins(ctx context.Context) []string
+	MinimumFactoryPoolSize(ctx context.Context, denom string) math.Int
+	MinimumFactoryPoolSizes(ctx context.Context) map[string]math.Int
 }
 
 type DexKeeper interface {

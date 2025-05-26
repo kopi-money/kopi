@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 
 	"cosmossdk.io/core/appmodule"
 	"cosmossdk.io/core/store"
@@ -36,6 +37,8 @@ var (
 	_ appmodule.AppModule       = (*AppModule)(nil)
 	_ appmodule.HasBeginBlocker = (*AppModule)(nil)
 	_ appmodule.HasEndBlocker   = (*AppModule)(nil)
+
+	_ types.DenomKeeper = (*denomkeeper.Keeper)(nil)
 )
 
 // ----------------------------------------------------------------------------
@@ -170,12 +173,16 @@ func (am AppModule) EndBlock(ctx context.Context) error {
 			return fmt.Errorf("unlockings: %w", err)
 		}
 
-		if err := am.keeper.HandleVestings(ctx, blockTime); err != nil {
+		if err := am.keeper.HandleVestings(innerCtx, blockTime); err != nil {
 			return fmt.Errorf("vestings: %w", err)
 		}
 
-		if err := am.keeper.HandleOffers(ctx, blockTime); err != nil {
+		if err := am.keeper.HandleOffers(innerCtx, blockTime); err != nil {
 			return fmt.Errorf("vestings: %w", err)
+		}
+
+		if err := am.keeper.CheckPoolSizes(innerCtx); err != nil {
+			return fmt.Errorf("pool sizes: %w", err)
 		}
 
 		return nil

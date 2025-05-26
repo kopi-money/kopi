@@ -96,3 +96,16 @@ func (k Keeper) validCategoryIndex(ctx context.Context, categoryIndex uint64) bo
 
 	return false
 }
+
+func (k Keeper) poolThresholdSeconds(ctx context.Context) int64 {
+	return k.GetParams(ctx).PoolTresholdSeconds
+}
+
+func (k Keeper) getOfferFee(ctx context.Context) math.LegacyDec {
+	offerFee := k.GetParams(ctx).OfferFee
+	if offerFee.IsNil() {
+		return types.OfferFee
+	}
+
+	return offerFee
+}

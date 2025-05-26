@@ -47,6 +47,11 @@ func (k Keeper) QueryPool(ctx context.Context, req *types.QueryPoolRequest) (*ty
 	supply := k.BankKeeper.GetSupply(ctx, req.FullName).Amount
 	marketCap := supply.ToLegacyDec().Mul(price)
 
+	marketCapUSD, err := k.DenomKeeper.GetValueInUSD(ctx, pool.KCoin, marketCap)
+	if err != nil {
+		return nil, fmt.Errorf("get market cap in usd: %w", err)
+	}
+
 	return &types.QueryPoolResponse{
 		KcoinDenom:        pool.KCoin,
 		KcoinAmount:       pool.KCoinAmount.String(),
@@ -55,6 +60,7 @@ func (k Keeper) QueryPool(ctx context.Context, req *types.QueryPoolRequest) (*ty
 		UserFactoryAmount: userFactoryAmount,
 		Price:             price.String(),
 		Marketcap:         marketCap.String(),
+		MarketcapUsd:      marketCapUSD.String(),
 		CreatedAt:         pool.CreatedAt,
 	}, nil
 }
@@ -192,5 +198,40 @@ func (k Keeper) QuerySimulateAddingLiquidityFactoryToken(ctx context.Context, re
 	return &types.QuerySimulateAddingLiquidityResponse{
 		AmountKcoin:        amountKCoin.Ceil().TruncateInt().String(),
 		AmountFactoryToken: amount.String(),
+	}, nil
+}
+
+func (k Keeper) QueryUSDValue(ctx context.Context, req *types.QueryUSDValueRequest) (*types.QueryUSDValueResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	factoryDenom, has := k.factoryDenoms.Get(ctx, req.FullName)
+	if !has {
+		return nil, types.ErrDenomDoesNotExists
+	}
+
+	amount, err := trading.ParseAmount(req.Amount)
+	if err != nil {
+		return nil, fmt.Errorf("parse amount: %w", err)
+	}
+
+	pool, has := k.liquidityPools.Get(ctx, factoryDenom.FullName)
+	if !has {
+		return nil, types.ErrPoolDoesNotExist
+	}
+
+	kCoinValue, err := pool.ConvertToKCoin(amount)
+	if err != nil {
+		return nil, fmt.Errorf("convert to kcoin: %w", err)
+	}
+
+	usdValue, err := k.DenomKeeper.GetValueInUSD(ctx, pool.KCoin, kCoinValue)
+	if err != nil {
+		return nil, fmt.Errorf("get usd value: %w", err)
+	}
+
+	return &types.QueryUSDValueResponse{
+		ValueUsd: usdValue.String(),
 	}, nil
 }

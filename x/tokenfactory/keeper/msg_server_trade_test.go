@@ -28,7 +28,7 @@ func TestTrade1(t *testing.T) {
 	require.Equal(t, int64(1_000_000), pool.FactoryDenomAmount.Int64())
 	require.Equal(t, int64(1_000_000), pool.KCoinAmount.Int64())
 
-	response, err := keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Alice, factoryDenomHash, factoryDenomHash, constants.KUSD, "10_000", "", true)
+	response, err := keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Alice, factoryDenomHash, factoryDenomHash, constants.KUSD, "10_000", "", "", true)
 	require.NoError(t, err)
 
 	amountGivenGross, _ := strconv.Atoi(response.AmountGivenGross)
@@ -47,7 +47,7 @@ func TestTrade1(t *testing.T) {
 	paidPrice1 := float64(amountGivenGross) / float64(amountReceivedNet)
 	maxPriceString := fmt.Sprintf("%.8f", paidPrice1)
 
-	_, err = keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Alice, factoryDenomHash, factoryDenomHash, constants.KUSD, "10_000", maxPriceString, false)
+	_, err = keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Alice, factoryDenomHash, factoryDenomHash, constants.KUSD, "10_000", maxPriceString, "", false)
 	require.ErrorIs(t, err, trading.ErrMarketPriceTooHigh)
 }
 
@@ -59,7 +59,7 @@ func TestTrade2(t *testing.T) {
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Alice, "2000000"))
 	require.NoError(t, keepertest.CreatePool(ctx, msgServer, keepertest.Alice, factoryDenomHash, "1000000", constants.KUSD, "1000000", "0.01", 10))
 
-	response, err := keepertest.FactoryDenomBuy(ctx, msgServer, keepertest.Alice, factoryDenomHash, factoryDenomHash, constants.KUSD, "10000", "", true)
+	response, err := keepertest.FactoryDenomBuy(ctx, msgServer, keepertest.Alice, factoryDenomHash, factoryDenomHash, constants.KUSD, "10000", "", "", true)
 	require.NoError(t, err)
 
 	amountGivenGross, _ := strconv.ParseFloat(response.AmountReceivedGross, 64)
@@ -67,10 +67,10 @@ func TestTrade2(t *testing.T) {
 
 	paidPrice1 := amountGivenGross / amountReceivedNet
 	maxPriceString := fmt.Sprintf("%.8f", paidPrice1)
-	_, err = keepertest.FactoryDenomBuy(ctx, msgServer, keepertest.Alice, factoryDenomHash, factoryDenomHash, constants.KUSD, "10000", maxPriceString, false)
+	_, err = keepertest.FactoryDenomBuy(ctx, msgServer, keepertest.Alice, factoryDenomHash, factoryDenomHash, constants.KUSD, "10000", maxPriceString, "", false)
 	require.ErrorIs(t, err, trading.ErrMarketPriceTooHigh)
 
-	_, err = keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Alice, factoryDenomHash, factoryDenomHash, constants.KUSD, "10000", maxPriceString, false)
+	_, err = keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Alice, factoryDenomHash, factoryDenomHash, constants.KUSD, "10000", maxPriceString, "", false)
 	require.ErrorIs(t, err, trading.ErrMarketPriceTooHigh)
 }
 
@@ -99,10 +99,10 @@ func TestTrade3(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	response1, err := keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Alice, factoryDenomHash, factoryDenomHash, constants.KUSD, tradeAmount, "", true)
+	response1, err := keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Alice, factoryDenomHash, factoryDenomHash, constants.KUSD, tradeAmount, "", "", true)
 	require.NoError(t, err)
 
-	response2, err := keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Alice, factoryDenomHash, factoryDenomHash, constants.KUSD, tradeAmount, "", true)
+	response2, err := keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Alice, factoryDenomHash, factoryDenomHash, constants.KUSD, tradeAmount, "", "", true)
 	require.NoError(t, err)
 
 	price1, _ := strconv.ParseFloat(response1.Price, 64)
@@ -126,7 +126,7 @@ func TestTrade4(t *testing.T) {
 	poolBalanceKCoin1 := poolBalance1.AmountOf(constants.KUSD).Int64()
 
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Bob, "10000"))
-	response, err := keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Bob, factoryDenomHash, constants.KUSD, factoryDenomHash, "10000", "", true)
+	response, err := keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Bob, factoryDenomHash, constants.KUSD, factoryDenomHash, "10000", "", "", true)
 	require.NoError(t, err)
 
 	amountGivenGross, _ := strconv.Atoi(response.AmountGivenGross)
@@ -169,7 +169,7 @@ func TestTrade5(t *testing.T) {
 	poolBalanceKCoin1 := poolBalance1.AmountOf(constants.KUSD).Int64()
 
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Bob, "10000"))
-	response, err := keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Bob, factoryDenomHash, factoryDenomHash, constants.KUSD, "10000", "", true)
+	response, err := keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Bob, factoryDenomHash, factoryDenomHash, constants.KUSD, "10000", "", "", true)
 	require.NoError(t, err)
 
 	amountGivenGross, _ := strconv.Atoi(response.AmountGivenGross)
@@ -213,7 +213,7 @@ func TestTrade6(t *testing.T) {
 	poolBalanceKCoin1 := poolBalance1.AmountOf(constants.KUSD).Int64()
 
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Bob, "10000"))
-	response, err := keepertest.FactoryDenomBuy(ctx, msgServer, keepertest.Bob, factoryDenomHash, constants.KUSD, factoryDenomHash, "1000", "", true)
+	response, err := keepertest.FactoryDenomBuy(ctx, msgServer, keepertest.Bob, factoryDenomHash, constants.KUSD, factoryDenomHash, "1000", "", "", true)
 	require.NoError(t, err)
 
 	amountGivenGross, _ := strconv.Atoi(response.AmountGivenGross)
@@ -261,7 +261,7 @@ func TestTrade7aa(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	res2, err := keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Bob, factoryDenomHash, constants.KUSD, factoryDenomHash, tradeAmount, res1.Price, true)
+	res2, err := keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Bob, factoryDenomHash, constants.KUSD, factoryDenomHash, tradeAmount, res1.Price, "", true)
 	require.NoError(t, err)
 
 	require.Equal(t, res1.AmountGiven, res2.AmountGivenGross)
@@ -289,7 +289,7 @@ func TestTrade7ab(t *testing.T) {
 
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Bob, res1.AmountGiven))
 
-	res2, err := keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Bob, factoryDenomHash, factoryDenomHash, constants.KUSD, tradeAmount, res1.Price, true)
+	res2, err := keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Bob, factoryDenomHash, factoryDenomHash, constants.KUSD, tradeAmount, res1.Price, "", true)
 	require.NoError(t, err)
 
 	require.Equal(t, res1.AmountGiven, res2.AmountGivenGross)
@@ -317,7 +317,7 @@ func TestTrade7ba(t *testing.T) {
 
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Alice, res1.AmountGiven))
 
-	res2, err := keepertest.FactoryDenomBuy(ctx, msgServer, keepertest.Bob, factoryDenomHash, constants.KUSD, factoryDenomHash, tradeAmount, res1.Price, true)
+	res2, err := keepertest.FactoryDenomBuy(ctx, msgServer, keepertest.Bob, factoryDenomHash, constants.KUSD, factoryDenomHash, tradeAmount, res1.Price, "", true)
 	require.NoError(t, err)
 
 	require.Equal(t, res1.AmountGiven, res2.AmountGivenGross)
@@ -345,7 +345,7 @@ func TestTrade7bb(t *testing.T) {
 
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Bob, "5_000_000"))
 
-	res2, err := keepertest.FactoryDenomBuy(ctx, msgServer, keepertest.Bob, factoryDenomHash, factoryDenomHash, constants.KUSD, tradeAmount, res1.Price, true)
+	res2, err := keepertest.FactoryDenomBuy(ctx, msgServer, keepertest.Bob, factoryDenomHash, factoryDenomHash, constants.KUSD, tradeAmount, res1.Price, "", true)
 	require.NoError(t, err)
 
 	require.Equal(t, res1.AmountGiven, res2.AmountGivenGross)
@@ -373,7 +373,7 @@ func TestTrade7bbb(t *testing.T) {
 
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Bob, res1.AmountGiven))
 
-	res2, err := keepertest.FactoryDenomBuy(ctx, msgServer, keepertest.Bob, factoryDenomHash, factoryDenomHash, constants.KUSD, tradeAmount, res1.Price, true)
+	res2, err := keepertest.FactoryDenomBuy(ctx, msgServer, keepertest.Bob, factoryDenomHash, factoryDenomHash, constants.KUSD, tradeAmount, res1.Price, "", true)
 	require.NoError(t, err)
 
 	require.Equal(t, res1.AmountGiven, res2.AmountGivenGross)
@@ -401,7 +401,7 @@ func TestTrade8(t *testing.T) {
 
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Bob, res1.AmountGiven))
 
-	res2, err := keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Bob, factoryDenomHash, factoryDenomHash, constants.KUSD, tradeAmount, res1.Price, true)
+	res2, err := keepertest.FactoryDenomSell(ctx, msgServer, keepertest.Bob, factoryDenomHash, factoryDenomHash, constants.KUSD, tradeAmount, res1.Price, "", true)
 	require.NoError(t, err)
 
 	require.Equal(t, res1.AmountGiven, res2.AmountGivenGross)
@@ -433,7 +433,7 @@ func TestTrade9(t *testing.T) {
 	require.Equal(t, liqKCoin, pool.KCoinAmount.String())
 	require.Equal(t, liqFactory, pool.FactoryDenomAmount.String())
 
-	res2, err := keepertest.FactoryDenomBuy(ctx, msgServer, keepertest.Bob, factoryDenomHash, constants.KUSD, factoryDenomHash, tradeAmount, res1.Price, true)
+	res2, err := keepertest.FactoryDenomBuy(ctx, msgServer, keepertest.Bob, factoryDenomHash, constants.KUSD, factoryDenomHash, tradeAmount, res1.Price, "", true)
 	require.NoError(t, err)
 
 	require.Equal(t, res1.AmountGiven, res2.AmountGivenGross)
@@ -461,7 +461,7 @@ func TestTrade10(t *testing.T) {
 
 	require.NoError(t, keepertest.MintFactoryDenom(ctx, msgServer, keepertest.Alice, factoryDenomHash, keepertest.Bob, res1.AmountGiven))
 
-	res2, err := keepertest.FactoryDenomBuy(ctx, msgServer, keepertest.Bob, factoryDenomHash, factoryDenomHash, constants.KUSD, tradeAmount, res1.Price, true)
+	res2, err := keepertest.FactoryDenomBuy(ctx, msgServer, keepertest.Bob, factoryDenomHash, factoryDenomHash, constants.KUSD, tradeAmount, res1.Price, "", true)
 	require.NoError(t, err)
 
 	require.Equal(t, res1.AmountGiven, res2.AmountGivenGross)

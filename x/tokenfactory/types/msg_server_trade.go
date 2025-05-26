@@ -52,6 +52,10 @@ func validateTradeMessage(msg MsgTrade) error {
 		return fmt.Errorf("amount: %w", err)
 	}
 
+	if err := denomtypes.IsInt(msg.GetMinimumTradeAmount(), math.ZeroInt()); err != nil {
+		return fmt.Errorf("minimum trade amount: %w", err)
+	}
+
 	if maxPrice := msg.GetMaxPrice(); maxPrice != nil {
 		if err := denomtypes.IsDec(maxPrice.MaxPrice, math.LegacyZeroDec()); err != nil {
 			return fmt.Errorf("max_price: %w", err)
@@ -65,6 +69,7 @@ type MsgTrade interface {
 	GetAmount() string
 	GetCreator() string
 	GetDenomGiving() string
+	GetMinimumTradeAmount() string
 	GetDenomReceiving() string
 	GetFullFactoryDenomName() string
 	GetMaxPrice() *MaxPrice

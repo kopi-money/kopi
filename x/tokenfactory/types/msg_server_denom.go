@@ -16,6 +16,9 @@ var (
 	_ sdk.Msg = &MsgCreateDenom{}
 
 	hashRegex = regexp.MustCompile(`^[A-F0-9]{64}$`)
+
+	asciiLengthPattern = regexp.MustCompile(`^[[:ascii:]]{3,6}$`)
+	splitPattern       = regexp.MustCompile(`^([a-zA-Z]{3,6})([0-9]{0,2})?$`)
 )
 
 func (msg *MsgCreateDenom) ValidateBasic() error {
@@ -59,7 +62,20 @@ func validateHash(hash string) bool {
 }
 
 func isValidSymbol(symbol string) error {
-	return isValidName(symbol, 6)
+	if !asciiLengthPattern.MatchString(symbol) {
+		return fmt.Errorf("must be 3-6 ASCII characters")
+	}
+
+	matches := splitPattern.FindStringSubmatch(symbol)
+	if matches == nil {
+		return fmt.Errorf("must be of 3-6 characters, optionally followed by a 0-2 digit suffix")
+	}
+
+	if len(matches[1])+len(matches[2]) > 6 {
+		return fmt.Errorf("must be of 3-6 characters, optionally followed by a 0-2 digit suffix")
+	}
+
+	return nil
 }
 
 func isValidDisplayName(displayName string) error {

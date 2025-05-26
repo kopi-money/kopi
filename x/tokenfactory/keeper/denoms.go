@@ -3,18 +3,15 @@ package keeper
 import (
 	"context"
 	"fmt"
+	reservetypes "github.com/kopi-money/kopi/x/reserve/types"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/constants"
-	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 
 func ToFullName(creator, symbol string) string {
-	if strings.HasPrefix(symbol, "factory/") {
-	}
-
 	return strings.ToLower(fmt.Sprintf("factory/%v/%v", creator, symbol))
 }
 
@@ -24,7 +21,6 @@ func (k Keeper) GetAllDenoms(ctx context.Context) []types.FactoryDenom {
 }
 
 func (k Keeper) SetDenom(ctx context.Context, denom types.FactoryDenom) {
-	fmt.Println("> ", denom.FullName)
 	k.factoryDenoms.Set(ctx, denom.FullName, denom)
 }
 
@@ -103,6 +99,15 @@ func (k Keeper) CreateDenom(ctx context.Context, address, displayName, symbol, d
 	}
 
 	k.SetDenom(ctx, factoryDenom)
+
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			"factory_denom_created",
+			sdk.NewAttribute("full_name", factoryDenom.FullName),
+			sdk.NewAttribute("creator", factoryDenom.Admin),
+		),
+	})
+
 	return factoryDenom, nil
 }
 
@@ -113,7 +118,7 @@ func (k Keeper) processCreationFee(ctx context.Context, category types.Category,
 	}
 
 	coins := sdk.NewCoins(sdk.NewCoin(constants.KUSD, category.CreationPrice))
-	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, addr, dextypes.PoolReserve, coins); err != nil {
+	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, addr, reservetypes.BuyingKCoins, coins); err != nil {
 		return fmt.Errorf("send coins from account to module: %w", err)
 	}
 

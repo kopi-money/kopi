@@ -4,6 +4,7 @@ package kopi.tokenfactory;
 import "amino/amino.proto";
 import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
+import "google/protobuf/timestamp.proto";
 import "gogoproto/gogo.proto";
 import "kopi/tokenfactory/params.proto";
 
@@ -25,9 +26,11 @@ service Msg {
   rpc UpdateChangeSecondsWebsite(MsgUpdateChangeSecondsWebsite)           returns (Void);
   rpc UpdateChangeSecondsImage(MsgUpdateChangeSecondsImage)               returns (Void);
   rpc MoveLiquidityPool(MsgMoveLiquidityPool)                             returns (Void);
-  rpc UpdateMinimumPoolMovingValue(MsgUpdateMinimumPoolMovingValue)       returns (Void);
+  rpc UpdatePoolThresholdSeconds(MsgUpdatePoolThresholdSeconds)           returns (Void);
+  rpc UpdateOfferFee(MsgUpdateOfferFee)                                   returns (Void);
 
-  rpc CreateDenom(MsgCreateDenom)                                 returns (MsgCreateDenomResponse);
+  rpc CreateDenom(MsgCreateDenom)                                 returns (Void);
+  rpc CreateDenomAndPool(MsgCreateDenomAndPool)                   returns (Void);
   rpc MintDenom(MsgMintDenom)                                     returns (Void);
   rpc BurnDenom(MsgBurnDenom)                                     returns (Void);
   rpc ChangeAdmin(MsgChangeAdmin)                                 returns (Void);
@@ -43,7 +46,6 @@ service Msg {
   rpc AddKCoinLiquidity(MsgAddKCoinLiquidity)     returns (Void);
   rpc AddFactoryLiquidity(MsgAddFactoryLiquidity) returns (Void);
   rpc UnlockLiquidity(MsgUnlockLiquidity)         returns (Void);
-  rpc DissolvePool(MsgDissolvePool)               returns (Void);
   rpc CreateOffers(MsgCreateOffers)               returns (Void);
   rpc CancelOffers(MsgCancelOffers)               returns (Void);
   rpc DeclineOffer(MsgDeclineOffer)               returns (Void);
@@ -70,7 +72,11 @@ message MsgCreateVestings {
   string full_factory_denom_name = 3;
   string factory_denom_amount = 4;
 
-  int64 vested_until = 5;
+  google.protobuf.Timestamp vested_until = 5 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false
+  ];
+
   int64 num_unlock_steps = 6;
 }
 
@@ -106,8 +112,16 @@ message MsgCreateOffers {
   string ask_amount = 5;
   string ask_denom = 6;
 
-  int64 valid_until = 7;
-  int64 vested_until = 8;
+  google.protobuf.Timestamp valid_until = 7 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false
+  ];
+
+  google.protobuf.Timestamp vested_until = 8 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = true
+  ];
+
   int64 num_unlock_steps = 9;
 }
 
@@ -116,12 +130,20 @@ message MsgBuybackResponse {
   string burned_amount = 2;
 }
 
-message MsgUpdateMinimumPoolMovingValue {
+message MsgUpdateOfferFee {
   option (cosmos.msg.v1.signer) = "authority";
-  option (amino.name) = "kopi/x/tokenfactory/MsgUpdateMinimumPoolMovingValue";
+  option (amino.name) = "kopi/x/tokenfactory/MsgUpdateOfferFee";
 
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  string minimum_pool_moving_value = 2;
+  string offer_fee = 2;
+}
+
+message MsgUpdatePoolThresholdSeconds {
+  option (cosmos.msg.v1.signer) = "authority";
+  option (amino.name) = "kopi/x/tokenfactory/MsgUpdatePoolThresholdSeconds";
+
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  int64 pool_threshold_seconds = 2;
 }
 
 message MsgMoveLiquidityPool {
@@ -227,11 +249,6 @@ message MsgUpdateFeeAmount {
   string fee_amount = 2;
 }
 
-message MsgCreateDenomResponse {
-  string display_name = 1;
-  string full_name = 2;
-}
-
 message MsgTradeResponse {
   string amount_given_gross = 1;
   string amount_given_net = 2;
@@ -288,7 +305,8 @@ message MsgBuy {
   string denom_giving = 3;
   string denom_receiving = 4;
   string amount = 5;
-  MaxPrice max_price = 6 [
+  string minimum_trade_amount = 6;
+  MaxPrice max_price = 7 [
     (gogoproto.nullable) = true
   ];
 }
@@ -301,7 +319,8 @@ message MsgSell {
   string denom_giving = 3;
   string denom_receiving = 4;
   string amount = 5;
-  MaxPrice max_price = 6 [
+  string minimum_trade_amount = 6;
+  MaxPrice max_price = 7 [
     (gogoproto.nullable) = true
   ];
 }
@@ -373,6 +392,29 @@ message MsgBuyback {
 }
 
 message Void {}
+
+message MsgCreateDenomAndPool {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string name = 2;
+  string icon_hash = 3;
+  string description = 4;
+  string website = 5;
+  string symbol = 6;
+  int64  initial_supply = 7;
+  uint64 exponent = 8;
+  uint64 category_index = 9;
+  bool mintable = 10;
+  string local_name = 11;
+
+  string k_coin = 12;
+  string factory_denom_amount = 13;
+  string k_coin_amount = 14;
+  string pool_fee = 15;
+  uint64 unlock_in_seconds = 16;
+
+}
 
 message MsgCreateDenom {
   option (cosmos.msg.v1.signer) = "creator";

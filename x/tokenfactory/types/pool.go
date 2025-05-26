@@ -1,6 +1,10 @@
 package types
 
-import "cosmossdk.io/math"
+import (
+	"cosmossdk.io/math"
+	"fmt"
+	"github.com/kopi-money/kopi/trading"
+)
 
 func (lp LiquidityPool) GetAmounts(share math.LegacyDec) (math.Int, math.Int) {
 	amountFactory := lp.FactoryDenomAmount.ToLegacyDec().Mul(share).TruncateInt()
@@ -14,4 +18,46 @@ func (lp LiquidityPool) Price() (math.LegacyDec, error) {
 	}
 
 	return lp.FactoryDenomAmount.ToLegacyDec().Quo(lp.KCoinAmount.ToLegacyDec()), nil
+}
+
+// GetPoolRatio returns the ratio in the form of "One factory denom unit represents x kcoin denom units"
+func (lp LiquidityPool) GetPoolRatio() (math.LegacyDec, error) {
+	if !lp.FactoryDenomAmount.IsPositive() {
+		return math.LegacyDec{}, fmt.Errorf("factory denom amount is not positive")
+	}
+
+	return lp.KCoinAmount.ToLegacyDec().Quo(lp.FactoryDenomAmount.ToLegacyDec()), nil // C
+}
+
+func (lp LiquidityPool) ConvertToKCoin(factoryAmount math.Int) (math.LegacyDec, error) {
+	if factoryAmount.IsZero() {
+		return math.LegacyZeroDec(), nil
+	}
+
+	ratio, err := lp.GetPoolRatio()
+	if err != nil {
+		return math.LegacyDec{}, err
+	}
+
+	return ratio.Mul(factoryAmount.ToLegacyDec()), nil
+}
+
+func (lp LiquidityPool) GetLiquidityAmounts(denomGiving string) (trading.Liquidity, trading.Liquidity) {
+	factoryAmount := trading.Liquidity{Actual: lp.FactoryDenomAmount.ToLegacyDec()}
+	kCoinAmount := trading.Liquidity{Actual: lp.KCoinAmount.ToLegacyDec()}
+
+	if denomGiving == lp.KCoin {
+		return kCoinAmount, factoryAmount
+	}
+
+	return factoryAmount, kCoinAmount
+}
+
+func (lp LiquidityPool) GetPoolValue() (math.LegacyDec, error) {
+	factoryValue, err := lp.ConvertToKCoin(lp.FactoryDenomAmount)
+	if err != nil {
+		return math.LegacyDec{}, err
+	}
+
+	return factoryValue.Add(lp.KCoinAmount.ToLegacyDec()), nil
 }

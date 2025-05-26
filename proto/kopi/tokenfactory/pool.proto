@@ -1,6 +1,7 @@
 syntax = "proto3";
 package kopi.tokenfactory;
 
+import "google/protobuf/timestamp.proto";
 import "gogoproto/gogo.proto";
 import "kopi/tokenfactory/unlocking.proto";
 
@@ -24,6 +25,11 @@ message LiquidityPool {
   bytes k_coin_amount = 6 [
     (gogoproto.customtype) = "cosmossdk.io/math.Int",
     (gogoproto.nullable) = false
+  ];
+
+  google.protobuf.Timestamp threshold_crossed = 7 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = true
   ];
 }
 

@@ -9,7 +9,7 @@ import (
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 
-func (k msgServer) CreateDenom(ctx context.Context, msg *types.MsgCreateDenom) (*types.MsgCreateDenomResponse, error) {
+func (k msgServer) CreateDenom(ctx context.Context, msg *types.MsgCreateDenom) (*types.Void, error) {
 	factoryDenom, err := k.Keeper.CreateDenom(ctx, msg.Creator, msg.Name, msg.Symbol, msg.Description, msg.Website, msg.IconHash, msg.LocalName, msg.Exponent, msg.CategoryIndex, msg.Mintable)
 	if err != nil {
 		return nil, fmt.Errorf("create denom: %v", err)
@@ -30,8 +30,25 @@ func (k msgServer) CreateDenom(ctx context.Context, msg *types.MsgCreateDenom) (
 		}
 	}
 
-	return &types.MsgCreateDenomResponse{
-		DisplayName: factoryDenom.DisplayName,
-		FullName:    factoryDenom.FullName,
-	}, nil
+	return &types.Void{}, nil
+}
+
+func (k msgServer) CreateDenomAndPool(ctx context.Context, msg *types.MsgCreateDenomAndPool) (*types.Void, error) {
+	factoryDenom, err := k.Keeper.CreateDenom(ctx, msg.Creator, msg.Name, msg.Symbol, msg.Description, msg.Website, msg.IconHash, msg.LocalName, msg.Exponent, msg.CategoryIndex, msg.Mintable)
+	if err != nil {
+		return nil, fmt.Errorf("create denom: %v", err)
+	}
+
+	if msg.InitialSupply > 0 {
+		amount := math.NewInt(msg.InitialSupply)
+		if err = k.mintDenom(ctx, factoryDenom, amount, msg.Creator, true); err != nil {
+			return nil, fmt.Errorf("failed to mint initial supply: %w", err)
+		}
+	}
+
+	if err = k.Keeper.CreatePool(ctx, factoryDenom, msg.KCoin, msg.FactoryDenomAmount, msg.KCoinAmount, msg.PoolFee, msg.UnlockInSeconds); err != nil {
+		return nil, fmt.Errorf("failed to create pool: %w", err)
+	}
+
+	return &types.Void{}, nil
 }

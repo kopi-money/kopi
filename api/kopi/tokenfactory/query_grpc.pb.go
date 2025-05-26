@@ -32,6 +32,7 @@ const (
 	Query_QuerySimulateAddingLiquidityKCoin_FullMethodName        = "/kopi.tokenfactory.Query/QuerySimulateAddingLiquidityKCoin"
 	Query_QuerySimulateAddingLiquidityFactoryToken_FullMethodName = "/kopi.tokenfactory.Query/QuerySimulateAddingLiquidityFactoryToken"
 	Query_QueryPoolLiquidityDistribution_FullMethodName           = "/kopi.tokenfactory.Query/QueryPoolLiquidityDistribution"
+	Query_QueryUSDValue_FullMethodName                            = "/kopi.tokenfactory.Query/QueryUSDValue"
 	Query_QuerySimulateSell_FullMethodName                        = "/kopi.tokenfactory.Query/QuerySimulateSell"
 	Query_QuerySimulateBuy_FullMethodName                         = "/kopi.tokenfactory.Query/QuerySimulateBuy"
 	Query_QueryVestings_FullMethodName                            = "/kopi.tokenfactory.Query/QueryVestings"
@@ -56,6 +57,7 @@ type QueryClient interface {
 	QuerySimulateAddingLiquidityKCoin(ctx context.Context, in *QuerySimulateAddingLiquidityRequest, opts ...grpc.CallOption) (*QuerySimulateAddingLiquidityResponse, error)
 	QuerySimulateAddingLiquidityFactoryToken(ctx context.Context, in *QuerySimulateAddingLiquidityRequest, opts ...grpc.CallOption) (*QuerySimulateAddingLiquidityResponse, error)
 	QueryPoolLiquidityDistribution(ctx context.Context, in *QueryPoolLiquidityDistributionRequest, opts ...grpc.CallOption) (*QueryPoolLiquidityDistributionResponse, error)
+	QueryUSDValue(ctx context.Context, in *QueryUSDValueRequest, opts ...grpc.CallOption) (*QueryUSDValueResponse, error)
 	QuerySimulateSell(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error)
 	QuerySimulateBuy(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error)
 	QueryVestings(ctx context.Context, in *QueryVestingsRequest, opts ...grpc.CallOption) (*QueryVestingsResponse, error)
@@ -187,6 +189,15 @@ func (c *queryClient) QueryPoolLiquidityDistribution(ctx context.Context, in *Qu
 	return out, nil
 }
 
+func (c *queryClient) QueryUSDValue(ctx context.Context, in *QueryUSDValueRequest, opts ...grpc.CallOption) (*QueryUSDValueResponse, error) {
+	out := new(QueryUSDValueResponse)
+	err := c.cc.Invoke(ctx, Query_QueryUSDValue_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) QuerySimulateSell(ctx context.Context, in *QuerySimulateTradeRequest, opts ...grpc.CallOption) (*QuerySimulateTradeResponse, error) {
 	out := new(QuerySimulateTradeResponse)
 	err := c.cc.Invoke(ctx, Query_QuerySimulateSell_FullMethodName, in, out, opts...)
@@ -241,6 +252,7 @@ type QueryServer interface {
 	QuerySimulateAddingLiquidityKCoin(context.Context, *QuerySimulateAddingLiquidityRequest) (*QuerySimulateAddingLiquidityResponse, error)
 	QuerySimulateAddingLiquidityFactoryToken(context.Context, *QuerySimulateAddingLiquidityRequest) (*QuerySimulateAddingLiquidityResponse, error)
 	QueryPoolLiquidityDistribution(context.Context, *QueryPoolLiquidityDistributionRequest) (*QueryPoolLiquidityDistributionResponse, error)
+	QueryUSDValue(context.Context, *QueryUSDValueRequest) (*QueryUSDValueResponse, error)
 	QuerySimulateSell(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error)
 	QuerySimulateBuy(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error)
 	QueryVestings(context.Context, *QueryVestingsRequest) (*QueryVestingsResponse, error)
@@ -290,6 +302,9 @@ func (UnimplementedQueryServer) QuerySimulateAddingLiquidityFactoryToken(context
 }
 func (UnimplementedQueryServer) QueryPoolLiquidityDistribution(context.Context, *QueryPoolLiquidityDistributionRequest) (*QueryPoolLiquidityDistributionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryPoolLiquidityDistribution not implemented")
+}
+func (UnimplementedQueryServer) QueryUSDValue(context.Context, *QueryUSDValueRequest) (*QueryUSDValueResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryUSDValue not implemented")
 }
 func (UnimplementedQueryServer) QuerySimulateSell(context.Context, *QuerySimulateTradeRequest) (*QuerySimulateTradeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QuerySimulateSell not implemented")
@@ -550,6 +565,24 @@ func _Query_QueryPoolLiquidityDistribution_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_QueryUSDValue_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryUSDValueRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).QueryUSDValue(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_QueryUSDValue_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).QueryUSDValue(ctx, req.(*QueryUSDValueRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Query_QuerySimulateSell_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QuerySimulateTradeRequest)
 	if err := dec(in); err != nil {
@@ -680,6 +713,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "QueryPoolLiquidityDistribution",
 			Handler:    _Query_QueryPoolLiquidityDistribution_Handler,
+		},
+		{
+			MethodName: "QueryUSDValue",
+			Handler:    _Query_QueryUSDValue_Handler,
 		},
 		{
 			MethodName: "QuerySimulateSell",

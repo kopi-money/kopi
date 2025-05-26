@@ -2,11 +2,10 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-	"time"
-
 	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	reservetypes "github.com/kopi-money/kopi/x/reserve/types"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 
@@ -35,16 +34,14 @@ func (k msgServer) CreateOffers(ctx context.Context, msg *types.MsgCreateOffers)
 		return nil, types.ErrInvalidAmountFormat
 	}
 
-	validUntil := time.UnixMilli(msg.ValidUntil)
+	if k.DenomKeeper.IsFactoryPoolDenom(ctx, msg.AskDenom) {
+		return nil, types.ErrNoValidPoolDenom
+	}
 
-	var vestedUntil *time.Time
-	if msg.VestedUntil > 0 {
-		vestedUntil_ := time.UnixMilli(msg.VestedUntil)
-		if vestedUntil_.Before(validUntil) {
+	if msg.VestedUntil != nil {
+		if msg.VestedUntil.Before(msg.ValidUntil) {
 			return nil, types.ErrOfferInvalidVestingEnd
 		}
-
-		vestedUntil = &vestedUntil_
 
 		if msg.NumUnlockSteps < 1 {
 			return nil, types.ErrVestingNegativeSteps
@@ -71,7 +68,8 @@ func (k msgServer) CreateOffers(ctx context.Context, msg *types.MsgCreateOffers)
 			FactoryDenomAmount: amountFactory,
 			AskDenom:           msg.AskDenom,
 			AskAmount:          askAmount,
-			VestedUntil:        vestedUntil,
+			VestedUntil:        msg.VestedUntil,
+			ValidUntil:         msg.ValidUntil,
 			NumUnlocksSteps:    msg.NumUnlockSteps,
 			CreatedAt:          sdk.UnwrapSDKContext(ctx).BlockTime(),
 		})
@@ -122,7 +120,12 @@ func (k msgServer) TakeOffer(ctx context.Context, msg *types.MsgTakeOffer) (*typ
 	accUser, _ := sdk.AccAddressFromBech32(msg.Creator)
 	accAdmin, _ := sdk.AccAddressFromBech32(factoryDenom.Admin)
 
-	coins := sdk.NewCoins(sdk.NewCoin(offer.AskDenom, offer.AskAmount))
+	askAmount, err := k.handleOfferFee(ctx, offer.AskDenom, offer.AskAmount)
+	if err != nil {
+		return nil, err
+	}
+
+	coins := sdk.NewCoins(sdk.NewCoin(offer.AskDenom, askAmount))
 	if err := k.BankKeeper.SendCoins(ctx, accUser, accAdmin, coins); err != nil {
 		return nil, err
 	}
@@ -144,6 +147,23 @@ func (k msgServer) TakeOffer(ctx context.Context, msg *types.MsgTakeOffer) (*typ
 	}
 
 	return &types.Void{}, nil
+}
+
+func (k Keeper) handleOfferFee(ctx context.Context, askDenom string, askAmount math.Int) (math.Int, error) {
+	offerFee := k.getOfferFee(ctx)
+	if offerFee.IsZero() {
+		return askAmount, nil
+	}
+
+	feeAmount := askAmount.ToLegacyDec().Mul(offerFee).TruncateInt()
+
+	coins := sdk.NewCoins(sdk.NewCoin(askDenom, feeAmount))
+	if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolFactoryLiquidity, reservetypes.BuyingKCoins, coins); err != nil {
+		return math.Int{}, fmt.Errorf("send offer fee to module: %w", err)
+	}
+
+	askAmount = askAmount.Sub(feeAmount)
+	return askAmount, nil
 }
 
 func (k msgServer) DeclineOffer(ctx context.Context, msg *types.MsgDeclineOffer) (*types.Void, error) {

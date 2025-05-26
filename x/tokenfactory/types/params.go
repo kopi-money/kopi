@@ -7,6 +7,7 @@ import (
 )
 
 var (
+	OfferFee                        = math.LegacyNewDecWithPrec(5, 3) // 0.005, 0.5%
 	ReserveFeeShare                 = math.LegacyNewDecWithPrec(5, 1) // 50%
 	MinimumPoolSize                 = math.NewInt(1000_000000)        // 1000
 	MinimumPoolFee                  = math.LegacyNewDecWithPrec(1, 3) // 0.001
@@ -22,6 +23,7 @@ func DefaultParams() Params {
 		ReserveFeeShare: ReserveFeeShare,
 		MinimumPoolSize: MinimumPoolSize,
 		MinimumPoolFee:  MinimumPoolFee,
+		OfferFee:        OfferFee,
 	}
 }
 
@@ -51,10 +53,15 @@ func (p Params) Validate() error {
 		p.MinimumPoolMovingValue = MinimumPoolMovingValue
 	}
 
+	if p.OfferFee.IsNil() {
+		p.OfferFee = OfferFee
+	}
+
 	p.MinimumUnlockInSeconds = max(MinimumUnlockingInSeconds, 0)
 	p.ChangeSecondsDescription = max(p.ChangeSecondsDescription, 0)
 	p.ChangeSecondsWebsite = max(p.ChangeSecondsWebsite, 0)
 	p.ChangeSecondsImage = max(p.ChangeSecondsImage, 0)
+	p.PoolTresholdSeconds = max(p.PoolTresholdSeconds, 0)
 
 	if err := validateShare(p.ReserveFeeShare); err != nil {
 		return fmt.Errorf("invalid reserve fee share: %w", err)
@@ -80,8 +87,20 @@ func (p Params) Validate() error {
 		return fmt.Errorf("invalid pool fees: %w", err)
 	}
 
-	if err := validateBiggerZero(p.MinimumPoolMovingValue); err != nil {
-		return fmt.Errorf("invalid minimum pool moving value: %w", err)
+	if err := validateOfferFee(p.OfferFee); err != nil {
+		return fmt.Errorf("invalid offer fee: %w", err)
+	}
+
+	return nil
+}
+
+func validateOfferFee(offerFee math.LegacyDec) error {
+	if offerFee.IsNegative() {
+		return fmt.Errorf("offer fee cannot be negative")
+	}
+
+	if offerFee.GTE(math.LegacyOneDec()) {
+		return fmt.Errorf("offer fee must not be greater than or equal to one")
 	}
 
 	return nil
