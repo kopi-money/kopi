@@ -69,6 +69,36 @@ func (p Params) Validate() error {
 		return fmt.Errorf("invalid arbitrage denoms: %w", err)
 	}
 
+	if err := validateFactoryPoolDenoms(p); err != nil {
+		return fmt.Errorf("invalid pool denoms: %w", err)
+	}
+
+	return nil
+}
+
+func validateFactoryPoolDenoms(p Params) error {
+	seen := make(map[string]struct{})
+
+	for _, poolDenom := range p.FactoryPoolDenoms {
+		if _, has := seen[poolDenom.Denom]; has {
+			return fmt.Errorf("duplicate factory denom: %v", poolDenom)
+		}
+
+		if !hasDenom(p.DexDenoms, poolDenom.Denom) {
+			return fmt.Errorf("must be dex denom: %v", poolDenom)
+		}
+
+		if !poolDenom.MinimumPoolSize.IsPositive() {
+			return fmt.Errorf("minimum pool size must be positive: %v", poolDenom.MinimumPoolSize)
+		}
+
+		if !poolDenom.MoveThreshold.IsPositive() {
+			return fmt.Errorf("move threshold must be positive: %v", poolDenom.MoveThreshold)
+		}
+
+		seen[poolDenom.Denom] = struct{}{}
+	}
+
 	return nil
 }
 

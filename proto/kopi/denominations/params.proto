@@ -124,6 +124,20 @@ message StrategyDenoms {
   ];
 }
 
+message FactoryPoolDenom {
+  string denom = 1;
+
+  bytes minimum_pool_size = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+
+  bytes move_threshold = 3 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
@@ -141,6 +155,9 @@ message Params {
     (gogoproto.nullable) = false
   ];
   StrategyDenoms strategy_denoms = 5 [
+    (gogoproto.nullable) = false
+  ];
+  repeated FactoryPoolDenom factory_pool_denoms = 6 [
     (gogoproto.nullable) = false
   ];
 }

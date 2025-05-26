@@ -12,12 +12,12 @@ import (
 	"github.com/kopi-money/kopi/x/denominations/types"
 )
 
-func (k msgServer) DexAddDenom(ctx context.Context, req *types.MsgDexAddDenom) (*types.MsgUpdateParamsResponse, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+func (k msgServer) DexAddDenom(ctx context.Context, msg *types.MsgDexAddDenom) (*types.MsgUpdateParamsResponse, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
-	dexDenom, ratio, err := k.CreateDexDenom(ctx, req.Name, req.Factor, req.MinTradeLiquidity, req.MinOrderSize, req.MinDexLiquidity, req.Exponent)
+	dexDenom, ratio, err := k.CreateDexDenom(ctx, msg.Name, msg.Factor, msg.MinTradeLiquidity, msg.MinOrderSize, msg.MinDexLiquidity, msg.Exponent)
 	if err != nil {
 		return nil, err
 	}
@@ -42,24 +42,24 @@ func (k Keeper) DexAddDenom(ctx context.Context, dexDenom types.DexDenom, ratio 
 	return nil
 }
 
-func (k msgServer) DexUpdateMinimumDexLiquidity(ctx context.Context, req *types.MsgDexUpdateMinimumDexLiquidity) (*types.MsgUpdateParamsResponse, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+func (k msgServer) DexUpdateMinimumDexLiquidity(ctx context.Context, msg *types.MsgDexUpdateMinimumDexLiquidity) (*types.MsgUpdateParamsResponse, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
-	if err := k.Keeper.DexUpdateMinimumDexLiquidity(ctx, req.Name, req.MinimumDexLiquidity); err != nil {
+	if err := k.Keeper.DexUpdateMinimumDexLiquidity(ctx, msg.Name, msg.MinimumDexLiquidity); err != nil {
 		return nil, err
 	}
 
 	return &types.MsgUpdateParamsResponse{}, nil
 }
 
-func (k msgServer) DexUpdateMinimumTradeLiquidity(ctx context.Context, req *types.MsgDexUpdateMinimumTradeLiquidity) (*types.MsgUpdateParamsResponse, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+func (k msgServer) DexUpdateMinimumTradeLiquidity(ctx context.Context, msg *types.MsgDexUpdateMinimumTradeLiquidity) (*types.MsgUpdateParamsResponse, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
-	if err := k.Keeper.DexUpdateMinimumTradeLiquidity(ctx, req.Name, req.MinimumTradeLiquidity); err != nil {
+	if err := k.Keeper.DexUpdateMinimumTradeLiquidity(ctx, msg.Name, msg.MinimumTradeLiquidity); err != nil {
 		return nil, err
 	}
 
@@ -144,18 +144,18 @@ func (k Keeper) SetMinimumDexLiquidity(ctx context.Context, denom string, minimu
 	return nil
 }
 
-func (k msgServer) DexUpdateMinimumOrderSize(ctx context.Context, req *types.MsgDexUpdateMinimumOrderSize) (*types.MsgUpdateParamsResponse, error) {
-	if k.GetAuthority() != req.Authority {
-		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), req.Authority)
+func (k msgServer) DexUpdateMinimumOrderSize(ctx context.Context, msg *types.MsgDexUpdateMinimumOrderSize) (*types.MsgUpdateParamsResponse, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
 	}
 
 	params := k.GetParams(ctx)
-	minOrderSize, _ := math.NewIntFromString(req.MinOrderSize)
+	minOrderSize, _ := math.NewIntFromString(msg.MinOrderSize)
 	dexDenoms := []types.DexDenom{}
 	found := false
 
 	for _, dexDenom := range params.DexDenoms {
-		if dexDenom.Name == req.Name {
+		if dexDenom.Name == msg.Name {
 			dexDenom.MinOrderSize = minOrderSize
 			found = true
 		}
@@ -176,8 +176,37 @@ func (k msgServer) DexUpdateMinimumOrderSize(ctx context.Context, req *types.Msg
 	return &types.MsgUpdateParamsResponse{}, nil
 }
 
+func (k msgServer) DexSetRatio(ctx context.Context, msg *types.MsgDexSetRatio) (*types.MsgUpdateParamsResponse, error) {
+	if k.GetAuthority() != msg.Authority {
+		return nil, errorsmod.Wrapf(types.ErrInvalidSigner, "invalid authority; expected %s, got %s", k.GetAuthority(), msg.Authority)
+	}
+
+	if msg.Exponent < 1 {
+		return nil, fmt.Errorf("exponent has to be positive, was: %v", msg.Exponent)
+	}
+
+	newRatio, err := k.CreateRatio(ctx, msg.Denom, msg.Ratio, msg.Exponent)
+	if err != nil {
+		return nil, fmt.Errorf("invalid ratio: %v", msg.Ratio)
+	}
+
+	if !newRatio.IsPositive() {
+		return nil, fmt.Errorf("new ratio must be positive, was: %v", msg.Ratio)
+	}
+
+	ratio, err := k.GetRatio(ctx, msg.Denom)
+	if err != nil {
+		return nil, fmt.Errorf("unable to find ratio for %s", msg.Denom)
+	}
+
+	ratio.Ratio = newRatio
+	k.SetRatio(ctx, ratio)
+
+	return &types.MsgUpdateParamsResponse{}, nil
+}
+
 func (k Keeper) CreateDexDenom(ctx context.Context, name, factorStr, minTradeLiquidityStr, minOrderSizeStr, minDexLiquidityStr string, exponent uint64) (types.DexDenom, types.Ratio, error) {
-	ratioFactor, err := k.CreateRatio(ctx, factorStr, exponent)
+	ratioFactor, err := k.CreateRatio(ctx, name, factorStr, exponent)
 	if err != nil {
 		return types.DexDenom{}, types.Ratio{}, err
 	}
@@ -187,7 +216,7 @@ func (k Keeper) CreateDexDenom(ctx context.Context, name, factorStr, minTradeLiq
 		return types.DexDenom{}, types.Ratio{}, fmt.Errorf("invalid min trade liquidity")
 	}
 
-	minDexLiquidity, ok := math.NewIntFromString(minTradeLiquidityStr)
+	minDexLiquidity, ok := math.NewIntFromString(minDexLiquidityStr)
 	if !ok {
 		return types.DexDenom{}, types.Ratio{}, fmt.Errorf("invalid min dex liquidity")
 	}
@@ -213,22 +242,21 @@ func (k Keeper) CreateDexDenom(ctx context.Context, name, factorStr, minTradeLiq
 	return dexDenom, ratio, nil
 }
 
-func (k Keeper) CreateRatio(ctx context.Context, factorStr string, exponent uint64) (math.LegacyDec, error) {
+func (k Keeper) CreateRatio(ctx context.Context, newDenom, factorStr string, exponent uint64) (math.LegacyDec, error) {
 	referenceFactor, referenceDenom, err := types.ExtractNumberAndString(factorStr)
 	if err != nil {
 		return math.LegacyDec{}, err
 	}
 
-	return k.CreateRatioFromReference(ctx, referenceFactor, referenceDenom, exponent)
+	return k.CreateRatioFromReference(ctx, referenceFactor, newDenom, referenceDenom, exponent)
 }
 
-func (k Keeper) CreateRatioFromReference(ctx context.Context, referenceFactor math.LegacyDec, referenceDenom string, exponent uint64) (math.LegacyDec, error) {
+func (k Keeper) CreateRatioFromReference(ctx context.Context, referenceFactor math.LegacyDec, newDenom, referenceDenom string, exponent uint64) (math.LegacyDec, error) {
 	if !referenceFactor.IsPositive() {
 		return math.LegacyDec{}, types.ErrInvalidFactor
 	}
 
 	if referenceDenom != "" {
-		var otherRatio types.Ratio
 		otherRatio, err := k.GetRatio(ctx, referenceDenom)
 		if err != nil {
 			return math.LegacyDec{}, fmt.Errorf("unable to find ratio for %s: %w", referenceDenom, err)
@@ -237,6 +265,10 @@ func (k Keeper) CreateRatioFromReference(ctx context.Context, referenceFactor ma
 		referenceFactor = otherRatio.Ratio.Quo(referenceFactor) // C
 	} else {
 		referenceDenom = constants.BaseCurrency
+	}
+
+	if referenceDenom == newDenom {
+		return math.LegacyDec{}, fmt.Errorf("new denom and reference denom cannot be the same")
 	}
 
 	otherDenom, err := k.GetDexDenom(ctx, referenceDenom)

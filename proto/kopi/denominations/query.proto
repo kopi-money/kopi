@@ -27,6 +27,25 @@ service Query {
   rpc PricesUSD (QueryGetPricesUSDRequest) returns (QueryGetPricesUSDResponse) {
     option (google.api.http).get = "/kopi/denominations/prices/usd";
   }
+
+  rpc FactoryPoolDenoms(QueryFactoryPoolDenomsRequest) returns (QueryFactoryPoolDenomsResponse) {
+    option (google.api.http).get = "/kopi/denominations/factory/pool-denoms";
+  }
+}
+
+message FactoryPoolDenomResponse {
+  string denom = 1;
+  string minimum_pool_size = 2;
+  string move_threshold = 3;
+}
+
+message QueryFactoryPoolDenomsResponse {
+  repeated FactoryPoolDenomResponse factory_pool_denoms = 1 [
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryFactoryPoolDenomsRequest {
 }
 
 message Price {
@@ -35,7 +54,9 @@ message Price {
 }
 
 message QueryGetPricesUSDResponse {
-  repeated Price prices = 1 [(gogoproto.nullable) = false];
+  repeated Price prices = 1 [
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryGetPricesUSDRequest{

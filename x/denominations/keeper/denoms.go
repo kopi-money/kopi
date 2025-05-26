@@ -323,6 +323,36 @@ func (k Keeper) IsValidCollateralDenom(ctx context.Context, denom string) bool {
 	return false
 }
 
+func (k Keeper) IsFactoryPoolDenom(ctx context.Context, denom string) bool {
+	for _, factoryPoolDenom := range k.GetParams(ctx).FactoryPoolDenoms {
+		if factoryPoolDenom.Denom == denom {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (k Keeper) MinimumFactoryPoolSize(ctx context.Context, denom string) math.Int {
+	for _, factoryPoolDenom := range k.GetParams(ctx).FactoryPoolDenoms {
+		if factoryPoolDenom.Denom == denom {
+			return factoryPoolDenom.MinimumPoolSize
+		}
+	}
+
+	panic(fmt.Sprintf("no minimum pool size found for %v", denom))
+}
+
+func (k Keeper) MinimumFactoryPoolSizes(ctx context.Context) map[string]math.Int {
+	poolSizes := make(map[string]math.Int)
+
+	for _, factoryPoolDenom := range k.GetParams(ctx).FactoryPoolDenoms {
+		poolSizes[factoryPoolDenom.Denom] = factoryPoolDenom.MinimumPoolSize
+	}
+
+	return poolSizes
+}
+
 func (k Keeper) GetArbitrageDenoms(ctx context.Context) []types.ArbitrageDenom {
 	return k.GetParams(ctx).StrategyDenoms.ArbitrageDenoms
 }

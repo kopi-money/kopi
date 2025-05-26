@@ -23,6 +23,7 @@ const (
 	Msg_DexUpdateMinimumOrderSize_FullMethodName                = "/kopi.denominations.Msg/DexUpdateMinimumOrderSize"
 	Msg_DexUpdateMinimumTradeLiquidity_FullMethodName           = "/kopi.denominations.Msg/DexUpdateMinimumTradeLiquidity"
 	Msg_DexUpdateMinimumDexLiquidity_FullMethodName             = "/kopi.denominations.Msg/DexUpdateMinimumDexLiquidity"
+	Msg_DexSetRatio_FullMethodName                              = "/kopi.denominations.Msg/DexSetRatio"
 	Msg_KCoinAddDenom_FullMethodName                            = "/kopi.denominations.Msg/KCoinAddDenom"
 	Msg_KCoinUpdateSupplyLimit_FullMethodName                   = "/kopi.denominations.Msg/KCoinUpdateSupplyLimit"
 	Msg_KCoinUpdateMintAmount_FullMethodName                    = "/kopi.denominations.Msg/KCoinUpdateMintAmount"
@@ -45,6 +46,9 @@ const (
 	Msg_ArbitrageUpdateSellAmount_FullMethodName                = "/kopi.denominations.Msg/ArbitrageUpdateSellAmount"
 	Msg_ArbitrageUpdateRedemptionFee_FullMethodName             = "/kopi.denominations.Msg/ArbitrageUpdateRedemptionFee"
 	Msg_ArbitrageUpdateRedemptionFeeReserveShare_FullMethodName = "/kopi.denominations.Msg/ArbitrageUpdateRedemptionFeeReserveShare"
+	Msg_FactoryAddPoolDenom_FullMethodName                      = "/kopi.denominations.Msg/FactoryAddPoolDenom"
+	Msg_FactoryUpdateMinimumPoolSize_FullMethodName             = "/kopi.denominations.Msg/FactoryUpdateMinimumPoolSize"
+	Msg_FactoryUpdateMoveThreshold_FullMethodName               = "/kopi.denominations.Msg/FactoryUpdateMoveThreshold"
 )
 
 // MsgClient is the client API for Msg service.
@@ -55,6 +59,7 @@ type MsgClient interface {
 	DexUpdateMinimumOrderSize(ctx context.Context, in *MsgDexUpdateMinimumOrderSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	DexUpdateMinimumTradeLiquidity(ctx context.Context, in *MsgDexUpdateMinimumTradeLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	DexUpdateMinimumDexLiquidity(ctx context.Context, in *MsgDexUpdateMinimumDexLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	DexSetRatio(ctx context.Context, in *MsgDexSetRatio, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	KCoinAddDenom(ctx context.Context, in *MsgKCoinAddDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	KCoinUpdateSupplyLimit(ctx context.Context, in *MsgKCoinUpdateSupplyLimit, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	KCoinUpdateMintAmount(ctx context.Context, in *MsgKCoinUpdateMintAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
@@ -77,6 +82,9 @@ type MsgClient interface {
 	ArbitrageUpdateSellAmount(ctx context.Context, in *MsgArbitrageUpdateSellAmount, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	ArbitrageUpdateRedemptionFee(ctx context.Context, in *MsgArbitrageUpdateRedemptionFee, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	ArbitrageUpdateRedemptionFeeReserveShare(ctx context.Context, in *MsgArbitrageUpdateRedemptionFeeReserveShare, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	FactoryAddPoolDenom(ctx context.Context, in *MsgFactoryAddPoolDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	FactoryUpdateMinimumPoolSize(ctx context.Context, in *MsgFactoryUpdateMinimumPoolSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	FactoryUpdateMoveThreshold(ctx context.Context, in *MsgFactoryUpdateMoveThreshold, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 }
 
 type msgClient struct {
@@ -117,6 +125,15 @@ func (c *msgClient) DexUpdateMinimumTradeLiquidity(ctx context.Context, in *MsgD
 func (c *msgClient) DexUpdateMinimumDexLiquidity(ctx context.Context, in *MsgDexUpdateMinimumDexLiquidity, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
 	err := c.cc.Invoke(ctx, Msg_DexUpdateMinimumDexLiquidity_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) DexSetRatio(ctx context.Context, in *MsgDexSetRatio, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, Msg_DexSetRatio_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -321,6 +338,33 @@ func (c *msgClient) ArbitrageUpdateRedemptionFeeReserveShare(ctx context.Context
 	return out, nil
 }
 
+func (c *msgClient) FactoryAddPoolDenom(ctx context.Context, in *MsgFactoryAddPoolDenom, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, Msg_FactoryAddPoolDenom_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) FactoryUpdateMinimumPoolSize(ctx context.Context, in *MsgFactoryUpdateMinimumPoolSize, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, Msg_FactoryUpdateMinimumPoolSize_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) FactoryUpdateMoveThreshold(ctx context.Context, in *MsgFactoryUpdateMoveThreshold, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
+	out := new(MsgUpdateParamsResponse)
+	err := c.cc.Invoke(ctx, Msg_FactoryUpdateMoveThreshold_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -329,6 +373,7 @@ type MsgServer interface {
 	DexUpdateMinimumOrderSize(context.Context, *MsgDexUpdateMinimumOrderSize) (*MsgUpdateParamsResponse, error)
 	DexUpdateMinimumTradeLiquidity(context.Context, *MsgDexUpdateMinimumTradeLiquidity) (*MsgUpdateParamsResponse, error)
 	DexUpdateMinimumDexLiquidity(context.Context, *MsgDexUpdateMinimumDexLiquidity) (*MsgUpdateParamsResponse, error)
+	DexSetRatio(context.Context, *MsgDexSetRatio) (*MsgUpdateParamsResponse, error)
 	KCoinAddDenom(context.Context, *MsgKCoinAddDenom) (*MsgUpdateParamsResponse, error)
 	KCoinUpdateSupplyLimit(context.Context, *MsgKCoinUpdateSupplyLimit) (*MsgUpdateParamsResponse, error)
 	KCoinUpdateMintAmount(context.Context, *MsgKCoinUpdateMintAmount) (*MsgUpdateParamsResponse, error)
@@ -351,6 +396,9 @@ type MsgServer interface {
 	ArbitrageUpdateSellAmount(context.Context, *MsgArbitrageUpdateSellAmount) (*MsgUpdateParamsResponse, error)
 	ArbitrageUpdateRedemptionFee(context.Context, *MsgArbitrageUpdateRedemptionFee) (*MsgUpdateParamsResponse, error)
 	ArbitrageUpdateRedemptionFeeReserveShare(context.Context, *MsgArbitrageUpdateRedemptionFeeReserveShare) (*MsgUpdateParamsResponse, error)
+	FactoryAddPoolDenom(context.Context, *MsgFactoryAddPoolDenom) (*MsgUpdateParamsResponse, error)
+	FactoryUpdateMinimumPoolSize(context.Context, *MsgFactoryUpdateMinimumPoolSize) (*MsgUpdateParamsResponse, error)
+	FactoryUpdateMoveThreshold(context.Context, *MsgFactoryUpdateMoveThreshold) (*MsgUpdateParamsResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -369,6 +417,9 @@ func (UnimplementedMsgServer) DexUpdateMinimumTradeLiquidity(context.Context, *M
 }
 func (UnimplementedMsgServer) DexUpdateMinimumDexLiquidity(context.Context, *MsgDexUpdateMinimumDexLiquidity) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DexUpdateMinimumDexLiquidity not implemented")
+}
+func (UnimplementedMsgServer) DexSetRatio(context.Context, *MsgDexSetRatio) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DexSetRatio not implemented")
 }
 func (UnimplementedMsgServer) KCoinAddDenom(context.Context, *MsgKCoinAddDenom) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method KCoinAddDenom not implemented")
@@ -435,6 +486,15 @@ func (UnimplementedMsgServer) ArbitrageUpdateRedemptionFee(context.Context, *Msg
 }
 func (UnimplementedMsgServer) ArbitrageUpdateRedemptionFeeReserveShare(context.Context, *MsgArbitrageUpdateRedemptionFeeReserveShare) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ArbitrageUpdateRedemptionFeeReserveShare not implemented")
+}
+func (UnimplementedMsgServer) FactoryAddPoolDenom(context.Context, *MsgFactoryAddPoolDenom) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FactoryAddPoolDenom not implemented")
+}
+func (UnimplementedMsgServer) FactoryUpdateMinimumPoolSize(context.Context, *MsgFactoryUpdateMinimumPoolSize) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FactoryUpdateMinimumPoolSize not implemented")
+}
+func (UnimplementedMsgServer) FactoryUpdateMoveThreshold(context.Context, *MsgFactoryUpdateMoveThreshold) (*MsgUpdateParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FactoryUpdateMoveThreshold not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -517,6 +577,24 @@ func _Msg_DexUpdateMinimumDexLiquidity_Handler(srv interface{}, ctx context.Cont
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).DexUpdateMinimumDexLiquidity(ctx, req.(*MsgDexUpdateMinimumDexLiquidity))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_DexSetRatio_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDexSetRatio)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DexSetRatio(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_DexSetRatio_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DexSetRatio(ctx, req.(*MsgDexSetRatio))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -917,6 +995,60 @@ func _Msg_ArbitrageUpdateRedemptionFeeReserveShare_Handler(srv interface{}, ctx 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_FactoryAddPoolDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgFactoryAddPoolDenom)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).FactoryAddPoolDenom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_FactoryAddPoolDenom_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).FactoryAddPoolDenom(ctx, req.(*MsgFactoryAddPoolDenom))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_FactoryUpdateMinimumPoolSize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgFactoryUpdateMinimumPoolSize)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).FactoryUpdateMinimumPoolSize(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_FactoryUpdateMinimumPoolSize_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).FactoryUpdateMinimumPoolSize(ctx, req.(*MsgFactoryUpdateMinimumPoolSize))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_FactoryUpdateMoveThreshold_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgFactoryUpdateMoveThreshold)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).FactoryUpdateMoveThreshold(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_FactoryUpdateMoveThreshold_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).FactoryUpdateMoveThreshold(ctx, req.(*MsgFactoryUpdateMoveThreshold))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -939,6 +1071,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DexUpdateMinimumDexLiquidity",
 			Handler:    _Msg_DexUpdateMinimumDexLiquidity_Handler,
+		},
+		{
+			MethodName: "DexSetRatio",
+			Handler:    _Msg_DexSetRatio_Handler,
 		},
 		{
 			MethodName: "KCoinAddDenom",
@@ -1027,6 +1163,18 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ArbitrageUpdateRedemptionFeeReserveShare",
 			Handler:    _Msg_ArbitrageUpdateRedemptionFeeReserveShare_Handler,
+		},
+		{
+			MethodName: "FactoryAddPoolDenom",
+			Handler:    _Msg_FactoryAddPoolDenom_Handler,
+		},
+		{
+			MethodName: "FactoryUpdateMinimumPoolSize",
+			Handler:    _Msg_FactoryUpdateMinimumPoolSize_Handler,
+		},
+		{
+			MethodName: "FactoryUpdateMoveThreshold",
+			Handler:    _Msg_FactoryUpdateMoveThreshold_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

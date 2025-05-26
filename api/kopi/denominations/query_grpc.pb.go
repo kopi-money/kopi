@@ -19,10 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName    = "/kopi.denominations.Query/Params"
-	Query_Ratio_FullMethodName     = "/kopi.denominations.Query/Ratio"
-	Query_Ratios_FullMethodName    = "/kopi.denominations.Query/Ratios"
-	Query_PricesUSD_FullMethodName = "/kopi.denominations.Query/PricesUSD"
+	Query_Params_FullMethodName            = "/kopi.denominations.Query/Params"
+	Query_Ratio_FullMethodName             = "/kopi.denominations.Query/Ratio"
+	Query_Ratios_FullMethodName            = "/kopi.denominations.Query/Ratios"
+	Query_PricesUSD_FullMethodName         = "/kopi.denominations.Query/PricesUSD"
+	Query_FactoryPoolDenoms_FullMethodName = "/kopi.denominations.Query/FactoryPoolDenoms"
 )
 
 // QueryClient is the client API for Query service.
@@ -34,6 +35,7 @@ type QueryClient interface {
 	Ratio(ctx context.Context, in *QueryGetRatioRequest, opts ...grpc.CallOption) (*QueryGetRatioResponse, error)
 	Ratios(ctx context.Context, in *QueryGetRatiosRequest, opts ...grpc.CallOption) (*QueryGetRatiosResponse, error)
 	PricesUSD(ctx context.Context, in *QueryGetPricesUSDRequest, opts ...grpc.CallOption) (*QueryGetPricesUSDResponse, error)
+	FactoryPoolDenoms(ctx context.Context, in *QueryFactoryPoolDenomsRequest, opts ...grpc.CallOption) (*QueryFactoryPoolDenomsResponse, error)
 }
 
 type queryClient struct {
@@ -80,6 +82,15 @@ func (c *queryClient) PricesUSD(ctx context.Context, in *QueryGetPricesUSDReques
 	return out, nil
 }
 
+func (c *queryClient) FactoryPoolDenoms(ctx context.Context, in *QueryFactoryPoolDenomsRequest, opts ...grpc.CallOption) (*QueryFactoryPoolDenomsResponse, error) {
+	out := new(QueryFactoryPoolDenomsResponse)
+	err := c.cc.Invoke(ctx, Query_FactoryPoolDenoms_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -89,6 +100,7 @@ type QueryServer interface {
 	Ratio(context.Context, *QueryGetRatioRequest) (*QueryGetRatioResponse, error)
 	Ratios(context.Context, *QueryGetRatiosRequest) (*QueryGetRatiosResponse, error)
 	PricesUSD(context.Context, *QueryGetPricesUSDRequest) (*QueryGetPricesUSDResponse, error)
+	FactoryPoolDenoms(context.Context, *QueryFactoryPoolDenomsRequest) (*QueryFactoryPoolDenomsResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -107,6 +119,9 @@ func (UnimplementedQueryServer) Ratios(context.Context, *QueryGetRatiosRequest) 
 }
 func (UnimplementedQueryServer) PricesUSD(context.Context, *QueryGetPricesUSDRequest) (*QueryGetPricesUSDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PricesUSD not implemented")
+}
+func (UnimplementedQueryServer) FactoryPoolDenoms(context.Context, *QueryFactoryPoolDenomsRequest) (*QueryFactoryPoolDenomsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FactoryPoolDenoms not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -193,6 +208,24 @@ func _Query_PricesUSD_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_FactoryPoolDenoms_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryFactoryPoolDenomsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).FactoryPoolDenoms(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_FactoryPoolDenoms_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).FactoryPoolDenoms(ctx, req.(*QueryFactoryPoolDenomsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -215,6 +248,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PricesUSD",
 			Handler:    _Query_PricesUSD_Handler,
+		},
+		{
+			MethodName: "FactoryPoolDenoms",
+			Handler:    _Query_FactoryPoolDenoms_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

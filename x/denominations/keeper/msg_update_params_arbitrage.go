@@ -68,8 +68,10 @@ func (k msgServer) ArbitrageUpdateBuyThreshold(ctx context.Context, req *types.M
 	strategyDenoms := params.StrategyDenoms
 	buyTreshold, _ := math.LegacyNewDecFromStr(req.BuyThreshold)
 
-	arbitrageDenoms := []types.ArbitrageDenom{}
-	found := false
+	var (
+		arbitrageDenoms []types.ArbitrageDenom
+		found           bool
+	)
 
 	for _, arbitrageDenom := range strategyDenoms.ArbitrageDenoms {
 		if arbitrageDenom.DexDenom == req.Name {
