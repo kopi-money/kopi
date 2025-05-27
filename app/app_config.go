@@ -196,11 +196,11 @@ var (
 		// chain modules
 		denominationsmoduletypes.ModuleName,
 		swapmoduletypes.ModuleName,
-		strategiesmoduletypes.ModuleName,
+		reservemoduletypes.ModuleName,
 		mmmoduletypes.ModuleName,
+		strategiesmoduletypes.ModuleName,
 		dexmoduletypes.ModuleName,
 		tokenfactorytypes.ModuleName,
-		reservemoduletypes.ModuleName,
 		blockspeedmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
