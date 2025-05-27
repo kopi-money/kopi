@@ -231,6 +231,12 @@ func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
 				return v21.CreateUpgradeHandler(manager, configurator, app.DenominationsKeeper, app.DexKeeper)
 			},
 		},
+		{
+			UpgradeName: v22.UpgradeNameRC2,
+			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
+				return v21.CreateUpgradeHandler(manager, configurator, app.DenominationsKeeper, app.DexKeeper)
+			},
+		},
 	}
 
 	upgradeInfo, err := app.UpgradeKeeper.ReadUpgradeInfoFromDisk()
