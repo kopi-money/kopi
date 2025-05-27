@@ -2,10 +2,7 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 	"strconv"
-
-	"github.com/cosmos/cosmos-sdk/types/query"
 
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 	"google.golang.org/grpc/codes"
@@ -17,37 +14,34 @@ func (k Keeper) QueryDenoms(ctx context.Context, req *types.QueryDenomsRequest) 
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	factoryDenomData, pageRes, err := query.CollectionPaginate(
-		ctx,
-		k.factoryDenoms,
-		req.Pagination,
-		func(key string, denom types.FactoryDenom) (types.FactoryDenomData, error) {
-			supply := k.BankKeeper.GetSupply(ctx, denom.FullName)
-			_, hasPool := k.liquidityPools.Get(ctx, denom.FullName)
-
-			return types.FactoryDenomData{
-				Admin:         denom.Admin,
-				DisplayName:   denom.DisplayName,
-				FullName:      denom.FullName,
-				Description:   denom.Description,
-				Website:       denom.Website,
-				IconHash:      denom.IconHash,
-				Symbol:        denom.Symbol,
-				Exponent:      strconv.Itoa(int(denom.Exponent)),
-				Supply:        supply.Amount.String(),
-				HasPool:       hasPool,
-				Mintable:      denom.Mintable,
-				CategoryIndex: denom.CategoryIndex,
-			}, nil
-		},
+	var (
+		iterator = k.factoryDenoms.Iterator(ctx, nil)
+		denoms   []types.FactoryDenomData
 	)
 
-	if err != nil {
-		return nil, fmt.Errorf("get factory denoms from pagination: %w", err)
+	for iterator.Valid() {
+		denom := iterator.GetNext()
+
+		supply := k.BankKeeper.GetSupply(ctx, denom.FullName)
+		_, hasPool := k.liquidityPools.Get(ctx, denom.FullName)
+
+		denoms = append(denoms, types.FactoryDenomData{
+			Admin:         denom.Admin,
+			DisplayName:   denom.DisplayName,
+			FullName:      denom.FullName,
+			Description:   denom.Description,
+			Website:       denom.Website,
+			IconHash:      denom.IconHash,
+			Symbol:        denom.Symbol,
+			Exponent:      strconv.Itoa(int(denom.Exponent)),
+			Supply:        supply.Amount.String(),
+			HasPool:       hasPool,
+			Mintable:      denom.Mintable,
+			CategoryIndex: denom.CategoryIndex,
+		})
 	}
 
 	return &types.QueryDenomsResponse{
-		Denoms:     factoryDenomData,
-		Pagination: pageRes,
+		Denoms: denoms,
 	}, nil
 }
