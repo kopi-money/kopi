@@ -5,7 +5,6 @@ import (
 	"cosmossdk.io/math"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/kopi-money/kopi/trading"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 
@@ -172,7 +171,9 @@ func (k Keeper) addLiquidity(ctx context.Context, acc sdk.AccAddress, factoryDen
 		return fmt.Errorf("send coins to Liquidity pool: %w", err)
 	}
 
-	_ = k.updateLiquidityShare(ctx, factoryDenom, pool, amountFactory, acc.String())
+	if err := k.updateLiquidityShare(ctx, factoryDenom, pool.FactoryDenomAmount.ToLegacyDec(), amountFactory.ToLegacyDec(), acc.String()); err != nil {
+		return fmt.Errorf("update liquidity share: %w", err)
+	}
 
 	pool.FactoryDenomAmount = pool.FactoryDenomAmount.Add(amountFactory)
 	pool.KCoinAmount = pool.KCoinAmount.Add(amountKCoin)
@@ -209,31 +210,25 @@ func (k msgServer) AddKCoinLiquidity(ctx context.Context, msg *types.MsgAddKCoin
 	return &types.Void{}, nil
 }
 
+// AddKCoinLiquidity adds one-sided liquidity to the pool. When updating the shares, only half of the added amount is
+// considered because shares are calculated based on adding two-sided.
 func (k Keeper) AddKCoinLiquidity(ctx context.Context, factoryDenom types.FactoryDenom, pool types.LiquidityPool, kCoinAmount math.Int, creator string) error {
-	sellAmount := kCoinAmount.Quo(math.NewInt(2))
-	kCoinAmount = kCoinAmount.Sub(sellAmount)
-
-	tradeContext := types.TradeContext{
-		Context:        ctx,
-		Callbacks:      trading.SellCallbacks(),
-		TradeAmount:    sellAmount,
-		Pool:           pool,
-		DenomGiving:    pool.KCoin,
-		DenomReceiving: factoryDenom.FactoryTradeDenom(),
-		Creator:        creator,
-	}
-
-	tradeResult, err := k.Trade(tradeContext, factoryDenom)
-	if err != nil {
-		return fmt.Errorf("sell kcoin: %w", err)
-	}
+	coins := sdk.NewCoins(
+		sdk.NewCoin(pool.KCoin, kCoinAmount),
+	)
 
 	acc, _ := sdk.AccAddressFromBech32(creator)
-	factoryAmount, _ := math.NewIntFromString(tradeResult.AmountReceivedNet)
-
-	if err = k.addLiquidity(ctx, acc, factoryDenom, factoryAmount, kCoinAmount); err != nil {
-		return fmt.Errorf("adding liquidity: %w", err)
+	if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolFactoryLiquidity, coins); err != nil {
+		return fmt.Errorf("send coins to Liquidity pool: %w", err)
 	}
+
+	addedAmount := kCoinAmount.ToLegacyDec().Quo(math.LegacyNewDec(2))
+	if err := k.updateLiquidityShare(ctx, factoryDenom, pool.KCoinAmount.ToLegacyDec(), addedAmount, acc.String()); err != nil {
+		return fmt.Errorf("update liquidity share: %w", err)
+	}
+
+	pool.KCoinAmount = pool.KCoinAmount.Add(kCoinAmount)
+	k.liquidityPools.Set(ctx, factoryDenom.FullName, pool)
 
 	return nil
 }
@@ -266,31 +261,25 @@ func (k msgServer) AddFactoryLiquidity(ctx context.Context, msg *types.MsgAddFac
 	return &types.Void{}, nil
 }
 
+// AddFactoryLiquidity adds one-sided liquidity to the pool. When updating the shares, only half of the added amount is
+// considered because shares are calculated based on adding two-sided.
 func (k Keeper) AddFactoryLiquidity(ctx context.Context, factoryDenom types.FactoryDenom, pool types.LiquidityPool, factoryAmount math.Int, creator string) error {
-	sellAmount := factoryAmount.Quo(math.NewInt(2))
-	factoryAmount = factoryAmount.Sub(sellAmount)
-
-	tradeContext := types.TradeContext{
-		Context:        ctx,
-		Callbacks:      trading.SellCallbacks(),
-		TradeAmount:    sellAmount,
-		Pool:           pool,
-		DenomGiving:    factoryDenom.FactoryTradeDenom(),
-		DenomReceiving: pool.KCoin,
-		Creator:        creator,
-	}
-
-	tradeResult, err := k.Trade(tradeContext, factoryDenom)
-	if err != nil {
-		return fmt.Errorf("sell factory token: %w", err)
-	}
+	coins := sdk.NewCoins(
+		sdk.NewCoin(factoryDenom.FactoryTradeDenom(), factoryAmount),
+	)
 
 	acc, _ := sdk.AccAddressFromBech32(creator)
-	kCoinAmount, _ := math.NewIntFromString(tradeResult.AmountReceivedNet)
-
-	if err = k.addLiquidity(ctx, acc, factoryDenom, factoryAmount, kCoinAmount); err != nil {
-		return fmt.Errorf("adding liquidity: %w", err)
+	if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolFactoryLiquidity, coins); err != nil {
+		return fmt.Errorf("send coins to Liquidity pool: %w", err)
 	}
+
+	addedAmount := factoryAmount.ToLegacyDec().Quo(math.LegacyNewDec(2))
+	if err := k.updateLiquidityShare(ctx, factoryDenom, pool.FactoryDenomAmount.ToLegacyDec(), addedAmount, acc.String()); err != nil {
+		return fmt.Errorf("update liquidity share: %w", err)
+	}
+
+	pool.FactoryDenomAmount = pool.FactoryDenomAmount.Add(factoryAmount)
+	k.liquidityPools.Set(ctx, factoryDenom.FullName, pool)
 
 	return nil
 }
@@ -324,7 +313,7 @@ func (k msgServer) UnlockLiquidity(ctx context.Context, msg *types.MsgUnlockLiqu
 		return nil, fmt.Errorf("send coins from module to module: %w", err)
 	}
 
-	if err = k.updateLiquidityShare(ctx, factoryDenom, pool, amountFactory, msg.Creator); err != nil {
+	if err = k.updateLiquidityShare(ctx, factoryDenom, pool.FactoryDenomAmount.ToLegacyDec(), amountFactory.ToLegacyDec(), msg.Creator); err != nil {
 		return nil, fmt.Errorf("update liquidity share: %w", err)
 	}
 

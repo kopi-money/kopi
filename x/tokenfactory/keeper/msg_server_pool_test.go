@@ -192,12 +192,12 @@ func TestAddOneSided1(t *testing.T) {
 
 	pool, _ := k.GetLiquidityPool(ctx, factoryDenomHash)
 	require.Equal(t, int64(3000), pool.FactoryDenomAmount.Int64())
-	require.Equal(t, int64(998), pool.KCoinAmount.Int64())
+	require.Equal(t, int64(1000), pool.KCoinAmount.Int64())
 
 	liquidityAcc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolFactoryLiquidity)
 	balance := k.BankKeeper.SpendableCoins(ctx, liquidityAcc.GetAddress())
 	require.Equal(t, int64(3000), balance.AmountOf(factoryDenomHash).Int64())
-	require.Equal(t, int64(998), balance.AmountOf(constants.KUSD).Int64())
+	require.Equal(t, int64(1000), balance.AmountOf(constants.KUSD).Int64())
 }
 
 func TestAddOneSided2(t *testing.T) {
@@ -213,10 +213,10 @@ func TestAddOneSided2(t *testing.T) {
 
 	pool, _ := k.GetLiquidityPool(ctx, factoryDenomHash)
 	require.Equal(t, int64(10_000), pool.FactoryDenomAmount.Int64())
-	require.Equal(t, int64(19_975), pool.KCoinAmount.Int64())
+	require.Equal(t, int64(20_000), pool.KCoinAmount.Int64())
 
 	liquidityAcc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolFactoryLiquidity)
 	balance := k.BankKeeper.SpendableCoins(ctx, liquidityAcc.GetAddress())
 	require.Equal(t, int64(10_000), balance.AmountOf(factoryDenomHash).Int64())
-	require.Equal(t, int64(19_975), balance.AmountOf(constants.KUSD).Int64())
+	require.Equal(t, int64(20_000), balance.AmountOf(constants.KUSD).Int64())
 }

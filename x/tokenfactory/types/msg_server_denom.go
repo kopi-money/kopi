@@ -2,11 +2,12 @@ package types
 
 import (
 	"fmt"
-	"github.com/kopi-money/kopi/constants"
 	"net/url"
 	"regexp"
 	"strings"
 	"unicode"
+
+	"github.com/kopi-money/kopi/constants"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -34,11 +35,11 @@ func (msg *MsgCreateDenom) ValidateBasic() error {
 		return fmt.Errorf("invalid icon hash")
 	}
 
-	if err := isValidSymbol(msg.Symbol); err != nil {
+	if err := IsValidSymbol(msg.Symbol); err != nil {
 		return fmt.Errorf("invalid symbol: %w", err)
 	}
 
-	if err := isValidDisplayName(msg.Name); err != nil {
+	if err := IsValidDisplayName(msg.Name); err != nil {
 		return fmt.Errorf("invalid name: %w", err)
 	}
 
@@ -61,7 +62,7 @@ func validateHash(hash string) bool {
 	return hashRegex.Match([]byte(strings.ToUpper(hash)))
 }
 
-func isValidSymbol(symbol string) error {
+func IsValidSymbol(symbol string) error {
 	if !asciiLengthPattern.MatchString(symbol) {
 		return fmt.Errorf("must be 3-6 ASCII characters")
 	}
@@ -78,11 +79,11 @@ func isValidSymbol(symbol string) error {
 	return nil
 }
 
-func isValidDisplayName(displayName string) error {
-	return isValidName(displayName, 12)
+func IsValidDisplayName(displayName string) error {
+	return IsValidName(displayName, 12)
 }
 
-func isValidName(text string, maxLength int) error {
+func IsValidName(text string, maxLength int) error {
 	if len(text) < 3 {
 		return fmt.Errorf("must contain at least 3 characters")
 	}

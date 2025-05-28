@@ -70,11 +70,7 @@ func (p Params) Validate() error {
 	if err := validateShare(p.MinimumPoolFee); err != nil {
 		return fmt.Errorf("invalid minimum pool fee: %w", err)
 	}
-
-	if err := validateBiggerZero(p.MinimumPoolSize); err != nil {
-		return fmt.Errorf("invalid minimum pool size: %w", err)
-	}
-
+	
 	if err := validateCategories(p.Categories.Categories); err != nil {
 		return fmt.Errorf("invalid categories: %w", err)
 	}

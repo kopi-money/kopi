@@ -66,7 +66,7 @@ func TestMove1(t *testing.T) {
 	denomKeeper := k.DenomKeeper.(denomkeeper.Keeper)
 	ratio, err := denomKeeper.GetRatio(ctx, localName)
 	require.NoError(t, err)
-	require.Equal(t, "0.250626566491416496", ratio.Ratio.String())
+	require.Equal(t, "0.250000000000000000", ratio.Ratio.String())
 
 	dexKeeper := k.DexKeeper.(dexkeeper.Keeper)
 	localAmount := dexKeeper.GetPoolLiquidity(ctx, localName)

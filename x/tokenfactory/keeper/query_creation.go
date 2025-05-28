@@ -11,6 +11,10 @@ func (k Keeper) QueryCreationNameExists(ctx context.Context, req *types.QueryCre
 	var response types.QueryCreationExistsResponse
 	name := strings.ToLower(req.Name)
 
+	if err := types.IsValidDisplayName(name); err != nil {
+		return nil, types.ErrInvalidName
+	}
+
 	iterator := k.factoryDenoms.Iterator(ctx, nil)
 	for iterator.Valid() {
 		factoryDenom := iterator.GetNext()
@@ -26,6 +30,10 @@ func (k Keeper) QueryCreationNameExists(ctx context.Context, req *types.QueryCre
 func (k Keeper) QueryCreationSymbolExists(ctx context.Context, req *types.QueryCreationSymbolExistsQuery) (*types.QueryCreationExistsResponse, error) {
 	var response types.QueryCreationExistsResponse
 	symbol := strings.ToLower(req.Symbol)
+
+	if err := types.IsValidSymbol(symbol); err != nil {
+		return nil, types.ErrInvalidSymbol
+	}
 
 	iterator := k.factoryDenoms.Iterator(ctx, nil)
 	for iterator.Valid() {

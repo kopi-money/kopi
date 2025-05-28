@@ -80,28 +80,28 @@ func (k Keeper) LiquidityShareIterator(ctx context.Context, denom string) cache.
 	return k.liquidityProviderShares.Iterator(ctx, rng, denom)
 }
 
-func (k Keeper) updateLiquidityShare(ctx context.Context, factoryDenom types.FactoryDenom, pool types.LiquidityPool, addedAmount math.Int, addedAddress string) error {
+func (k Keeper) updateLiquidityShare(ctx context.Context, factoryDenom types.FactoryDenom, totalAmount, addedAmount math.LegacyDec, addedAddress string) error {
 	var (
 		iterator      = k.liquidityProviderShares.Iterator(ctx, nil, factoryDenom.FullName)
-		sum           = addedAmount.ToLegacyDec()
+		sum           = addedAmount
 		keyValue      cache.KeyValue[string, cache.Entry[types.ProviderShare]]
 		address       string
 		providerShare types.ProviderShare
 	)
 
 	providers := make(map[string]math.LegacyDec)
-	providers[addedAddress] = addedAmount.ToLegacyDec()
+	providers[addedAddress] = addedAmount
 
 	for iterator.Valid() {
 		keyValue = iterator.GetNextKeyValue()
 		address = keyValue.Key()
 		providerShare = *keyValue.Value().Value()
 
-		amount := pool.FactoryDenomAmount.ToLegacyDec().Mul(providerShare.Share)
+		amount := totalAmount.Mul(providerShare.Share)
 		sum = sum.Add(amount)
 
 		if address == addedAddress {
-			amount = amount.Add(addedAmount.ToLegacyDec())
+			amount = amount.Add(addedAmount)
 			if amount.IsNegative() {
 				return types.ErrNegativeLiquidity
 			}

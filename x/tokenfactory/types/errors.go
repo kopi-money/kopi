@@ -51,4 +51,6 @@ var (
 	ErrDenomAlreadyMoved              = sdkerrors.Register(ModuleName, 1141, "token already has been moved")
 	ErrPoolTresholdNotCrossed         = sdkerrors.Register(ModuleName, 1142, "pool value too small")
 	ErrPoolTresholdCrossedTooRecently = sdkerrors.Register(ModuleName, 1143, "pool value threshold was crossed too recently")
+	ErrInvalidSymbol                  = sdkerrors.Register(ModuleName, 1144, "invalid symbol")
+	ErrInvalidName                    = sdkerrors.Register(ModuleName, 1145, "invalid name")
 )
