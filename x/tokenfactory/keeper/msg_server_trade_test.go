@@ -2,12 +2,13 @@ package keeper_test
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
-	"github.com/cosmos/cosmos-sdk/cache"
-	"github.com/kopi-money/kopi/trading"
 	"strconv"
 	"testing"
+
+	"cosmossdk.io/math"
+	"github.com/cosmos/cosmos-sdk/cache"
+	"github.com/kopi-money/kopi/trading"
 
 	"github.com/kopi-money/kopi/constants"
 

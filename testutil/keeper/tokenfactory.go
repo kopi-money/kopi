@@ -3,8 +3,9 @@ package keeper
 import (
 	"context"
 	"fmt"
-	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 	"testing"
+
+	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 
 	"cosmossdk.io/math"
 
@@ -40,13 +41,13 @@ func TokenfactoryKeeper(t *testing.T) (keeper.Keeper, context.Context) {
 
 	// Initialize params
 	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
-		return k.SetParams(innerCtx, TestParams())
+		return k.SetParams(innerCtx, FactoryTestParams())
 	}))
 
 	return k, ctx
 }
 
-func TestParams() types.Params {
+func FactoryTestParams() types.Params {
 	return types.Params{
 		Categories: types.Categories{
 			Categories: []types.Category{
@@ -165,13 +166,12 @@ func UpdateLiquidityPoolSettings(ctx context.Context, msgServer types.MsgServer,
 	})
 }
 
-func AddFactoryLiquidity(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash, factoryDenomAmount, maximumKCoinAmount string) error {
+func AddFactoryLiquidity(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash, factoryDenomAmount string) error {
 	return cache.Transact(ctx, func(innerCtx context.Context) error {
 		_, err := msgServer.AddLiquidity(innerCtx, &types.MsgAddLiquidity{
 			Creator:              creator,
 			FullFactoryDenomName: factoryDenomHash,
 			FactoryDenomAmount:   factoryDenomAmount,
-			MaximumKcoinAmount:   maximumKCoinAmount,
 		})
 		return err
 	})

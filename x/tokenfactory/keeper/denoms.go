@@ -3,8 +3,9 @@ package keeper
 import (
 	"context"
 	"fmt"
-	reservetypes "github.com/kopi-money/kopi/x/reserve/types"
 	"strings"
+
+	reservetypes "github.com/kopi-money/kopi/x/reserve/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/constants"
@@ -32,6 +33,11 @@ func (k Keeper) GetDenomByFullName(ctx context.Context, fullName string) (types.
 	return k.factoryDenoms.Get(ctx, fullName)
 }
 
+func (k Keeper) IsFactoryDenom(ctx context.Context, fullName string) bool {
+	_, has := k.factoryDenoms.Get(ctx, fullName)
+	return has
+}
+
 func (k Keeper) GetDenomBySymbol(ctx context.Context, symbol string) (types.FactoryDenom, bool) {
 	iterator := k.factoryDenoms.Iterator(ctx, nil)
 	for iterator.Valid() {
@@ -44,7 +50,7 @@ func (k Keeper) GetDenomBySymbol(ctx context.Context, symbol string) (types.Fact
 	return types.FactoryDenom{}, false
 }
 
-func (k Keeper) CreateDenom(ctx context.Context, address, displayName, symbol, description, website, iconHash, localName string, exponent, categoryIndex uint64, mintable bool) (types.FactoryDenom, error) {
+func (k Keeper) CreateDenom(ctx context.Context, address, displayName, symbol, feeDenom, description, website, iconHash, localName string, exponent, categoryIndex uint64, mintable bool) (types.FactoryDenom, error) {
 	fullName := ToFullName(address, symbol)
 
 	if _, exists := k.GetDenomByFullName(ctx, fullName); exists {
@@ -76,7 +82,7 @@ func (k Keeper) CreateDenom(ctx context.Context, address, displayName, symbol, d
 		}
 	}
 
-	if err := k.processCreationFee(ctx, category, address); err != nil {
+	if err := k.processCreationFee(ctx, category, feeDenom, address); err != nil {
 		return types.FactoryDenom{}, fmt.Errorf("processing fee: %v", err)
 	}
 
@@ -111,13 +117,19 @@ func (k Keeper) CreateDenom(ctx context.Context, address, displayName, symbol, d
 	return factoryDenom, nil
 }
 
-func (k Keeper) processCreationFee(ctx context.Context, category types.Category, address string) error {
+func (k Keeper) processCreationFee(ctx context.Context, category types.Category, feeDenom, address string) error {
 	addr, err := sdk.AccAddressFromBech32(address)
 	if err != nil {
 		return types.ErrInvalidAddress
 	}
 
-	coins := sdk.NewCoins(sdk.NewCoin(constants.KUSD, category.CreationPrice))
+	if feeDenom == "" {
+		feeDenom = constants.KUSD
+	} else if !k.DenomKeeper.IsFactoryPoolDenom(ctx, feeDenom) {
+		return types.ErrNoValidPoolDenom
+	}
+
+	coins := sdk.NewCoins(sdk.NewCoin(feeDenom, category.CreationPrice))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, addr, reservetypes.BuyingKCoins, coins); err != nil {
 		return fmt.Errorf("send coins from account to module: %w", err)
 	}

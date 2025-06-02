@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 
 	"cosmossdk.io/core/appmodule"

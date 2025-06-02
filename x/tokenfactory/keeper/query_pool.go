@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/trading"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
@@ -62,6 +63,8 @@ func (k Keeper) QueryPool(ctx context.Context, req *types.QueryPoolRequest) (*ty
 		Marketcap:         marketCap.String(),
 		MarketcapUsd:      marketCapUSD.String(),
 		CreatedAt:         pool.CreatedAt,
+		TradeFee:          pool.PoolFee.String(),
+		UnlockPeriod:      pool.UnlockInSeconds,
 	}, nil
 }
 

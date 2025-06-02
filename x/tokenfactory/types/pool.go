@@ -1,8 +1,9 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	"fmt"
+
+	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/trading"
 )
 
@@ -42,6 +43,19 @@ func (lp LiquidityPool) ConvertToKCoin(factoryAmount math.Int) (math.LegacyDec, 
 	return ratio.Mul(factoryAmount.ToLegacyDec()), nil
 }
 
+func (lp LiquidityPool) ConvertToFactory(dexDenomAmount math.Int) (math.LegacyDec, error) {
+	if dexDenomAmount.IsZero() {
+		return math.LegacyZeroDec(), nil
+	}
+
+	ratio, err := lp.GetPoolRatio()
+	if err != nil {
+		return math.LegacyDec{}, err
+	}
+
+	return ratio.Quo(dexDenomAmount.ToLegacyDec()), nil
+}
+
 func (lp LiquidityPool) GetLiquidityAmounts(denomGiving string) (trading.Liquidity, trading.Liquidity) {
 	factoryAmount := trading.Liquidity{Actual: lp.FactoryDenomAmount.ToLegacyDec()}
 	kCoinAmount := trading.Liquidity{Actual: lp.KCoinAmount.ToLegacyDec()}
@@ -53,11 +67,14 @@ func (lp LiquidityPool) GetLiquidityAmounts(denomGiving string) (trading.Liquidi
 	return factoryAmount, kCoinAmount
 }
 
-func (lp LiquidityPool) GetPoolValue() (math.LegacyDec, error) {
-	factoryValue, err := lp.ConvertToKCoin(lp.FactoryDenomAmount)
-	if err != nil {
-		return math.LegacyDec{}, err
-	}
+func (lp LiquidityPool) GetPoolValue() math.LegacyDec {
+	return lp.KCoinAmount.ToLegacyDec().Mul(math.LegacyNewDec(2))
+}
 
-	return factoryValue.Add(lp.KCoinAmount.ToLegacyDec()), nil
+func (lp LiquidityPool) GetOtherDenom(factoryDenom, denom string) string {
+	if denom == lp.KCoin {
+		return factoryDenom
+	} else {
+		return lp.KCoin
+	}
 }

@@ -1,11 +1,12 @@
 package keeper_test
 
 import (
+	"testing"
+
 	"github.com/kopi-money/kopi/constants"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestPoolLiquidityAddress1(t *testing.T) {

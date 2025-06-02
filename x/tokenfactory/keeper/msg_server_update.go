@@ -2,12 +2,13 @@ package keeper
 
 import (
 	"context"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/kopi-money/kopi/constants"
-	"github.com/kopi-money/kopi/x/tokenfactory/types"
 	"net/url"
 	"strings"
 	"time"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 
 func (k msgServer) UpdateDescription(ctx context.Context, msg *types.MsgUpdateDescription) (*types.Void, error) {

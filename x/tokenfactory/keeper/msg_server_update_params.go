@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
+
+	"cosmossdk.io/math"
 
 	errorsmod "cosmossdk.io/errors"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"

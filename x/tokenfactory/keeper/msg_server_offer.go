@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	reservetypes "github.com/kopi-money/kopi/x/reserve/types"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
@@ -34,7 +35,7 @@ func (k msgServer) CreateOffers(ctx context.Context, msg *types.MsgCreateOffers)
 		return nil, types.ErrInvalidAmountFormat
 	}
 
-	if k.DenomKeeper.IsFactoryPoolDenom(ctx, msg.AskDenom) {
+	if !k.DenomKeeper.IsFactoryPoolDenom(ctx, msg.AskDenom) {
 		return nil, types.ErrNoValidPoolDenom
 	}
 
@@ -126,7 +127,7 @@ func (k msgServer) TakeOffer(ctx context.Context, msg *types.MsgTakeOffer) (*typ
 	}
 
 	coins := sdk.NewCoins(sdk.NewCoin(offer.AskDenom, askAmount))
-	if err := k.BankKeeper.SendCoins(ctx, accUser, accAdmin, coins); err != nil {
+	if err = k.BankKeeper.SendCoins(ctx, accUser, accAdmin, coins); err != nil {
 		return nil, err
 	}
 
@@ -136,12 +137,12 @@ func (k msgServer) TakeOffer(ctx context.Context, msg *types.MsgTakeOffer) (*typ
 		offerPoolAcc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolOffers)
 		offerPoolAddress := offerPoolAcc.GetAddress().String()
 
-		if err := k.createVesting(ctx, offerPoolAddress, offer.AddressReceiver, factoryDenom.FullName, offer.FactoryDenomAmount, offer.CreatedAt, *offer.VestedUntil, offer.NumUnlocksSteps); err != nil {
+		if err = k.createVesting(ctx, offerPoolAddress, offer.AddressReceiver, factoryDenom.FullName, offer.FactoryDenomAmount, offer.CreatedAt, *offer.VestedUntil, offer.NumUnlocksSteps); err != nil {
 			return nil, fmt.Errorf("create vesting: %w", err)
 		}
 	} else {
 		coins = sdk.NewCoins(sdk.NewCoin(factoryDenom.FullName, offer.FactoryDenomAmount))
-		if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolOffers, accUser, coins); err != nil {
+		if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolOffers, accUser, coins); err != nil {
 			return nil, err
 		}
 	}

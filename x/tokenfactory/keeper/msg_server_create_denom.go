@@ -2,15 +2,16 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
+
+	"cosmossdk.io/math"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 
 func (k msgServer) CreateDenom(ctx context.Context, msg *types.MsgCreateDenom) (*types.Void, error) {
-	factoryDenom, err := k.Keeper.CreateDenom(ctx, msg.Creator, msg.Name, msg.Symbol, msg.Description, msg.Website, msg.IconHash, msg.LocalName, msg.Exponent, msg.CategoryIndex, msg.Mintable)
+	factoryDenom, err := k.Keeper.CreateDenom(ctx, msg.Creator, msg.Name, msg.Symbol, msg.CreationFeeDenom, msg.Description, msg.Website, msg.IconHash, msg.LocalName, msg.Exponent, msg.CategoryIndex, msg.Mintable)
 	if err != nil {
 		return nil, fmt.Errorf("create denom: %v", err)
 	}
@@ -34,7 +35,7 @@ func (k msgServer) CreateDenom(ctx context.Context, msg *types.MsgCreateDenom) (
 }
 
 func (k msgServer) CreateDenomAndPool(ctx context.Context, msg *types.MsgCreateDenomAndPool) (*types.Void, error) {
-	factoryDenom, err := k.Keeper.CreateDenom(ctx, msg.Creator, msg.Name, msg.Symbol, msg.Description, msg.Website, msg.IconHash, msg.LocalName, msg.Exponent, msg.CategoryIndex, msg.Mintable)
+	factoryDenom, err := k.Keeper.CreateDenom(ctx, msg.Creator, msg.Name, msg.Symbol, msg.CreationFeeDenom, msg.Description, msg.Website, msg.IconHash, msg.LocalName, msg.Exponent, msg.CategoryIndex, msg.Mintable)
 	if err != nil {
 		return nil, fmt.Errorf("create denom: %v", err)
 	}

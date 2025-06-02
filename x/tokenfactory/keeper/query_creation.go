@@ -12,15 +12,17 @@ func (k Keeper) QueryCreationNameExists(ctx context.Context, req *types.QueryCre
 	name := strings.ToLower(req.Name)
 
 	if err := types.IsValidDisplayName(name); err != nil {
-		return nil, types.ErrInvalidName
+		response.Exists = true
 	}
 
-	iterator := k.factoryDenoms.Iterator(ctx, nil)
-	for iterator.Valid() {
-		factoryDenom := iterator.GetNext()
-		if strings.ToLower(factoryDenom.DisplayName) == name {
-			response.Exists = true
-			break
+	if !response.Exists {
+		iterator := k.factoryDenoms.Iterator(ctx, nil)
+		for iterator.Valid() {
+			factoryDenom := iterator.GetNext()
+			if strings.ToLower(factoryDenom.DisplayName) == name {
+				response.Exists = true
+				break
+			}
 		}
 	}
 
@@ -32,15 +34,17 @@ func (k Keeper) QueryCreationSymbolExists(ctx context.Context, req *types.QueryC
 	symbol := strings.ToLower(req.Symbol)
 
 	if err := types.IsValidSymbol(symbol); err != nil {
-		return nil, types.ErrInvalidSymbol
+		response.Exists = true
 	}
 
-	iterator := k.factoryDenoms.Iterator(ctx, nil)
-	for iterator.Valid() {
-		factoryDenom := iterator.GetNext()
-		if strings.ToLower(factoryDenom.Symbol) == symbol {
-			response.Exists = true
-			break
+	if !response.Exists {
+		iterator := k.factoryDenoms.Iterator(ctx, nil)
+		for iterator.Valid() {
+			factoryDenom := iterator.GetNext()
+			if strings.ToLower(factoryDenom.Symbol) == symbol {
+				response.Exists = true
+				break
+			}
 		}
 	}
 

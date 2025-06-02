@@ -281,7 +281,9 @@ message QueryPoolResponse {
   string price = 6;
   string marketcap = 7;
   string marketcap_usd = 8;
-  int64 created_at = 9;
+  string trade_fee = 9;
+  uint64 unlock_period = 10;
+  int64 created_at = 11;
 }
 
 message QueryDenomsRequest {

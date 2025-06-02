@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"cosmossdk.io/collections"
@@ -69,6 +70,11 @@ func (k Keeper) SetGenesisLiquidityPool(ctx context.Context, pool types.GenesisL
 
 func (k Keeper) GetLiquidityPool(ctx context.Context, factoryDenomHash string) (types.LiquidityPool, bool) {
 	return k.liquidityPools.Get(ctx, factoryDenomHash)
+}
+
+func (k Keeper) HasLiquidityPool(ctx context.Context, factoryDenomHash string) bool {
+	_, has := k.liquidityPools.Get(ctx, factoryDenomHash)
+	return has
 }
 
 func (k Keeper) SetLiquidityPool(ctx context.Context, factoryDenomHash string, liquidityPool types.LiquidityPool) {
@@ -152,6 +158,19 @@ func (k Keeper) getLiquidity(ctx context.Context, factoryDenom, address string) 
 	return amountKCoin, amountFactory, nil
 }
 
+func (k Keeper) GetLiquidityUserShare(ctx context.Context, factoryDenom, address string) (math.LegacyDec, error) {
+	if _, has := k.liquidityPools.Get(ctx, factoryDenom); !has {
+		return math.LegacyDec{}, types.ErrPoolDoesNotExist
+	}
+
+	share, has := k.liquidityProviderShares.Get(ctx, factoryDenom, address)
+	if !has {
+		return math.LegacyZeroDec(), nil
+	}
+
+	return share.Share, nil
+}
+
 func (k Keeper) CheckPoolSizes(ctx context.Context) error {
 	if sdk.UnwrapSDKContext(ctx).BlockHeight()%1000 != 0 {
 		return nil
@@ -165,11 +184,7 @@ func (k Keeper) CheckPoolSizes(ctx context.Context) error {
 		keyValue := iterator.GetNextKeyValue()
 		pool := keyValue.Value().Value()
 
-		poolValue, err := pool.GetPoolValue()
-		if err != nil {
-			return fmt.Errorf("get pool value: %w", err)
-		}
-
+		poolValue := pool.GetPoolValue()
 		if minimumSize, has := minimumSizes[pool.KCoin]; has {
 			if poolValue.LT(minimumSize.ToLegacyDec()) {
 				pool.ThresholdCrossed = nil
@@ -182,4 +197,65 @@ func (k Keeper) CheckPoolSizes(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+func (k Keeper) GetLiquidityPoolPrice(ctx context.Context, factoryDenomHash string) (math.LegacyDec, error) {
+	pool, has := k.GetLiquidityPool(ctx, factoryDenomHash)
+	if !has {
+		return math.LegacyDec{}, types.ErrPoolDoesNotExist
+	}
+
+	return pool.GetPoolRatio()
+}
+
+func (k Keeper) GetLiquidityPoolPriceUSD(ctx context.Context, factoryDenomHash string) (math.LegacyDec, error) {
+	pool, has := k.GetLiquidityPool(ctx, factoryDenomHash)
+	if !has {
+		return math.LegacyDec{}, types.ErrPoolDoesNotExist
+	}
+
+	tokenPrice, err := pool.GetPoolRatio()
+	if err != nil {
+		return math.LegacyDec{}, err
+	}
+
+	return k.DenomKeeper.GetValueInUSD(ctx, pool.KCoin, tokenPrice)
+}
+
+func (k Keeper) GetLiquidityPoolValue(ctx context.Context, factoryDenomHash string) (math.LegacyDec, error) {
+	pool, has := k.GetLiquidityPool(ctx, factoryDenomHash)
+	if !has {
+		return math.LegacyDec{}, types.ErrPoolDoesNotExist
+	}
+
+	value := pool.GetPoolValue()
+	return value, nil
+}
+
+func (k Keeper) GetLiquidityPoolValueUSD(ctx context.Context, factoryDenomHash string) (math.LegacyDec, error) {
+	pool, has := k.GetLiquidityPool(ctx, factoryDenomHash)
+	if !has {
+		return math.LegacyDec{}, types.ErrPoolDoesNotExist
+	}
+
+	value := pool.GetPoolValue()
+	return k.DenomKeeper.GetValueInUSD(ctx, pool.KCoin, value)
+}
+
+func (k Keeper) GetLiquidityPoolAddressDexDenomAmount(ctx context.Context, factoryDenomHash, address string) (math.Int, error) {
+	amountKCoin, _, err := k.getLiquidity(ctx, factoryDenomHash, address)
+	if err != nil {
+		return math.Int{}, fmt.Errorf("get liquidity for address: %w", err)
+	}
+
+	return amountKCoin, nil
+}
+
+func (k Keeper) GetLiquidityPoolAddressFactoryTokenAmount(ctx context.Context, factoryDenomHash, address string) (math.Int, error) {
+	_, amountFactoryToken, err := k.getLiquidity(ctx, factoryDenomHash, address)
+	if err != nil {
+		return math.Int{}, fmt.Errorf("get liquidity for address: %w", err)
+	}
+
+	return amountFactoryToken, nil
 }

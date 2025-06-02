@@ -29,7 +29,7 @@ func (tc TradeContext) ToTradeData() trading.TradeData {
 	feeStepOne := false
 
 	if tc.Callbacks.IsSell() && tc.DenomGiving == tc.Pool.KCoin {
-		getFeeAmount = trading.GetBuyFee
+		getFeeAmount = trading.GetSellFee
 		feeStepOne = true
 	}
 

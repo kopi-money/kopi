@@ -330,9 +330,7 @@ message MsgAddLiquidity {
 
   string creator = 1;
   string full_factory_denom_name = 2;
-
   string factory_denom_amount = 3;
-  string maximum_kcoin_amount = 4;
 }
 
 message MsgAddKCoinLiquidity {
@@ -402,17 +400,18 @@ message MsgCreateDenomAndPool {
   string description = 4;
   string website = 5;
   string symbol = 6;
-  int64  initial_supply = 7;
-  uint64 exponent = 8;
-  uint64 category_index = 9;
-  bool mintable = 10;
-  string local_name = 11;
+  string creation_fee_denom = 7;
+  int64  initial_supply = 8;
+  uint64 exponent = 9;
+  uint64 category_index = 10;
+  bool mintable = 11;
+  string local_name = 12;
 
-  string k_coin = 12;
-  string factory_denom_amount = 13;
-  string k_coin_amount = 14;
-  string pool_fee = 15;
-  uint64 unlock_in_seconds = 16;
+  string k_coin = 13;
+  string factory_denom_amount = 14;
+  string k_coin_amount = 15;
+  string pool_fee = 16;
+  uint64 unlock_in_seconds = 17;
 
 }
 
@@ -425,12 +424,13 @@ message MsgCreateDenom {
   string description = 4;
   string website = 5;
   string symbol = 6;
-  int64  initial_supply = 7;
-  uint64 exponent = 8;
-  uint64 category_index = 9;
-  bool mintable = 10;
+  string creation_fee_denom = 7;
+  int64  initial_supply = 8;
+  uint64 exponent = 9;
+  uint64 category_index = 10;
+  bool mintable = 11;
 
-  string local_name = 11;
+  string local_name = 12;
 }
 
 message MsgMintDenom {

@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
+
+	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
@@ -32,8 +33,9 @@ func (k Keeper) QueryFactoryTokenBalance(ctx context.Context, req *types.GetFact
 }
 
 func (k Keeper) loadDexBalances(ctx context.Context, spendableCoins sdk.Coins, referenceDenom string) ([]types.DEXTokenBalance, error) {
-	dexDenoms := k.DenomKeeper.KCoins(ctx)
+	var dexDenoms []string
 	dexDenoms = append(dexDenoms, "ukopi")
+	dexDenoms = append(dexDenoms, k.DenomKeeper.FactoryPoolDenoms(ctx)...)
 
 	var dexTokenBalances []types.DEXTokenBalance
 	for _, denom := range dexDenoms {

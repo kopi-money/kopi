@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+
 	"cosmossdk.io/math"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 
@@ -47,6 +48,7 @@ type DenomKeeper interface {
 	IsFactoryPoolDenom(ctx context.Context, denom string) bool
 	IsKCoin(ctx context.Context, denom string) bool
 	IsValidDenom(ctx context.Context, denom string) bool
+	FactoryPoolDenoms(ctx context.Context) []string
 	GetHighestUSDReference(context.Context) (string, error)
 	GetValueIn(ctx context.Context, denomFrom, denomTo string, amount math.LegacyDec) (math.LegacyDec, error)
 	GetValueInUSD(ctx context.Context, denomFrom string, amount math.LegacyDec) (math.LegacyDec, error)

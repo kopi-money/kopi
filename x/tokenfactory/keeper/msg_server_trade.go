@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+
 	reservetypes "github.com/kopi-money/kopi/x/reserve/types"
 
 	"cosmossdk.io/math"
@@ -100,6 +101,7 @@ func (k Keeper) Trade(ctx types.TradeContext, factoryDenom types.FactoryDenom) (
 		return nil, fmt.Errorf("send coins from account to liquidity pool: %w", err)
 	}
 
+	kCoinAmountBefore := ctx.Pool.KCoinAmount
 	ctx.Pool.FactoryDenomAmount = getNewFactoryAmount(ctx.Pool, ctx.DenomGiving, tradeResult.AmountGiven(), tradeResult.AmountReceived())
 	ctx.Pool.KCoinAmount = getNewKCoinAmount(ctx.Pool, ctx.DenomGiving, tradeResult.AmountGiven(), tradeResult.AmountReceived())
 
@@ -128,6 +130,7 @@ func (k Keeper) Trade(ctx types.TradeContext, factoryDenom types.FactoryDenom) (
 			sdk.Attribute{Key: "denom_to", Value: ctx.DenomReceiving},
 			sdk.Attribute{Key: "amount_given", Value: tradeResult.AmountGiven().String()},
 			sdk.Attribute{Key: "amount_received", Value: tradeResult.AmountReceived().String()},
+			sdk.Attribute{Key: "pool_size", Value: kCoinAmountBefore.String()},
 			sdk.Attribute{Key: "fee_pool", Value: feeAmountPool.String()},
 			sdk.Attribute{Key: "fee_reserve", Value: feeAmountReserve.String()},
 			sdk.Attribute{Key: "address", Value: ctx.Creator},

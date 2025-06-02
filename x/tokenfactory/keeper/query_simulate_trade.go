@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
-	"cosmossdk.io/math"
 	"fmt"
+
+	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/trading"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
@@ -153,8 +154,8 @@ func (k Keeper) getFactoryDenom(ctx context.Context, denomGiving, denomReceiving
 	return types.FactoryDenom{}, types.ErrDenomDoesNotExists
 }
 
-func getPriceKCoin(price math.LegacyDec, boughtkCoin bool) math.LegacyDec {
-	if boughtkCoin {
+func getPriceKCoin(price math.LegacyDec, boughtKCoin bool) math.LegacyDec {
+	if !boughtKCoin {
 		price = math.LegacyOneDec().Quo(price)
 	}
 
