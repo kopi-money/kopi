@@ -1,8 +1,9 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	"fmt"
+
+	"cosmossdk.io/math"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 )
 

@@ -2,13 +2,14 @@ package keeper_test
 
 import (
 	"context"
+	"testing"
+
 	"github.com/cosmos/cosmos-sdk/cache"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/constants"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	"github.com/kopi-money/kopi/x/mm/types"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 type SetCollateralLTV interface {

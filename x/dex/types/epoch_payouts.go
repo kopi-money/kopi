@@ -1,8 +1,9 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	"sort"
+
+	"cosmossdk.io/math"
 )
 
 type EpochPayouts struct {

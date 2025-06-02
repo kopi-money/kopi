@@ -2,8 +2,9 @@ package v20
 
 import (
 	"context"
-	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"fmt"
+
+	upgradetypes "cosmossdk.io/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/cache"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"

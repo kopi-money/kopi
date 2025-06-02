@@ -3,10 +3,11 @@ package keeper_test
 import (
 	"context"
 	"fmt"
-	"github.com/kopi-money/kopi/trading"
-	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 	"strconv"
 	"testing"
+
+	"github.com/kopi-money/kopi/trading"
+	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 

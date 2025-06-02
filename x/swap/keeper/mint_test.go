@@ -2,8 +2,9 @@ package keeper_test
 
 import (
 	"context"
-	"github.com/kopi-money/kopi/trading"
 	"testing"
+
+	"github.com/kopi-money/kopi/trading"
 
 	"github.com/cosmos/cosmos-sdk/cache"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"

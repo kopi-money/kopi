@@ -3,10 +3,11 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"strconv"
+
 	"github.com/cosmos/cosmos-sdk/cache"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/trading"
-	"strconv"
 
 	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/constants"

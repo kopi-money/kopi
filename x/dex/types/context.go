@@ -3,6 +3,7 @@ package types
 import (
 	"context"
 	"fmt"
+
 	"github.com/kopi-money/kopi/measurement"
 	"github.com/kopi-money/kopi/trading"
 

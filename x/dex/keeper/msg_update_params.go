@@ -3,8 +3,9 @@ package keeper
 import (
 	"context"
 	"fmt"
-	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"strconv"
+
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 
 	"cosmossdk.io/math"
 

@@ -4,8 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/kopi-money/kopi/trading"
 	"strconv"
+
+	"github.com/kopi-money/kopi/trading"
 
 	"github.com/kopi-money/kopi/constants"
 	"github.com/kopi-money/kopi/x/dex/types"

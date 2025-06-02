@@ -1,8 +1,9 @@
 package trading_test
 
 import (
-	"github.com/kopi-money/kopi/trading"
 	"testing"
+
+	"github.com/kopi-money/kopi/trading"
 
 	"cosmossdk.io/math"
 	"github.com/stretchr/testify/require"

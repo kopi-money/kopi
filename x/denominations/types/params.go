@@ -81,11 +81,11 @@ func validateFactoryPoolDenoms(p Params) error {
 
 	for _, poolDenom := range p.FactoryPoolDenoms {
 		if _, has := seen[poolDenom.Denom]; has {
-			return fmt.Errorf("duplicate factory denom: %v", poolDenom)
+			return fmt.Errorf("duplicate factory denom: %v", poolDenom.Denom)
 		}
 
 		if !hasDenom(p.DexDenoms, poolDenom.Denom) {
-			return fmt.Errorf("must be dex denom: %v", poolDenom)
+			return fmt.Errorf("must be dex denom: %v", poolDenom.Denom)
 		}
 
 		if !poolDenom.MinimumPoolSize.IsPositive() {

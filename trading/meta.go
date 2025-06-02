@@ -1,9 +1,10 @@
 package trading
 
 import (
-	"cosmossdk.io/math"
 	"fmt"
 	"strings"
+
+	"cosmossdk.io/math"
 )
 
 type MaxPriceData struct {

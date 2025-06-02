@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+
 	"github.com/kopi-money/kopi/trading"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 

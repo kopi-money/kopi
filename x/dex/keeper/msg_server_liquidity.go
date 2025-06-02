@@ -3,8 +3,9 @@ package keeper
 import (
 	"context"
 	"fmt"
-	"github.com/kopi-money/kopi/trading"
 	"strconv"
+
+	"github.com/kopi-money/kopi/trading"
 
 	"cosmossdk.io/math"
 

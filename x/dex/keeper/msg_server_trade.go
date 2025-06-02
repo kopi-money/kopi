@@ -3,8 +3,9 @@ package keeper
 import (
 	"context"
 	"fmt"
-	"github.com/kopi-money/kopi/trading"
 	"strings"
+
+	"github.com/kopi-money/kopi/trading"
 
 	"github.com/kopi-money/kopi/x/dex/types"
 
