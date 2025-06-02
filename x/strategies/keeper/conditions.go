@@ -3,8 +3,10 @@ package keeper
 import (
 	"context"
 	"fmt"
-	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"strconv"
+
+	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
+	factorytypes "github.com/kopi-money/kopi/x/tokenfactory/types"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -42,7 +44,9 @@ func (k Keeper) ValidateCondition(ctx context.Context, condition types.Condition
 	}
 
 	switch condition.ConditionType {
-	case types.ConditionAutomationFundsAmount, types.ConditionStakingRewardsAmount:
+	case types.ConditionAutomationFundsAmount,
+		types.ConditionStakingRewardsAmount:
+
 		if condition.String1 != "" {
 			return fmt.Errorf("string1 has to be empty")
 		}
@@ -51,7 +55,10 @@ func (k Keeper) ValidateCondition(ctx context.Context, condition types.Condition
 			return fmt.Errorf("string2 has to be empty")
 		}
 
-	case types.ConditionPrice, types.ConditionWalletValue, types.ConditionLiquidityValue:
+	case types.ConditionPrice,
+		types.ConditionWalletValue,
+		types.ConditionLiquidityValue:
+
 		if !k.DenomKeeper.IsValidDenom(ctx, condition.String1) {
 			return denomtypes.ErrInvalidDexAsset
 		}
@@ -82,7 +89,9 @@ func (k Keeper) ValidateCondition(ctx context.Context, condition types.Condition
 			return denomtypes.ErrInvalidDexAsset
 		}
 
-	case types.ConditionLoanAmount, types.ConditionBorrowableAmount:
+	case types.ConditionLoanAmount,
+		types.ConditionBorrowableAmount:
+
 		if condition.String2 != "" {
 			return fmt.Errorf("string2 has to be empty")
 		}
@@ -109,7 +118,9 @@ func (k Keeper) ValidateCondition(ctx context.Context, condition types.Condition
 			return denomtypes.ErrInvalidCAsset
 		}
 
-	case types.ConditionWalletAmount, types.ConditionLiquidityAmount:
+	case types.ConditionWalletAmount,
+		types.ConditionLiquidityAmount:
+
 		if !k.DenomKeeper.IsValidDenom(ctx, condition.String1) {
 			return denomtypes.ErrInvalidDexAsset
 		}
@@ -148,6 +159,42 @@ func (k Keeper) ValidateCondition(ctx context.Context, condition types.Condition
 
 		if condition.ReferencePrice.IsNegative() {
 			return fmt.Errorf("reference price must not be smaller than 0")
+		}
+
+	case types.ConditionFactoryTokenPrice,
+		types.ConditionFactoryTokenPriceUSD,
+		types.ConditionFactoryLiquidityPoolValue,
+		types.ConditionFactoryLiquidityPoolValueUSD,
+		types.ConditionFactoryLiquidityPoolUserAmountDexDenom,
+		types.ConditionFactoryLiquidityPoolUserAmountFactoryDenom:
+
+		if !k.FactoryKeeper.IsFactoryDenom(ctx, condition.String1) {
+			return factorytypes.ErrDenomDoesNotExists
+		}
+
+		if !k.FactoryKeeper.HasLiquidityPool(ctx, condition.String1) {
+			return factorytypes.ErrPoolDoesNotExist
+		}
+
+		if condition.Value.IsNegative() {
+			return fmt.Errorf("user liquidity share must not be lower than 0")
+		}
+
+	case types.ConditionFactoryLiquidityPoolUserShare:
+		if !k.FactoryKeeper.IsFactoryDenom(ctx, condition.String1) {
+			return factorytypes.ErrDenomDoesNotExists
+		}
+
+		if !k.FactoryKeeper.HasLiquidityPool(ctx, condition.String1) {
+			return factorytypes.ErrPoolDoesNotExist
+		}
+
+		if condition.Value.IsNegative() {
+			return fmt.Errorf("user liquidity share must not be lower than 0")
+		}
+
+		if condition.Value.GT(math.LegacyOneDec()) {
+			return fmt.Errorf("user liquidity share must not be larger than 1")
 		}
 
 	default:
@@ -300,6 +347,35 @@ func (k Keeper) CheckIfConditionMet(ctx context.Context, accAddr sdk.AccAddress,
 
 	case types.ConditionStakingRewardsAmount:
 		value, err = k.getStakingRewards(ctx, accAddr)
+
+	case types.ConditionFactoryTokenPrice:
+		value, err = k.FactoryKeeper.GetLiquidityPoolPrice(ctx, condition.String1)
+
+	case types.ConditionFactoryTokenPriceUSD:
+		value, err = k.FactoryKeeper.GetLiquidityPoolPriceUSD(ctx, condition.String1)
+
+	case types.ConditionFactoryLiquidityPoolValue:
+		value, err = k.FactoryKeeper.GetLiquidityPoolValue(ctx, condition.String1)
+
+	case types.ConditionFactoryLiquidityPoolValueUSD:
+		value, err = k.FactoryKeeper.GetLiquidityPoolValueUSD(ctx, condition.String1)
+
+	case types.ConditionFactoryLiquidityPoolUserShare:
+		value, err = k.FactoryKeeper.GetLiquidityUserShare(ctx, condition.String1, accAddr.String())
+
+	case types.ConditionFactoryLiquidityPoolUserAmountDexDenom:
+		var valueInt math.Int
+		valueInt, err = k.FactoryKeeper.GetLiquidityPoolAddressDexDenomAmount(ctx, condition.String1, accAddr.String())
+		if err == nil {
+			value = valueInt.ToLegacyDec()
+		}
+
+	case types.ConditionFactoryLiquidityPoolUserAmountFactoryDenom:
+		var valueInt math.Int
+		valueInt, err = k.FactoryKeeper.GetLiquidityPoolAddressFactoryTokenAmount(ctx, condition.String1, accAddr.String())
+		if err == nil {
+			value = valueInt.ToLegacyDec()
+		}
 
 	default:
 		return false, fmt.Errorf("invalid condition type: %v", condition.ConditionType)

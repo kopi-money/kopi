@@ -110,9 +110,10 @@ type AppModule struct {
 	blockspeedKeeper   types.BlockspeedKeeper
 	distributionKeeper types.DistributionKeeper
 
-	denomKeeper types.DenomKeeper
-	dexKeeper   types.DexKeeper
-	mmKeeper    types.MMKeeper
+	denomKeeper   types.DenomKeeper
+	dexKeeper     types.DexKeeper
+	mmKeeper      types.MMKeeper
+	factoryKeeper types.TokenFactoryKeeper
 }
 
 func NewAppModule(
@@ -127,6 +128,7 @@ func NewAppModule(
 	denomKeeper types.DenomKeeper,
 	dexKeeper types.DexKeeper,
 	mmKeeper types.MMKeeper,
+	factoryKeeper types.TokenFactoryKeeper,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
@@ -140,6 +142,7 @@ func NewAppModule(
 		denomKeeper:      denomKeeper,
 		dexKeeper:        dexKeeper,
 		mmKeeper:         mmKeeper,
+		factoryKeeper:    factoryKeeper,
 	}
 }
 
@@ -236,6 +239,7 @@ type ModuleInputs struct {
 	DenomKeeper      types.DenomKeeper
 	DexKeeper        types.DexKeeper
 	MMKeeper         types.MMKeeper
+	FactoryKeeper    types.TokenFactoryKeeper
 }
 
 type ModuleOutputs struct {
@@ -265,6 +269,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.DenomKeeper,
 		in.DexKeeper,
 		in.MMKeeper,
+		in.FactoryKeeper,
 		authority.String(),
 	)
 	m := NewAppModule(
@@ -279,6 +284,7 @@ func ProvideModule(in ModuleInputs) ModuleOutputs {
 		in.DenomKeeper,
 		in.DexKeeper,
 		in.MMKeeper,
+		in.FactoryKeeper,
 	)
 
 	return ModuleOutputs{ArbitrageKeeper: k, Module: m}

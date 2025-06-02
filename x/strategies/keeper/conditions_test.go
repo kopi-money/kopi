@@ -1,6 +1,9 @@
 package keeper_test
 
 import (
+	"context"
+	"github.com/cosmos/cosmos-sdk/cache"
+	tokenfactorykeeper "github.com/kopi-money/kopi/x/tokenfactory/keeper"
 	"testing"
 
 	"cosmossdk.io/math"
@@ -350,4 +353,391 @@ func TestConditions7(t *testing.T) {
 	met, err = k.CheckIfConditionMet(ctx, accAddress, conditionLA, 0, 0)
 	require.NoError(t, err)
 	require.False(t, met)
+}
+
+func TestConditions8(t *testing.T) {
+	k, _, _, _, ctx := keepertest.SetupStrategiesMsgServer(t)
+	accAddress, _ := sdk.AccAddressFromBech32(keepertest.Alice)
+
+	factoryK := k.FactoryKeeper.(tokenfactorykeeper.Keeper)
+
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := factoryK.CreateDenom(innerCtx, accAddress.String(), "test", "test", "ukusd", "", "", "", "", 6, 0, true)
+		return err
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryTokenPrice,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryTokenPrice,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		String2:       "32432",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryTokenPrice,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryTokenPriceUSD,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryTokenPriceUSD,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		String2:       "32432",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryTokenPriceUSD,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolValue,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolValue,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		String2:       "32432",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolValue,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolValueUSD,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolValueUSD,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		String2:       "32432",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolValueUSD,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolUserShare,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolUserShare,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		String2:       "32432",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolUserShare,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDec(2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolUserShare,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolUserShare,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolUserAmountDexDenom,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		String2:       "32432",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolUserAmountDexDenom,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDec(2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolUserAmountDexDenom,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolUserAmountFactoryDenom,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		String2:       "32432",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolUserAmountFactoryDenom,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDec(2),
+		Comparison:    "GT",
+	}))
+
+	require.Error(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolUserAmountFactoryDenom,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+}
+
+func TestConditions9(t *testing.T) {
+	k, _, _, _, ctx := keepertest.SetupStrategiesMsgServer(t)
+	accAddress, _ := sdk.AccAddressFromBech32(keepertest.Alice)
+
+	factoryK := k.FactoryKeeper.(tokenfactorykeeper.Keeper)
+	factoryMsgServer := tokenfactorykeeper.NewMsgServerImpl(factoryK)
+
+	fullName, err := keepertest.CreateFactoryDenom(ctx, factoryMsgServer, accAddress.String(), "test", "test", 6)
+	require.NoError(t, err)
+
+	_, has := factoryK.GetDenomByFullName(ctx, fullName)
+	require.True(t, has)
+
+	require.NoError(t, keepertest.MintFactoryDenom(ctx, factoryMsgServer, keepertest.Alice, fullName, keepertest.Alice, "1000"))
+	require.NoError(t, keepertest.CreatePool(ctx, factoryMsgServer, keepertest.Alice, fullName, "1000", "ukusd", "1000", "0.01", 300))
+
+	require.NoError(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryTokenPrice,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.NoError(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryTokenPriceUSD,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.NoError(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolValue,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.NoError(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolValue,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.NoError(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolValueUSD,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.NoError(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolValueUSD,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.NoError(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolUserShare,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.NoError(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolUserShare,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.NoError(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolUserShare,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.NoError(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolUserAmountDexDenom,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+
+	require.NoError(t, k.ValidateCondition(ctx, types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolUserAmountFactoryDenom,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(25, 2),
+		Comparison:    "GT",
+	}))
+}
+
+func TestConditions10(t *testing.T) {
+	k, _, _, _, ctx := keepertest.SetupStrategiesMsgServer(t)
+	accAddress, _ := sdk.AccAddressFromBech32(keepertest.Alice)
+
+	factoryK := k.FactoryKeeper.(tokenfactorykeeper.Keeper)
+	factoryMsgServer := tokenfactorykeeper.NewMsgServerImpl(factoryK)
+
+	fullName, err := keepertest.CreateFactoryDenom(ctx, factoryMsgServer, accAddress.String(), "test", "test", 6)
+	require.NoError(t, err)
+
+	_, has := factoryK.GetDenomByFullName(ctx, fullName)
+	require.True(t, has)
+
+	require.NoError(t, keepertest.MintFactoryDenom(ctx, factoryMsgServer, keepertest.Alice, fullName, keepertest.Alice, "1000"))
+	require.NoError(t, keepertest.CreatePool(ctx, factoryMsgServer, keepertest.Alice, fullName, "1000", "ukusd", "100", "0.01", 300))
+
+	condition := types.Condition{
+		ConditionType: types.ConditionFactoryTokenPrice,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDec(1),
+		Comparison:    "GT",
+	}
+	require.NoError(t, k.ValidateCondition(ctx, condition))
+
+	met, err := k.CheckIfConditionMet(ctx, accAddress, condition, 0, 0)
+	require.NoError(t, err)
+	require.False(t, met)
+
+	condition = types.Condition{
+		ConditionType: types.ConditionFactoryTokenPrice,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(1, 1),
+		Comparison:    "LT",
+	}
+	require.NoError(t, k.ValidateCondition(ctx, condition))
+
+	met, err = k.CheckIfConditionMet(ctx, accAddress, condition, 0, 0)
+	require.NoError(t, err)
+	require.False(t, met)
+
+	condition = types.Condition{
+		ConditionType: types.ConditionFactoryTokenPrice,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(1, 1),
+		Comparison:    "LTE",
+	}
+	require.NoError(t, k.ValidateCondition(ctx, condition))
+
+	met, err = k.CheckIfConditionMet(ctx, accAddress, condition, 0, 0)
+	require.NoError(t, err)
+	require.True(t, met)
+
+	condition = types.Condition{
+		ConditionType: types.ConditionFactoryTokenPrice,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDecWithPrec(1, 1),
+		Comparison:    "GTE",
+	}
+	require.NoError(t, k.ValidateCondition(ctx, condition))
+
+	met, err = k.CheckIfConditionMet(ctx, accAddress, condition, 0, 0)
+	require.NoError(t, err)
+	require.True(t, met)
+
+	condition = types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolValue,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDec(100),
+		Comparison:    "LT",
+	}
+	require.NoError(t, k.ValidateCondition(ctx, condition))
+
+	met, err = k.CheckIfConditionMet(ctx, accAddress, condition, 0, 0)
+	require.NoError(t, err)
+	require.False(t, met)
+
+	condition = types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolValue,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDec(100),
+		Comparison:    "GTE",
+	}
+	require.NoError(t, k.ValidateCondition(ctx, condition))
+
+	met, err = k.CheckIfConditionMet(ctx, accAddress, condition, 0, 0)
+	require.NoError(t, err)
+	require.True(t, met)
+
+	condition = types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolUserShare,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDec(1),
+		Comparison:    "GTE",
+	}
+	require.NoError(t, k.ValidateCondition(ctx, condition))
+
+	met, err = k.CheckIfConditionMet(ctx, accAddress, condition, 0, 0)
+	require.NoError(t, err)
+	require.True(t, met)
+
+	condition = types.Condition{
+		ConditionType: types.ConditionFactoryLiquidityPoolUserShare,
+		String1:       "factory/kopi1zwfsl2deqq0cgajfzn4ts03d6rmv5z7z9q6at5/test",
+		Value:         math.LegacyNewDec(1),
+		Comparison:    "GTE",
+	}
+	require.NoError(t, k.ValidateCondition(ctx, condition))
+
+	met, err = k.CheckIfConditionMet(ctx, accAddress, condition, 0, 0)
+	require.NoError(t, err)
+	require.True(t, met)
 }

@@ -2,6 +2,8 @@ package types
 
 import (
 	"context"
+	factorytypes "github.com/kopi-money/kopi/x/tokenfactory/types"
+
 	"github.com/kopi-money/kopi/trading"
 
 	"cosmossdk.io/core/address"
@@ -89,6 +91,7 @@ type DenomKeeper interface {
 	IsBorrowableDenom(context.Context, string) bool
 	IsCAsset(context.Context, string) bool
 	IsCollateralDenom(context.Context, string) bool
+	IsFactoryPoolDenom(ctx context.Context, denom string) bool
 	IsValidDenom(context.Context, string) bool
 	SetRatio(context.Context, denomtypes.Ratio)
 }
@@ -110,4 +113,23 @@ type MMKeeper interface {
 	GetMinimumRedemptionFee(context.Context) math.LegacyDec
 	Repay(context.Context, string, string, math.Int) error
 	WithdrawCollateral(context.Context, sdk.AccAddress, string, math.Int) (math.Int, error)
+}
+
+type TokenFactoryKeeper interface {
+	AddFactoryLiquidity(ctx context.Context, factoryDenom factorytypes.FactoryDenom, pool factorytypes.LiquidityPool, factoryAmount math.Int, creator string) error
+	AddKCoinLiquidity(ctx context.Context, factoryDenom factorytypes.FactoryDenom, pool factorytypes.LiquidityPool, kCoinAmount math.Int, creator string) error
+	AddLiquidity(ctx context.Context, acc sdk.AccAddress, amount math.Int, fullName, givenDenom string) error
+	GetDenomByFullName(ctx context.Context, fullName string) (factorytypes.FactoryDenom, bool)
+	GetLiquidityPool(ctx context.Context, factoryDenomHash string) (factorytypes.LiquidityPool, bool)
+	GetLiquidityPoolAddressDexDenomAmount(ctx context.Context, factoryDenomHash, address string) (math.Int, error)
+	GetLiquidityPoolAddressFactoryTokenAmount(ctx context.Context, factoryDenomHash, address string) (math.Int, error)
+	GetLiquidityPoolPrice(ctx context.Context, factoryDenomHash string) (math.LegacyDec, error)
+	GetLiquidityPoolPriceUSD(ctx context.Context, factoryDenomHash string) (math.LegacyDec, error)
+	GetLiquidityUserShare(ctx context.Context, factoryDenom, address string) (math.LegacyDec, error)
+	GetLiquidityPoolValue(ctx context.Context, factoryDenomHash string) (math.LegacyDec, error)
+	GetLiquidityPoolValueUSD(ctx context.Context, factoryDenomHash string) (math.LegacyDec, error)
+	IsFactoryDenom(ctx context.Context, fullName string) bool
+	HasLiquidityPool(ctx context.Context, fullName string) bool
+	Trade(ctx factorytypes.TradeContext, factoryDenom factorytypes.FactoryDenom) (*factorytypes.MsgTradeResponse, error)
+	UnlockLiquidity(ctx context.Context, factoryDenom factorytypes.FactoryDenom, pool factorytypes.LiquidityPool, acc sdk.AccAddress, amount math.Int, unlockDenom string) error
 }

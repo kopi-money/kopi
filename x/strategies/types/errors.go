@@ -29,4 +29,5 @@ var (
 	ErrNonExistingValidator             = sdkerrors.Register(ModuleName, 1118, "validator not in list")
 	ErrInvalidIntegerFormat             = sdkerrors.Register(ModuleName, 1119, "invalid integer format")
 	ErrNonPositiveRedemptionAmount      = sdkerrors.Register(ModuleName, 1120, "non positive redemption amount")
+	ErrInvalidAutomationFeeDenom        = sdkerrors.Register(ModuleName, 1121, "given denom is no automation fee denom")
 )

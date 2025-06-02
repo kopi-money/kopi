@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 	"testing"
 
 	"cosmossdk.io/core/address"
@@ -17,6 +18,8 @@ import (
 	mmkeeper "github.com/kopi-money/kopi/x/mm/keeper"
 	mmtypes "github.com/kopi-money/kopi/x/mm/types"
 	"github.com/kopi-money/kopi/x/strategies/types"
+	tokenfactorykeeper "github.com/kopi-money/kopi/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/kopi-money/kopi/x/tokenfactory/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/cosmos/cosmos-sdk/cache"
@@ -90,8 +93,22 @@ func (d DummyStakingKeeper) GetBondedValidatorsByPower(_ context.Context) ([]sta
 
 func StrategiesKeeper(t *testing.T) (keeper.Keeper, dexkeeper.Keeper, mmkeeper.Keeper, context.Context) {
 	dexKeeper, mmKeeper, ctx, keys := MmKeeperKeys(t)
-
 	authority := authtypes.NewModuleAddress(govtypes.ModuleName)
+
+	factoryKeeper := tokenfactorykeeper.NewKeeper(
+		keys.cdc,
+		runtime.NewKVStoreService(keys.tof),
+		log.NewNopLogger(),
+		dexKeeper.AccountKeeper,
+		dexKeeper.BankKeeper.(tokenfactorytypes.BankKeeper),
+		dexKeeper.DenomKeeper.(denomkeeper.Keeper),
+		dexKeeper,
+		authority.String(),
+	)
+	cache.AddCache(factoryKeeper)
+	require.NoError(t, cache.Transact(ctx, func(innerCtx context.Context) error {
+		return factoryKeeper.SetParams(innerCtx, FactoryTestParams())
+	}))
 
 	strategiesKeeper := keeper.NewKeeper(
 		keys.cdc,
@@ -107,6 +124,7 @@ func StrategiesKeeper(t *testing.T) (keeper.Keeper, dexkeeper.Keeper, mmkeeper.K
 		mmKeeper.DenomKeeper.(types.DenomKeeper),
 		mmKeeper.DexKeeper.(types.DexKeeper),
 		mmKeeper,
+		factoryKeeper,
 
 		authority.String(),
 	)

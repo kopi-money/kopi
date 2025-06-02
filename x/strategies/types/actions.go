@@ -1,8 +1,9 @@
 package types
 
 import (
-	"cosmossdk.io/math"
 	"fmt"
+
+	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/trading"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	mmtypes "github.com/kopi-money/kopi/x/mm/types"
@@ -25,6 +26,14 @@ const (
 	ActionWithdrawAutomationFunds
 	ActionWithdrawRewardsAndStake
 	ActionWithdrawRewards
+
+	// Factory
+	ActionFactorySell
+	ActionFactoryBuy
+	ActionFactoryLiquidityAddBoth
+	ActionFactoryLiquidityAddDexDenom
+	ActionFactoryLiquidityAddFactoryDenom
+	ActionFactoryLiquidityWithdraw
 )
 
 var NoAmountActions = []int64{

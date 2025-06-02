@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	"github.com/kopi-money/kopi/trading"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"

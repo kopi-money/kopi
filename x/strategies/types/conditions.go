@@ -24,6 +24,15 @@ const (
 	ConditionBorrowableAmount
 	ConditionPriceChangeAmount
 	ConditionPriceChangePercentage
+
+	// Factory
+	ConditionFactoryTokenPrice
+	ConditionFactoryTokenPriceUSD
+	ConditionFactoryLiquidityPoolValue
+	ConditionFactoryLiquidityPoolValueUSD
+	ConditionFactoryLiquidityPoolUserShare
+	ConditionFactoryLiquidityPoolUserAmountDexDenom
+	ConditionFactoryLiquidityPoolUserAmountFactoryDenom
 )
 
 const (

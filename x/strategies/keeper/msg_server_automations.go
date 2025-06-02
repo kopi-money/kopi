@@ -4,9 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strconv"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/strategies/types"
-	"strconv"
 )
 
 func (k msgServer) AutomationsAdd(ctx context.Context, msg *types.MsgAutomationsAdd) (*types.Void, error) {

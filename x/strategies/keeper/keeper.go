@@ -46,9 +46,10 @@ type (
 		DistributionKeeper types.DistributionKeeper
 		StakingKeeper      types.StakingKeeper
 
-		DenomKeeper types.DenomKeeper
-		DexKeeper   types.DexKeeper
-		MMKeeper    types.MMKeeper
+		DenomKeeper   types.DenomKeeper
+		DexKeeper     types.DexKeeper
+		MMKeeper      types.MMKeeper
+		FactoryKeeper types.TokenFactoryKeeper
 	}
 )
 
@@ -66,6 +67,7 @@ func NewKeeper(
 	denomKeeper types.DenomKeeper,
 	dexKeeper types.DexKeeper,
 	mmKeeper types.MMKeeper,
+	factoryKeeper types.TokenFactoryKeeper,
 
 	authority string,
 
@@ -89,6 +91,7 @@ func NewKeeper(
 		DenomKeeper:        denomKeeper,
 		DexKeeper:          dexKeeper,
 		MMKeeper:           mmKeeper,
+		FactoryKeeper:      factoryKeeper,
 
 		caches: caches,
 

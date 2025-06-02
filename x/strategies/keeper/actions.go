@@ -3,9 +3,11 @@ package keeper
 import (
 	"context"
 	"fmt"
-	"github.com/kopi-money/kopi/trading"
+	factorytypes "github.com/kopi-money/kopi/x/tokenfactory/types"
 	"strconv"
 	"strings"
+
+	"github.com/kopi-money/kopi/trading"
 
 	"cosmossdk.io/errors"
 	"cosmossdk.io/math"
@@ -135,7 +137,7 @@ func (k Keeper) CheckAction(ctx context.Context, address string, action types.Ac
 
 	case types.ActionDeposit:
 		if action.String2 != "" {
-			return fmt.Errorf("string1 has to be empty")
+			return fmt.Errorf("string2 has to be empty")
 		}
 
 		if !k.DenomKeeper.IsBorrowableDenom(ctx, action.String1) {
@@ -144,7 +146,7 @@ func (k Keeper) CheckAction(ctx context.Context, address string, action types.Ac
 
 	case types.ActionRedeem:
 		if action.String2 != "" {
-			return fmt.Errorf("string1 has to be empty")
+			return fmt.Errorf("string2 has to be empty")
 		}
 
 		if !k.DenomKeeper.IsCAsset(ctx, action.String1) {
@@ -153,7 +155,7 @@ func (k Keeper) CheckAction(ctx context.Context, address string, action types.Ac
 
 	case types.ActionCollateralAdd, types.ActionCollateralWithdraw:
 		if action.String2 != "" {
-			return fmt.Errorf("string1 has to be empty")
+			return fmt.Errorf("string2 has to be empty")
 		}
 
 		if !k.DenomKeeper.IsCollateralDenom(ctx, action.String1) {
@@ -162,7 +164,7 @@ func (k Keeper) CheckAction(ctx context.Context, address string, action types.Ac
 
 	case types.ActionLoanBorrow, types.ActionLoanRepay:
 		if action.String2 != "" {
-			return fmt.Errorf("string1 has to be empty")
+			return fmt.Errorf("string2 has to be empty")
 		}
 
 		if !k.DenomKeeper.IsBorrowableDenom(ctx, action.String1) {
@@ -189,6 +191,39 @@ func (k Keeper) CheckAction(ctx context.Context, address string, action types.Ac
 
 		if action.String2 == address {
 			return fmt.Errorf("sender and receiver must not be equal")
+		}
+
+	case types.ActionFactorySell,
+		types.ActionFactoryBuy,
+		types.ActionFactoryLiquidityAddBoth,
+		types.ActionFactoryLiquidityWithdraw:
+
+		if !k.FactoryKeeper.IsFactoryDenom(ctx, action.String1) {
+			return factorytypes.ErrDenomDoesNotExists
+		}
+
+		pool, has := k.FactoryKeeper.GetLiquidityPool(ctx, action.String1)
+		if !has {
+			return factorytypes.ErrPoolDoesNotExist
+		}
+
+		if !(k.FactoryKeeper.IsFactoryDenom(ctx, action.String2) || pool.KCoin == action.String2) {
+			return fmt.Errorf("string2 has to be either factory or pool dex denom")
+		}
+
+	case types.ActionFactoryLiquidityAddDexDenom,
+		types.ActionFactoryLiquidityAddFactoryDenom:
+
+		if !k.FactoryKeeper.IsFactoryDenom(ctx, action.String1) {
+			return factorytypes.ErrDenomDoesNotExists
+		}
+
+		if !k.FactoryKeeper.HasLiquidityPool(ctx, action.String1) {
+			return factorytypes.ErrPoolDoesNotExist
+		}
+
+		if action.String2 != "" {
+			return fmt.Errorf("string2 has to be empty")
 		}
 
 	default:
@@ -296,7 +331,7 @@ func (k Keeper) executeAction(
 			denomReceiving = action.String1
 		}
 
-		amount1, err = k.getAmountWallet(ctx, address, action.String1, action.Amount)
+		amount1, err = k.getAmountWallet(ctx, address, action.String1, action.Amount, k.validDexDenom)
 		if err != nil {
 			return
 		}
@@ -341,7 +376,7 @@ func (k Keeper) executeAction(
 		volume, err = k.DenomKeeper.GetValueInUSD(ctx, denomReceiving, amount2.ToLegacyDec())
 
 	case types.ActionDeposit:
-		amount1, err = k.getAmountWallet(ctx, address, action.String1, action.Amount)
+		amount1, err = k.getAmountWallet(ctx, address, action.String1, action.Amount, k.validDexDenom)
 		if err != nil {
 			return
 		}
@@ -357,7 +392,7 @@ func (k Keeper) executeAction(
 		string2 = cAsset.DexDenom
 
 	case types.ActionRedeem:
-		amount1, err = k.getAmountWallet(ctx, address, action.String1, action.Amount)
+		amount1, err = k.getAmountWallet(ctx, address, action.String1, action.Amount, k.validDexDenom)
 		if err != nil {
 			return
 		}
@@ -382,7 +417,7 @@ func (k Keeper) executeAction(
 		amount1, amount2, err = k.MMKeeper.Borrow(ctx, address, action.String1, amount1)
 
 	case types.ActionLoanRepay:
-		amount1, err = k.getAmountWallet(ctx, address, action.String1, action.Amount)
+		amount1, err = k.getAmountWallet(ctx, address, action.String1, action.Amount, k.validDexDenom)
 		if err != nil {
 			return
 		}
@@ -391,7 +426,7 @@ func (k Keeper) executeAction(
 		amount2 = k.MMKeeper.GetLoanValue(ctx, action.String1, address.String()).TruncateInt()
 
 	case types.ActionCollateralAdd:
-		amount1, err = k.getAmountWallet(ctx, address, action.String1, action.Amount)
+		amount1, err = k.getAmountWallet(ctx, address, action.String1, action.Amount, k.validDexDenom)
 		if err != nil {
 			return
 		}
@@ -408,7 +443,7 @@ func (k Keeper) executeAction(
 		amount2, err = k.MMKeeper.WithdrawCollateral(ctx, address, action.String1, amount1)
 
 	case types.ActionLiquidityAdd:
-		amount1, err = k.getAmountWallet(ctx, address, action.String1, action.Amount)
+		amount1, err = k.getAmountWallet(ctx, address, action.String1, action.Amount, k.validDexDenom)
 		if err != nil {
 			return
 		}
@@ -427,7 +462,7 @@ func (k Keeper) executeAction(
 	case types.ActionSendCoins:
 		receiver, _ := sdk.AccAddressFromBech32(action.String2)
 
-		amount1, err = k.getAmountWallet(ctx, address, action.String1, action.Amount)
+		amount1, err = k.getAmountWallet(ctx, address, action.String1, action.Amount, k.validDexDenom)
 		if err != nil {
 			return
 		}
@@ -462,7 +497,7 @@ func (k Keeper) executeAction(
 		amount2, err = k.getAmountStaked(ctx, address)
 
 	case types.ActionStake:
-		amount1, err = k.getAmountWallet(ctx, address, constants.BaseCurrency, action.Amount)
+		amount1, err = k.getAmountWallet(ctx, address, constants.BaseCurrency, action.Amount, k.validDexDenom)
 		if err != nil {
 			return
 		}
@@ -481,7 +516,7 @@ func (k Keeper) executeAction(
 		string2 = validator
 
 	case types.ActionDepositAutomationFunds:
-		amount1, err = k.getAmountWallet(ctx, address, constants.BaseCurrency, action.Amount)
+		amount1, err = k.getAmountWallet(ctx, address, constants.KUSD, action.Amount, k.isAutomationFeeDenom)
 		if err != nil {
 			return
 		}
@@ -494,7 +529,7 @@ func (k Keeper) executeAction(
 		amount2 = k.GetAutomationFunds(ctx, address.String())
 
 	case types.ActionWithdrawAutomationFunds:
-		amount1, err = k.getAmountWallet(ctx, address, constants.BaseCurrency, action.Amount)
+		amount1, err = k.getAmountWallet(ctx, address, constants.KUSD, action.Amount, k.isAutomationFeeDenom)
 		if err != nil {
 			return
 		}
@@ -505,6 +540,89 @@ func (k Keeper) executeAction(
 		}
 
 		amount2 = k.GetAutomationFunds(ctx, address.String())
+
+	case types.ActionFactorySell,
+		types.ActionFactoryBuy:
+
+		var callbacks trading.Callbacks
+		if action.ActionType == types.ActionFactorySell {
+			callbacks = trading.SellCallbacks()
+		} else {
+			callbacks = trading.BuyCallbacks()
+		}
+
+		amount1, err = k.getAmountWallet(ctx, address, action.String2, action.Amount, k.validFactoryDenom)
+		if err != nil {
+			return
+		}
+
+		var minimumTradeAmount *math.Int
+		minimumTradeAmount, err = stringToInt(action.MinimumTradeAmount)
+		if err != nil {
+			return
+		}
+
+		factoryDenom, _ := k.FactoryKeeper.GetDenomByFullName(ctx, action.String1)
+		pool, _ := k.FactoryKeeper.GetLiquidityPool(ctx, action.String1)
+
+		tradeContext := factorytypes.TradeContext{
+			Context:            ctx,
+			Pool:               pool,
+			Creator:            address.String(),
+			DenomGiving:        action.String2,
+			DenomReceiving:     pool.GetOtherDenom(action.String1, action.String2),
+			TradeAmount:        amount1,
+			MinimumTradeAmount: minimumTradeAmount,
+			Callbacks:          callbacks,
+		}
+
+		var tradeResult *factorytypes.MsgTradeResponse
+		tradeResult, err = k.FactoryKeeper.Trade(tradeContext, factoryDenom)
+
+		if err != nil {
+			return
+		}
+
+		amount1, _ = math.NewIntFromString(tradeResult.AmountGivenGross)
+		amount2, _ = math.NewIntFromString(tradeResult.AmountReceivedNet)
+
+	case types.ActionFactoryLiquidityAddBoth:
+		amount1, err = k.getAmountWallet(ctx, address, action.String2, action.Amount, k.validFactoryDenom)
+		if err != nil {
+			return
+		}
+
+		err = k.FactoryKeeper.AddLiquidity(ctx, address, amount1, action.String1, action.String2)
+
+	case types.ActionFactoryLiquidityAddDexDenom:
+		amount1, err = k.getAmountWallet(ctx, address, action.String2, action.Amount, k.validFactoryDenom)
+		if err != nil {
+			return
+		}
+
+		factoryDenom, _ := k.FactoryKeeper.GetDenomByFullName(ctx, action.String1)
+		pool, _ := k.FactoryKeeper.GetLiquidityPool(ctx, action.String1)
+		err = k.FactoryKeeper.AddKCoinLiquidity(ctx, factoryDenom, pool, amount1, address.String())
+
+	case types.ActionFactoryLiquidityAddFactoryDenom:
+		amount1, err = k.getAmountWallet(ctx, address, action.String2, action.Amount, k.validFactoryDenom)
+		if err != nil {
+			return
+		}
+
+		factoryDenom, _ := k.FactoryKeeper.GetDenomByFullName(ctx, action.String1)
+		pool, _ := k.FactoryKeeper.GetLiquidityPool(ctx, action.String1)
+		err = k.FactoryKeeper.AddFactoryLiquidity(ctx, factoryDenom, pool, amount1, address.String())
+
+	case types.ActionFactoryLiquidityWithdraw:
+		amount1, err = k.getAmountWallet(ctx, address, action.String2, action.Amount, k.validFactoryDenom)
+		if err != nil {
+			return
+		}
+
+		factoryDenom, _ := k.FactoryKeeper.GetDenomByFullName(ctx, action.String1)
+		pool, _ := k.FactoryKeeper.GetLiquidityPool(ctx, action.String1)
+		err = k.FactoryKeeper.UnlockLiquidity(ctx, factoryDenom, pool, address, amount1, action.String2)
 
 	default:
 		err = fmt.Errorf("unknown action type: %v", action.ActionType)
@@ -549,9 +667,39 @@ func (k Keeper) getAmountWithdrawableCollateral(ctx context.Context, address sdk
 	return withdrawable.Mul(percentageToFactor(amount)).TruncateInt(), nil
 }
 
-func (k Keeper) getAmountWallet(ctx context.Context, address sdk.AccAddress, denom, amountString string) (math.Int, error) {
+type validDenom func(context.Context, string) error
+
+func (k Keeper) isAutomationFeeDenom(_ context.Context, denom string) error {
+	if denom != constants.KUSD {
+		return types.ErrInvalidAutomationFeeDenom
+	}
+
+	return nil
+}
+
+func (k Keeper) validDexDenom(ctx context.Context, denom string) error {
 	if !k.DenomKeeper.IsValidDenom(ctx, denom) {
-		return math.Int{}, denomtypes.ErrInvalidDexAsset
+		return denomtypes.ErrInvalidDexAsset
+	}
+
+	return nil
+}
+
+func (k Keeper) validFactoryDenom(ctx context.Context, denom string) error {
+	if k.DenomKeeper.IsFactoryPoolDenom(ctx, denom) {
+		return nil
+	}
+
+	if k.FactoryKeeper.IsFactoryDenom(ctx, denom) {
+		return nil
+	}
+
+	return factorytypes.ErrDenomDoesNotExists
+}
+
+func (k Keeper) getAmountWallet(ctx context.Context, address sdk.AccAddress, denom, amountString string, validDenom validDenom) (math.Int, error) {
+	if err := validDenom(ctx, denom); err != nil {
+		return math.Int{}, err
 	}
 
 	spendable := k.BankKeeper.SpendableCoin(ctx, address, denom).Amount
