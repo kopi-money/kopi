@@ -1,9 +1,10 @@
 package app
 
 import (
+	"fmt"
+
 	storetypes "cosmossdk.io/store/types"
 	"cosmossdk.io/x/upgrade/types"
-	"fmt"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
@@ -17,21 +18,21 @@ import (
 	"github.com/kopi-money/kopi/app/upgrades/v0_6_4"
 	"github.com/kopi-money/kopi/app/upgrades/v0_6_5_1"
 	"github.com/kopi-money/kopi/app/upgrades/v0_6_5_2"
-	"github.com/kopi-money/kopi/app/upgrades/v11"
-	"github.com/kopi-money/kopi/app/upgrades/v12"
-	"github.com/kopi-money/kopi/app/upgrades/v13"
-	"github.com/kopi-money/kopi/app/upgrades/v14"
-	"github.com/kopi-money/kopi/app/upgrades/v15"
-	"github.com/kopi-money/kopi/app/upgrades/v16"
-	"github.com/kopi-money/kopi/app/upgrades/v17"
-	"github.com/kopi-money/kopi/app/upgrades/v18"
-	"github.com/kopi-money/kopi/app/upgrades/v19"
-	"github.com/kopi-money/kopi/app/upgrades/v20"
-	"github.com/kopi-money/kopi/app/upgrades/v21"
-	"github.com/kopi-money/kopi/app/upgrades/v22"
-	"github.com/kopi-money/kopi/app/upgrades/v7"
-	"github.com/kopi-money/kopi/app/upgrades/v8"
-	"github.com/kopi-money/kopi/app/upgrades/v9"
+	v11 "github.com/kopi-money/kopi/app/upgrades/v11"
+	v12 "github.com/kopi-money/kopi/app/upgrades/v12"
+	v13 "github.com/kopi-money/kopi/app/upgrades/v13"
+	v14 "github.com/kopi-money/kopi/app/upgrades/v14"
+	v15 "github.com/kopi-money/kopi/app/upgrades/v15"
+	v16 "github.com/kopi-money/kopi/app/upgrades/v16"
+	v17 "github.com/kopi-money/kopi/app/upgrades/v17"
+	v18 "github.com/kopi-money/kopi/app/upgrades/v18"
+	v19 "github.com/kopi-money/kopi/app/upgrades/v19"
+	v20 "github.com/kopi-money/kopi/app/upgrades/v20"
+	v21 "github.com/kopi-money/kopi/app/upgrades/v21"
+	v22 "github.com/kopi-money/kopi/app/upgrades/v22"
+	v7 "github.com/kopi-money/kopi/app/upgrades/v7"
+	v8 "github.com/kopi-money/kopi/app/upgrades/v8"
+	v9 "github.com/kopi-money/kopi/app/upgrades/v9"
 )
 
 func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {

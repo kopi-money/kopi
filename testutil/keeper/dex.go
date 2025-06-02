@@ -2,10 +2,11 @@ package keeper
 
 import (
 	"context"
-	blockspeedkeeper "github.com/kopi-money/kopi/x/blockspeed/keeper"
-	reservetypes "github.com/kopi-money/kopi/x/reserve/types"
 	"strconv"
 	"testing"
+
+	blockspeedkeeper "github.com/kopi-money/kopi/x/blockspeed/keeper"
+	reservetypes "github.com/kopi-money/kopi/x/reserve/types"
 
 	"cosmossdk.io/math"
 	tokenfactorytypes "github.com/kopi-money/kopi/x/tokenfactory/types"
