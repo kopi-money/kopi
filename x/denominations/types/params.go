@@ -73,6 +73,32 @@ func (p Params) Validate() error {
 		return fmt.Errorf("invalid pool denoms: %w", err)
 	}
 
+	if err := validateFeeDenoms(p); err != nil {
+		return fmt.Errorf("invalid fee denoms: %w", err)
+	}
+
+	return nil
+}
+
+func validateFeeDenoms(p Params) error {
+	seen := make(map[string]struct{})
+
+	for _, feeDenom := range p.FeeDenoms {
+		if _, has := seen[feeDenom.Denom]; has {
+			return fmt.Errorf("duplicate fee denom: %v", feeDenom.Denom)
+		}
+
+		if !hasDenom(p.DexDenoms, feeDenom.Denom) {
+			return fmt.Errorf("must be dex denom: %v", feeDenom.Denom)
+		}
+
+		if !feeDenom.MinimumTradeAmount.IsPositive() {
+			return fmt.Errorf("minimum trade amount must be positive: %v", feeDenom.MinimumTradeAmount)
+		}
+
+		seen[feeDenom.Denom] = struct{}{}
+	}
+
 	return nil
 }
 

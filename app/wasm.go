@@ -1,8 +1,9 @@
 package app
 
 import (
-	storetypes "cosmossdk.io/store/types"
 	"fmt"
+
+	storetypes "cosmossdk.io/store/types"
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
@@ -140,6 +141,10 @@ func (app *App) setAnteHandler(txConfig client.TxConfig, wasmConfig wasmtypes.Wa
 			WasmKeeper:            &app.WasmKeeper,
 			TXCounterStoreService: runtime.NewKVStoreService(txCounterStoreKey),
 			CircuitKeeper:         &app.CircuitBreakerKeeper,
+			TXFeeKeeper:           &app.TxFeesKeeper,
+			AccountKeeper:         &app.AccountKeeper,
+			BankKeeper:            &app.BankKeeper,
+			DenomKeeper:           &app.DenominationsKeeper,
 		},
 	)
 	if err != nil {

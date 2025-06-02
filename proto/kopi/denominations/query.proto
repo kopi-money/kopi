@@ -28,7 +28,7 @@ service Query {
     option (google.api.http).get = "/kopi/denominations/prices/usd";
   }
 
-  rpc FactoryPoolDenoms(QueryFactoryPoolDenomsRequest) returns (QueryFactoryPoolDenomsResponse) {
+  rpc QueryFactoryPoolDenoms(QueryFactoryPoolDenomsRequest) returns (QueryFactoryPoolDenomsResponse) {
     option (google.api.http).get = "/kopi/denominations/factory/pool-denoms";
   }
 }

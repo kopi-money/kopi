@@ -80,6 +80,7 @@ import (
 	strategiesmodulev1 "github.com/kopi-money/kopi/api/kopi/strategies/module"
 	swapmodulev1 "github.com/kopi-money/kopi/api/kopi/swap/module"
 	tokenfactorymodulev1 "github.com/kopi-money/kopi/api/kopi/tokenfactory/module"
+	txfeesmodulev1 "github.com/kopi-money/kopi/api/kopi/txfees/module"
 	_ "github.com/kopi-money/kopi/x/blockspeed/module" // import for side-effects
 	blockspeedmoduletypes "github.com/kopi-money/kopi/x/blockspeed/types"
 	_ "github.com/kopi-money/kopi/x/denominations/module" // import for side-effects
@@ -96,6 +97,8 @@ import (
 	swapmoduletypes "github.com/kopi-money/kopi/x/swap/types"
 	_ "github.com/kopi-money/kopi/x/tokenfactory/module" // import for side-effects
 	tokenfactorytypes "github.com/kopi-money/kopi/x/tokenfactory/types"
+	_ "github.com/kopi-money/kopi/x/txfees/module" // import for side-effects
+	txfeesmoduletypes "github.com/kopi-money/kopi/x/txfees/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -142,6 +145,7 @@ var (
 		strategiesmoduletypes.ModuleName,
 		reservemoduletypes.ModuleName,
 		blockspeedmoduletypes.ModuleName,
+		txfeesmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	}
 
@@ -175,6 +179,7 @@ var (
 		tokenfactorytypes.ModuleName,
 		strategiesmoduletypes.ModuleName,
 		blockspeedmoduletypes.ModuleName,
+		txfeesmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	}
 
@@ -202,6 +207,7 @@ var (
 		dexmoduletypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		blockspeedmoduletypes.ModuleName,
+		txfeesmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	}
 
@@ -257,6 +263,9 @@ var (
 		{Account: tokenfactorytypes.PoolFactoryProtocolFees},
 		{Account: tokenfactorytypes.PoolOffers},
 		{Account: tokenfactorytypes.PoolVestings},
+
+		// TXFees
+		{Account: txfeesmoduletypes.ModuleName},
 
 		// this line is used by starport scaffolding # stargate/app/maccPerms
 	}
@@ -423,6 +432,10 @@ var (
 			{
 				Name:   blockspeedmoduletypes.ModuleName,
 				Config: appconfig.WrapAny(&blocktimemodulev1.Module{}),
+			},
+			{
+				Name:   txfeesmoduletypes.ModuleName,
+				Config: appconfig.WrapAny(&txfeesmodulev1.Module{}),
 			},
 			// this line is used by starport scaffolding # stargate/app/moduleConfig
 		},

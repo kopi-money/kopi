@@ -333,6 +333,14 @@ func (k Keeper) IsFactoryPoolDenom(ctx context.Context, denom string) bool {
 	return false
 }
 
+func (k Keeper) FactoryPoolDenoms(ctx context.Context) (factoryPoolDenoms []string) {
+	for _, factoryPoolDenom := range k.GetParams(ctx).FactoryPoolDenoms {
+		factoryPoolDenoms = append(factoryPoolDenoms, factoryPoolDenom.Denom)
+	}
+
+	return factoryPoolDenoms
+}
+
 func (k Keeper) MinimumFactoryPoolSize(ctx context.Context, denom string) math.Int {
 	for _, factoryPoolDenom := range k.GetParams(ctx).FactoryPoolDenoms {
 		if factoryPoolDenom.Denom == denom {
@@ -371,6 +379,30 @@ func (k Keeper) RemoveDenom(ctx context.Context, denom string) error {
 
 	params.DexDenoms = filteredDenoms
 	return k.SetParams(ctx, params)
+}
+
+func (k Keeper) isFeeDenom(ctx context.Context, denom string) bool {
+	for _, feeDenom := range k.GetParams(ctx).FeeDenoms {
+		if feeDenom.Denom == denom {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (k Keeper) FeeDenoms(ctx context.Context) []types.FeeDenom {
+	return k.GetParams(ctx).FeeDenoms
+}
+
+func (k Keeper) IsFeeDenom(ctx context.Context, denom string) bool {
+	for _, feeDenom := range k.GetParams(ctx).FeeDenoms {
+		if feeDenom.Denom == denom {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (k Keeper) ConvertToExponent(ctx context.Context, denom string, amount math.LegacyDec, targetExponent uint64) (math.LegacyDec, error) {

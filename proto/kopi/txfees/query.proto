@@ -1,0 +1,27 @@
+syntax = "proto3";
+package kopi.txfees;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "kopi/txfees/params.proto";
+
+option go_package = "github.com/kopi-money/kopi/x/txfees/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc QueryParams(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/params";
+  }
+}
+
+message QueryParamsRequest {}
+
+message QueryParamsResponse {
+  Params params = 1 [
+    (gogoproto.nullable) = false,
+    (amino.dont_omitempty) = true
+  ];
+}

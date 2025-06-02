@@ -2,6 +2,8 @@ package app
 
 import (
 	"errors"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	denomkeeper "github.com/kopi-money/kopi/x/denominations/keeper"
 
 	corestoretypes "cosmossdk.io/core/store"
 	circuitante "cosmossdk.io/x/circuit/ante"
@@ -12,6 +14,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
 	ibcante "github.com/cosmos/ibc-go/v8/modules/core/ante"
 	"github.com/cosmos/ibc-go/v8/modules/core/keeper"
+
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	txfeeskeeper "github.com/kopi-money/kopi/x/txfees/keeper"
+	txfeestypes "github.com/kopi-money/kopi/x/txfees/types"
 )
 
 // HandlerOptions extend the SDK's AnteHandler options by requiring the IBC
@@ -24,6 +30,10 @@ type HandlerOptions struct {
 	WasmKeeper            *wasmkeeper.Keeper
 	TXCounterStoreService corestoretypes.KVStoreService
 	CircuitKeeper         *circuitkeeper.Keeper
+	TXFeeKeeper           *txfeeskeeper.Keeper
+	AccountKeeper         *authkeeper.AccountKeeper
+	BankKeeper            *bankkeeper.Keeper
+	DenomKeeper           *denomkeeper.Keeper
 }
 
 // NewAnteHandler constructor
@@ -46,6 +56,31 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 	if options.CircuitKeeper == nil {
 		return nil, errors.New("circuit keeper is required for ante builder")
 	}
+	if options.TXFeeKeeper == nil {
+		return nil, errors.New("txfees keeper is required for ante builder")
+	}
+	if options.AccountKeeper == nil {
+		return nil, errors.New("account keeper is required for ante builder")
+	}
+	if options.BankKeeper == nil {
+		return nil, errors.New("bank keeper is required for ante builder")
+	}
+	if options.DenomKeeper == nil {
+		return nil, errors.New("denom keeper is required for ante builder")
+	}
+
+	mempoolFeeDecorator := txfeeskeeper.NewMempoolFeeDecorator(
+		*options.TXFeeKeeper,
+		*options.DenomKeeper,
+		txfeestypes.NewDefaultMempoolFeeOptions(),
+	)
+
+	txFeeDecorator := txfeeskeeper.NewDeductFeeDecorator(
+		*options.TXFeeKeeper,
+		options.AccountKeeper,
+		*options.BankKeeper,
+		options.FeegrantKeeper,
+	)
 
 	anteDecorators := []sdk.AnteDecorator{
 		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
@@ -58,7 +93,8 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 		ante.NewTxTimeoutHeightDecorator(),
 		ante.NewValidateMemoDecorator(options.AccountKeeper),
 		ante.NewConsumeGasForTxSizeDecorator(options.AccountKeeper),
-		ante.NewDeductFeeDecorator(options.AccountKeeper, options.BankKeeper, options.FeegrantKeeper, options.TxFeeChecker),
+		mempoolFeeDecorator,
+		txFeeDecorator,
 		ante.NewSetPubKeyDecorator(options.AccountKeeper), // SetPubKeyDecorator must be called before all signature verification decorators
 		ante.NewValidateSigCountDecorator(options.AccountKeeper),
 		ante.NewSigGasConsumeDecorator(options.AccountKeeper, options.SigGasConsumer),

@@ -86,6 +86,8 @@ import (
 	strategiesmodulekeeper "github.com/kopi-money/kopi/x/strategies/keeper"
 	swapmodulekeeper "github.com/kopi-money/kopi/x/swap/keeper"
 	tokenfactorymodulekeeper "github.com/kopi-money/kopi/x/tokenfactory/keeper"
+	txfeesmodulekeeper "github.com/kopi-money/kopi/x/txfees/keeper"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	"github.com/cosmos/cosmos-sdk/cache"
@@ -166,6 +168,7 @@ type App struct {
 	StrategiesKeeper    strategiesmodulekeeper.Keeper
 	ReserveKeeper       reservemodulekeeper.Keeper
 	BlockspeedKeeper    blockspeedmodulekeeper.Keeper
+	TxFeesKeeper        txfeesmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// simulation manager
@@ -265,6 +268,7 @@ func New(
 		&app.StrategiesKeeper,
 		&app.ReserveKeeper,
 		&app.BlockspeedKeeper,
+		&app.TxFeesKeeper,
 		// this line is used by starport scaffolding # stargate/app/keeperDefinition
 	); err != nil {
 		panic(err)

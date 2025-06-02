@@ -138,6 +138,15 @@ message FactoryPoolDenom {
   ];
 }
 
+message FeeDenom {
+  string denom = 1;
+
+  bytes minimum_trade_amount = 2 [
+    (gogoproto.customtype) = "cosmossdk.io/math.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
@@ -158,6 +167,9 @@ message Params {
     (gogoproto.nullable) = false
   ];
   repeated FactoryPoolDenom factory_pool_denoms = 6 [
+    (gogoproto.nullable) = false
+  ];
+  repeated FeeDenom fee_denoms = 7 [
     (gogoproto.nullable) = false
   ];
 }
