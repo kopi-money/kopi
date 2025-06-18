@@ -14,7 +14,7 @@ func InitGenesis(ctx context.Context, k keeper.Keeper, genState types.GenesisSta
 	// this line is used by starport scaffolding # genesis/module/init
 
 	if err := cache.Transact(ctx, func(innerCtx context.Context) error {
-		return k.Init(ctx, genState)
+		return k.Init(innerCtx, genState)
 	}); err != nil {
 		panic(err)
 	}
