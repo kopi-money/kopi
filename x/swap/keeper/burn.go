@@ -130,9 +130,11 @@ func (k Keeper) burnFunds(ctx context.Context, denom string) error {
 		}
 	}
 
-	burnCoins := sdk.NewCoins(sdk.NewCoin(denom, burnableAmount))
-	if err := k.BankKeeper.BurnCoins(ctx, types.ModuleName, burnCoins); err != nil {
-		return err
+	if burnableAmount.IsPositive() {
+		burnCoins := sdk.NewCoins(sdk.NewCoin(denom, burnableAmount))
+		if err := k.BankKeeper.BurnCoins(ctx, types.ModuleName, burnCoins); err != nil {
+			return err
+		}
 	}
 
 	return nil

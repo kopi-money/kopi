@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/kopi-money/kopi/x/swap/types"
 )
@@ -10,5 +11,11 @@ import (
 func (k Keeper) Clean(ctx context.Context) error {
 	moduleAcc := k.AccountKeeper.GetModuleAccount(ctx, types.ModuleName)
 	coins := k.BankKeeper.SpendableCoins(ctx, moduleAcc.GetAddress())
-	return k.BankKeeper.BurnCoins(ctx, types.ModuleName, coins)
+	if coins.IsAllPositive() {
+		if err := k.BankKeeper.BurnCoins(ctx, types.ModuleName, coins); err != nil {
+			return fmt.Errorf("burn coins error: %w", err)
+		}
+	}
+
+	return nil
 }
