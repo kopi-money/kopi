@@ -52,7 +52,7 @@ func (k Keeper) QuerySimulateSell(ctx context.Context, req *types.QuerySimulateT
 		return nil, fmt.Errorf("given to usd: %w", err)
 	}
 
-	amountReceivedUSD, err := k.toUSD(ctx, pool, tradeResult.AmountReceived().ToLegacyDec(), req.DenomGiving)
+	amountReceivedUSD, err := k.toUSD(ctx, pool, tradeResult.AmountReceived().ToLegacyDec(), req.DenomReceiving)
 	if err != nil {
 		return nil, fmt.Errorf("given to usd: %w", err)
 	}
@@ -111,7 +111,7 @@ func (k Keeper) QuerySimulateBuy(ctx context.Context, req *types.QuerySimulateTr
 		return nil, fmt.Errorf("given to usd: %w", err)
 	}
 
-	amountReceivedUSD, err := k.toUSD(ctx, pool, tradeResult.AmountReceived().ToLegacyDec(), req.DenomGiving)
+	amountReceivedUSD, err := k.toUSD(ctx, pool, tradeResult.AmountReceived().ToLegacyDec(), req.DenomReceiving)
 	if err != nil {
 		return nil, fmt.Errorf("given to usd: %w", err)
 	}
