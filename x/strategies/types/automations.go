@@ -3,6 +3,7 @@ package types
 import (
 	"encoding/json"
 	"fmt"
+	factorytypes "github.com/kopi-money/kopi/x/tokenfactory/types"
 	"strconv"
 
 	"cosmossdk.io/math"
@@ -88,6 +89,10 @@ func checkAutomationString(value string) error {
 	}
 
 	if err := denomtypes.ValidateDenomName(value); err == nil {
+		return nil
+	}
+
+	if err := factorytypes.ValidateDenomName(value); err == nil {
 		return nil
 	}
 
