@@ -15,21 +15,8 @@ func (c *Categories) Equal(c2 *Categories) bool {
 }
 
 func (c *Category) Equal(c2 Category) bool {
-	if c.Index != c2.Index {
-		return false
-	}
-
-	if c.Name != c2.Name {
-		return false
-	}
-
-	if c.IsIbc != c2.IsIbc {
-		return false
-	}
-
-	if !c.CreationPrice.Equal(c2.CreationPrice) {
-		return false
-	}
-
-	return true
+	return c.Index == c2.Index &&
+		c.Name == c2.Name &&
+		c.IsIbc == c2.IsIbc &&
+		c.CreationPrice.Equal(c2.CreationPrice)
 }

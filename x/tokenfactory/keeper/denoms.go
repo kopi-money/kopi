@@ -99,7 +99,7 @@ func (k Keeper) CreateDenom(ctx context.Context, address, displayName, symbol, f
 		CategoryIndex:         categoryIndex,
 		LastImageChange:       blocktime,
 		LastWebsiteChange:     blocktime,
-		LsatDescriptionChange: blocktime,
+		LastDescriptionChange: blocktime,
 		Mintable:              mintable,
 		LocalName:             localName,
 	}

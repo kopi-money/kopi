@@ -25,7 +25,7 @@ func (k msgServer) UpdateDescription(ctx context.Context, msg *types.MsgUpdateDe
 		return nil, types.ErrDescriptionTooLong
 	}
 
-	lastChange := factoryDenom.LsatDescriptionChange
+	lastChange := factoryDenom.LastDescriptionChange
 	lastChange = lastChange.Add(time.Duration(k.GetParams(ctx).ChangeSecondsDescription))
 
 	blockTime := sdk.UnwrapSDKContext(ctx).BlockTime()
@@ -34,7 +34,7 @@ func (k msgServer) UpdateDescription(ctx context.Context, msg *types.MsgUpdateDe
 	}
 
 	factoryDenom.Description = msg.Description
-	factoryDenom.LsatDescriptionChange = blockTime
+	factoryDenom.LastDescriptionChange = blockTime
 	k.SetDenom(ctx, factoryDenom)
 
 	return &types.Void{}, nil
