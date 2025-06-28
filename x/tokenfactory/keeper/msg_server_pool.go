@@ -396,37 +396,6 @@ func (k msgServer) UpdateLiquidityPoolSettings(ctx context.Context, msg *types.M
 	return &types.Void{}, nil
 }
 
-func (k Keeper) payoutLiquidityUnlockings(ctx context.Context, factoryDenom types.FactoryDenom, pool types.LiquidityPool) error {
-	unlockingIterator := k.LiquidityUnlockingsIterator(ctx)
-	var deleteKeys []uint64
-
-	for unlockingIterator.Valid() {
-		keyValue := unlockingIterator.GetNextKeyValue()
-		unlocking := keyValue.Value().Value()
-		if unlocking.FactoryDenomHash != factoryDenom.FullName {
-			continue
-		}
-
-		coins := sdk.NewCoins(
-			sdk.NewCoin(factoryDenom.FullName, unlocking.FactoryDenomAmount),
-			sdk.NewCoin(pool.KCoin, unlocking.KCoinAmount),
-		)
-
-		acc, _ := sdk.AccAddressFromBech32(unlocking.Address)
-		if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolFactoryLiquidity, acc, coins); err != nil {
-			return fmt.Errorf("send coins from module to account: %w", err)
-		}
-
-		deleteKeys = append(deleteKeys, keyValue.Key())
-	}
-
-	for _, deleteKey := range deleteKeys {
-		k.liquidityUnlockings.Remove(ctx, deleteKey)
-	}
-
-	return nil
-}
-
 func (k Keeper) payoutLiquidityProviders(ctx context.Context, factoryDenom types.FactoryDenom, pool types.LiquidityPool) error {
 	ratio, err := pool.GetPoolRatio()
 	if err != nil {
