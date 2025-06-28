@@ -58,7 +58,7 @@ func (k msgServer) UpdateWebsite(ctx context.Context, msg *types.MsgUpdateWebsit
 		return nil, types.ErrWebsiteURLInvalid
 	}
 
-	lastChange := factoryDenom.LsatDescriptionChange
+	lastChange := factoryDenom.LastWebsiteChange
 	lastChange = lastChange.Add(time.Duration(k.GetParams(ctx).ChangeSecondsWebsite))
 
 	blockTime := sdk.UnwrapSDKContext(ctx).BlockTime()
