@@ -53,4 +53,5 @@ var (
 	ErrPoolTresholdCrossedTooRecently = sdkerrors.Register(ModuleName, 1143, "pool value threshold was crossed too recently")
 	ErrInvalidSymbol                  = sdkerrors.Register(ModuleName, 1144, "invalid symbol")
 	ErrInvalidName                    = sdkerrors.Register(ModuleName, 1145, "invalid name")
+	ErrMintingAlreadyDisabled         = sdkerrors.Register(ModuleName, 1146, "minting already disabled")
 )

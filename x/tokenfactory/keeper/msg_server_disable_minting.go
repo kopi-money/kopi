@@ -17,8 +17,11 @@ func (k msgServer) DisableMinting(ctx context.Context, msg *types.MsgDisableMint
 		return nil, types.ErrIncorrectAdmin
 	}
 
-	factoryDenom.Mintable = false
+	if !factoryDenom.Mintable {
+		return nil, types.ErrMintingAlreadyDisabled
+	}
 
+	factoryDenom.Mintable = false
 	k.SetDenom(ctx, factoryDenom)
 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
