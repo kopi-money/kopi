@@ -83,7 +83,7 @@ func (k Keeper) CreateDenom(ctx context.Context, address, displayName, symbol, f
 	}
 
 	if err := k.processCreationFee(ctx, category, feeDenom, address); err != nil {
-		return types.FactoryDenom{}, fmt.Errorf("processing fee: %v", err)
+		return types.FactoryDenom{}, fmt.Errorf("processing fee: %w", err)
 	}
 
 	blocktime := sdk.UnwrapSDKContext(ctx).BlockTime()

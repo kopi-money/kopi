@@ -49,7 +49,7 @@ func (k Keeper) mintDenom(ctx context.Context, factoryDenom types.FactoryDenom, 
 
 	targetAddr, err := sdk.AccAddressFromBech32(targetAddress)
 	if err != nil {
-		return types.ErrInvalidAddress
+		return fmt.Errorf("invalid user address: %w", err)
 	}
 
 	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, targetAddr, coins); err != nil {

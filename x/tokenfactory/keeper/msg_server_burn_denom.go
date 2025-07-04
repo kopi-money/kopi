@@ -38,7 +38,7 @@ func (k msgServer) BurnDenom(ctx context.Context, msg *types.MsgBurnDenom) (*typ
 func (k Keeper) burnDenom(ctx context.Context, factoryDenom types.FactoryDenom, amount math.Int, address string) error {
 	addr, err := sdk.AccAddressFromBech32(address)
 	if err != nil {
-		return types.ErrInvalidAddress
+		return fmt.Errorf("invalid user address: %w", err)
 	}
 
 	coins := sdk.NewCoins(sdk.NewCoin(factoryDenom.FullName, amount))

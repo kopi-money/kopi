@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/kopi-money/kopi/trading"
 
@@ -38,13 +39,25 @@ func (k msgServer) Buyback(ctx context.Context, msg *types.MsgBuyback) (*types.M
 		Creator:        msg.GetCreator(),
 	}
 
-	acc, _ := sdk.AccAddressFromBech32(msg.Creator)
+	acc, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, types.ErrInvalidAddress
+	}
+
 	res, err := k.Keeper.Trade(tradeContext, factoryDenom)
 	if err != nil {
 		return nil, err
 	}
 
-	amountReceivedNet, _ := math.NewIntFromString(res.AmountReceivedNet)
+	amountReceivedNet, ok := math.NewIntFromString(res.AmountReceivedNet)
+	if !ok {
+		return nil, fmt.Errorf("invalid amount received from trade operation: %s", res.AmountReceivedNet)
+	}
+
+	if !amountReceivedNet.IsPositive() {
+		return nil, fmt.Errorf("invalid trade result: non-positive amount %s", res.AmountReceivedNet)
+	}
+
 	coins := sdk.NewCoins(sdk.NewCoin(factoryDenom.FullName, amountReceivedNet))
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.ModuleName, coins); err != nil {
 		return nil, err

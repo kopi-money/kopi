@@ -102,7 +102,11 @@ func (k Keeper) QuerySimulateBuy(ctx context.Context, req *types.QuerySimulateTr
 		return nil, err
 	}
 
-	price, _ := tradeResult.PricePaidExact()
+	price, err := tradeResult.PricePaidExact()
+	if err != nil {
+		return nil, fmt.Errorf("price paid exact: %w", err)
+	}
+
 	priceKCoin := getPriceKCoin(price, req.DenomReceiving == pool.KCoin)
 	feeAmount := trading.GetSellFee(tradeResult)
 

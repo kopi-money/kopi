@@ -73,7 +73,10 @@ func (k msgServer) handleTrade(ctx context.Context, msg types.MsgTrade, callback
 }
 
 func (k Keeper) Trade(ctx types.TradeContext, factoryDenom types.FactoryDenom) (*types.MsgTradeResponse, error) {
-	acc, _ := sdk.AccAddressFromBech32(ctx.Creator)
+	acc, err := sdk.AccAddressFromBech32(ctx.Creator)
+	if err != nil {
+		return nil, types.ErrInvalidAddress
+	}
 
 	if ctx.DenomGiving == ctx.DenomReceiving {
 		return nil, types.ErrSameDenom
@@ -81,7 +84,6 @@ func (k Keeper) Trade(ctx types.TradeContext, factoryDenom types.FactoryDenom) (
 
 	tradeData := ctx.ToTradeData()
 
-	var err error
 	tradeData.TradeAmount, err = trading.HandleMaxPrice(tradeData, trading.DecreaseMaxPrice)
 	if err != nil {
 		return nil, err
@@ -137,7 +139,11 @@ func (k Keeper) Trade(ctx types.TradeContext, factoryDenom types.FactoryDenom) (
 		),
 	)
 
-	price, _ := tradeResult.PricePaidRounded()
+	price, err := tradeResult.PricePaidRounded()
+	if err != nil {
+		return nil, fmt.Errorf("calculate trade price: %w", err)
+	}
+
 	priceKCoin := getPriceKCoin(price, ctx.DenomGiving == ctx.Pool.KCoin)
 
 	return &types.MsgTradeResponse{

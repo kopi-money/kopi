@@ -11,7 +11,11 @@ import (
 )
 
 func (k msgServer) CreateOffers(ctx context.Context, msg *types.MsgCreateOffers) (*types.Void, error) {
-	acc, _ := sdk.AccAddressFromBech32(msg.Creator)
+	acc, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, types.ErrInvalidAddress
+	}
+
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
 		return nil, types.ErrDenomDoesNotExists
@@ -54,12 +58,12 @@ func (k msgServer) CreateOffers(ctx context.Context, msg *types.MsgCreateOffers)
 	}
 
 	for _, receiver := range msg.Receivers {
-		if _, err := sdk.AccAddressFromBech32(receiver); err != nil {
-			return nil, types.ErrInvalidAddress
+		if _, err = sdk.AccAddressFromBech32(receiver); err != nil {
+			return nil, fmt.Errorf("invalid user address: %w", err)
 		}
 
 		coins := sdk.NewCoins(sdk.NewCoin(factoryDenom.FullName, amountFactory))
-		if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolOffers, coins); err != nil {
+		if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolOffers, coins); err != nil {
 			return nil, err
 		}
 
@@ -118,8 +122,15 @@ func (k msgServer) TakeOffer(ctx context.Context, msg *types.MsgTakeOffer) (*typ
 		return nil, types.ErrDenomDoesNotExists
 	}
 
-	accUser, _ := sdk.AccAddressFromBech32(msg.Creator)
-	accAdmin, _ := sdk.AccAddressFromBech32(factoryDenom.Admin)
+	accUser, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, types.ErrInvalidAddress
+	}
+
+	accAdmin, err := sdk.AccAddressFromBech32(factoryDenom.Admin)
+	if err != nil {
+		return nil, types.ErrInvalidAddress
+	}
 
 	askAmount, err := k.handleOfferFee(ctx, offer.AskDenom, offer.AskAmount)
 	if err != nil {
@@ -182,9 +193,13 @@ func (k msgServer) DeclineOffer(ctx context.Context, msg *types.MsgDeclineOffer)
 		return nil, types.ErrDenomDoesNotExists
 	}
 
-	accAdmin, _ := sdk.AccAddressFromBech32(factoryDenom.Admin)
+	accAdmin, err := sdk.AccAddressFromBech32(factoryDenom.Admin)
+	if err != nil {
+		return nil, fmt.Errorf("invalid user address: %w", err)
+	}
+
 	coins := sdk.NewCoins(sdk.NewCoin(offer.FactoryDenom, offer.FactoryDenomAmount))
-	if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolOffers, accAdmin, coins); err != nil {
+	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolOffers, accAdmin, coins); err != nil {
 		return nil, err
 	}
 

@@ -33,7 +33,7 @@ func (k msgServer) CreateVestings(ctx context.Context, msg *types.MsgCreateVesti
 
 	for _, receiver := range msg.Receivers {
 		if _, err := sdk.AccAddressFromBech32(receiver); err != nil {
-			return nil, types.ErrInvalidAddress
+			return nil, fmt.Errorf("invalid user address: %w", err)
 		}
 
 		if err := k.createVesting(ctx, factoryDenom.Admin, receiver, factoryDenom.FullName, vestingAmount, startTime, msg.VestedUntil, msg.NumUnlockSteps); err != nil {

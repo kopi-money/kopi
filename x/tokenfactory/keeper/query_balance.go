@@ -11,7 +11,11 @@ import (
 )
 
 func (k Keeper) QueryFactoryTokenBalance(ctx context.Context, req *types.GetFactoryTokenBalanceRequest) (*types.GetFactoryTokenBalanceResponse, error) {
-	addr, _ := sdk.AccAddressFromBech32(req.Address)
+	addr, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, fmt.Errorf("invalid user address: %w", err)
+	}
+
 	spendableCoins := k.BankKeeper.SpendableCoins(ctx, addr)
 
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
