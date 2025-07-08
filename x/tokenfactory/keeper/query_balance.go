@@ -4,13 +4,19 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/kopi-money/kopi/x/tokenfactory/types"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/kopi-money/kopi/x/tokenfactory/types"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func (k Keeper) QueryFactoryTokenBalance(ctx context.Context, req *types.GetFactoryTokenBalanceRequest) (*types.GetFactoryTokenBalanceResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
 	addr, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
 		return nil, fmt.Errorf("invalid user address: %w", err)

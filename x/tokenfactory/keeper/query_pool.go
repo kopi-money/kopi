@@ -73,6 +73,10 @@ func adjustToNormal(amount math.LegacyDec, exponent uint64) math.LegacyDec {
 }
 
 func (k Keeper) QueryPoolLiquidityAddress(ctx context.Context, req *types.QueryPoolLiquidityAddressRequest) (*types.QueryPoolLiquidityAddressResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("get highest usd reference: %w", err)
@@ -112,6 +116,10 @@ func (k Keeper) QueryPoolLiquidityAddress(ctx context.Context, req *types.QueryP
 }
 
 func (k Keeper) QueryPoolLiquidityAddressByDenom(ctx context.Context, req *types.QueryPoolLiquidityAddressRequestByDenom) (*types.PoolLiquidityAddress, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("get highest usd reference: %w", err)

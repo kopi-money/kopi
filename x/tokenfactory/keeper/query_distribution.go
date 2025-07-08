@@ -3,9 +3,10 @@ package keeper
 import (
 	"context"
 
+	"github.com/kopi-money/kopi/x/tokenfactory/types"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/kopi-money/kopi/x/tokenfactory/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
