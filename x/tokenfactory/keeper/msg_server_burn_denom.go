@@ -53,7 +53,7 @@ func (k Keeper) burnDenom(ctx context.Context, factoryDenom types.FactoryDenom, 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			"factory_denom_coins_burned",
-			sdk.NewAttribute("factor_denom_full_name", factoryDenom.FullName),
+			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
 			sdk.NewAttribute("amount", amount.String()),
 		),
 	})

@@ -70,7 +70,7 @@ func (k msgServer) Buyback(ctx context.Context, msg *types.MsgBuyback) (*types.M
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			"factory_denom_buyback",
-			sdk.NewAttribute("factor_denom_full_name", factoryDenom.FullName),
+			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
 			sdk.NewAttribute("buyback_amount", res.AmountGivenGross),
 			sdk.NewAttribute("amount_burned", res.AmountReceivedNet),
 		),
