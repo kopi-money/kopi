@@ -9,7 +9,7 @@ const (
 
 	PoolFactoryLiquidity    = "pool_factory_liquidity"
 	PoolFactoryProtocolFees = "pool_factory_protocol_fees"
-	PoolUnlocking           = "pool_unlocking"
+	PoolUnlocking           = "pool_factory_unlocking"
 	PoolOffers              = "pool_factory_offers"
 	PoolVestings            = "pool_factory_vesting"
 )
