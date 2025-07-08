@@ -10,7 +10,7 @@ import (
 func (k msgServer) DisableMinting(ctx context.Context, msg *types.MsgDisableMinting) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	if factoryDenom.Admin != msg.Creator {

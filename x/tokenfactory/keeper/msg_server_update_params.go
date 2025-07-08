@@ -246,7 +246,7 @@ func (k msgServer) MoveLiquidityPool(ctx context.Context, msg *types.MsgMoveLiqu
 
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	if err := k.MoveDenom(ctx, factoryDenom); err != nil {

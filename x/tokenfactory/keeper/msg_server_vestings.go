@@ -13,7 +13,7 @@ import (
 func (k msgServer) CreateVestings(ctx context.Context, msg *types.MsgCreateVestings) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	if factoryDenom.Admin != msg.Creator {
@@ -47,7 +47,7 @@ func (k msgServer) CreateVestings(ctx context.Context, msg *types.MsgCreateVesti
 func (k msgServer) CancelVestings(ctx context.Context, msg *types.MsgCancelVestings) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	if factoryDenom.Admin != msg.Creator {

@@ -25,7 +25,7 @@ func (k msgServer) Buy(ctx context.Context, msg *types.MsgBuy) (*types.MsgTradeR
 func (k msgServer) handleTrade(ctx context.Context, msg types.MsgTrade, callbacks trading.Callbacks) (*types.MsgTradeResponse, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.GetFullFactoryDenomName())
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, factoryDenom.FullName)

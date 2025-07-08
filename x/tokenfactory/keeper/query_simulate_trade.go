@@ -155,7 +155,7 @@ func (k Keeper) getFactoryDenom(ctx context.Context, denomGiving, denomReceiving
 		return factoryDenom, nil
 	}
 
-	return types.FactoryDenom{}, types.ErrDenomDoesNotExists
+	return types.FactoryDenom{}, types.ErrDenomDoesNotExist
 }
 
 func getPriceKCoin(price math.LegacyDec, boughtKCoin bool) math.LegacyDec {

@@ -18,7 +18,7 @@ func (k msgServer) CreateOffers(ctx context.Context, msg *types.MsgCreateOffers)
 
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	if factoryDenom.Admin != msg.Creator {
@@ -92,7 +92,7 @@ func (k msgServer) CancelOffers(ctx context.Context, msg *types.MsgCancelOffers)
 
 		factoryDenom, has := k.GetDenomByFullName(ctx, offer.FactoryDenom)
 		if !has {
-			return nil, types.ErrDenomDoesNotExists
+			return nil, types.ErrDenomDoesNotExist
 		}
 
 		if msg.Creator != factoryDenom.Admin {
@@ -119,7 +119,7 @@ func (k msgServer) TakeOffer(ctx context.Context, msg *types.MsgTakeOffer) (*typ
 
 	factoryDenom, has := k.GetDenomByFullName(ctx, offer.FactoryDenom)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	accUser, err := sdk.AccAddressFromBech32(msg.Creator)
@@ -190,7 +190,7 @@ func (k msgServer) DeclineOffer(ctx context.Context, msg *types.MsgDeclineOffer)
 
 	factoryDenom, has := k.GetDenomByFullName(ctx, offer.FactoryDenom)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	accAdmin, err := sdk.AccAddressFromBech32(factoryDenom.Admin)

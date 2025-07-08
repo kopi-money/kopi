@@ -101,7 +101,7 @@ func (k msgServer) UpdateIconHash(ctx context.Context, msg *types.MsgUpdateIconH
 func (k msgServer) ChangeAdmin(ctx context.Context, msg *types.MsgChangeAdmin) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	if factoryDenom.Admin != msg.Creator {

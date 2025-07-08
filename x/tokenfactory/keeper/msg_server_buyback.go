@@ -14,7 +14,7 @@ import (
 func (k msgServer) Buyback(ctx context.Context, msg *types.MsgBuyback) (*types.MsgBuybackResponse, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, factoryDenom.FullName)

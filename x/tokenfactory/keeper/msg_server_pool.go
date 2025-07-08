@@ -12,7 +12,7 @@ import (
 func (k msgServer) CreatePool(ctx context.Context, msg *types.MsgCreatePool) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	if factoryDenom.Admin != msg.Creator {
@@ -133,7 +133,7 @@ func (k msgServer) AddLiquidity(ctx context.Context, msg *types.MsgAddLiquidity)
 func (k Keeper) AddLiquidity(ctx context.Context, acc sdk.AccAddress, amount math.Int, fullName, givenDenom string) error {
 	factoryDenom, has := k.GetDenomByFullName(ctx, fullName)
 	if !has {
-		return types.ErrDenomDoesNotExists
+		return types.ErrDenomDoesNotExist
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, factoryDenom.FullName)
@@ -184,7 +184,7 @@ func (k msgServer) AddKCoinLiquidity(ctx context.Context, msg *types.MsgAddKCoin
 
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, msg.FullFactoryDenomName)
@@ -243,7 +243,7 @@ func (k msgServer) AddFactoryLiquidity(ctx context.Context, msg *types.MsgAddFac
 
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, msg.FullFactoryDenomName)
@@ -298,7 +298,7 @@ func (k msgServer) UnlockLiquidity(ctx context.Context, msg *types.MsgUnlockLiqu
 
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, msg.FullFactoryDenomName)
@@ -383,7 +383,7 @@ func (k Keeper) UnlockLiquidity(ctx context.Context, factoryDenom types.FactoryD
 func (k msgServer) UpdateLiquidityPoolSettings(ctx context.Context, msg *types.MsgUpdateLiquidityPoolSettings) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	if factoryDenom.Admin != msg.Creator {

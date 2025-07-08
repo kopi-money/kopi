@@ -19,7 +19,7 @@ func (k Keeper) QueryPool(ctx context.Context, req *types.QueryPoolRequest) (*ty
 
 	factoryDenom, has := k.factoryDenoms.Get(ctx, req.FullName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, factoryDenom.FullName)
@@ -147,7 +147,7 @@ func (k Keeper) QuerySimulateAddingLiquidityKCoin(ctx context.Context, req *type
 
 	factoryDenom, has := k.factoryDenoms.Get(ctx, req.Token)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	amount, err := trading.ParseAmount(req.Amount)
@@ -179,7 +179,7 @@ func (k Keeper) QuerySimulateAddingLiquidityFactoryToken(ctx context.Context, re
 
 	factoryDenom, has := k.factoryDenoms.Get(ctx, req.Token)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	amount, err := trading.ParseAmount(req.Amount)
@@ -211,7 +211,7 @@ func (k Keeper) QueryUSDValue(ctx context.Context, req *types.QueryUSDValueReque
 
 	factoryDenom, has := k.factoryDenoms.Get(ctx, req.FullName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	amount, err := trading.ParseAmount(req.Amount)
