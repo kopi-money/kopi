@@ -54,7 +54,11 @@ func (k msgServer) UpdateWebsite(ctx context.Context, msg *types.MsgUpdateWebsit
 		return nil, types.ErrWebsiteURLTooLong
 	}
 
-	if _, err := url.Parse(msg.Website); err != nil {
+	u, err := url.ParseRequestURI(msg.Website)
+	if err != nil {
+		return nil, types.ErrWebsiteURLInvalid
+	}
+	if u.Scheme != "https" && u.Scheme != "http" {
 		return nil, types.ErrWebsiteURLInvalid
 	}
 

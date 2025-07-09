@@ -45,7 +45,12 @@ func (msg *MsgUpdateWebsite) ValidateBasic() error {
 		return ErrWebsiteURLTooLong
 	}
 
-	if _, err := url.Parse(msg.Website); err != nil {
+	u, err := url.ParseRequestURI(msg.Website)
+	if err != nil {
+		return ErrWebsiteURLInvalid
+	}
+
+	if u.Scheme != "https" && u.Scheme != "http" {
 		return ErrWebsiteURLInvalid
 	}
 

@@ -27,7 +27,11 @@ func (k msgServer) CreateOffers(ctx context.Context, msg *types.MsgCreateOffers)
 
 	amountFactory, ok := math.NewIntFromString(msg.FactoryDenomAmount)
 	if !ok {
-		return nil, types.ErrInvalidAmountFormat
+		return nil, fmt.Errorf("invalid factory denom amount format: %s", msg.FactoryDenomAmount)
+	}
+	
+	if !amountFactory.IsPositive() {
+		return nil, fmt.Errorf("factory denom amount must be positive, got: %s", msg.FactoryDenomAmount)
 	}
 
 	if !k.DenomKeeper.IsValidDenom(ctx, msg.AskDenom) {
@@ -36,7 +40,11 @@ func (k msgServer) CreateOffers(ctx context.Context, msg *types.MsgCreateOffers)
 
 	askAmount, ok := math.NewIntFromString(msg.AskAmount)
 	if !ok {
-		return nil, types.ErrInvalidAmountFormat
+		return nil, fmt.Errorf("invalid ask amount format: %s", msg.AskAmount)
+	}
+
+	if !askAmount.IsPositive() {
+		return nil, fmt.Errorf("ask amount must be positive, got: %s", msg.AskAmount)
 	}
 
 	if !k.DenomKeeper.IsFactoryPoolDenom(ctx, msg.AskDenom) {
@@ -55,6 +63,10 @@ func (k msgServer) CreateOffers(ctx context.Context, msg *types.MsgCreateOffers)
 		if msg.NumUnlockSteps > k.getMaximumVestingUnlockSteps(ctx) {
 			return nil, types.ErrVestingTooManySteps
 		}
+	}
+
+	if len(msg.Receivers) == 0 {
+		return nil, types.ErrEmptyOfferReceiversList
 	}
 
 	for _, receiver := range msg.Receivers {

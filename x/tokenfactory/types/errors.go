@@ -54,4 +54,5 @@ var (
 	ErrInvalidSymbol                  = sdkerrors.Register(ModuleName, 1143, "invalid symbol")
 	ErrInvalidName                    = sdkerrors.Register(ModuleName, 1144, "invalid name")
 	ErrMintingAlreadyDisabled         = sdkerrors.Register(ModuleName, 1145, "minting already disabled")
+	ErrEmptyOfferReceiversList        = sdkerrors.Register(ModuleName, 1146, "empty offer receivers list")
 )
