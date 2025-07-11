@@ -20,14 +20,37 @@ func (k msgServer) AddCollateral(ctx context.Context, msg *types.MsgAddCollatera
 		return nil, types.ErrInvalidAddress
 	}
 
-	if _, err = k.Keeper.AddCollateral(ctx, address, msg.Denom, amount); err != nil {
+	if _, err = k.Keeper.AddCollateral(ctx, address, address, msg.Denom, amount); err != nil {
 		return nil, fmt.Errorf("add collateral: %w", err)
 	}
 
 	return &types.Void{}, nil
 }
 
-func (k Keeper) AddCollateral(ctx context.Context, address sdk.AccAddress, denom string, amount math.Int) (math.Int, error) {
+func (k msgServer) AddCollateralForBeneficiary(ctx context.Context, msg *types.MsgAddCollateralForBeneficiary) (*types.Void, error) {
+	amount, err := parseAmount(msg.Amount, false)
+	if err != nil {
+		return nil, err
+	}
+
+	addressPayer, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, types.ErrInvalidAddress
+	}
+
+	addressBeneficiary, err := sdk.AccAddressFromBech32(msg.Beneficiary)
+	if err != nil {
+		return nil, types.ErrInvalidAddress
+	}
+
+	if _, err = k.Keeper.AddCollateral(ctx, addressPayer, addressBeneficiary, msg.Denom, amount); err != nil {
+		return nil, fmt.Errorf("add collateral: %w", err)
+	}
+
+	return &types.Void{}, nil
+}
+
+func (k Keeper) AddCollateral(ctx context.Context, addressPayee, addressBeneficiary sdk.AccAddress, denom string, amount math.Int) (math.Int, error) {
 	if !k.DenomKeeper.IsValidCollateralDenom(ctx, denom) {
 		return math.Int{}, types.ErrInvalidCollateralDenom
 	}
@@ -44,26 +67,26 @@ func (k Keeper) AddCollateral(ctx context.Context, address sdk.AccAddress, denom
 		return math.Int{}, err
 	}
 
-	if k.BankKeeper.SpendableCoin(ctx, address, denom).Amount.LT(amount) {
+	if k.BankKeeper.SpendableCoin(ctx, addressPayee, denom).Amount.LT(amount) {
 		return math.Int{}, types.ErrNotEnoughFunds
 	}
 
-	collateral, found := k.collateral.Get(ctx, denom, address.String())
+	collateral, found := k.collateral.Get(ctx, denom, addressBeneficiary.String())
 	if !found {
-		collateral = types.Collateral{Address: address.String(), Amount: math.ZeroInt()}
+		collateral = types.Collateral{Address: addressBeneficiary.String(), Amount: math.ZeroInt()}
 	}
 
 	newAmount := collateral.Amount.Add(amount)
-	k.SetCollateral(ctx, denom, address.String(), newAmount)
+	k.SetCollateral(ctx, denom, addressBeneficiary.String(), newAmount)
 
 	coins := sdk.NewCoins(sdk.NewCoin(denom, amount))
-	if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, address, types.PoolCollateral, coins); err != nil {
+	if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, addressPayee, types.PoolCollateral, coins); err != nil {
 		return math.Int{}, fmt.Errorf("send coins to module: %w", err)
 	}
 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvent(
 		sdk.NewEvent("collateral_added",
-			sdk.Attribute{Key: "address", Value: address.String()},
+			sdk.Attribute{Key: "address", Value: addressBeneficiary.String()},
 			sdk.Attribute{Key: "denom", Value: denom},
 			sdk.Attribute{Key: "amount", Value: amount.String()},
 		),

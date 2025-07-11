@@ -202,6 +202,13 @@ func AddCollateral(ctx context.Context, k mmtypes.MsgServer, msg *mmtypes.MsgAdd
 	})
 }
 
+func AddCollateralForBeneficiary(ctx context.Context, k mmtypes.MsgServer, msg *mmtypes.MsgAddCollateralForBeneficiary) error {
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := k.AddCollateralForBeneficiary(innerCtx, msg)
+		return err
+	})
+}
+
 func Borrow(ctx context.Context, k mmtypes.MsgServer, msg *mmtypes.MsgBorrow) error {
 	return cache.Transact(ctx, func(innerCtx context.Context) error {
 		_, err := k.Borrow(innerCtx, msg)

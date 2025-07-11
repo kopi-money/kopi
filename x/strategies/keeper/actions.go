@@ -431,7 +431,7 @@ func (k Keeper) executeAction(
 			return
 		}
 
-		amount2, err = k.MMKeeper.AddCollateral(ctx, address, action.String1, amount1)
+		amount2, err = k.MMKeeper.AddCollateral(ctx, address, address, action.String1, amount1)
 
 	case types.ActionCollateralWithdraw:
 		amount1, err = k.getAmountWithdrawableCollateral(ctx, address, action.String1, action.Amount)

@@ -2,13 +2,13 @@ package keeper
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"sort"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/cache"
 	"github.com/kopi-money/kopi/trading"
-	"github.com/pkg/errors"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"

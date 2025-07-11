@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"context"
 	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"testing"
 
 	"github.com/kopi-money/kopi/constants"
@@ -174,6 +175,38 @@ func TestCollateral8(t *testing.T) {
 	}))
 
 	require.NoError(t, k.HandleRedemptions(ctx))
+
+	require.NoError(t, checkCollateralSum(ctx, k))
+}
+
+func TestCollateral9(t *testing.T) {
+	k, _, msg, ctx := keepertest.SetupMMMsgServer(t)
+
+	accAlice, _ := sdk.AccAddressFromBech32(keepertest.Alice)
+	accBob, _ := sdk.AccAddressFromBech32(keepertest.Bob)
+	balanceAlice1 := k.BankKeeper.SpendableCoin(ctx, accAlice, constants.BaseCurrency)
+	balanceBob1 := k.BankKeeper.SpendableCoin(ctx, accBob, constants.BaseCurrency)
+
+	require.NoError(t, keepertest.AddCollateralForBeneficiary(ctx, msg, &types.MsgAddCollateralForBeneficiary{
+		Creator:     keepertest.Alice,
+		Beneficiary: keepertest.Bob,
+		Denom:       constants.BaseCurrency,
+		Amount:      "100000",
+	}))
+
+	balanceAlice2 := k.BankKeeper.SpendableCoin(ctx, accAlice, constants.BaseCurrency)
+	balanceBob2 := k.BankKeeper.SpendableCoin(ctx, accBob, constants.BaseCurrency)
+
+	require.True(t, balanceAlice1.IsGTE(balanceAlice2))
+	require.True(t, balanceBob1.Equal(balanceBob2))
+
+	iterator := k.CollateralIterator(ctx, constants.BaseCurrency)
+	collaterals := iterator.GetAll()
+	require.Equal(t, 1, len(collaterals))
+
+	collateral := collaterals[0]
+	require.NotEqual(t, collateral.Address, keepertest.Alice)
+	require.Equal(t, collateral.Address, keepertest.Bob)
 
 	require.NoError(t, checkCollateralSum(ctx, k))
 }

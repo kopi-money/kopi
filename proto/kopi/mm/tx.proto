@@ -19,6 +19,7 @@ service Msg {
   rpc UpdateRedemptionRequest        (MsgUpdateRedemptionRequest) returns (Void);
 
   rpc AddCollateral                  (MsgAddCollateral) returns (Void);
+  rpc AddCollateralForBeneficiary    (MsgAddCollateralForBeneficiary) returns (Void);
   rpc RemoveCollateral               (MsgRemoveCollateral) returns (Void);
 
   rpc Borrow                         (MsgBorrow) returns (Void);
@@ -114,6 +115,15 @@ message MsgAddCollateral {
   string creator = 1;
   string denom = 2;
   string amount = 3;
+}
+
+message MsgAddCollateralForBeneficiary {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string denom = 2;
+  string amount = 3;
+  string beneficiary = 4;
 }
 
 message MsgRemoveCollateral {

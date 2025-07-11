@@ -97,7 +97,7 @@ type DenomKeeper interface {
 }
 
 type MMKeeper interface {
-	AddCollateral(context.Context, sdk.AccAddress, string, math.Int) (math.Int, error)
+	AddCollateral(context.Context, sdk.AccAddress, sdk.AccAddress, string, math.Int) (math.Int, error)
 	Borrow(context.Context, sdk.AccAddress, string, math.Int) (math.Int, math.Int, error)
 	CalculateBorrowableAmount(context.Context, string, string) (math.LegacyDec, error)
 	CalcWithdrawableCollateralAmount(context.Context, string, string) (math.LegacyDec, error)

@@ -24,6 +24,7 @@ const (
 	Msg_CancelRedemptionRequest_FullMethodName      = "/kopi.mm.Msg/CancelRedemptionRequest"
 	Msg_UpdateRedemptionRequest_FullMethodName      = "/kopi.mm.Msg/UpdateRedemptionRequest"
 	Msg_AddCollateral_FullMethodName                = "/kopi.mm.Msg/AddCollateral"
+	Msg_AddCollateralForBeneficiary_FullMethodName  = "/kopi.mm.Msg/AddCollateralForBeneficiary"
 	Msg_RemoveCollateral_FullMethodName             = "/kopi.mm.Msg/RemoveCollateral"
 	Msg_Borrow_FullMethodName                       = "/kopi.mm.Msg/Borrow"
 	Msg_PartiallyRepayLoan_FullMethodName           = "/kopi.mm.Msg/PartiallyRepayLoan"
@@ -44,6 +45,7 @@ type MsgClient interface {
 	CancelRedemptionRequest(ctx context.Context, in *MsgCancelRedemptionRequest, opts ...grpc.CallOption) (*Void, error)
 	UpdateRedemptionRequest(ctx context.Context, in *MsgUpdateRedemptionRequest, opts ...grpc.CallOption) (*Void, error)
 	AddCollateral(ctx context.Context, in *MsgAddCollateral, opts ...grpc.CallOption) (*Void, error)
+	AddCollateralForBeneficiary(ctx context.Context, in *MsgAddCollateralForBeneficiary, opts ...grpc.CallOption) (*Void, error)
 	RemoveCollateral(ctx context.Context, in *MsgRemoveCollateral, opts ...grpc.CallOption) (*Void, error)
 	Borrow(ctx context.Context, in *MsgBorrow, opts ...grpc.CallOption) (*Void, error)
 	PartiallyRepayLoan(ctx context.Context, in *MsgPartiallyRepayLoan, opts ...grpc.CallOption) (*Void, error)
@@ -102,6 +104,15 @@ func (c *msgClient) UpdateRedemptionRequest(ctx context.Context, in *MsgUpdateRe
 func (c *msgClient) AddCollateral(ctx context.Context, in *MsgAddCollateral, opts ...grpc.CallOption) (*Void, error) {
 	out := new(Void)
 	err := c.cc.Invoke(ctx, Msg_AddCollateral_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) AddCollateralForBeneficiary(ctx context.Context, in *MsgAddCollateralForBeneficiary, opts ...grpc.CallOption) (*Void, error) {
+	out := new(Void)
+	err := c.cc.Invoke(ctx, Msg_AddCollateralForBeneficiary_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -198,6 +209,7 @@ type MsgServer interface {
 	CancelRedemptionRequest(context.Context, *MsgCancelRedemptionRequest) (*Void, error)
 	UpdateRedemptionRequest(context.Context, *MsgUpdateRedemptionRequest) (*Void, error)
 	AddCollateral(context.Context, *MsgAddCollateral) (*Void, error)
+	AddCollateralForBeneficiary(context.Context, *MsgAddCollateralForBeneficiary) (*Void, error)
 	RemoveCollateral(context.Context, *MsgRemoveCollateral) (*Void, error)
 	Borrow(context.Context, *MsgBorrow) (*Void, error)
 	PartiallyRepayLoan(context.Context, *MsgPartiallyRepayLoan) (*Void, error)
@@ -228,6 +240,9 @@ func (UnimplementedMsgServer) UpdateRedemptionRequest(context.Context, *MsgUpdat
 }
 func (UnimplementedMsgServer) AddCollateral(context.Context, *MsgAddCollateral) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddCollateral not implemented")
+}
+func (UnimplementedMsgServer) AddCollateralForBeneficiary(context.Context, *MsgAddCollateralForBeneficiary) (*Void, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddCollateralForBeneficiary not implemented")
 }
 func (UnimplementedMsgServer) RemoveCollateral(context.Context, *MsgRemoveCollateral) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveCollateral not implemented")
@@ -355,6 +370,24 @@ func _Msg_AddCollateral_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).AddCollateral(ctx, req.(*MsgAddCollateral))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_AddCollateralForBeneficiary_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAddCollateralForBeneficiary)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).AddCollateralForBeneficiary(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_AddCollateralForBeneficiary_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).AddCollateralForBeneficiary(ctx, req.(*MsgAddCollateralForBeneficiary))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -547,6 +580,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddCollateral",
 			Handler:    _Msg_AddCollateral_Handler,
+		},
+		{
+			MethodName: "AddCollateralForBeneficiary",
+			Handler:    _Msg_AddCollateralForBeneficiary_Handler,
 		},
 		{
 			MethodName: "RemoveCollateral",
