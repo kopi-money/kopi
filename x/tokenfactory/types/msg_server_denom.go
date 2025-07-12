@@ -51,13 +51,15 @@ func (msg *MsgCreateDenom) ValidateBasic() error {
 		return ErrWebsiteURLTooLong
 	}
 
-	u, err := url.ParseRequestURI(msg.Website)
-	if err != nil {
-		return ErrWebsiteURLInvalid
-	}
-	
-	if u.Scheme != "https" && u.Scheme != "http" {
-		return ErrWebsiteURLInvalid
+	if msg.Website != "" {
+		u, err := url.ParseRequestURI(msg.Website)
+		if err != nil {
+			return ErrWebsiteURLInvalid
+		}
+
+		if u.Scheme != "https" && u.Scheme != "http" {
+			return ErrWebsiteURLInvalid
+		}
 	}
 
 	return nil

@@ -83,15 +83,17 @@ func (k Keeper) CreateDenom(ctx context.Context, address, displayName, symbol, f
 		}
 	}
 
-	u, err := url.ParseRequestURI(website)
-	if err != nil {
-		return types.FactoryDenom{}, types.ErrWebsiteURLInvalid
-	}
-	if u.Scheme != "https" && u.Scheme != "http" {
-		return types.FactoryDenom{}, types.ErrWebsiteURLInvalid
+	if website != "" {
+		u, err := url.ParseRequestURI(website)
+		if err != nil {
+			return types.FactoryDenom{}, types.ErrWebsiteURLInvalid
+		}
+		if u.Scheme != "https" && u.Scheme != "http" {
+			return types.FactoryDenom{}, types.ErrWebsiteURLInvalid
+		}
 	}
 
-	if err = k.processCreationFee(ctx, category, feeDenom, address); err != nil {
+	if err := k.processCreationFee(ctx, category, feeDenom, address); err != nil {
 		return types.FactoryDenom{}, fmt.Errorf("processing fee: %w", err)
 	}
 
