@@ -11,7 +11,7 @@ import (
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.
 func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
-	data := &autocliv1.ModuleOptions{
+	return &autocliv1.ModuleOptions{
 		Query: &autocliv1.ServiceCommandDescriptor{
 			Service: modulev1.Query_ServiceDesc.ServiceName,
 			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
@@ -154,9 +154,6 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 			},
 		},
 	}
-
-	printServiceMethods("kopi.mm.Msg")
-	return data
 }
 
 func printServiceMethods(serviceName string) {
