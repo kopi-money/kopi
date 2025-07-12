@@ -19,7 +19,7 @@ func (k Keeper) QueryPool(ctx context.Context, req *types.QueryPoolRequest) (*ty
 
 	factoryDenom, has := k.factoryDenoms.Get(ctx, req.FullName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, factoryDenom.FullName)
@@ -73,6 +73,10 @@ func adjustToNormal(amount math.LegacyDec, exponent uint64) math.LegacyDec {
 }
 
 func (k Keeper) QueryPoolLiquidityAddress(ctx context.Context, req *types.QueryPoolLiquidityAddressRequest) (*types.QueryPoolLiquidityAddressResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("get highest usd reference: %w", err)
@@ -112,6 +116,10 @@ func (k Keeper) QueryPoolLiquidityAddress(ctx context.Context, req *types.QueryP
 }
 
 func (k Keeper) QueryPoolLiquidityAddressByDenom(ctx context.Context, req *types.QueryPoolLiquidityAddressRequestByDenom) (*types.PoolLiquidityAddress, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
 	referenceDenom, err := k.DenomKeeper.GetHighestUSDReference(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("get highest usd reference: %w", err)
@@ -147,7 +155,7 @@ func (k Keeper) QuerySimulateAddingLiquidityKCoin(ctx context.Context, req *type
 
 	factoryDenom, has := k.factoryDenoms.Get(ctx, req.Token)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	amount, err := trading.ParseAmount(req.Amount)
@@ -179,7 +187,7 @@ func (k Keeper) QuerySimulateAddingLiquidityFactoryToken(ctx context.Context, re
 
 	factoryDenom, has := k.factoryDenoms.Get(ctx, req.Token)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	amount, err := trading.ParseAmount(req.Amount)
@@ -211,7 +219,7 @@ func (k Keeper) QueryUSDValue(ctx context.Context, req *types.QueryUSDValueReque
 
 	factoryDenom, has := k.factoryDenoms.Get(ctx, req.FullName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	amount, err := trading.ParseAmount(req.Amount)

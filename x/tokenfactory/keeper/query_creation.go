@@ -5,9 +5,16 @@ import (
 	"strings"
 
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func (k Keeper) QueryCreationNameExists(ctx context.Context, req *types.QueryCreationNameExistsQuery) (*types.QueryCreationExistsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
 	var response types.QueryCreationExistsResponse
 	name := strings.ToLower(req.Name)
 
@@ -30,6 +37,10 @@ func (k Keeper) QueryCreationNameExists(ctx context.Context, req *types.QueryCre
 }
 
 func (k Keeper) QueryCreationSymbolExists(ctx context.Context, req *types.QueryCreationSymbolExistsQuery) (*types.QueryCreationExistsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
 	var response types.QueryCreationExistsResponse
 	symbol := strings.ToLower(req.Symbol)
 

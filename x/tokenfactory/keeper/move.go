@@ -43,7 +43,10 @@ func (k Keeper) MoveDenom(ctx context.Context, factoryDenom types.FactoryDenom) 
 		return fmt.Errorf("create ratio from reference: %w", err)
 	}
 
-	oneUnit := oneBaseUnit(factoryDenom.Exponent)
+	oneUnit, err := oneBaseUnit(factoryDenom.Exponent)
+	if err != nil {
+		return fmt.Errorf("get one unit: %w", err)
+	}
 
 	dexDenom := denomtypes.DexDenom{
 		Name:              factoryDenom.LocalName,
@@ -117,7 +120,10 @@ func (k Keeper) moveLiquidity(ctx context.Context, factoryDenom types.FactoryDen
 	return nil
 }
 
-func oneBaseUnit(exponent uint64) math.Int {
+func oneBaseUnit(exponent uint64) (math.Int, error) {
+	if exponent > 19 {
+		return math.Int{}, fmt.Errorf("exponent must not be larger than 18")
+	}
 	microUnits := int64(gomath.Pow(10, float64(exponent)))
-	return math.NewInt(microUnits)
+	return math.NewInt(microUnits), nil
 }

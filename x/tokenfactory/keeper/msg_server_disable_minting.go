@@ -10,15 +10,18 @@ import (
 func (k msgServer) DisableMinting(ctx context.Context, msg *types.MsgDisableMinting) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrPoolDoesNotExist
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	if factoryDenom.Admin != msg.Creator {
 		return nil, types.ErrIncorrectAdmin
 	}
 
-	factoryDenom.Mintable = false
+	if !factoryDenom.Mintable {
+		return nil, types.ErrMintingAlreadyDisabled
+	}
 
+	factoryDenom.Mintable = false
 	k.SetDenom(ctx, factoryDenom)
 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{

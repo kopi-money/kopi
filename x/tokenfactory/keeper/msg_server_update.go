@@ -25,7 +25,7 @@ func (k msgServer) UpdateDescription(ctx context.Context, msg *types.MsgUpdateDe
 		return nil, types.ErrDescriptionTooLong
 	}
 
-	lastChange := factoryDenom.LsatDescriptionChange
+	lastChange := factoryDenom.LastDescriptionChange
 	lastChange = lastChange.Add(time.Duration(k.GetParams(ctx).ChangeSecondsDescription))
 
 	blockTime := sdk.UnwrapSDKContext(ctx).BlockTime()
@@ -34,7 +34,7 @@ func (k msgServer) UpdateDescription(ctx context.Context, msg *types.MsgUpdateDe
 	}
 
 	factoryDenom.Description = msg.Description
-	factoryDenom.LsatDescriptionChange = blockTime
+	factoryDenom.LastDescriptionChange = blockTime
 	k.SetDenom(ctx, factoryDenom)
 
 	return &types.Void{}, nil
@@ -54,11 +54,15 @@ func (k msgServer) UpdateWebsite(ctx context.Context, msg *types.MsgUpdateWebsit
 		return nil, types.ErrWebsiteURLTooLong
 	}
 
-	if _, err := url.Parse(msg.Website); err != nil {
+	u, err := url.ParseRequestURI(msg.Website)
+	if err != nil {
+		return nil, types.ErrWebsiteURLInvalid
+	}
+	if u.Scheme != "https" && u.Scheme != "http" {
 		return nil, types.ErrWebsiteURLInvalid
 	}
 
-	lastChange := factoryDenom.LsatDescriptionChange
+	lastChange := factoryDenom.LastWebsiteChange
 	lastChange = lastChange.Add(time.Duration(k.GetParams(ctx).ChangeSecondsWebsite))
 
 	blockTime := sdk.UnwrapSDKContext(ctx).BlockTime()
@@ -101,7 +105,7 @@ func (k msgServer) UpdateIconHash(ctx context.Context, msg *types.MsgUpdateIconH
 func (k msgServer) ChangeAdmin(ctx context.Context, msg *types.MsgChangeAdmin) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	if factoryDenom.Admin != msg.Creator {

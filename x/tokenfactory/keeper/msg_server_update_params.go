@@ -36,7 +36,7 @@ func (k msgServer) UpdateMinimumUnlock(ctx context.Context, msg *types.MsgUpdate
 	}
 
 	params := k.GetParams(ctx)
-	params.MinimumUnlockInSeconds = msg.MinimumUnlock
+	params.MinimumUnlockInSeconds = max(msg.MinimumUnlock, types.MinimumUnlockingInSeconds)
 
 	if err := k.SetParams(ctx, params); err != nil {
 		return nil, err
@@ -132,7 +132,7 @@ func (k msgServer) UpdateChangeSecondsDescription(ctx context.Context, msg *type
 	}
 
 	params := k.GetParams(ctx)
-	params.ChangeSecondsDescription = msg.ChangeSecondsDescription
+	params.ChangeSecondsDescription = max(msg.ChangeSecondsDescription, 0)
 
 	if err := k.SetParams(ctx, params); err != nil {
 		return nil, err
@@ -147,7 +147,7 @@ func (k msgServer) UpdateChangeSecondsWebsite(ctx context.Context, msg *types.Ms
 	}
 
 	params := k.GetParams(ctx)
-	params.ChangeSecondsWebsite = msg.ChangeSecondsWebsite
+	params.ChangeSecondsWebsite = max(msg.ChangeSecondsWebsite, 0)
 
 	if err := k.SetParams(ctx, params); err != nil {
 		return nil, err
@@ -162,7 +162,7 @@ func (k msgServer) UpdateChangeSecondsImage(ctx context.Context, msg *types.MsgU
 	}
 
 	params := k.GetParams(ctx)
-	params.ChangeSecondsImage = msg.ChangeSecondsImage
+	params.ChangeSecondsImage = max(msg.ChangeSecondsImage, 0)
 
 	if err := k.SetParams(ctx, params); err != nil {
 		return nil, err
@@ -246,7 +246,7 @@ func (k msgServer) MoveLiquidityPool(ctx context.Context, msg *types.MsgMoveLiqu
 
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	if err := k.MoveDenom(ctx, factoryDenom); err != nil {
@@ -262,8 +262,8 @@ func (k msgServer) UpdatePoolThresholdSeconds(ctx context.Context, msg *types.Ms
 	}
 
 	params := k.GetParams(ctx)
+	params.PoolTresholdSeconds = max(msg.PoolThresholdSeconds, 0)
 
-	params.PoolTresholdSeconds = msg.PoolThresholdSeconds
 	if err := k.SetParams(ctx, params); err != nil {
 		return nil, err
 	}

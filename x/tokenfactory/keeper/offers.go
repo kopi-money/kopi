@@ -51,7 +51,7 @@ func (k Keeper) cancelOffer(ctx context.Context, index uint64) error {
 
 	factoryDenom, has := k.GetDenomByFullName(ctx, offer.FactoryDenom)
 	if !has {
-		return types.ErrDenomDoesNotExists
+		return types.ErrDenomDoesNotExist
 	}
 
 	acc, _ := sdk.AccAddressFromBech32(factoryDenom.Admin)

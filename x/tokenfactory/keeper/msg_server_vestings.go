@@ -13,7 +13,7 @@ import (
 func (k msgServer) CreateVestings(ctx context.Context, msg *types.MsgCreateVestings) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	if factoryDenom.Admin != msg.Creator {
@@ -33,7 +33,7 @@ func (k msgServer) CreateVestings(ctx context.Context, msg *types.MsgCreateVesti
 
 	for _, receiver := range msg.Receivers {
 		if _, err := sdk.AccAddressFromBech32(receiver); err != nil {
-			return nil, types.ErrInvalidAddress
+			return nil, fmt.Errorf("invalid user address: %w", err)
 		}
 
 		if err := k.createVesting(ctx, factoryDenom.Admin, receiver, factoryDenom.FullName, vestingAmount, startTime, msg.VestedUntil, msg.NumUnlockSteps); err != nil {
@@ -47,7 +47,7 @@ func (k msgServer) CreateVestings(ctx context.Context, msg *types.MsgCreateVesti
 func (k msgServer) CancelVestings(ctx context.Context, msg *types.MsgCancelVestings) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	if factoryDenom.Admin != msg.Creator {

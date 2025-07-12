@@ -3,9 +3,10 @@ package keeper
 import (
 	"context"
 
+	"github.com/kopi-money/kopi/x/tokenfactory/types"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/kopi-money/kopi/x/tokenfactory/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -17,7 +18,7 @@ func (k Keeper) QueryDistribution(ctx context.Context, req *types.QueryDistribut
 
 	factoryDenom, has := k.factoryDenoms.Get(ctx, req.FullName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	accAdmin, _ := sdk.AccAddressFromBech32(factoryDenom.Admin)

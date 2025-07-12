@@ -4,12 +4,19 @@ import (
 	"context"
 	"fmt"
 
-	"cosmossdk.io/math"
 	"github.com/kopi-money/kopi/trading"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
+
+	"cosmossdk.io/math"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func (k Keeper) QuerySimulateSell(ctx context.Context, req *types.QuerySimulateTradeRequest) (*types.QuerySimulateTradeResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
 	if req.DenomGiving == req.DenomReceiving {
 		return nil, types.ErrSameDenom
 	}
@@ -69,6 +76,10 @@ func (k Keeper) QuerySimulateSell(ctx context.Context, req *types.QuerySimulateT
 }
 
 func (k Keeper) QuerySimulateBuy(ctx context.Context, req *types.QuerySimulateTradeRequest) (*types.QuerySimulateTradeResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
 	if req.DenomGiving == req.DenomReceiving {
 		return nil, types.ErrSameDenom
 	}
@@ -102,7 +113,11 @@ func (k Keeper) QuerySimulateBuy(ctx context.Context, req *types.QuerySimulateTr
 		return nil, err
 	}
 
-	price, _ := tradeResult.PricePaidExact()
+	price, err := tradeResult.PricePaidExact()
+	if err != nil {
+		return nil, fmt.Errorf("price paid exact: %w", err)
+	}
+
 	priceKCoin := getPriceKCoin(price, req.DenomReceiving == pool.KCoin)
 	feeAmount := trading.GetSellFee(tradeResult)
 
@@ -151,7 +166,7 @@ func (k Keeper) getFactoryDenom(ctx context.Context, denomGiving, denomReceiving
 		return factoryDenom, nil
 	}
 
-	return types.FactoryDenom{}, types.ErrDenomDoesNotExists
+	return types.FactoryDenom{}, types.ErrDenomDoesNotExist
 }
 
 func getPriceKCoin(price math.LegacyDec, boughtKCoin bool) math.LegacyDec {

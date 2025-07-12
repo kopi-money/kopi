@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"strings"
 
 	reservetypes "github.com/kopi-money/kopi/x/reserve/types"
@@ -82,8 +83,16 @@ func (k Keeper) CreateDenom(ctx context.Context, address, displayName, symbol, f
 		}
 	}
 
-	if err := k.processCreationFee(ctx, category, feeDenom, address); err != nil {
-		return types.FactoryDenom{}, fmt.Errorf("processing fee: %v", err)
+	u, err := url.ParseRequestURI(website)
+	if err != nil {
+		return types.FactoryDenom{}, types.ErrWebsiteURLInvalid
+	}
+	if u.Scheme != "https" && u.Scheme != "http" {
+		return types.FactoryDenom{}, types.ErrWebsiteURLInvalid
+	}
+
+	if err = k.processCreationFee(ctx, category, feeDenom, address); err != nil {
+		return types.FactoryDenom{}, fmt.Errorf("processing fee: %w", err)
 	}
 
 	blocktime := sdk.UnwrapSDKContext(ctx).BlockTime()
@@ -99,7 +108,7 @@ func (k Keeper) CreateDenom(ctx context.Context, address, displayName, symbol, f
 		CategoryIndex:         categoryIndex,
 		LastImageChange:       blocktime,
 		LastWebsiteChange:     blocktime,
-		LsatDescriptionChange: blocktime,
+		LastDescriptionChange: blocktime,
 		Mintable:              mintable,
 		LocalName:             localName,
 	}
