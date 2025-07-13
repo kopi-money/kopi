@@ -1,12 +1,11 @@
 package types
 
 import (
-	"fmt"
-	"net/url"
-
 	errorsmod "cosmossdk.io/errors"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/constants"
+	"net/url"
 )
 
 var (
@@ -45,13 +44,15 @@ func (msg *MsgUpdateWebsite) ValidateBasic() error {
 		return ErrWebsiteURLTooLong
 	}
 
-	u, err := url.ParseRequestURI(msg.Website)
-	if err != nil {
-		return ErrWebsiteURLInvalid
-	}
+	if msg.Website != "" {
+		u, err := url.ParseRequestURI(msg.Website)
+		if err != nil {
+			return ErrWebsiteURLInvalid
+		}
 
-	if u.Scheme != "https" && u.Scheme != "http" {
-		return ErrWebsiteURLInvalid
+		if u.Scheme != "https" && u.Scheme != "http" {
+			return ErrWebsiteURLInvalid
+		}
 	}
 
 	return nil

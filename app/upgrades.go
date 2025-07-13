@@ -239,6 +239,12 @@ func (app *App) setupUpgradeHandlers(appOpts servertypes.AppOptions) error {
 			},
 		},
 		{
+			UpgradeName: v22.UpgradeNameRC7,
+			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
+				return v22.CreateUpgradeHandler(manager, configurator, app.TokenfactoryKeeper)
+			},
+		},
+		{
 			UpgradeName: v22.UpgradeName,
 			CreateUpgradeHandler: func(manager *module.Manager, configurator module.Configurator) types.UpgradeHandler {
 				return v22.CreateUpgradeHandler(manager, configurator, app.TokenfactoryKeeper)

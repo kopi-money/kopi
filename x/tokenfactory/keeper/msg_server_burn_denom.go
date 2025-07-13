@@ -55,6 +55,7 @@ func (k Keeper) burnDenom(ctx context.Context, factoryDenom types.FactoryDenom, 
 			"factory_denom_coins_burned",
 			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
 			sdk.NewAttribute("amount", amount.String()),
+			sdk.NewAttribute("address", address),
 		),
 	})
 

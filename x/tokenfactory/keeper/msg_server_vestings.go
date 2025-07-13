@@ -39,6 +39,15 @@ func (k msgServer) CreateVestings(ctx context.Context, msg *types.MsgCreateVesti
 		if err := k.createVesting(ctx, factoryDenom.Admin, receiver, factoryDenom.FullName, vestingAmount, startTime, msg.VestedUntil, msg.NumUnlockSteps); err != nil {
 			return nil, fmt.Errorf("create vesting: %w", err)
 		}
+
+		sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
+			sdk.NewEvent(
+				"factory_denom_vesting_created",
+				sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
+				sdk.NewAttribute("amount", vestingAmount.String()),
+				sdk.NewAttribute("receiver", receiver),
+			),
+		})
 	}
 
 	return &types.Void{}, nil

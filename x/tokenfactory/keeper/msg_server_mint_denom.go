@@ -59,7 +59,7 @@ func (k Keeper) mintDenom(ctx context.Context, factoryDenom types.FactoryDenom, 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			"factory_denom_coins_minted",
-			sdk.NewAttribute("full_name", factoryDenom.FullName),
+			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
 			sdk.NewAttribute("amount", amount.String()),
 			sdk.NewAttribute("target_address", targetAddress),
 		),

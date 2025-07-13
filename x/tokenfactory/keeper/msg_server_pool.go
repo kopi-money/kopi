@@ -2,11 +2,11 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-
 	"cosmossdk.io/math"
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
+	"strconv"
 )
 
 func (k msgServer) CreatePool(ctx context.Context, msg *types.MsgCreatePool) (*types.Void, error) {
@@ -109,6 +109,16 @@ func (k Keeper) CreatePool(ctx context.Context, factoryDenom types.FactoryDenom,
 	provider := types.ProviderShare{Share: math.LegacyOneDec()}
 	k.liquidityProviderShares.Set(ctx, factoryDenom.FullName, factoryDenom.Admin, provider)
 
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			"factory_denom_pool_created",
+			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
+			sdk.NewAttribute("amount_factory", amountFactory.String()),
+			sdk.NewAttribute("amount_kcoin", amountKCoin.String()),
+			sdk.NewAttribute("kcoin", kCoin),
+		),
+	})
+
 	return nil
 }
 
@@ -173,6 +183,15 @@ func (k Keeper) AddLiquidity(ctx context.Context, acc sdk.AccAddress, amount mat
 	pool.KCoinAmount = pool.KCoinAmount.Add(amountKCoin)
 	k.liquidityPools.Set(ctx, factoryDenom.FullName, pool)
 
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			"factory_denom_liquidity_added",
+			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
+			sdk.NewAttribute("amount_factory", amountFactory.String()),
+			sdk.NewAttribute("amount_kcoin", amountKCoin.String()),
+		),
+	})
+
 	return nil
 }
 
@@ -232,6 +251,14 @@ func (k Keeper) AddKCoinLiquidity(ctx context.Context, factoryDenom types.Factor
 	pool.KCoinAmount = pool.KCoinAmount.Add(kCoinAmount)
 	k.liquidityPools.Set(ctx, factoryDenom.FullName, pool)
 
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			"factory_denom_liquidity_added_kcoin",
+			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
+			sdk.NewAttribute("amount", addedAmount.String()),
+		),
+	})
+
 	return nil
 }
 
@@ -286,6 +313,14 @@ func (k Keeper) AddFactoryLiquidity(ctx context.Context, factoryDenom types.Fact
 
 	pool.FactoryDenomAmount = pool.FactoryDenomAmount.Add(factoryAmount)
 	k.liquidityPools.Set(ctx, factoryDenom.FullName, pool)
+
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			"factory_denom_liquidity_added_factory",
+			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
+			sdk.NewAttribute("amount", addedAmount.String()),
+		),
+	})
 
 	return nil
 }
@@ -377,6 +412,15 @@ func (k Keeper) UnlockLiquidity(ctx context.Context, factoryDenom types.FactoryD
 		CreatedAt:          sdk.UnwrapSDKContext(ctx).BlockTime(),
 	})
 
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			"factory_denom_liquidity_unlocked",
+			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
+			sdk.NewAttribute("amount_kcoin", amountKCoin.String()),
+			sdk.NewAttribute("amount_factory", amountFactory.String()),
+		),
+	})
+
 	return nil
 }
 
@@ -416,6 +460,16 @@ func (k msgServer) UpdateLiquidityPoolSettings(ctx context.Context, msg *types.M
 	pool.UnlockInSeconds = msg.UnlockInSeconds
 
 	k.SetLiquidityPool(ctx, factoryDenom.FullName, pool)
+
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			"factory_denom_pool_updated",
+			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
+			sdk.NewAttribute("pool_fee", msg.PoolFee),
+			sdk.NewAttribute("unlock_in_seconds", strconv.Itoa(int(msg.UnlockInSeconds))),
+		),
+	})
+
 	return &types.Void{}, nil
 }
 

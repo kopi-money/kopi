@@ -27,7 +27,7 @@ func (k msgServer) DisableMinting(ctx context.Context, msg *types.MsgDisableMint
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			"factory_denom_disabled_minting",
-			sdk.NewAttribute("full_name", factoryDenom.FullName),
+			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
 		),
 	})
 

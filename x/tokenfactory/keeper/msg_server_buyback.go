@@ -73,6 +73,7 @@ func (k msgServer) Buyback(ctx context.Context, msg *types.MsgBuyback) (*types.M
 			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
 			sdk.NewAttribute("buyback_amount", res.AmountGivenGross),
 			sdk.NewAttribute("amount_burned", res.AmountReceivedNet),
+			sdk.NewAttribute("address", msg.Creator),
 		),
 	})
 

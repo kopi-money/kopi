@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -29,7 +30,7 @@ func (k msgServer) CreateOffers(ctx context.Context, msg *types.MsgCreateOffers)
 	if !ok {
 		return nil, fmt.Errorf("invalid factory denom amount format: %s", msg.FactoryDenomAmount)
 	}
-	
+
 	if !amountFactory.IsPositive() {
 		return nil, fmt.Errorf("factory denom amount must be positive, got: %s", msg.FactoryDenomAmount)
 	}
@@ -90,6 +91,16 @@ func (k msgServer) CreateOffers(ctx context.Context, msg *types.MsgCreateOffers)
 			NumUnlocksSteps:    msg.NumUnlockSteps,
 			CreatedAt:          sdk.UnwrapSDKContext(ctx).BlockTime(),
 		})
+
+		sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
+			sdk.NewEvent(
+				"factory_denom_offer_created",
+				sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
+				sdk.NewAttribute("amount_ask", askAmount.String()),
+				sdk.NewAttribute("amount_factory", amountFactory.String()),
+				sdk.NewAttribute("target_address", receiver),
+			),
+		})
 	}
 
 	return &types.Void{}, nil
@@ -114,6 +125,14 @@ func (k msgServer) CancelOffers(ctx context.Context, msg *types.MsgCancelOffers)
 		if err := k.cancelOffer(ctx, offer.Index); err != nil {
 			return nil, err
 		}
+
+		sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
+			sdk.NewEvent(
+				"factory_denom_offer_canceled",
+				sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
+				sdk.NewAttribute("offer_id", strconv.Itoa(int(offer.Index))),
+			),
+		})
 	}
 
 	return &types.Void{}, nil
@@ -170,6 +189,14 @@ func (k msgServer) TakeOffer(ctx context.Context, msg *types.MsgTakeOffer) (*typ
 		}
 	}
 
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			"factory_denom_offer_taken",
+			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
+			sdk.NewAttribute("offer_id", strconv.Itoa(int(offer.Index))),
+		),
+	})
+
 	return &types.Void{}, nil
 }
 
@@ -216,6 +243,14 @@ func (k msgServer) DeclineOffer(ctx context.Context, msg *types.MsgDeclineOffer)
 	}
 
 	k.RemoveOffer(ctx, offer.Index)
+
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			"factory_denom_offer_declined",
+			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
+			sdk.NewAttribute("offer_id", strconv.Itoa(int(offer.Index))),
+		),
+	})
 
 	return &types.Void{}, nil
 }
