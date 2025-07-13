@@ -3,6 +3,8 @@ package v22
 import (
 	"context"
 	"github.com/cosmos/cosmos-sdk/cache"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	factorykeeper "github.com/kopi-money/kopi/x/tokenfactory/keeper"
 	factorytypes "github.com/kopi-money/kopi/x/tokenfactory/types"
 
@@ -10,8 +12,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 )
 
-func CreateUpgradeHandler(_ *module.Manager, _ module.Configurator, factoryK factorykeeper.Keeper) upgradetypes.UpgradeHandler {
+func CreateUpgradeHandler(_ *module.Manager, _ module.Configurator, factoryK factorykeeper.Keeper, ibcK *ibckeeper.Keeper) upgradetypes.UpgradeHandler {
 	return func(ctx context.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
+		// fixing incorrect IBC channel connection, error was caused after IBC upgrade
+		if sdkCtx := sdk.UnwrapSDKContext(ctx); sdkCtx.ChainID() == "luwak-1" {
+			if channel, has := ibcK.ChannelKeeper.GetChannel(sdkCtx, "transfer", "channel-1"); has {
+				channel.ConnectionHops = []string{"connection-41"}
+				ibcK.ChannelKeeper.SetChannel(sdkCtx, "transfer", "channel-1", channel)
+			}
+		}
+
 		if err := cache.Transact(ctx, func(innerCtx context.Context) error {
 			return factoryK.SetParams(innerCtx, factorytypes.DefaultParams())
 		}); err != nil {
