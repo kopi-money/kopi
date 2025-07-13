@@ -88,16 +88,6 @@ func (k Keeper) getCategory(ctx context.Context, categoryIndex uint64) (types.Ca
 	return types.Category{}, false
 }
 
-func (k Keeper) validCategoryIndex(ctx context.Context, categoryIndex uint64) bool {
-	for _, category := range k.GetParams(ctx).Categories.Categories {
-		if category.Index == categoryIndex {
-			return true
-		}
-	}
-
-	return false
-}
-
 func (k Keeper) poolThresholdSeconds(ctx context.Context) int64 {
 	return k.GetParams(ctx).PoolTresholdSeconds
 }

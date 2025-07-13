@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"github.com/kopi-money/kopi/constants"
 
 	"cosmossdk.io/math"
 )
@@ -20,49 +21,22 @@ var (
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return Params{
-		ReserveFeeShare: ReserveFeeShare,
-		MinimumPoolSize: MinimumPoolSize,
-		MinimumPoolFee:  MinimumPoolFee,
-		OfferFee:        OfferFee,
+		MinimumUnlockInSeconds:    MinimumUnlockingInSeconds,
+		MaximumVestingUnlockSteps: MaximumVestingUnlockSteps,
+		ReserveFeeShare:           ReserveFeeShare,
+		MinimumPoolSize:           MinimumPoolSize,
+		MinimumPoolFee:            MinimumPoolFee,
+		MaximumPoolFee:            MaximumPoolFee,
+		OfferFee:                  OfferFee,
+		ChangeSecondsDescription:  constants.SecondsPerDay * 7,
+		ChangeSecondsWebsite:      constants.SecondsPerDay * 7,
+		ChangeSecondsImage:        constants.SecondsPerDay * 7,
+		PoolTresholdSeconds:       constants.SecondsPerDay * 7,
 	}
 }
 
 // Validate validates the set of params
 func (p Params) Validate() error {
-	if p.ReserveFeeShare.IsNil() {
-		p.ReserveFeeShare = ReserveFeeShare
-	}
-
-	if p.MinimumPoolSize.IsNil() {
-		p.MinimumPoolSize = MinimumPoolSize
-	}
-
-	if p.MinimumPoolFee.IsNil() || p.MinimumPoolFee.IsZero() {
-		p.MinimumPoolFee = MinimumPoolFee
-	}
-
-	if p.MaximumPoolFee.IsNil() || p.MaximumPoolFee.IsZero() {
-		p.MaximumPoolFee = MaximumPoolFee
-	}
-
-	if p.MaximumVestingUnlockSteps <= 0 {
-		p.MaximumVestingUnlockSteps = MaximumVestingUnlockSteps
-	}
-
-	if p.MinimumPoolMovingValue.IsNil() || p.MinimumPoolMovingValue.IsZero() {
-		p.MinimumPoolMovingValue = MinimumPoolMovingValue
-	}
-
-	if p.OfferFee.IsNil() {
-		p.OfferFee = OfferFee
-	}
-
-	p.MinimumUnlockInSeconds = max(MinimumUnlockingInSeconds, 0)
-	p.ChangeSecondsDescription = max(p.ChangeSecondsDescription, 0)
-	p.ChangeSecondsWebsite = max(p.ChangeSecondsWebsite, 0)
-	p.ChangeSecondsImage = max(p.ChangeSecondsImage, 0)
-	p.PoolTresholdSeconds = max(p.PoolTresholdSeconds, 0)
-
 	if err := validateShare(p.ReserveFeeShare); err != nil {
 		return fmt.Errorf("invalid reserve fee share: %w", err)
 	}
@@ -118,27 +92,6 @@ func validateShare(d any) error {
 
 	if v.GT(math.LegacyOneDec()) {
 		return fmt.Errorf("fee must not be greater than 1")
-	}
-
-	return nil
-}
-
-func validateBiggerZero(d any) error {
-	v, ok := d.(math.Int)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", d)
-	}
-
-	if v.IsNil() {
-		return fmt.Errorf("value is nil")
-	}
-
-	if v.IsNegative() {
-		return fmt.Errorf("share must not be smaller than 0")
-	}
-
-	if v.IsZero() {
-		return fmt.Errorf("share must not be 0")
 	}
 
 	return nil

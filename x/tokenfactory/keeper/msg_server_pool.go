@@ -12,7 +12,7 @@ import (
 func (k msgServer) CreatePool(ctx context.Context, msg *types.MsgCreatePool) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	if factoryDenom.Admin != msg.Creator {
@@ -97,7 +97,11 @@ func (k Keeper) CreatePool(ctx context.Context, factoryDenom types.FactoryDenom,
 		sdk.NewCoin(kCoin, amountKCoin),
 	)
 
-	adminAcc, _ := sdk.AccAddressFromBech32(factoryDenom.Admin)
+	adminAcc, err := sdk.AccAddressFromBech32(factoryDenom.Admin)
+	if err != nil {
+		return fmt.Errorf("invalid user address: %w", err)
+	}
+
 	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, adminAcc, types.PoolFactoryLiquidity, coins); err != nil {
 		return err
 	}
@@ -109,14 +113,17 @@ func (k Keeper) CreatePool(ctx context.Context, factoryDenom types.FactoryDenom,
 }
 
 func (k msgServer) AddLiquidity(ctx context.Context, msg *types.MsgAddLiquidity) (*types.Void, error) {
-	acc, _ := sdk.AccAddressFromBech32(msg.Creator)
+	acc, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, fmt.Errorf("invalid user address: %w", err)
+	}
 
 	amount, ok := math.NewIntFromString(msg.FactoryDenomAmount)
 	if !ok {
 		return nil, fmt.Errorf("invalid factory denom amount: %v", msg.FactoryDenomAmount)
 	}
 
-	if err := k.Keeper.AddLiquidity(ctx, acc, amount, msg.FullFactoryDenomName, msg.FullFactoryDenomName); err != nil {
+	if err = k.Keeper.AddLiquidity(ctx, acc, amount, msg.FullFactoryDenomName, msg.FullFactoryDenomName); err != nil {
 		return nil, fmt.Errorf("adding liquidity: %w", err)
 	}
 
@@ -126,7 +133,7 @@ func (k msgServer) AddLiquidity(ctx context.Context, msg *types.MsgAddLiquidity)
 func (k Keeper) AddLiquidity(ctx context.Context, acc sdk.AccAddress, amount math.Int, fullName, givenDenom string) error {
 	factoryDenom, has := k.GetDenomByFullName(ctx, fullName)
 	if !has {
-		return types.ErrDenomDoesNotExists
+		return types.ErrDenomDoesNotExist
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, factoryDenom.FullName)
@@ -177,7 +184,7 @@ func (k msgServer) AddKCoinLiquidity(ctx context.Context, msg *types.MsgAddKCoin
 
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, msg.FullFactoryDenomName)
@@ -185,12 +192,16 @@ func (k msgServer) AddKCoinLiquidity(ctx context.Context, msg *types.MsgAddKCoin
 		return nil, types.ErrPoolDoesNotExist
 	}
 
-	acc, _ := sdk.AccAddressFromBech32(msg.Creator)
+	acc, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, fmt.Errorf("invalid user address: %w", err)
+	}
+
 	if k.BankKeeper.SpendableCoin(ctx, acc, pool.KCoin).Amount.LT(amount) {
 		return nil, types.ErrInsufficientFunds
 	}
 
-	if err := k.Keeper.AddKCoinLiquidity(ctx, factoryDenom, pool, amount, msg.Creator); err != nil {
+	if err = k.Keeper.AddKCoinLiquidity(ctx, factoryDenom, pool, amount, msg.Creator); err != nil {
 		return nil, fmt.Errorf("adding liquidity: %w", err)
 	}
 
@@ -204,13 +215,17 @@ func (k Keeper) AddKCoinLiquidity(ctx context.Context, factoryDenom types.Factor
 		sdk.NewCoin(pool.KCoin, kCoinAmount),
 	)
 
-	acc, _ := sdk.AccAddressFromBech32(creator)
-	if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolFactoryLiquidity, coins); err != nil {
+	acc, err := sdk.AccAddressFromBech32(creator)
+	if err != nil {
+		return fmt.Errorf("invalid user address: %w", err)
+	}
+
+	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolFactoryLiquidity, coins); err != nil {
 		return fmt.Errorf("send coins to Liquidity pool: %w", err)
 	}
 
 	addedAmount := kCoinAmount.ToLegacyDec().Quo(math.LegacyNewDec(2))
-	if err := k.updateLiquidityShare(ctx, factoryDenom, pool.KCoinAmount.ToLegacyDec(), addedAmount, acc.String()); err != nil {
+	if err = k.updateLiquidityShare(ctx, factoryDenom, pool.KCoinAmount.ToLegacyDec(), addedAmount, acc.String()); err != nil {
 		return fmt.Errorf("update liquidity share: %w", err)
 	}
 
@@ -228,7 +243,7 @@ func (k msgServer) AddFactoryLiquidity(ctx context.Context, msg *types.MsgAddFac
 
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, msg.FullFactoryDenomName)
@@ -255,13 +270,17 @@ func (k Keeper) AddFactoryLiquidity(ctx context.Context, factoryDenom types.Fact
 		sdk.NewCoin(factoryDenom.FactoryTradeDenom(), factoryAmount),
 	)
 
-	acc, _ := sdk.AccAddressFromBech32(creator)
-	if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolFactoryLiquidity, coins); err != nil {
+	acc, err := sdk.AccAddressFromBech32(creator)
+	if err != nil {
+		return fmt.Errorf("invalid user address: %w", err)
+	}
+
+	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolFactoryLiquidity, coins); err != nil {
 		return fmt.Errorf("send coins to Liquidity pool: %w", err)
 	}
 
 	addedAmount := factoryAmount.ToLegacyDec().Quo(math.LegacyNewDec(2))
-	if err := k.updateLiquidityShare(ctx, factoryDenom, pool.FactoryDenomAmount.ToLegacyDec(), addedAmount, acc.String()); err != nil {
+	if err = k.updateLiquidityShare(ctx, factoryDenom, pool.FactoryDenomAmount.ToLegacyDec(), addedAmount, acc.String()); err != nil {
 		return fmt.Errorf("update liquidity share: %w", err)
 	}
 
@@ -279,7 +298,7 @@ func (k msgServer) UnlockLiquidity(ctx context.Context, msg *types.MsgUnlockLiqu
 
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	pool, has := k.liquidityPools.Get(ctx, msg.FullFactoryDenomName)
@@ -287,8 +306,12 @@ func (k msgServer) UnlockLiquidity(ctx context.Context, msg *types.MsgUnlockLiqu
 		return nil, types.ErrPoolDoesNotExist
 	}
 
-	acc, _ := sdk.AccAddressFromBech32(msg.Creator)
-	if err := k.Keeper.UnlockLiquidity(ctx, factoryDenom, pool, acc, amountFactory, factoryDenom.FullName); err != nil {
+	acc, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, fmt.Errorf("invalid user address: %w", err)
+	}
+
+	if err = k.Keeper.UnlockLiquidity(ctx, factoryDenom, pool, acc, amountFactory, factoryDenom.FullName); err != nil {
 		return nil, fmt.Errorf("unlock liquidity: %w", err)
 	}
 
@@ -360,7 +383,7 @@ func (k Keeper) UnlockLiquidity(ctx context.Context, factoryDenom types.FactoryD
 func (k msgServer) UpdateLiquidityPoolSettings(ctx context.Context, msg *types.MsgUpdateLiquidityPoolSettings) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	if factoryDenom.Admin != msg.Creator {
@@ -396,37 +419,6 @@ func (k msgServer) UpdateLiquidityPoolSettings(ctx context.Context, msg *types.M
 	return &types.Void{}, nil
 }
 
-func (k Keeper) payoutLiquidityUnlockings(ctx context.Context, factoryDenom types.FactoryDenom, pool types.LiquidityPool) error {
-	unlockingIterator := k.LiquidityUnlockingsIterator(ctx)
-	var deleteKeys []uint64
-
-	for unlockingIterator.Valid() {
-		keyValue := unlockingIterator.GetNextKeyValue()
-		unlocking := keyValue.Value().Value()
-		if unlocking.FactoryDenomHash != factoryDenom.FullName {
-			continue
-		}
-
-		coins := sdk.NewCoins(
-			sdk.NewCoin(factoryDenom.FullName, unlocking.FactoryDenomAmount),
-			sdk.NewCoin(pool.KCoin, unlocking.KCoinAmount),
-		)
-
-		acc, _ := sdk.AccAddressFromBech32(unlocking.Address)
-		if err := k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolFactoryLiquidity, acc, coins); err != nil {
-			return fmt.Errorf("send coins from module to account: %w", err)
-		}
-
-		deleteKeys = append(deleteKeys, keyValue.Key())
-	}
-
-	for _, deleteKey := range deleteKeys {
-		k.liquidityUnlockings.Remove(ctx, deleteKey)
-	}
-
-	return nil
-}
-
 func (k Keeper) payoutLiquidityProviders(ctx context.Context, factoryDenom types.FactoryDenom, pool types.LiquidityPool) error {
 	ratio, err := pool.GetPoolRatio()
 	if err != nil {
@@ -435,6 +427,7 @@ func (k Keeper) payoutLiquidityProviders(ctx context.Context, factoryDenom types
 
 	shareIterator := k.LiquidityShareIterator(ctx, factoryDenom.FullName)
 
+	var acc sdk.AccAddress
 	for shareIterator.Valid() {
 		keyValue := shareIterator.GetNextKeyValue()
 
@@ -446,7 +439,11 @@ func (k Keeper) payoutLiquidityProviders(ctx context.Context, factoryDenom types
 			sdk.NewCoin(pool.KCoin, amountOtherDenom.TruncateInt()),
 		)
 
-		acc, _ := sdk.AccAddressFromBech32(keyValue.Key())
+		acc, err = sdk.AccAddressFromBech32(keyValue.Key())
+		if err != nil {
+			return fmt.Errorf("invalid user address: %w", err)
+		}
+
 		if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolFactoryLiquidity, acc, coins); err != nil {
 			return fmt.Errorf("send coins from module to account: %w", err)
 		}

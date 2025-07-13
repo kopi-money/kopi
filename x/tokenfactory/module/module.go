@@ -133,11 +133,7 @@ func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
 // InitGenesis performs the module's genesis initialization. It returns no validator updates.
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, gs json.RawMessage) {
-	fmt.Println(string(gs))
 	var genState types.GenesisState
-	raw, _ := cdc.MarshalJSON(&genState)
-	fmt.Println(string(raw))
-
 	// Initialize global index to index in genesis state
 	cdc.MustUnmarshalJSON(gs, &genState)
 

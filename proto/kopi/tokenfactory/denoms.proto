@@ -20,7 +20,7 @@ message FactoryDenom {
   string local_name = 14;
   bool moved = 15;
 
-  google.protobuf.Timestamp lsat_description_change = 11 [
+  google.protobuf.Timestamp last_description_change = 11 [
     (gogoproto.stdtime) = true,
     (gogoproto.nullable) = false,
     (gogoproto.moretags) = "yaml:\"lsat_description_change\""

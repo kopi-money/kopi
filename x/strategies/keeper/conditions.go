@@ -169,7 +169,7 @@ func (k Keeper) ValidateCondition(ctx context.Context, condition types.Condition
 		types.ConditionFactoryLiquidityPoolUserAmountFactoryDenom:
 
 		if !k.FactoryKeeper.IsFactoryDenom(ctx, condition.String1) {
-			return factorytypes.ErrDenomDoesNotExists
+			return factorytypes.ErrDenomDoesNotExist
 		}
 
 		if !k.FactoryKeeper.HasLiquidityPool(ctx, condition.String1) {
@@ -182,7 +182,7 @@ func (k Keeper) ValidateCondition(ctx context.Context, condition types.Condition
 
 	case types.ConditionFactoryLiquidityPoolUserShare:
 		if !k.FactoryKeeper.IsFactoryDenom(ctx, condition.String1) {
-			return factorytypes.ErrDenomDoesNotExists
+			return factorytypes.ErrDenomDoesNotExist
 		}
 
 		if !k.FactoryKeeper.HasLiquidityPool(ctx, condition.String1) {

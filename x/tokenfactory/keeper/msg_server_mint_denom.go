@@ -12,7 +12,7 @@ import (
 func (k msgServer) MintDenom(ctx context.Context, msg *types.MsgMintDenom) (*types.Void, error) {
 	factoryDenom, has := k.GetDenomByFullName(ctx, msg.FullFactoryDenomName)
 	if !has {
-		return nil, types.ErrDenomDoesNotExists
+		return nil, types.ErrDenomDoesNotExist
 	}
 
 	if factoryDenom.Admin != msg.Creator {
@@ -49,7 +49,7 @@ func (k Keeper) mintDenom(ctx context.Context, factoryDenom types.FactoryDenom, 
 
 	targetAddr, err := sdk.AccAddressFromBech32(targetAddress)
 	if err != nil {
-		return types.ErrInvalidAddress
+		return fmt.Errorf("invalid user address: %w", err)
 	}
 
 	if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, targetAddr, coins); err != nil {
@@ -59,7 +59,7 @@ func (k Keeper) mintDenom(ctx context.Context, factoryDenom types.FactoryDenom, 
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			"factory_denom_coins_minted",
-			sdk.NewAttribute("full_name", factoryDenom.FullName),
+			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
 			sdk.NewAttribute("amount", amount.String()),
 			sdk.NewAttribute("target_address", targetAddress),
 		),
