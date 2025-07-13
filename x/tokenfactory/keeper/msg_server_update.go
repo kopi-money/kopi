@@ -37,6 +37,14 @@ func (k msgServer) UpdateDescription(ctx context.Context, msg *types.MsgUpdateDe
 	factoryDenom.LastDescriptionChange = blockTime
 	k.SetDenom(ctx, factoryDenom)
 
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			"factory_denom_description_changed",
+			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
+			sdk.NewAttribute("description", factoryDenom.Description),
+		),
+	})
+
 	return &types.Void{}, nil
 }
 
@@ -74,6 +82,14 @@ func (k msgServer) UpdateWebsite(ctx context.Context, msg *types.MsgUpdateWebsit
 	factoryDenom.LastWebsiteChange = blockTime
 	k.SetDenom(ctx, factoryDenom)
 
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			"factory_denom_website_changed",
+			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
+			sdk.NewAttribute("website", factoryDenom.Website),
+		),
+	})
+
 	return &types.Void{}, nil
 }
 
@@ -99,6 +115,14 @@ func (k msgServer) UpdateIconHash(ctx context.Context, msg *types.MsgUpdateIconH
 	factoryDenom.LastImageChange = blockTime
 	k.SetDenom(ctx, factoryDenom)
 
+	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			"factory_denom_icon_hash_changed",
+			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
+			sdk.NewAttribute("icon_hash", factoryDenom.IconHash),
+		),
+	})
+
 	return &types.Void{}, nil
 }
 
@@ -123,7 +147,7 @@ func (k msgServer) ChangeAdmin(ctx context.Context, msg *types.MsgChangeAdmin) (
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			"factory_denom_admin_change",
-			sdk.NewAttribute("full_name", factoryDenom.FullName),
+			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
 			sdk.NewAttribute("old_admin", oldAdmin),
 			sdk.NewAttribute("new_admin", msg.NewAdmin),
 		),

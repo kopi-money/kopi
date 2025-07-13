@@ -3,7 +3,6 @@ package v22
 import (
 	"context"
 	"github.com/cosmos/cosmos-sdk/cache"
-
 	factorykeeper "github.com/kopi-money/kopi/x/tokenfactory/keeper"
 	factorytypes "github.com/kopi-money/kopi/x/tokenfactory/types"
 

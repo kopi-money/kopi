@@ -19,7 +19,7 @@ func (k msgServer) CreateDenom(ctx context.Context, msg *types.MsgCreateDenom) (
 	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			"factory_denom_created",
-			sdk.NewAttribute("full_name", factoryDenom.FullName),
+			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
 			sdk.NewAttribute("creator", msg.Creator),
 		),
 	})
