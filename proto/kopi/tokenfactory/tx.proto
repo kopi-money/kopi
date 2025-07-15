@@ -52,6 +52,8 @@ service Msg {
   rpc TakeOffer(MsgTakeOffer)                     returns (Void);
   rpc CreateVestings(MsgCreateVestings)           returns (Void);
   rpc CancelVestings(MsgCancelVestings)           returns (Void);
+  rpc PayKCoinReward(MsgPayKCoinReward)           returns (Void);
+  rpc PayFactoryReward(MsgPayFactoryReward)       returns (Void);
 
   rpc Buy(MsgBuy)   returns (MsgTradeResponse);
   rpc Sell(MsgSell) returns (MsgTradeResponse);
@@ -342,7 +344,25 @@ message MsgAddKCoinLiquidity {
   string amount = 3;
 }
 
+message MsgPayKCoinReward {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string full_factory_denom_name = 2;
+
+  string amount = 3;
+}
+
 message MsgAddFactoryLiquidity {
+  option (cosmos.msg.v1.signer) = "creator";
+
+  string creator = 1;
+  string full_factory_denom_name = 2;
+
+  string amount = 3;
+}
+
+message MsgPayFactoryReward {
   option (cosmos.msg.v1.signer) = "creator";
 
   string creator = 1;
