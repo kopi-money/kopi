@@ -9,6 +9,7 @@ import "kopi/tokenfactory/params.proto";
 import "kopi/tokenfactory/denoms.proto";
 import "kopi/tokenfactory/offer.proto";
 import "kopi/tokenfactory/vesting.proto";
+import "kopi/tokenfactory/conversion.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
 
@@ -45,6 +46,10 @@ service Query {
 
   rpc QueryFactoryTokenBalance (GetFactoryTokenBalanceRequest) returns (GetFactoryTokenBalanceResponse) {
     option (google.api.http).get = "/kopi/tokenfactory/balance/{address}";
+  }
+
+  rpc QueryTokenConversion (QueryTokenConversionRequest) returns (QueryTokenConversionResponse) {
+    option (google.api.http).get = "/kopi/tokenfactory/denoms/conversion";
   }
 
   rpc QueryPoolLiquidityAddress (QueryPoolLiquidityAddressRequest) returns (QueryPoolLiquidityAddressResponse) {
@@ -86,6 +91,16 @@ service Query {
   rpc QueryOffers (QueryOffersRequest) returns (QueryOffersResponse) {
     option (google.api.http).get = "/kopi/tokenfactory/offers";
   }
+}
+
+message QueryTokenConversionRequest {
+  string full_name = 1;
+}
+
+message QueryTokenConversionResponse {
+  repeated TokenConversionCreation conversions = 3 [
+    (gogoproto.nullable) = false
+  ];
 }
 
 message QueryUSDValueRequest {

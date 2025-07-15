@@ -12,4 +12,5 @@ const (
 	PoolUnlocking           = "pool_factory_unlocking"
 	PoolOffers              = "pool_factory_offers"
 	PoolVestings            = "pool_factory_vesting"
+	PoolConversions         = "pool_factory_conversions"
 )

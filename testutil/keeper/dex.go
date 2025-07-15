@@ -65,6 +65,7 @@ func DexKeeper(t *testing.T) (dexkeeper.Keeper, context.Context, *Keys) {
 		tokenfactorytypes.PoolUnlocking:           nil,
 		tokenfactorytypes.PoolFactoryProtocolFees: nil,
 		tokenfactorytypes.PoolOffers:              nil,
+		tokenfactorytypes.PoolConversions:         nil,
 	}
 
 	blackListAddrs := map[string]bool{

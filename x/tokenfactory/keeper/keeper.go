@@ -26,6 +26,7 @@ var (
 	PrefixOffersNextIndex              = collections.NewPrefix(7)
 	PrefixVestings                     = collections.NewPrefix(8)
 	PrefixVestingsNextIndex            = collections.NewPrefix(9)
+	PrefixTokenConversions             = collections.NewPrefix(10)
 )
 
 type (
@@ -54,6 +55,7 @@ type (
 		offersNextIndex              *cache.ItemCache[uint64]
 		vestings                     *cache.MapCache[uint64, types.Vesting]
 		vestingsNextIndex            *cache.ItemCache[uint64]
+		tokenConversions             *cache.MapCache[string, types.TokenConversion]
 
 		caches *cache.Caches
 	}
@@ -172,6 +174,15 @@ func NewKeeper(
 			PrefixVestingsNextIndex,
 			"vestings_next_index",
 			collections.Uint64Value,
+			caches,
+		),
+
+		tokenConversions: cache.NewMapCache(
+			sb,
+			PrefixLiquidityPools,
+			"token_conversions",
+			collections.StringKey,
+			codec.CollValue[types.TokenConversion](cdc),
 			caches,
 		),
 	}

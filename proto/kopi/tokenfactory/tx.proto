@@ -7,6 +7,7 @@ import "cosmos_proto/cosmos.proto";
 import "google/protobuf/timestamp.proto";
 import "gogoproto/gogo.proto";
 import "kopi/tokenfactory/params.proto";
+import "kopi/tokenfactory/conversion.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
 
@@ -40,6 +41,7 @@ service Msg {
   rpc UpdateWebsite(MsgUpdateWebsite)                             returns (Void);
   rpc UpdateIconHash(MsgUpdateIconHash)                           returns (Void);
   rpc UpdateLiquidityPoolSettings(MsgUpdateLiquidityPoolSettings) returns (Void);
+  rpc CreateTokenConversion(MsgCreateTokenConversion)             returns (Void);
 
   rpc CreatePool(MsgCreatePool)                   returns (Void);
   rpc AddLiquidity(MsgAddLiquidity)               returns (Void);
@@ -55,9 +57,27 @@ service Msg {
   rpc CancelVestings(MsgCancelVestings)           returns (Void);
   rpc PayKCoinReward(MsgPayKCoinReward)           returns (Void);
   rpc PayFactoryReward(MsgPayFactoryReward)       returns (Void);
+  rpc ConvertTokens(MsgConvertTokens)              returns (Void);
+
 
   rpc Buy(MsgBuy)   returns (MsgTradeResponse);
   rpc Sell(MsgSell) returns (MsgTradeResponse);
+}
+
+message MsgConvertTokens {
+  option (cosmos.msg.v1.signer) = "creator";
+  string creator = 1;
+  string full_factory_denom_name = 2;
+  string amount = 3;
+}
+
+message MsgCreateTokenConversion {
+  option (cosmos.msg.v1.signer) = "creator";
+  string creator = 1;
+  string full_factory_denom_name = 2;
+  repeated TokenConversionCreation conversions = 3 [
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgCancelVestings {

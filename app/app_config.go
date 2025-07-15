@@ -263,6 +263,7 @@ var (
 		{Account: tokenfactorytypes.PoolFactoryProtocolFees},
 		{Account: tokenfactorytypes.PoolOffers},
 		{Account: tokenfactorytypes.PoolVestings},
+		{Account: tokenfactorytypes.PoolConversions},
 
 		// TXFees
 		{Account: txfeesmoduletypes.ModuleName},

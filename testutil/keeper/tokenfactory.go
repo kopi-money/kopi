@@ -142,6 +142,16 @@ func BurnFactoryDenom(ctx context.Context, msgServer types.MsgServer, creator, f
 	})
 }
 
+func DisableMinting(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash string) error {
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := msgServer.DisableMinting(innerCtx, &types.MsgDisableMinting{
+			Creator:              creator,
+			FullFactoryDenomName: factoryDenomHash,
+		})
+		return err
+	})
+}
+
 func CreatePool(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash, factoryDenomAmount, kCoin, kCoinAmount, poolFee string, unlockSeconds uint64) error {
 	return cache.Transact(ctx, func(innerCtx context.Context) error {
 		_, err := msgServer.CreatePool(innerCtx, &types.MsgCreatePool{
@@ -208,6 +218,17 @@ func UnlockLiquidity(ctx context.Context, msgServer types.MsgServer, creator, fa
 			Creator:              creator,
 			FullFactoryDenomName: factoryDenomHash,
 			FactoryDenomAmount:   factoryDenomAmount,
+		})
+		return err
+	})
+}
+
+func ConvertTokens(ctx context.Context, msgServer types.MsgServer, creator, factoryDenomHash, factoryDenomAmount string) error {
+	return cache.Transact(ctx, func(innerCtx context.Context) error {
+		_, err := msgServer.ConvertTokens(innerCtx, &types.MsgConvertTokens{
+			Creator:              creator,
+			FullFactoryDenomName: factoryDenomHash,
+			Amount:               factoryDenomAmount,
 		})
 		return err
 	})

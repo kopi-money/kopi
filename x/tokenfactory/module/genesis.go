@@ -17,6 +17,10 @@ func InitGenesis(ctx context.Context, k keeper.Keeper, genState types.GenesisSta
 			k.SetGenesisLiquidityPool(innerCtx, pool)
 		}
 
+		for _, conversion := range genState.TokenConversions {
+			k.SetGenesisTokenConversion(innerCtx, conversion)
+		}
+
 		// this line is used by starport scaffolding # genesis/module/init
 		if err := k.SetParams(innerCtx, genState.Params); err != nil {
 			return fmt.Errorf("set params: %w", err)
@@ -38,6 +42,7 @@ func ExportGenesis(ctx context.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.Params = k.GetParams(ctx)
 	genesis.FactoryDenoms = k.GetAllDenoms(ctx)
 	genesis.LiquidityPools = k.GetGenesisLiquidityPools(ctx)
+	genesis.TokenConversions = k.GetGenesisTokenConversions(ctx)
 
 	// this line is used by starport scaffolding # genesis/module/export
 

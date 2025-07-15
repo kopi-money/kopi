@@ -3,8 +3,9 @@ package kopi.tokenfactory;
 
 import "amino/amino.proto";
 import "gogoproto/gogo.proto";
-import "kopi/tokenfactory/params.proto";
+import "kopi/tokenfactory/conversion.proto";
 import "kopi/tokenfactory/denoms.proto";
+import "kopi/tokenfactory/params.proto";
 import "kopi/tokenfactory/pool.proto";
 
 option go_package = "github.com/kopi-money/kopi/x/tokenfactory/types";
@@ -28,6 +29,12 @@ message GenesisState {
   repeated GenesisLiquidityPool liquidity_pools = 3 [
     json_name="liquidity_pools",
     (gogoproto.moretags) = "yaml:\"liquidity_pools\"",
+    (gogoproto.nullable) = false
+  ];
+
+  repeated GenesisTokenConversion token_conversions = 4 [
+    json_name="token_conversions",
+    (gogoproto.moretags) = "yaml:\"token_conversions\"",
     (gogoproto.nullable) = false
   ];
 }
