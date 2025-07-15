@@ -175,6 +175,14 @@ func DenomKeeper(t *testing.T) (denomkeeper.Keeper, context.Context, *Keys) {
 		},
 	}
 
+	params.FactoryPoolDenoms = []denomtypes.FactoryPoolDenom{
+		{
+			Denom:           "ukusd",
+			MinimumPoolSize: math.NewInt(1_000_000),
+			MoveThreshold:   math.NewInt(1_000_000),
+		},
+	}
+
 	require.NoError(t, cache.Transact(ctx, func(innerContext context.Context) error {
 		denomKeeper.SetRatio(innerContext, denomtypes.Ratio{
 			Denom: "uwusdc",

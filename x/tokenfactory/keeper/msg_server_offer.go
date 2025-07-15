@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 	"fmt"
-	"strconv"
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -66,23 +65,15 @@ func (k msgServer) CreateOffers(ctx context.Context, msg *types.MsgCreateOffers)
 		}
 	}
 
-	if len(msg.Receivers) == 0 {
-		return nil, types.ErrEmptyOfferReceiversList
-	}
+	coins := sdk.NewCoins(sdk.NewCoin(factoryDenom.FullName, amountFactory))
 
-	for _, receiver := range msg.Receivers {
-		if _, err = sdk.AccAddressFromBech32(receiver); err != nil {
-			return nil, fmt.Errorf("invalid user address: %w", err)
-		}
-
-		coins := sdk.NewCoins(sdk.NewCoin(factoryDenom.FullName, amountFactory))
+	if msg.OpenOffer {
 		if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolOffers, coins); err != nil {
 			return nil, err
 		}
 
 		k.SetOffer(ctx, types.Offer{
 			FactoryDenom:       factoryDenom.FullName,
-			AddressReceiver:    receiver,
 			FactoryDenomAmount: amountFactory,
 			AskDenom:           msg.AskDenom,
 			AskAmount:          askAmount,
@@ -90,17 +81,35 @@ func (k msgServer) CreateOffers(ctx context.Context, msg *types.MsgCreateOffers)
 			ValidUntil:         msg.ValidUntil,
 			NumUnlocksSteps:    msg.NumUnlockSteps,
 			CreatedAt:          sdk.UnwrapSDKContext(ctx).BlockTime(),
+			Open:               true,
 		})
+	} else {
+		if len(msg.Receivers) == 0 {
+			return nil, types.ErrEmptyOfferReceiversList
+		}
 
-		sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
-			sdk.NewEvent(
-				"factory_denom_offer_created",
-				sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
-				sdk.NewAttribute("amount_ask", askAmount.String()),
-				sdk.NewAttribute("amount_factory", amountFactory.String()),
-				sdk.NewAttribute("target_address", receiver),
-			),
-		})
+		for _, receiver := range msg.Receivers {
+			if _, err = sdk.AccAddressFromBech32(receiver); err != nil {
+				return nil, fmt.Errorf("invalid user address: %w", err)
+			}
+
+			if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, types.PoolOffers, coins); err != nil {
+				return nil, err
+			}
+
+			k.SetOffer(ctx, types.Offer{
+				FactoryDenom:       factoryDenom.FullName,
+				AddressReceiver:    receiver,
+				FactoryDenomAmount: amountFactory,
+				AskDenom:           msg.AskDenom,
+				AskAmount:          askAmount,
+				VestedUntil:        msg.VestedUntil,
+				ValidUntil:         msg.ValidUntil,
+				NumUnlocksSteps:    msg.NumUnlockSteps,
+				CreatedAt:          sdk.UnwrapSDKContext(ctx).BlockTime(),
+				Open:               false,
+			})
+		}
 	}
 
 	return &types.Void{}, nil
@@ -125,14 +134,6 @@ func (k msgServer) CancelOffers(ctx context.Context, msg *types.MsgCancelOffers)
 		if err := k.cancelOffer(ctx, offer.Index); err != nil {
 			return nil, err
 		}
-
-		sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
-			sdk.NewEvent(
-				"factory_denom_offer_canceled",
-				sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
-				sdk.NewAttribute("offer_id", strconv.Itoa(int(offer.Index))),
-			),
-		})
 	}
 
 	return &types.Void{}, nil
@@ -142,6 +143,10 @@ func (k msgServer) TakeOffer(ctx context.Context, msg *types.MsgTakeOffer) (*typ
 	offer, has := k.GetOffer(ctx, msg.OfferIndex)
 	if !has {
 		return nil, types.ErrOfferNotFound
+	}
+
+	if offer.Open {
+		return nil, types.ErrOfferOpen
 	}
 
 	if msg.Creator != offer.AddressReceiver {
@@ -189,13 +194,82 @@ func (k msgServer) TakeOffer(ctx context.Context, msg *types.MsgTakeOffer) (*typ
 		}
 	}
 
-	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
-		sdk.NewEvent(
-			"factory_denom_offer_taken",
-			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
-			sdk.NewAttribute("offer_id", strconv.Itoa(int(offer.Index))),
-		),
-	})
+	return &types.Void{}, nil
+}
+
+func (k msgServer) TakeOpenOffer(ctx context.Context, msg *types.MsgTakeOpenOffer) (*types.Void, error) {
+	offer, has := k.GetOffer(ctx, msg.OfferIndex)
+	if !has {
+		return nil, types.ErrOfferNotFound
+	}
+
+	if !offer.Open {
+		return nil, types.ErrOfferNotOpen
+	}
+
+	factoryDenom, has := k.GetDenomByFullName(ctx, offer.FactoryDenom)
+	if !has {
+		return nil, types.ErrDenomDoesNotExist
+	}
+
+	accUser, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, types.ErrInvalidAddress
+	}
+
+	accAdmin, err := sdk.AccAddressFromBech32(factoryDenom.Admin)
+	if err != nil {
+		return nil, types.ErrInvalidAddress
+	}
+
+	amount, ok := math.NewIntFromString(msg.Amount)
+	if !ok {
+		return nil, fmt.Errorf("invalid amount: %v", msg.Amount)
+	}
+
+	if !amount.IsPositive() {
+		return nil, fmt.Errorf("invalid amount: %v", msg.Amount)
+	}
+
+	if amount.GT(offer.AskAmount) {
+		return nil, types.ErrOfferAmountTooLarge
+	}
+
+	askAmount, err := k.handleOfferFee(ctx, accUser, offer.AskDenom, amount)
+	if err != nil {
+		return nil, err
+	}
+
+	coins := sdk.NewCoins(sdk.NewCoin(offer.AskDenom, askAmount))
+	if err = k.BankKeeper.SendCoins(ctx, accUser, accAdmin, coins); err != nil {
+		return nil, err
+	}
+
+	ratio := offer.FactoryDenomAmount.ToLegacyDec().Quo(offer.AskAmount.ToLegacyDec())
+
+	factoryDenomAmount := amount.ToLegacyDec().Mul(ratio).TruncateInt()
+	offer.FactoryDenomAmount = offer.FactoryDenomAmount.Sub(factoryDenomAmount)
+	offer.AskAmount = offer.AskAmount.Sub(amount)
+
+	if offer.AskAmount.IsPositive() {
+		k.offers.Set(ctx, offer.Index, offer)
+	} else {
+		k.RemoveOffer(ctx, offer.Index)
+	}
+
+	if offer.VestedUntil != nil {
+		offerPoolAcc := k.AccountKeeper.GetModuleAccount(ctx, types.PoolOffers)
+		offerPoolAddress := offerPoolAcc.GetAddress().String()
+
+		if err = k.createVesting(ctx, offerPoolAddress, offer.AddressReceiver, factoryDenom.FullName, factoryDenomAmount, offer.CreatedAt, *offer.VestedUntil, offer.NumUnlocksSteps); err != nil {
+			return nil, fmt.Errorf("create vesting: %w", err)
+		}
+	} else {
+		coins = sdk.NewCoins(sdk.NewCoin(factoryDenom.FullName, factoryDenomAmount))
+		if err = k.BankKeeper.SendCoinsFromModuleToAccount(ctx, types.PoolOffers, accUser, coins); err != nil {
+			return nil, err
+		}
+	}
 
 	return &types.Void{}, nil
 }
@@ -243,14 +317,6 @@ func (k msgServer) DeclineOffer(ctx context.Context, msg *types.MsgDeclineOffer)
 	}
 
 	k.RemoveOffer(ctx, offer.Index)
-
-	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
-		sdk.NewEvent(
-			"factory_denom_offer_declined",
-			sdk.NewAttribute("factory_denom_full_name", factoryDenom.FullName),
-			sdk.NewAttribute("offer_id", strconv.Itoa(int(offer.Index))),
-		),
-	})
 
 	return &types.Void{}, nil
 }

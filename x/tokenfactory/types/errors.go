@@ -55,4 +55,7 @@ var (
 	ErrInvalidName                    = sdkerrors.Register(ModuleName, 1144, "invalid name")
 	ErrMintingAlreadyDisabled         = sdkerrors.Register(ModuleName, 1145, "minting already disabled")
 	ErrEmptyOfferReceiversList        = sdkerrors.Register(ModuleName, 1146, "empty offer receivers list")
+	ErrOfferOpen                      = sdkerrors.Register(ModuleName, 1147, "requested offer is open")
+	ErrOfferNotOpen                   = sdkerrors.Register(ModuleName, 1148, "requested offer is not open")
+	ErrOfferAmountTooLarge            = sdkerrors.Register(ModuleName, 1149, "given amount is too large")
 )

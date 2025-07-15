@@ -46,4 +46,5 @@ message Offer {
   ];
 
   int64 num_unlocks_steps = 10;
+  bool open = 11;
 }

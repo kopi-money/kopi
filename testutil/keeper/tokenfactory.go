@@ -69,8 +69,11 @@ func FactoryTestParams() types.Params {
 				},
 			},
 		},
-		ReserveFeeShare: math.LegacyNewDecWithPrec(5, 1),
-		OfferFee:        types.OfferFee,
+		ReserveFeeShare:           math.LegacyNewDecWithPrec(5, 1),
+		OfferFee:                  types.OfferFee,
+		MinimumPoolFee:            math.LegacyNewDecWithPrec(1, 3),
+		MaximumPoolFee:            math.LegacyNewDecWithPrec(5, 2),
+		MaximumVestingUnlockSteps: 100,
 	}
 }
 
