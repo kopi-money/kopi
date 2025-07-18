@@ -278,12 +278,16 @@ func (k msgServer) AddFactoryLiquidity(ctx context.Context, msg *types.MsgAddFac
 		return nil, types.ErrPoolDoesNotExist
 	}
 
-	acc, _ := sdk.AccAddressFromBech32(msg.Creator)
-	if k.BankKeeper.SpendableCoin(ctx, acc, pool.KCoin).Amount.LT(amount) {
+	acc, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return nil, fmt.Errorf("invalid user address: %w", err)
+	}
+
+	if k.BankKeeper.SpendableCoin(ctx, acc, factoryDenom.FullName).Amount.LT(amount) {
 		return nil, types.ErrInsufficientFunds
 	}
 
-	if err := k.Keeper.AddFactoryLiquidity(ctx, factoryDenom, pool, amount, msg.Creator); err != nil {
+	if err = k.Keeper.AddFactoryLiquidity(ctx, factoryDenom, pool, amount, msg.Creator); err != nil {
 		return nil, fmt.Errorf("adding liquidity: %w", err)
 	}
 

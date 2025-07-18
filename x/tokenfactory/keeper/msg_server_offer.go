@@ -163,7 +163,7 @@ func (k msgServer) TakeOffer(ctx context.Context, msg *types.MsgTakeOffer) (*typ
 		return nil, types.ErrInvalidAddress
 	}
 
-	askAmount, err := k.handleOfferFee(ctx, offer.AskDenom, offer.AskAmount)
+	askAmount, err := k.handleOfferFee(ctx, accUser, offer.AskDenom, offer.AskAmount)
 	if err != nil {
 		return nil, err
 	}
@@ -200,7 +200,7 @@ func (k msgServer) TakeOffer(ctx context.Context, msg *types.MsgTakeOffer) (*typ
 	return &types.Void{}, nil
 }
 
-func (k Keeper) handleOfferFee(ctx context.Context, askDenom string, askAmount math.Int) (math.Int, error) {
+func (k Keeper) handleOfferFee(ctx context.Context, acc sdk.AccAddress, askDenom string, askAmount math.Int) (math.Int, error) {
 	offerFee := k.getOfferFee(ctx)
 	if offerFee.IsZero() {
 		return askAmount, nil
@@ -209,7 +209,7 @@ func (k Keeper) handleOfferFee(ctx context.Context, askDenom string, askAmount m
 	feeAmount := askAmount.ToLegacyDec().Mul(offerFee).TruncateInt()
 
 	coins := sdk.NewCoins(sdk.NewCoin(askDenom, feeAmount))
-	if err := k.BankKeeper.SendCoinsFromModuleToModule(ctx, types.PoolFactoryLiquidity, reservetypes.BuyingKCoins, coins); err != nil {
+	if err := k.BankKeeper.SendCoinsFromAccountToModule(ctx, acc, reservetypes.BuyingKCoins, coins); err != nil {
 		return math.Int{}, fmt.Errorf("send offer fee to module: %w", err)
 	}
 
