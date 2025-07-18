@@ -25,6 +25,7 @@ var (
 	PrefixOffers                       = collections.NewPrefix(6)
 	PrefixOffersNextIndex              = collections.NewPrefix(7)
 	PrefixVestings                     = collections.NewPrefix(8)
+	PrefixVestingsNextIndex            = collections.NewPrefix(9)
 )
 
 type (
@@ -168,7 +169,7 @@ func NewKeeper(
 
 		vestingsNextIndex: cache.NewItemCache(
 			sb,
-			PrefixOffersNextIndex,
+			PrefixVestingsNextIndex,
 			"vestings_next_index",
 			collections.Uint64Value,
 			caches,

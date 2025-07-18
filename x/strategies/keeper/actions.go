@@ -199,7 +199,7 @@ func (k Keeper) CheckAction(ctx context.Context, address string, action types.Ac
 		types.ActionFactoryLiquidityWithdraw:
 
 		if !k.FactoryKeeper.IsFactoryDenom(ctx, action.String1) {
-			return factorytypes.ErrDenomDoesNotExists
+			return factorytypes.ErrDenomDoesNotExist
 		}
 
 		pool, has := k.FactoryKeeper.GetLiquidityPool(ctx, action.String1)
@@ -215,7 +215,7 @@ func (k Keeper) CheckAction(ctx context.Context, address string, action types.Ac
 		types.ActionFactoryLiquidityAddFactoryDenom:
 
 		if !k.FactoryKeeper.IsFactoryDenom(ctx, action.String1) {
-			return factorytypes.ErrDenomDoesNotExists
+			return factorytypes.ErrDenomDoesNotExist
 		}
 
 		if !k.FactoryKeeper.HasLiquidityPool(ctx, action.String1) {
@@ -694,7 +694,7 @@ func (k Keeper) validFactoryDenom(ctx context.Context, denom string) error {
 		return nil
 	}
 
-	return factorytypes.ErrDenomDoesNotExists
+	return factorytypes.ErrDenomDoesNotExist
 }
 
 func (k Keeper) getAmountWallet(ctx context.Context, address sdk.AccAddress, denom, amountString string, validDenom validDenom) (math.Int, error) {

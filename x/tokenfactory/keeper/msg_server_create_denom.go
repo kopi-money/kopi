@@ -6,7 +6,6 @@ import (
 
 	"cosmossdk.io/math"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 
@@ -15,14 +14,6 @@ func (k msgServer) CreateDenom(ctx context.Context, msg *types.MsgCreateDenom) (
 	if err != nil {
 		return nil, fmt.Errorf("create denom: %v", err)
 	}
-
-	sdk.UnwrapSDKContext(ctx).EventManager().EmitEvents(sdk.Events{
-		sdk.NewEvent(
-			"factory_denom_created",
-			sdk.NewAttribute("full_name", factoryDenom.FullName),
-			sdk.NewAttribute("creator", msg.Creator),
-		),
-	})
 
 	if msg.InitialSupply > 0 {
 		amount := math.NewInt(msg.InitialSupply)

@@ -6,7 +6,7 @@ func (c *Categories) Equal(c2 *Categories) bool {
 	}
 
 	for i := range c.Categories {
-		if c.Categories[i].Equal(c2.Categories[i]) {
+		if !c.Categories[i].Equal(c2.Categories[i]) {
 			return false
 		}
 	}
@@ -15,9 +15,8 @@ func (c *Categories) Equal(c2 *Categories) bool {
 }
 
 func (c *Category) Equal(c2 Category) bool {
-	if c.Index != c2.Index {
-		return false
-	}
-
-	return true
+	return c.Index == c2.Index &&
+		c.Name == c2.Name &&
+		c.IsIbc == c2.IsIbc &&
+		c.CreationPrice.Equal(c2.CreationPrice)
 }
