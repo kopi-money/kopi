@@ -2,16 +2,12 @@ package mm
 
 import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-	"fmt"
-	"google.golang.org/protobuf/reflect/protoreflect"
-	"google.golang.org/protobuf/reflect/protoregistry"
-
 	modulev1 "github.com/kopi-money/kopi/api/kopi/mm"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.
 func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
-	data := &autocliv1.ModuleOptions{
+	return &autocliv1.ModuleOptions{
 		Query: &autocliv1.ServiceCommandDescriptor{
 			Service: modulev1.Query_ServiceDesc.ServiceName,
 			RpcCommandOptions: []*autocliv1.RpcCommandOptions{
@@ -154,23 +150,4 @@ func (am AppModule) AutoCLIOptions() *autocliv1.ModuleOptions {
 			},
 		},
 	}
-
-	printServiceMethods("kopi.mm.Msg")
-	return data
-}
-
-func printServiceMethods(serviceName string) {
-	protoregistry.GlobalFiles.RangeFiles(func(fd protoreflect.FileDescriptor) bool {
-		for i := 0; i < fd.Services().Len(); i++ {
-			sd := fd.Services().Get(i)
-			fullName := string(fd.Package()) + "." + string(sd.Name())
-			if fullName == serviceName {
-				fmt.Println("Found service:", fullName)
-				for j := 0; j < sd.Methods().Len(); j++ {
-					fmt.Println(" →", sd.Methods().Get(j).Name())
-				}
-			}
-		}
-		return true
-	})
 }
