@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"cosmossdk.io/math"
@@ -21,10 +20,6 @@ func (k Keeper) createVesting(ctx context.Context, senderAddress, receiverAddres
 
 	millis := vestedUntil.Sub(startTime).Milliseconds()
 	stepSize := int64(float64(millis) / float64(numUnlockSteps))
-
-	k.Logger().Error(fmt.Sprintf("millis: %v", millis))
-	k.Logger().Error(fmt.Sprintf("stepsize: %v", stepSize))
-
 	unlockAmountPerStep := amount.ToLegacyDec().Quo(math.LegacyNewDec(numUnlockSteps))
 
 	var (
@@ -34,7 +29,6 @@ func (k Keeper) createVesting(ctx context.Context, senderAddress, receiverAddres
 
 	for range numUnlockSteps {
 		previousUnlocking = previousUnlocking.Add(time.Duration(stepSize) * time.Millisecond)
-		k.Logger().Error(fmt.Sprintf("next: %v", previousUnlocking))
 		unlockings = append(unlockings, previousUnlocking)
 	}
 

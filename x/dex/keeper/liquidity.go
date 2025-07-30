@@ -10,7 +10,7 @@ import (
 	"github.com/kopi-money/kopi/trading"
 
 	"cosmossdk.io/math"
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	"github.com/kopi-money/kopi/x/dex/types"
 )

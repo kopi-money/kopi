@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"testing"
 
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 
 	"cosmossdk.io/math"
 	mmkeeper "github.com/kopi-money/kopi/x/mm/keeper"

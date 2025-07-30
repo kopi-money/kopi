@@ -9,7 +9,7 @@ import (
 	reservetypes "github.com/kopi-money/kopi/x/reserve/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 )
 

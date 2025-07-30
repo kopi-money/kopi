@@ -7,7 +7,7 @@ import (
 
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/cache"
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	"github.com/kopi-money/kopi/x/dex/types"

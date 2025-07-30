@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 
 	"cosmossdk.io/math"

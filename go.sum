@@ -1332,6 +1332,8 @@ github.com/klauspost/pgzip v1.2.6/go.mod h1:Ch1tH69qFZu15pkjo5kYi6mth2Zzwzt50oCQ
 github.com/knz/go-libedit v1.10.1/go.mod h1:MZTVkCWyz0oBc7JOWP3wNAzd002ZbM/5hgShxwh4x8M=
 github.com/konsorten/go-windows-terminal-sequences v1.0.1/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
 github.com/konsorten/go-windows-terminal-sequences v1.0.3/go.mod h1:T0+1ngSBFLxvqU3pZ+m/2kptfBszLMUkC4ZK/EgS/cQ=
+github.com/kopi-money/constants v0.0.0-20250730134016-113c0214b636 h1:wc/QDge8U1B8+QDiYMMWybFobbBWCPj2eMlh+9xdEJM=
+github.com/kopi-money/constants v0.0.0-20250730134016-113c0214b636/go.mod h1:wDUgr9kP1flIe+sr49sto3JTCD9e5m6DJf/SHyIy7s4=
 github.com/kopi-money/cosmos-sdk v0.50.13-0.9.2 h1:6eCzcoeyclvDIvFDLhU173CqjpJvsoqnJsMtx6v0Oh0=
 github.com/kopi-money/cosmos-sdk v0.50.13-0.9.2/go.mod h1:hrWEFMU1eoXqLJeE6VVESpJDQH67FS1nnMrQIjO2daw=
 github.com/kr/fs v0.1.0/go.mod h1:FFnZGqtBN9Gxj7eW1uZ42v5BccTP0vu6NEaFoC2HwRg=

@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/cache"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 	dexkeeper "github.com/kopi-money/kopi/x/dex/keeper"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"

@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/cache"
 
 	"cosmossdk.io/math"
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 	"github.com/kopi-money/kopi/x/mm/types"
 )
 

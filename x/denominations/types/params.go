@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"cosmossdk.io/math"
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 	"gopkg.in/yaml.v2"
 )
 

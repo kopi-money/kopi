@@ -3,7 +3,7 @@ package keeper
 import (
 	"context"
 
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 
 	"github.com/kopi-money/kopi/x/dex/types"
 	"google.golang.org/grpc/codes"

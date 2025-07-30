@@ -11,7 +11,7 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	mmtypes "github.com/kopi-money/kopi/x/mm/types"
 )

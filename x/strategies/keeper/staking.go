@@ -9,7 +9,7 @@ import (
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 )
 
 func (k Keeper) withdrawRewardsAndStake(ctx context.Context, accAddr sdk.AccAddress, strategy string, pseudoRandomNumber int) (string, error) {

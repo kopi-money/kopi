@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 
 	"cosmossdk.io/math"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"

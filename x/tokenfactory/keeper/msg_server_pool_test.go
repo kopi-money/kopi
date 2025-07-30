@@ -6,7 +6,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/cache"

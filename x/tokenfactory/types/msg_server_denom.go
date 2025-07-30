@@ -7,7 +7,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 
 	errorsmod "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"

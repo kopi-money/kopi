@@ -10,7 +10,7 @@ import (
 
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	"github.com/kopi-money/kopi/x/dex/keeper"
 	"github.com/stretchr/testify/require"

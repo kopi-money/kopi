@@ -4,7 +4,7 @@ import (
 	errorsmod "cosmossdk.io/errors"
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 	"net/url"
 )
 

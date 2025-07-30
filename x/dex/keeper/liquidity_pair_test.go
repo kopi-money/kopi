@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"cosmossdk.io/math"
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	"github.com/stretchr/testify/require"
 )

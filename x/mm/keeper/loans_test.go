@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/cache"
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 	denomtypes "github.com/kopi-money/kopi/x/denominations/types"
 
 	"cosmossdk.io/math"

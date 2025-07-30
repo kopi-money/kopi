@@ -8,7 +8,7 @@ import (
 
 	"github.com/kopi-money/kopi/trading"
 
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 	"github.com/kopi-money/kopi/x/dex/types"
 
 	"cosmossdk.io/math"

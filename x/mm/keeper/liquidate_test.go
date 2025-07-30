@@ -9,7 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/cache"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 	keepertest "github.com/kopi-money/kopi/testutil/keeper"
 	dextypes "github.com/kopi-money/kopi/x/dex/types"
 	"github.com/kopi-money/kopi/x/mm/types"

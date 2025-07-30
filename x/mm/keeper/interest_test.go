@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 
 	"github.com/cosmos/cosmos-sdk/cache"
 

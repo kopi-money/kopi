@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"github.com/kopi-money/constants"
 
 	"github.com/kopi-money/kopi/x/tokenfactory/types"
 
@@ -44,7 +45,7 @@ func (k Keeper) QueryFactoryTokenBalance(ctx context.Context, req *types.GetFact
 
 func (k Keeper) loadDexBalances(ctx context.Context, spendableCoins sdk.Coins, referenceDenom string) ([]types.DEXTokenBalance, error) {
 	var dexDenoms []string
-	dexDenoms = append(dexDenoms, "ukopi")
+	dexDenoms = append(dexDenoms, constants.BaseCurrency)
 	dexDenoms = append(dexDenoms, k.DenomKeeper.FactoryPoolDenoms(ctx)...)
 
 	var dexTokenBalances []types.DEXTokenBalance

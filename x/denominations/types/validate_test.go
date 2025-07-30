@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 	"github.com/kopi-money/kopi/x/denominations/types"
 
 	"cosmossdk.io/math"

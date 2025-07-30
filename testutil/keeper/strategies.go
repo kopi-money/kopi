@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"cosmossdk.io/core/address"
-	"github.com/kopi-money/kopi/constants"
+	"github.com/kopi-money/constants"
 
 	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/runtime"
