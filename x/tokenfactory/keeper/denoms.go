@@ -145,9 +145,11 @@ func (k Keeper) processCreationFee(ctx context.Context, category types.Category,
 		return types.ErrNoValidPoolDenom
 	}
 
-	coins := sdk.NewCoins(sdk.NewCoin(feeDenom, category.CreationPrice))
-	if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, addr, reservetypes.BuyingKCoins, coins); err != nil {
-		return fmt.Errorf("send coins from account to module: %w", err)
+	if category.CreationPrice.IsPositive() {
+		coins := sdk.NewCoins(sdk.NewCoin(feeDenom, category.CreationPrice))
+		if err = k.BankKeeper.SendCoinsFromAccountToModule(ctx, addr, reservetypes.BuyingKCoins, coins); err != nil {
+			return fmt.Errorf("send coins from account to module: %w", err)
+		}
 	}
 
 	return nil
